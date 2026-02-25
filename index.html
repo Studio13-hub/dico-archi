@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dico Architecture CH</title>
+    <meta name="description" content="Dictionnaire technique simple pour debutants en architecture, Suisse romande." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="badge">Dico Architecture CH</div>
+        <h1>Le dictionnaire du dessinateur en architecture</h1>
+        <p>
+          Definitions claires pour debutants en Suisse romande : vocabulaire de bureau,
+          de chantier, et normes SIA / AEAI. Niveau debutant+ avec un peu de precision technique.
+        </p>
+        <div class="controls">
+          <input id="search" type="search" placeholder="Rechercher un terme…" autocomplete="off" />
+          <select id="category">
+            <option value="all">Toutes les categories</option>
+          </select>
+          <button id="random">Terme au hasard</button>
+          <button id="quiz-toggle" class="ghost">Mode quiz</button>
+        </div>
+        <div class="meta" id="meta"></div>
+      </div>
+    </header>
+
+    <main>
+      <section id="quiz" class="panel quiz hidden">
+        <div class="quiz__header">
+          <h2>Quiz</h2>
+          <div id="quiz-score" class="quiz__score">0 / 0</div>
+        </div>
+        <div id="quiz-question" class="quiz__question">Clique sur “Mode quiz” pour commencer.</div>
+        <div id="quiz-options" class="quiz__options"></div>
+        <div id="quiz-feedback" class="quiz__feedback"></div>
+        <div class="quiz__actions">
+          <button id="quiz-next">Question suivante</button>
+          <button id="quiz-exit" class="ghost">Quitter le quiz</button>
+        </div>
+      </section>
+      <section class="panel">
+        <div id="cards" class="cards"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer__inner">
+        <span>Fait pour apprendre sans jargon inutile.</span>
+        <span class="dot"></span>
+        <span>Ajoute tes propres termes dans <code>data.js</code>.</span>
+      </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
