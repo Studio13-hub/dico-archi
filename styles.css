@@ -435,6 +435,11 @@ footer {
   gap: 8px;
 }
 
+.admin__row.highlight {
+  border-color: #1f7a70;
+  box-shadow: 0 8px 18px rgba(31, 122, 112, 0.12);
+}
+
 .admin__row-meta {
   font-size: 0.85rem;
   color: rgba(18, 18, 18, 0.6);

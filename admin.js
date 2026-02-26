@@ -17,6 +17,8 @@ const saveButton = document.getElementById("save");
 const resetButton = document.getElementById("reset");
 const termsTable = document.getElementById("terms-table");
 const adminSearch = document.getElementById("admin-search");
+const auditList = document.getElementById("audit-list");
+const auditEmpty = document.getElementById("audit-empty");
 
 let supabaseClient = null;
 let currentUser = null;
@@ -145,7 +147,7 @@ function renderSubmissions(list) {
     const loadButton = document.createElement("button");
     loadButton.className = "ghost";
     loadButton.textContent = "Charger";
-    loadButton.addEventListener("click", () => loadSubmission(item));
+    loadButton.addEventListener("click", () => loadSubmission(item, row));
 
     const approveButton = document.createElement("button");
     approveButton.textContent = "Accepter";
@@ -170,6 +172,40 @@ function renderSubmissions(list) {
   }
 }
 
+function renderAudit(list) {
+  auditList.innerHTML = "";
+
+  if (!list.length) {
+    if (auditEmpty) auditEmpty.style.display = "block";
+    return;
+  }
+
+  if (auditEmpty) auditEmpty.style.display = "none";
+
+  for (const item of list) {
+    const row = document.createElement("div");
+    row.className = "admin__row";
+
+    const title = document.createElement("div");
+    title.className = "admin__row-title";
+    title.textContent = `${item.action}`;
+
+    const info = document.createElement("div");
+    info.className = "admin__row-info";
+    info.textContent = `${item.entity || "-"} · ${item.actor_email || ""}`;
+
+    const meta = document.createElement("div");
+    meta.className = "admin__row-meta";
+    const when = item.created_at ? new Date(item.created_at).toLocaleString() : "";
+    meta.textContent = when;
+
+    row.appendChild(title);
+    row.appendChild(info);
+    row.appendChild(meta);
+    auditList.appendChild(row);
+  }
+}
+
 function loadTerm(item) {
   editingId = item.id;
   editingSubmission = null;
@@ -181,10 +217,11 @@ function loadTerm(item) {
   imageUrlInput.value = item.image_url || "";
   reviewerCommentInput.value = "";
   if (submissionBanner) submissionBanner.textContent = "";
+  termInput.focus();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function loadSubmission(item) {
+function loadSubmission(item, row) {
   editingSubmission = item;
   editingId = null;
   termInput.value = item.term || "";
@@ -195,7 +232,21 @@ function loadSubmission(item) {
   imageUrlInput.value = item.image_url || "";
   reviewerCommentInput.value = item.reviewer_comment || "";
   if (submissionBanner) submissionBanner.textContent = `Proposition chargee: ${item.term}`;
+  if (row) row.classList.add("highlight");
+  termInput.focus();
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+async function logAction(action, entity, entityId, details = {}) {
+  if (!supabaseClient || !currentUser) return;
+  await supabaseClient.from("audit_logs").insert({
+    actor_id: currentUser.id,
+    actor_email: currentUser.email,
+    action,
+    entity,
+    entity_id: entityId,
+    details
+  });
 }
 
 async function removeTerm(item) {
@@ -209,8 +260,10 @@ async function removeTerm(item) {
     return;
   }
 
+  await logAction("term_deleted", "terms", item.id, { term: item.term });
   setMessage("Terme supprime.");
   await fetchTerms();
+  await fetchAudit();
 }
 
 async function uploadImage(file) {
@@ -270,17 +323,22 @@ async function saveTerm() {
 
   const query = editingId
     ? supabaseClient.from("terms").update(payload).eq("id", editingId)
-    : supabaseClient.from("terms").insert(payload);
+    : supabaseClient.from("terms").insert(payload).select("id").single();
 
-  const { error } = await query;
+  const { data, error } = await query;
   if (error) {
     setMessage(error.message, true);
     return;
   }
 
+  const action = editingId ? "term_updated" : "term_created";
+  const entityId = editingId || data?.id;
+  await logAction(action, "terms", entityId, { term });
+
   setMessage(editingId ? "Terme mis a jour." : "Terme ajoute.");
   clearForm();
   await fetchTerms();
+  await fetchAudit();
 }
 
 async function fetchTerms() {
@@ -315,6 +373,21 @@ async function fetchSubmissions() {
   renderSubmissions(data || []);
 }
 
+async function fetchAudit() {
+  const { data, error } = await supabaseClient
+    .from("audit_logs")
+    .select("id, action, entity, actor_email, created_at")
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error) {
+    setMessage(error.message, true);
+    return;
+  }
+
+  renderAudit(data || []);
+}
+
 async function approveSubmission(item) {
   const source = editingSubmission && editingSubmission.id === item.id ? editingSubmission : item;
   const payload = {
@@ -326,7 +399,7 @@ async function approveSubmission(item) {
     image_url: imageUrlInput.value.trim() || source.image_url
   };
 
-  const { error: insertError } = await supabaseClient.from("terms").insert(payload);
+  const { error: insertError } = await supabaseClient.from("terms").insert(payload).select("id").single();
   if (insertError) {
     setMessage(insertError.message, true);
     return;
@@ -352,10 +425,13 @@ async function approveSubmission(item) {
     return;
   }
 
+  await logAction("submission_accepted", "term_submissions", item.id, { term: payload.term });
+
   setMessage("Proposition acceptee.");
   clearForm();
   await fetchTerms();
   await fetchSubmissions();
+  await fetchAudit();
 }
 
 async function rejectSubmission(item) {
@@ -376,9 +452,12 @@ async function rejectSubmission(item) {
     return;
   }
 
+  await logAction("submission_rejected", "term_submissions", item.id, { term: item.term });
+
   setMessage("Proposition refusee.");
   clearForm();
   await fetchSubmissions();
+  await fetchAudit();
 }
 
 function filterTerms() {
@@ -433,6 +512,7 @@ async function loadUser() {
 
   await fetchTerms();
   await fetchSubmissions();
+  await fetchAudit();
 }
 
 async function logout() {
