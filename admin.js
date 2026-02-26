@@ -146,7 +146,7 @@ function renderSubmissions(list) {
 
     const loadButton = document.createElement("button");
     loadButton.className = "ghost";
-    loadButton.textContent = "Charger";
+    loadButton.textContent = "Modifier";
     loadButton.addEventListener("click", () => loadSubmission(item, row));
 
     const approveButton = document.createElement("button");
