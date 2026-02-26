@@ -493,7 +493,7 @@ async function loadUser() {
   currentUser = data?.user || null;
 
   if (!currentUser) {
-    setMessage("Connecte-toi dans la page Compte.", true);
+    window.location.href = "auth.html";
     return;
   }
 
@@ -514,7 +514,8 @@ async function loadUser() {
   adminRole.textContent = `Role: ${isEditor ? "Editeur" : "Lecture seule"}`;
 
   if (!isEditor) {
-    setMessage("Tu n'as pas les droits pour modifier.", true);
+    window.location.href = "index.html";
+    return;
   }
 
   await fetchTerms();
