@@ -11,7 +11,14 @@
     <header class="hero">
       <div class="hero__bg"></div>
       <div class="hero__content">
-        <div class="badge">Dico Architecture CH</div>
+        <div class="hero__top">
+          <div class="badge">Dico Architecture CH</div>
+          <div class="hero__actions">
+            <a class="link-button" href="auth.html">Se connecter / Creer un compte</a>
+            <a class="link-button" href="contribuer.html">Contribuer</a>
+            <a class="link-button" href="admin.html">Admin</a>
+          </div>
+        </div>
         <h1>Le dictionnaire du dessinateur en architecture</h1>
         <p>
           Definitions claires pour debutants en Suisse romande : vocabulaire de bureau,
@@ -26,6 +33,7 @@
           <button id="quiz-toggle" class="ghost">Mode quiz</button>
         </div>
         <div class="meta" id="meta"></div>
+        <div class="meta meta--subtle" id="sync-status"></div>
       </div>
     </header>
 
@@ -52,10 +60,12 @@
       <div class="footer__inner">
         <span>Fait pour apprendre sans jargon inutile.</span>
         <span class="dot"></span>
-        <span>Ajoute tes propres termes dans <code>data.js</code>.</span>
+        <span>Alimente via Google Sheets / CSV et Supabase.</span>
       </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <script src="data.js"></script>
     <script src="app.js"></script>
   </body>

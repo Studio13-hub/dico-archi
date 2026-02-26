@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Connexion - Dico Architecture CH</title>
+    <meta name="description" content="Connexion et creation de compte pour contribuer au dictionnaire." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Dico Architecture CH</div>
+          <div class="hero__actions">
+            <a class="link-button" href="index.html">Retour au dictionnaire</a>
+            <a class="link-button" href="admin.html">Espace admin</a>
+          </div>
+        </div>
+        <h1>Connexion / Creation de compte</h1>
+        <p>Le contenu reste public. La modification des termes est reservee aux comptes autorises.</p>
+      </div>
+    </header>
+
+    <main class="auth">
+      <section class="panel">
+        <div class="auth__inputs">
+          <input id="email" type="email" placeholder="Adresse email" autocomplete="email" />
+          <input id="password" type="password" placeholder="Mot de passe" autocomplete="current-password" />
+        </div>
+        <div class="auth__actions">
+          <button id="login">Se connecter</button>
+          <button id="signup" class="ghost">Creer un compte</button>
+        </div>
+        <div class="auth__message" id="auth-message"></div>
+        <div class="meta meta--subtle">
+          Pour obtenir les droits d'editeur, contacte l'administrateur apres creation de ton compte.
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+  </body>
+</html>

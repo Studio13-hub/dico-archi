@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin - Dico Architecture CH</title>
+    <meta name="description" content="Gestion des termes du dictionnaire." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Dico Architecture CH</div>
+          <div class="hero__actions">
+            <a class="link-button" href="index.html">Voir le site</a>
+            <a class="link-button" href="auth.html">Compte</a>
+          </div>
+        </div>
+        <h1>Espace administration</h1>
+        <p>Ajoute, modifie ou supprime des termes. Acces reserve aux editeurs.</p>
+      </div>
+    </header>
+
+    <main class="admin">
+      <section class="panel admin__status">
+        <div class="admin__status-row">
+          <div id="admin-user">Utilisateur: -</div>
+          <div id="admin-role">Role: -</div>
+        </div>
+        <div class="auth__actions">
+          <button id="admin-logout" class="ghost">Se deconnecter</button>
+        </div>
+        <div class="auth__message" id="admin-message"></div>
+      </section>
+
+      <section class="panel admin__submissions">
+        <h2>Propositions en attente</h2>
+        <div id="submissions-empty" class="meta meta--subtle">Aucune proposition.</div>
+        <div id="submissions" class="admin__table"></div>
+      </section>
+
+      <section class="panel admin__form">
+        <h2>Ajouter / Modifier un terme</h2>
+        <div class="admin__inputs">
+          <input id="term" type="text" placeholder="Terme" />
+          <input id="category" type="text" placeholder="Categorie" />
+          <textarea id="definition" placeholder="Definition"></textarea>
+          <textarea id="example" placeholder="Exemple"></textarea>
+          <input id="related" type="text" placeholder="Lie a (separe par |)" />
+          <input id="image-url" type="text" placeholder="Image URL (optionnel)" />
+          <div class="admin__upload">
+            <label class="link-button" for="image-file">Upload image</label>
+            <input id="image-file" type="file" accept="image/*" />
+            <span id="upload-status" class="meta meta--subtle"></span>
+          </div>
+        </div>
+        <div class="auth__actions">
+          <button id="save">Enregistrer</button>
+          <button id="reset" class="ghost">Reinitialiser</button>
+        </div>
+      </section>
+
+      <section class="panel admin__list">
+        <h2>Termes existants</h2>
+        <input id="admin-search" type="search" placeholder="Rechercher un terme..." />
+        <div id="terms-table" class="admin__table"></div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

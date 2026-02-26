@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contribuer - Dico Architecture CH</title>
+    <meta name="description" content="Proposer un terme pour le dictionnaire." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Dico Architecture CH</div>
+          <div class="hero__actions">
+            <a class="link-button" href="index.html">Voir le site</a>
+            <a class="link-button" href="auth.html">Compte</a>
+          </div>
+        </div>
+        <h1>Proposer un terme</h1>
+        <p>Les contributions sont en attente de validation par un editeur.</p>
+      </div>
+    </header>
+
+    <main class="admin">
+      <section class="panel admin__status">
+        <div class="admin__status-row">
+          <div id="contrib-user">Utilisateur: -</div>
+        </div>
+        <div class="auth__message" id="contrib-message"></div>
+      </section>
+
+      <section class="panel admin__form">
+        <h2>Formulaire de contribution</h2>
+        <div class="admin__inputs">
+          <input id="term" type="text" placeholder="Terme" />
+          <input id="category" type="text" placeholder="Categorie" />
+          <textarea id="definition" placeholder="Definition"></textarea>
+          <textarea id="example" placeholder="Exemple"></textarea>
+          <input id="related" type="text" placeholder="Lie a (separe par |)" />
+          <input id="image-url" type="text" placeholder="Image URL (optionnel)" />
+        </div>
+        <div class="auth__actions">
+          <button id="submit">Envoyer la proposition</button>
+          <button id="reset" class="ghost">Reinitialiser</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="contribuer.js"></script>
+  </body>
+</html>
