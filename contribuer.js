@@ -1,5 +1,6 @@
 const contribMessage = document.getElementById("contrib-message");
 const contribUser = document.getElementById("contrib-user");
+const contribList = document.getElementById("contrib-list");
 
 const termInput = document.getElementById("term");
 const categoryInput = document.getElementById("category");
@@ -38,6 +39,48 @@ function normalizeRelated(raw) {
     .filter(Boolean);
 }
 
+function renderList(list) {
+  contribList.innerHTML = "";
+
+  if (!list.length) {
+    const empty = document.createElement("div");
+    empty.className = "card";
+    empty.textContent = "Aucune proposition pour le moment.";
+    contribList.appendChild(empty);
+    return;
+  }
+
+  for (const item of list) {
+    const row = document.createElement("div");
+    row.className = "admin__row";
+
+    const title = document.createElement("div");
+    title.className = "admin__row-title";
+    title.textContent = item.term;
+
+    const info = document.createElement("div");
+    info.className = "admin__row-info";
+    info.textContent = `${item.category} · ${item.definition}`;
+
+    const status = document.createElement("div");
+    status.className = `admin__row-status ${item.status || "pending"}`;
+    status.textContent = item.status || "pending";
+
+    const comment = document.createElement("div");
+    comment.className = "admin__row-meta";
+    comment.textContent = item.reviewer_comment
+      ? `Commentaire: ${item.reviewer_comment}`
+      : "Aucun commentaire";
+
+    row.appendChild(title);
+    row.appendChild(info);
+    row.appendChild(status);
+    row.appendChild(comment);
+
+    contribList.appendChild(row);
+  }
+}
+
 async function loadUser() {
   if (!hasSupabaseConfig()) {
     setMessage("Configuration Supabase manquante.", true);
@@ -54,6 +97,22 @@ async function loadUser() {
   }
 
   contribUser.textContent = `Utilisateur: ${currentUser.email}`;
+  await fetchMySubmissions();
+}
+
+async function fetchMySubmissions() {
+  const { data, error } = await supabaseClient
+    .from("term_submissions")
+    .select("id, term, category, definition, status, reviewer_comment, created_at")
+    .eq("submitted_by", currentUser.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    setMessage(error.message, true);
+    return;
+  }
+
+  renderList(data || []);
 }
 
 async function submitProposal() {
@@ -78,7 +137,8 @@ async function submitProposal() {
     example,
     related,
     image_url: imageUrl || null,
-    submitted_by: currentUser.id
+    submitted_by: currentUser.id,
+    submitter_email: currentUser.email
   };
 
   const { error } = await supabaseClient.from("term_submissions").insert(payload);
@@ -89,6 +149,7 @@ async function submitProposal() {
 
   setMessage("Proposition envoyee. Merci !");
   clearForm();
+  await fetchMySubmissions();
 }
 
 submitButton.addEventListener("click", submitProposal);

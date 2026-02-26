@@ -10,6 +10,8 @@ const exampleInput = document.getElementById("example");
 const relatedInput = document.getElementById("related");
 const imageUrlInput = document.getElementById("image-url");
 const imageFileInput = document.getElementById("image-file");
+const reviewerCommentInput = document.getElementById("reviewer-comment");
+const submissionBanner = document.getElementById("submission-banner");
 const uploadStatus = document.getElementById("upload-status");
 const saveButton = document.getElementById("save");
 const resetButton = document.getElementById("reset");
@@ -21,6 +23,7 @@ let currentUser = null;
 let isEditor = false;
 let terms = [];
 let editingId = null;
+let editingSubmission = null;
 
 function setMessage(text, isError = false) {
   adminMessage.textContent = text;
@@ -37,6 +40,7 @@ function setUploadStatus(text) {
 
 function clearForm() {
   editingId = null;
+  editingSubmission = null;
   termInput.value = "";
   categoryInput.value = "";
   definitionInput.value = "";
@@ -44,6 +48,8 @@ function clearForm() {
   relatedInput.value = "";
   imageUrlInput.value = "";
   imageFileInput.value = "";
+  reviewerCommentInput.value = "";
+  if (submissionBanner) submissionBanner.textContent = "";
   setUploadStatus("");
 }
 
@@ -125,8 +131,21 @@ function renderSubmissions(list) {
     info.className = "admin__row-info";
     info.textContent = `${item.category} · ${item.definition}`;
 
+    const meta = document.createElement("div");
+    meta.className = "admin__row-meta";
+    meta.textContent = `Par: ${item.submitter_email || "anonyme"}`;
+
+    const status = document.createElement("div");
+    status.className = `admin__row-status ${item.status || "pending"}`;
+    status.textContent = item.status || "pending";
+
     const actions = document.createElement("div");
     actions.className = "admin__row-actions";
+
+    const loadButton = document.createElement("button");
+    loadButton.className = "ghost";
+    loadButton.textContent = "Charger";
+    loadButton.addEventListener("click", () => loadSubmission(item));
 
     const approveButton = document.createElement("button");
     approveButton.textContent = "Accepter";
@@ -137,11 +156,14 @@ function renderSubmissions(list) {
     rejectButton.textContent = "Refuser";
     rejectButton.addEventListener("click", () => rejectSubmission(item));
 
+    actions.appendChild(loadButton);
     actions.appendChild(approveButton);
     actions.appendChild(rejectButton);
 
     row.appendChild(title);
     row.appendChild(info);
+    row.appendChild(meta);
+    row.appendChild(status);
     row.appendChild(actions);
 
     container.appendChild(row);
@@ -150,12 +172,29 @@ function renderSubmissions(list) {
 
 function loadTerm(item) {
   editingId = item.id;
+  editingSubmission = null;
   termInput.value = item.term || "";
   categoryInput.value = item.category || "";
   definitionInput.value = item.definition || "";
   exampleInput.value = item.example || "";
   relatedInput.value = (item.related || []).join(" | ");
   imageUrlInput.value = item.image_url || "";
+  reviewerCommentInput.value = "";
+  if (submissionBanner) submissionBanner.textContent = "";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function loadSubmission(item) {
+  editingSubmission = item;
+  editingId = null;
+  termInput.value = item.term || "";
+  categoryInput.value = item.category || "";
+  definitionInput.value = item.definition || "";
+  exampleInput.value = item.example || "";
+  relatedInput.value = (item.related || []).join(" | ");
+  imageUrlInput.value = item.image_url || "";
+  reviewerCommentInput.value = item.reviewer_comment || "";
+  if (submissionBanner) submissionBanner.textContent = `Proposition chargee: ${item.term}`;
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -262,7 +301,10 @@ async function fetchTerms() {
 async function fetchSubmissions() {
   const { data, error } = await supabaseClient
     .from("term_submissions")
-    .select("id, term, category, definition, example, related, image_url, submitted_by, created_at")
+    .select(
+      "id, term, category, definition, example, related, image_url, submitted_by, submitter_email, status, reviewer_comment, created_at"
+    )
+    .eq("status", "pending")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -274,13 +316,14 @@ async function fetchSubmissions() {
 }
 
 async function approveSubmission(item) {
+  const source = editingSubmission && editingSubmission.id === item.id ? editingSubmission : item;
   const payload = {
-    term: item.term,
-    category: item.category,
-    definition: item.definition,
-    example: item.example,
-    related: item.related,
-    image_url: item.image_url
+    term: termInput.value.trim() || source.term,
+    category: categoryInput.value.trim() || source.category,
+    definition: definitionInput.value.trim() || source.definition,
+    example: exampleInput.value.trim() || source.example,
+    related: normalizeRelated(relatedInput.value || source.related?.join(" | ") || ""),
+    image_url: imageUrlInput.value.trim() || source.image_url
   };
 
   const { error: insertError } = await supabaseClient.from("terms").insert(payload);
@@ -289,17 +332,28 @@ async function approveSubmission(item) {
     return;
   }
 
-  const { error: deleteError } = await supabaseClient
+  const { error: updateError } = await supabaseClient
     .from("term_submissions")
-    .delete()
+    .update({
+      term: payload.term,
+      category: payload.category,
+      definition: payload.definition,
+      example: payload.example,
+      related: payload.related,
+      image_url: payload.image_url,
+      status: "accepted",
+      reviewer_comment: reviewerCommentInput.value.trim() || null,
+      reviewed_at: new Date().toISOString()
+    })
     .eq("id", item.id);
 
-  if (deleteError) {
-    setMessage(deleteError.message, true);
+  if (updateError) {
+    setMessage(updateError.message, true);
     return;
   }
 
   setMessage("Proposition acceptee.");
+  clearForm();
   await fetchTerms();
   await fetchSubmissions();
 }
@@ -308,13 +362,22 @@ async function rejectSubmission(item) {
   const confirmed = confirm(`Refuser la proposition "${item.term}" ?`);
   if (!confirmed) return;
 
-  const { error } = await supabaseClient.from("term_submissions").delete().eq("id", item.id);
+  const { error } = await supabaseClient
+    .from("term_submissions")
+    .update({
+      status: "rejected",
+      reviewer_comment: reviewerCommentInput.value.trim() || null,
+      reviewed_at: new Date().toISOString()
+    })
+    .eq("id", item.id);
+
   if (error) {
     setMessage(error.message, true);
     return;
   }
 
   setMessage("Proposition refusee.");
+  clearForm();
   await fetchSubmissions();
 }
 
