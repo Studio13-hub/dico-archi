@@ -14,9 +14,11 @@
         <div class="hero__top">
           <div class="badge">Dico Architecture CH</div>
           <div class="hero__actions">
-            <a class="link-button" href="auth.html">Se connecter / Creer un compte</a>
+            <span id="auth-status" class="meta meta--subtle">Non connecte</span>
+            <a class="link-button" href="auth.html" id="auth-link">Se connecter / Creer un compte</a>
+            <button class="link-button" id="logout" type="button" hidden>Se deconnecter</button>
             <a class="link-button" href="contribuer.html">Contribuer</a>
-            <a class="link-button" href="admin.html">Admin</a>
+            <a class="link-button" href="admin.html" id="admin-link" hidden>Admin</a>
           </div>
         </div>
         <h1>Le dictionnaire du dessinateur en architecture</h1>

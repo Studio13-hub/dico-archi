@@ -12,8 +12,13 @@ const quizFeedback = document.getElementById("quiz-feedback");
 const quizScore = document.getElementById("quiz-score");
 const quizNext = document.getElementById("quiz-next");
 const quizExit = document.getElementById("quiz-exit");
+const authStatus = document.getElementById("auth-status");
+const authLink = document.getElementById("auth-link");
+const logoutButton = document.getElementById("logout");
+const adminLink = document.getElementById("admin-link");
 
 let allTerms = [];
+let supabaseClient = null;
 
 function hasSupabaseConfig() {
   return Boolean(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase);
@@ -22,6 +27,15 @@ function hasSupabaseConfig() {
 function setSyncStatus(text) {
   if (!syncStatus) return;
   syncStatus.textContent = text;
+}
+
+function setAuthUi({ user, isEditor }) {
+  if (authStatus) {
+    authStatus.textContent = user ? `Connecte: ${user.email}` : "Non connecte";
+  }
+  if (authLink) authLink.hidden = Boolean(user);
+  if (logoutButton) logoutButton.hidden = !user;
+  if (adminLink) adminLink.hidden = !isEditor;
 }
 
 function normalizeTerm(item) {
@@ -247,14 +261,36 @@ async function loadTerms() {
     buildCategoryOptions(allTerms);
     render(allTerms);
     setSyncStatus("Mode local: configure Supabase pour la synchro.");
+    setAuthUi({ user: null, isEditor: false });
     return;
   }
 
   try {
-    const supabaseClient = window.supabase.createClient(
+    supabaseClient = window.supabase.createClient(
       window.SUPABASE_URL,
       window.SUPABASE_ANON_KEY
     );
+
+    const { data: userData } = await supabaseClient.auth.getUser();
+    const user = userData?.user || null;
+    let isEditor = false;
+
+    if (user) {
+      const { data: profile } = await supabaseClient
+        .from("profiles")
+        .select("is_editor")
+        .eq("id", user.id)
+        .single();
+      isEditor = Boolean(profile?.is_editor);
+
+      if (isEditor && localStorage.getItem("post_login_redirect") === "1") {
+        localStorage.removeItem("post_login_redirect");
+        window.location.href = "admin.html";
+        return;
+      }
+    }
+
+    setAuthUi({ user, isEditor });
 
     const { data, error } = await supabaseClient
       .from("terms")
@@ -281,3 +317,11 @@ async function loadTerms() {
 }
 
 loadTerms();
+
+if (logoutButton) {
+  logoutButton.addEventListener("click", async () => {
+    if (!supabaseClient) return;
+    await supabaseClient.auth.signOut();
+    setAuthUi({ user: null, isEditor: false });
+  });
+}

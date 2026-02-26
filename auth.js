@@ -45,6 +45,7 @@ async function signIn() {
     return;
   }
 
+  localStorage.setItem("post_login_redirect", "1");
   setMessage("Connecte avec succes. Redirection...");
   setTimeout(redirectAfterLogin, 800);
 }
