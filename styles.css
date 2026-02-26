@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Serif:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=Fraunces:wght@400;600&display=swap');
 
 :root {
   color-scheme: light;
@@ -17,14 +17,14 @@
 
 body {
   margin: 0;
-  font-family: "IBM Plex Sans", "IBM Plex Serif", serif;
+  font-family: "IBM Plex Sans", sans-serif;
   background: var(--bg);
   color: var(--ink);
 }
 
 .hero {
   position: relative;
-  padding: 64px 20px 48px;
+  padding: 44px 20px 32px;
   overflow: hidden;
   border-bottom: 1px solid var(--border);
 }
@@ -62,12 +62,14 @@ h1 {
   font-size: clamp(2.2rem, 4vw, 3.6rem);
   margin: 18px 0 12px;
   letter-spacing: -0.02em;
+  font-family: "Fraunces", serif;
+  font-weight: 600;
 }
 
 p {
   margin: 0 0 20px;
   max-width: 720px;
-  font-family: "IBM Plex Serif", serif;
+  font-family: "Fraunces", serif;
   font-size: 1.05rem;
   color: rgba(18, 18, 18, 0.8);
 }
@@ -76,7 +78,7 @@ p {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
-  margin-top: 18px;
+  margin-top: 12px;
 }
 
 input,
@@ -164,7 +166,7 @@ main {
   border-radius: 16px;
   border: 1px solid var(--border);
   box-shadow: 0 18px 40px var(--shadow);
-  padding: 28px;
+  padding: 22px;
 }
 
 .hidden {
@@ -174,7 +176,7 @@ main {
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 18px;
+  gap: 14px;
 }
 
 .card__image {
@@ -248,20 +250,20 @@ main {
 }
 
 .card {
-  padding: 18px;
-  border-radius: 18px;
+  padding: 14px;
+  border-radius: 14px;
   border: 1px solid var(--border);
   background: var(--card);
-  min-height: 220px;
+  min-height: 200px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   animation: rise 0.4s ease;
 }
 
 .card h3 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
 }
 
 .tag {
@@ -278,15 +280,15 @@ main {
 
 .example {
   background: #fff;
-  border-left: 3px solid var(--accent);
-  padding: 8px 10px;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-left: 2px solid var(--accent);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 0.9rem;
   color: rgba(31, 26, 18, 0.8);
 }
 
 .related {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: rgba(31, 26, 18, 0.7);
 }
 
