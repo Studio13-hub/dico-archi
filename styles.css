@@ -1,14 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Serif:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Serif:wght@400;600&display=swap');
 
 :root {
   color-scheme: light;
-  --bg: #f6f2ea;
-  --ink: #1f1a12;
-  --accent: #d94e2b;
-  --accent-2: #1f7a70;
-  --card: #fff9f1;
-  --shadow: rgba(31, 26, 18, 0.12);
-  --border: rgba(31, 26, 18, 0.12);
+  --bg: #f7f7f7;
+  --ink: #121212;
+  --accent: #0f0f0f;
+  --accent-2: #5f5f5f;
+  --card: #ffffff;
+  --shadow: rgba(18, 18, 18, 0.08);
+  --border: rgba(18, 18, 18, 0.12);
 }
 
 * {
@@ -17,10 +17,8 @@
 
 body {
   margin: 0;
-  font-family: "Space Grotesk", "IBM Plex Serif", serif;
-  background: radial-gradient(circle at 10% 20%, #f4e3cf 0%, transparent 45%),
-    radial-gradient(circle at 90% 10%, #f3c5b6 0%, transparent 40%),
-    var(--bg);
+  font-family: "IBM Plex Sans", "IBM Plex Serif", serif;
+  background: var(--bg);
   color: var(--ink);
 }
 
@@ -28,17 +26,11 @@ body {
   position: relative;
   padding: 64px 20px 48px;
   overflow: hidden;
+  border-bottom: 1px solid var(--border);
 }
 
 .hero__bg {
-  position: absolute;
-  inset: -40% 10% auto 10%;
-  height: 220px;
-  border-radius: 40px;
-  background: linear-gradient(120deg, #f7bba0, #f0dcc2 55%, #b8e1d4);
-  opacity: 0.6;
-  filter: blur(6px);
-  transform: rotate(-2deg);
+  display: none;
 }
 
 .hero__content {
@@ -62,8 +54,8 @@ body {
   border: 1px solid var(--border);
   border-radius: 999px;
   font-weight: 600;
-  background: var(--card);
-  box-shadow: 0 10px 30px var(--shadow);
+  background: #fff;
+  box-shadow: none;
 }
 
 h1 {
@@ -77,6 +69,7 @@ p {
   max-width: 720px;
   font-family: "IBM Plex Serif", serif;
   font-size: 1.05rem;
+  color: rgba(18, 18, 18, 0.8);
 }
 
 .controls {
@@ -90,10 +83,10 @@ input,
 select,
 button {
   padding: 12px 14px;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid var(--border);
   font-size: 1rem;
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
   background: #fff;
 }
 
@@ -102,12 +95,12 @@ button {
   color: #fff;
   border: none;
   cursor: pointer;
-  transition: transform 160ms ease, box-shadow 160ms ease;
+  transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
 button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 18px rgba(217, 78, 43, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(18, 18, 18, 0.16);
 }
 
 .ghost {
@@ -124,13 +117,13 @@ button:hover {
 .meta {
   margin-top: 16px;
   font-size: 0.95rem;
-  color: rgba(31, 26, 18, 0.75);
+  color: rgba(18, 18, 18, 0.7);
 }
 
 .meta--subtle {
   margin-top: 6px;
   font-size: 0.85rem;
-  color: rgba(31, 26, 18, 0.55);
+  color: rgba(18, 18, 18, 0.5);
 }
 
 .link-button {
@@ -138,20 +131,20 @@ button:hover {
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  border-radius: 999px;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background: #fff;
   color: var(--ink);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.95rem;
-  box-shadow: 0 8px 20px var(--shadow);
-  transition: transform 160ms ease, box-shadow 160ms ease;
+  box-shadow: none;
+  transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
 .link-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px var(--shadow);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px var(--shadow);
 }
 
 .hero__actions {
@@ -167,10 +160,10 @@ main {
 }
 
 .panel {
-  background: rgba(255, 249, 241, 0.7);
-  border-radius: 24px;
+  background: #fff;
+  border-radius: 16px;
   border: 1px solid var(--border);
-  box-shadow: 0 20px 60px var(--shadow);
+  box-shadow: 0 18px 40px var(--shadow);
   padding: 28px;
 }
 
