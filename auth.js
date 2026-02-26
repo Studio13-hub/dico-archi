@@ -21,6 +21,10 @@ const supabaseClient = hasSupabaseConfig()
   ? window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY)
   : null;
 
+function redirectAfterLogin() {
+  window.location.href = "index.html";
+}
+
 async function signIn() {
   if (!supabaseClient) return;
   const email = emailInput.value.trim();
@@ -41,7 +45,8 @@ async function signIn() {
     return;
   }
 
-  setMessage("Connecte avec succes. Tu peux retourner au dictionnaire.");
+  setMessage("Connecte avec succes. Redirection...");
+  setTimeout(redirectAfterLogin, 800);
 }
 
 async function signUp() {
