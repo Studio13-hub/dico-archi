@@ -18,7 +18,14 @@ if (!hasSupabaseConfig()) {
 }
 
 const supabaseClient = hasSupabaseConfig()
-  ? window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY)
+  ? window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storage: window.localStorage
+      }
+    })
   : null;
 
 function redirectAfterLogin() {
