@@ -486,21 +486,42 @@ def draw_debug(screen, run_data, best_score, small_font):
         y += 22
 
 
+def draw_key_hint(screen, x, y, key_label, action_label, font):
+    key_surf = font.render(key_label, True, (250, 250, 255))
+    action_surf = font.render(action_label, True, (214, 220, 238))
+    key_rect = pygame.Rect(x, y, key_surf.get_width() + 18, key_surf.get_height() + 10)
+    pygame.draw.rect(screen, (56, 66, 92), key_rect, border_radius=8)
+    pygame.draw.rect(screen, (120, 136, 180), key_rect, 1, border_radius=8)
+    screen.blit(key_surf, (key_rect.x + 9, key_rect.y + 5))
+    screen.blit(action_surf, (key_rect.right + 10, key_rect.y + 6))
+
+
 def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer, sfx_enabled, debug_visible, assets):
     t = pygame.time.get_ticks() / 1000.0
     if state == STATE_MENU:
-        screen.fill((22, 24, 34))
-        panel = pygame.Rect(WIDTH // 2 - 250, 180, 500, 250)
+        screen.fill((18, 22, 34))
+        for i in range(6):
+            pygame.draw.circle(
+                screen,
+                (26 + i * 4, 32 + i * 4, 48 + i * 6),
+                (120 + i * 26, 96 + i * 18),
+                90 + i * 20,
+                2,
+            )
+        panel = pygame.Rect(WIDTH // 2 - 280, 150, 560, 320)
         pygame.draw.rect(screen, (36, 40, 54), panel, border_radius=16)
         pygame.draw.rect(screen, (82, 90, 116), panel, 2, border_radius=16)
         title = font.render("RunShadowRun", True, (236, 238, 244))
-        subtitle = small_font.render("Studio13 Build", True, (180, 188, 210))
-        tip = small_font.render("ENTER/SPACE: Start | ESC: Quit", True, (200, 206, 224))
+        subtitle = small_font.render("Studio13 // Endless Runner Prototype", True, (180, 188, 210))
+        label = small_font.render("Controls", True, (208, 214, 230))
         best = small_font.render(f"Best score: {best_score}", True, (224, 230, 246))
-        screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 230))
-        screen.blit(subtitle, (WIDTH // 2 - subtitle.get_width() // 2, 265))
-        screen.blit(tip, (WIDTH // 2 - tip.get_width() // 2, 325))
-        screen.blit(best, (WIDTH // 2 - best.get_width() // 2, 360))
+        screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 190))
+        screen.blit(subtitle, (WIDTH // 2 - subtitle.get_width() // 2, 226))
+        screen.blit(label, (WIDTH // 2 - label.get_width() // 2, 272))
+        draw_key_hint(screen, WIDTH // 2 - 182, 305, "ENTER", "Start run", small_font)
+        draw_key_hint(screen, WIDTH // 2 - 182, 344, "SPACE", "Start run", small_font)
+        draw_key_hint(screen, WIDTH // 2 - 182, 383, "ESC", "Quit", small_font)
+        screen.blit(best, (WIDTH // 2 - best.get_width() // 2, 430))
 
     elif state == STATE_RUN:
         screen.fill((50, 100, 200))
@@ -545,7 +566,7 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
 
     elif state == STATE_GAMEOVER:
         screen.fill((120, 26, 30))
-        panel = pygame.Rect(WIDTH // 2 - 260, 190, 520, 250)
+        panel = pygame.Rect(WIDTH // 2 - 280, 170, 560, 290)
         pygame.draw.rect(screen, (148, 34, 40), panel, border_radius=16)
         pygame.draw.rect(screen, (225, 110, 110), panel, 2, border_radius=16)
         over = font.render("GAME OVER", True, (255, 240, 240))
@@ -554,12 +575,14 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
             True,
             (255, 230, 230),
         )
-        tip = small_font.render("R: Restart direct | ESC: Quit", True, (255, 220, 220))
+        tip = small_font.render("Next action", True, (255, 220, 220))
         sfx = small_font.render(f"SFX: {'ON' if sfx_enabled else 'OFF'} (M)", True, (255, 220, 220))
-        screen.blit(over, (WIDTH // 2 - over.get_width() // 2, 230))
-        screen.blit(score_line, (WIDTH // 2 - score_line.get_width() // 2, 282))
-        screen.blit(tip, (WIDTH // 2 - tip.get_width() // 2, 320))
-        screen.blit(sfx, (WIDTH // 2 - sfx.get_width() // 2, 350))
+        screen.blit(over, (WIDTH // 2 - over.get_width() // 2, 212))
+        screen.blit(score_line, (WIDTH // 2 - score_line.get_width() // 2, 260))
+        screen.blit(tip, (WIDTH // 2 - tip.get_width() // 2, 304))
+        draw_key_hint(screen, WIDTH // 2 - 150, 336, "R", "Restart", small_font)
+        draw_key_hint(screen, WIDTH // 2 - 150, 374, "ESC", "Quit", small_font)
+        screen.blit(sfx, (WIDTH // 2 - sfx.get_width() // 2, 425))
         if hit_flash_timer > 0.0:
             alpha = int(190 * (hit_flash_timer / 0.22))
             flash = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)

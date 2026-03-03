@@ -219,3 +219,17 @@
 
 ### Risques / blocages
 - Balancing à confirmer après 3-5 runs réels
+
+## 2026-03-03 (UI finale menu/gameover)
+### Fait
+- Refonte visuelle du menu (panel, hints clavier, hiérarchie claire)
+- Refonte visuelle du gameover (actions lisibles restart/quit)
+
+### Décisions
+- Garder une UI stylisée sans dépendre d’assets externes
+
+### Prochaine étape
+- Passer sur sprites/anim finals et polish audio
+
+### Risques / blocages
+- Ajustements mineurs possibles sur la lisibilité selon écran

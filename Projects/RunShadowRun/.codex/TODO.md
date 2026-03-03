@@ -23,7 +23,7 @@
 - [x] Feedback visuel/sonore prototype (flash, popup, beep)
 - [x] Sprites/anim placeholder procéduraux (sans assets externes)
 - [ ] Sprites/anim finals + SFX polish
-- [ ] UI finalisée (menu/gameover version art)
+- [x] UI finalisée (menu/gameover version art)
 
 ## 4) Quality
 - [x] Persister le best score en local (fichier save)
