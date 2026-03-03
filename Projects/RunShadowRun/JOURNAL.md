@@ -263,3 +263,33 @@
 
 ### Risques / blocages
 - Rendu encore stylisé (pas photo-réaliste) tant qu'on reste 100% procédural
+
+## 2026-03-03 (pass visuel 2)
+### Fait
+- Affinage supplémentaire du visage/proportions de Shadow13
+- Gameover enrichi avec détails de statut (shield/dash)
+- Texte menu plus immersif sur l'univers
+
+### Décisions
+- Prioriser la lisibilité in-game avant le réalisme complet
+
+### Prochaine étape
+- Basculer sur de vrais sprites PNG (chat + obstacles) pour un rendu vraiment réaliste
+
+### Risques / blocages
+- Le procédural restera “stylisé” même après polish
+
+## 2026-03-03 (monde vivant + menus noir logo chat)
+### Fait
+- Ajout d'un décor vivant en run (ciel nuit, lune, étoiles, skyline parallax)
+- Passage menu d'ouverture et gameover sur fond noir
+- Ajout d'un logo tête de chat procédural sur les écrans menu
+
+### Décisions
+- Prioriser une ambiance forte avec formes générées en code (sans assets externes)
+
+### Prochaine étape
+- Ajuster la densité/contraste du décor pour ne pas gêner la lisibilité gameplay
+
+### Risques / blocages
+- Décor potentiellement trop chargé selon luminosité écran

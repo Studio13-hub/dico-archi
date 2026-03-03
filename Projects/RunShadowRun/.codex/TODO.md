@@ -24,6 +24,9 @@
 - [x] Sprites/anim placeholder procéduraux (sans assets externes)
 - [x] Direction artistique chat noir + obstacles du quotidien
 - [x] Upgrade rendu procédural (chat/objets plus détaillés)
+- [x] Menu/gameover enrichis (narratif + détails de run)
+- [x] Monde vivant (ciel nuit + skyline parallax + lune/étoiles)
+- [x] Menus noir + logo tête de chat procédural
 - [ ] Sprites/anim finals + SFX polish
 - [x] UI finalisée (menu/gameover version art)
 

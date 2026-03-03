@@ -22,44 +22,55 @@ def _shade(c, k):
 
 def _cat_frame(w, h, body, eye=(240, 230, 110), crouch=False, shield=False):
     surf = _make_surface(w, h)
-    dark = _shade(body, 0.7)
-    light = _shade(body, 1.35)
-    chest = (80, 80, 88)
+    outline = _shade(body, 0.55)
+    dark = _shade(body, 0.78)
+    light = _shade(body, 1.18)
+    chest = (70, 72, 80)
 
-    body_y = h // 3 if not crouch else h // 2 - 6
-    body_h = h - body_y - 4
-    pygame.draw.ellipse(surf, dark, (6, body_y + 2, w - 12, body_h))
-    pygame.draw.ellipse(surf, body, (6, body_y, w - 12, body_h - 2))
-    pygame.draw.ellipse(surf, chest, (w // 2 - 7, body_y + 8, 14, body_h - 10))
+    # proportions
+    body_top = h // 3 if not crouch else h // 2 - 5
+    body_h = h - body_top - 4
+    head_cx = w // 2
+    head_cy = body_top - 2
+    head_r = max(8, h // 6)
 
-    head_y = h // 3 if not crouch else h // 2 - 10
-    pygame.draw.circle(surf, dark, (w // 2, head_y + 1), h // 5 + 3)
-    pygame.draw.circle(surf, body, (w // 2, head_y), h // 5 + 2)
+    # body + chest
+    pygame.draw.ellipse(surf, outline, (5, body_top + 1, w - 10, body_h))
+    pygame.draw.ellipse(surf, dark, (6, body_top, w - 12, body_h - 1))
+    pygame.draw.ellipse(surf, chest, (w // 2 - 6, body_top + 10, 12, body_h - 12))
+    pygame.draw.ellipse(surf, light, (w // 2 - 5, body_top + 12, 10, body_h - 16))
 
-    ear_l = [(w // 2 - 14, head_y - 7), (w // 2 - 4, head_y - 24), (w // 2 + 1, head_y - 5)]
-    ear_r = [(w // 2 + 14, head_y - 7), (w // 2 + 4, head_y - 24), (w // 2 - 1, head_y - 5)]
-    pygame.draw.polygon(surf, dark, ear_l)
-    pygame.draw.polygon(surf, dark, ear_r)
-    pygame.draw.polygon(surf, body, [(p[0], p[1] + 2) for p in ear_l])
-    pygame.draw.polygon(surf, body, [(p[0], p[1] + 2) for p in ear_r])
-    pygame.draw.polygon(surf, (160, 110, 135), [(w // 2 - 10, head_y - 8), (w // 2 - 4, head_y - 20), (w // 2 - 1, head_y - 7)])
-    pygame.draw.polygon(surf, (160, 110, 135), [(w // 2 + 10, head_y - 8), (w // 2 + 4, head_y - 20), (w // 2 + 1, head_y - 7)])
+    # head
+    pygame.draw.circle(surf, outline, (head_cx, head_cy + 1), head_r + 1)
+    pygame.draw.circle(surf, dark, (head_cx, head_cy), head_r)
 
-    pygame.draw.arc(surf, dark, (w - 8, body_y + 2, 24, body_h + 6), 0.55, 2.7, 5)
-    pygame.draw.arc(surf, body, (w - 8, body_y + 2, 24, body_h + 6), 0.55, 2.7, 3)
+    # ears
+    ear_l = [(head_cx - 11, head_cy - 4), (head_cx - 4, head_cy - 18), (head_cx + 0, head_cy - 4)]
+    ear_r = [(head_cx + 11, head_cy - 4), (head_cx + 4, head_cy - 18), (head_cx - 0, head_cy - 4)]
+    pygame.draw.polygon(surf, outline, ear_l)
+    pygame.draw.polygon(surf, outline, ear_r)
+    pygame.draw.polygon(surf, dark, [(x, y + 1) for x, y in ear_l])
+    pygame.draw.polygon(surf, dark, [(x, y + 1) for x, y in ear_r])
+    pygame.draw.polygon(surf, (150, 98, 124), [(head_cx - 8, head_cy - 5), (head_cx - 4, head_cy - 13), (head_cx - 1, head_cy - 5)])
+    pygame.draw.polygon(surf, (150, 98, 124), [(head_cx + 8, head_cy - 5), (head_cx + 4, head_cy - 13), (head_cx + 1, head_cy - 5)])
 
+    # tail
+    pygame.draw.arc(surf, outline, (w - 10, body_top + 1, 22, body_h + 6), 0.55, 2.75, 5)
+    pygame.draw.arc(surf, dark, (w - 10, body_top + 1, 22, body_h + 6), 0.55, 2.75, 3)
+
+    # face
     if not crouch:
-        pygame.draw.ellipse(surf, eye, (w // 2 - 10, head_y - 2, 5, 7))
-        pygame.draw.ellipse(surf, eye, (w // 2 + 5, head_y - 2, 5, 7))
-        pygame.draw.polygon(surf, (220, 150, 160), [(w // 2, head_y + 4), (w // 2 - 3, head_y + 8), (w // 2 + 3, head_y + 8)])
+        pygame.draw.ellipse(surf, eye, (head_cx - 9, head_cy - 1, 4, 7))
+        pygame.draw.ellipse(surf, eye, (head_cx + 5, head_cy - 1, 4, 7))
+        pygame.draw.polygon(surf, (214, 148, 158), [(head_cx, head_cy + 5), (head_cx - 2, head_cy + 8), (head_cx + 2, head_cy + 8)])
         for dx in (-1, 1):
-            pygame.draw.line(surf, (220, 220, 220), (w // 2 + 3 * dx, head_y + 7), (w // 2 + 11 * dx, head_y + 5), 1)
-            pygame.draw.line(surf, (220, 220, 220), (w // 2 + 3 * dx, head_y + 8), (w // 2 + 12 * dx, head_y + 9), 1)
-            pygame.draw.line(surf, (220, 220, 220), (w // 2 + 3 * dx, head_y + 9), (w // 2 + 11 * dx, head_y + 12), 1)
+            pygame.draw.line(surf, (220, 220, 220), (head_cx + 3 * dx, head_cy + 8), (head_cx + 10 * dx, head_cy + 6), 1)
+            pygame.draw.line(surf, (220, 220, 220), (head_cx + 3 * dx, head_cy + 9), (head_cx + 11 * dx, head_cy + 10), 1)
 
+    # paws
     paw_y = h - 7
-    pygame.draw.ellipse(surf, light, (w // 2 - 16, paw_y - 3, 10, 6))
-    pygame.draw.ellipse(surf, light, (w // 2 + 6, paw_y - 3, 10, 6))
+    pygame.draw.ellipse(surf, light, (w // 2 - 15, paw_y - 3, 9, 6))
+    pygame.draw.ellipse(surf, light, (w // 2 + 6, paw_y - 3, 9, 6))
 
     if shield:
         pygame.draw.circle(surf, (150, 240, 255), (w // 2, h // 2), min(w, h) // 2, 2)

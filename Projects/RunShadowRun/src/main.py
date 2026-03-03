@@ -492,6 +492,75 @@ def draw_debug(screen, run_data, best_score, small_font):
         y += 22
 
 
+def draw_cat_logo(screen, cx, cy, scale=1.0, glow=(90, 180, 255)):
+    r = int(30 * scale)
+    glow_surf = pygame.Surface((r * 6, r * 6), pygame.SRCALPHA)
+    pygame.draw.circle(glow_surf, (*glow, 45), (r * 3, r * 3), int(r * 2.3))
+    screen.blit(glow_surf, (cx - r * 3, cy - r * 3))
+
+    face = pygame.Color(28, 30, 36)
+    edge = pygame.Color(80, 86, 102)
+    eye = pygame.Color(180, 230, 140)
+
+    pygame.draw.circle(screen, edge, (cx, cy), r + 2)
+    pygame.draw.circle(screen, face, (cx, cy), r)
+    ear_l = [(cx - r + 4, cy - r + 6), (cx - int(r * 0.55), cy - int(r * 1.75)), (cx - int(r * 0.1), cy - r + 8)]
+    ear_r = [(cx + r - 4, cy - r + 6), (cx + int(r * 0.55), cy - int(r * 1.75)), (cx + int(r * 0.1), cy - r + 8)]
+    pygame.draw.polygon(screen, edge, ear_l)
+    pygame.draw.polygon(screen, edge, ear_r)
+    pygame.draw.polygon(screen, face, [(x, y + 2) for x, y in ear_l])
+    pygame.draw.polygon(screen, face, [(x, y + 2) for x, y in ear_r])
+
+    pygame.draw.ellipse(screen, eye, (cx - int(r * 0.42), cy - int(r * 0.15), int(r * 0.22), int(r * 0.36)))
+    pygame.draw.ellipse(screen, eye, (cx + int(r * 0.20), cy - int(r * 0.15), int(r * 0.22), int(r * 0.36)))
+    pygame.draw.polygon(screen, (220, 150, 165), [(cx, cy + int(r * 0.12)), (cx - 3, cy + int(r * 0.25)), (cx + 3, cy + int(r * 0.25))])
+    for dx in (-1, 1):
+        pygame.draw.line(screen, (210, 210, 220), (cx + 4 * dx, cy + int(r * 0.22)), (cx + int(r * 0.55) * dx, cy + int(r * 0.16)), 1)
+        pygame.draw.line(screen, (210, 210, 220), (cx + 4 * dx, cy + int(r * 0.28)), (cx + int(r * 0.60) * dx, cy + int(r * 0.31)), 1)
+
+
+def draw_living_world(screen, run_data):
+    t = pygame.time.get_ticks() / 1000.0
+
+    # sky gradient (top->bottom)
+    for i in range(12):
+        c = 20 + i * 6
+        pygame.draw.rect(screen, (14, 18 + i * 3, c), (0, i * (GROUND_Y // 12), WIDTH, GROUND_Y // 12 + 1))
+
+    # moon
+    moon_x = int(WIDTH * 0.82)
+    moon_y = int(78 + 6 * math.sin(t * 0.35))
+    pygame.draw.circle(screen, (246, 246, 230), (moon_x, moon_y), 24)
+    pygame.draw.circle(screen, (20, 26, 42), (moon_x + 8, moon_y - 4), 22)
+
+    # stars (twinkle)
+    for i in range(30):
+        sx = (i * 89) % WIDTH
+        sy = 26 + ((i * 41) % 180)
+        tw = 140 + int(90 * (0.5 + 0.5 * math.sin(t * 2.0 + i)))
+        pygame.draw.circle(screen, (tw, tw, tw), (sx, sy), 1)
+
+    # skyline parallax
+    near_offset = int((run_data["road_offset"] * 1.5) % 120)
+    far_offset = int((run_data["road_offset"] * 0.6) % 160)
+    base_y_far = GROUND_Y - 170
+    base_y_near = GROUND_Y - 120
+
+    for x in range(-160, WIDTH + 180, 80):
+        h = 60 + ((x // 80) % 4) * 20
+        rx = x - far_offset
+        pygame.draw.rect(screen, (26, 34, 52), (rx, base_y_far - h, 56, h))
+
+    for x in range(-120, WIDTH + 140, 70):
+        h = 70 + ((x // 70) % 5) * 18
+        rx = x - near_offset
+        pygame.draw.rect(screen, (34, 44, 64), (rx, base_y_near - h, 52, h))
+        for wy in range(base_y_near - h + 8, base_y_near - 8, 14):
+            if (wy + x) % 3 == 0:
+                pygame.draw.rect(screen, (222, 196, 122), (rx + 8, wy, 8, 6))
+                pygame.draw.rect(screen, (222, 196, 122), (rx + 24, wy, 8, 6))
+
+
 def draw_key_hint(screen, x, y, key_label, action_label, font):
     key_surf = font.render(key_label, True, (250, 250, 255))
     action_surf = font.render(action_label, True, (214, 220, 238))
@@ -505,15 +574,16 @@ def draw_key_hint(screen, x, y, key_label, action_label, font):
 def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer, sfx_enabled, debug_visible, assets):
     t = pygame.time.get_ticks() / 1000.0
     if state == STATE_MENU:
-        screen.fill((18, 22, 34))
-        for i in range(6):
+        screen.fill((8, 8, 10))
+        for i in range(10):
             pygame.draw.circle(
                 screen,
-                (26 + i * 4, 32 + i * 4, 48 + i * 6),
-                (120 + i * 26, 96 + i * 18),
-                90 + i * 20,
+                (18 + i * 4, 18 + i * 4, 24 + i * 5),
+                (90 + i * 28, 80 + i * 14),
+                70 + i * 22,
                 2,
             )
+        draw_cat_logo(screen, WIDTH // 2, 92, 1.0, glow=(120, 200, 255))
         panel = pygame.Rect(WIDTH // 2 - 280, 150, 560, 320)
         pygame.draw.rect(screen, (36, 40, 54), panel, border_radius=16)
         pygame.draw.rect(screen, (82, 90, 116), panel, 2, border_radius=16)
@@ -534,7 +604,7 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
         screen.blit(lore2, (WIDTH // 2 - lore2.get_width() // 2, 484))
 
     elif state == STATE_RUN:
-        screen.fill((50, 100, 200))
+        draw_living_world(screen, run_data)
         pygame.draw.rect(screen, (40, 40, 40), (0, GROUND_Y, WIDTH, HEIGHT - GROUND_Y))
         for lane in LANES:
             x = LANE_X[lane]
@@ -575,7 +645,8 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
         screen.blit(tip, (WIDTH // 2 - tip.get_width() // 2, 290))
 
     elif state == STATE_GAMEOVER:
-        screen.fill((120, 26, 30))
+        screen.fill((8, 8, 10))
+        draw_cat_logo(screen, WIDTH // 2, 110, 0.9, glow=(255, 120, 120))
         panel = pygame.Rect(WIDTH // 2 - 280, 170, 560, 290)
         pygame.draw.rect(screen, (148, 34, 40), panel, border_radius=16)
         pygame.draw.rect(screen, (225, 110, 110), panel, 2, border_radius=16)
