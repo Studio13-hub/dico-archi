@@ -22,6 +22,8 @@
 ## 3) Habillage
 - [x] Feedback visuel/sonore prototype (flash, popup, beep)
 - [x] Sprites/anim placeholder procéduraux (sans assets externes)
+- [x] Direction artistique chat noir + obstacles du quotidien
+- [x] Upgrade rendu procédural (chat/objets plus détaillés)
 - [ ] Sprites/anim finals + SFX polish
 - [x] UI finalisée (menu/gameover version art)
 

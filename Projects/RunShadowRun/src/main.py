@@ -86,6 +86,12 @@ def choose_obstacle_type():
     return "high" if random.random() < HIGH_OBSTACLE_CHANCE else "low"
 
 
+def choose_obstacle_kind(obstacle_type):
+    if obstacle_type == "high":
+        return "chair"
+    return random.choice(["box", "binbag", "plant"])
+
+
 def init_audio():
     sounds = {"coin": None, "hit": None, "shield": None}
     try:
@@ -309,11 +315,13 @@ def update_game(run_data, dt, sounds):
     if run_data["spawn_timer"] >= obstacle_interval:
         run_data["spawn_timer"] = 0.0
         for lane in choose_obstacle_lanes():
-            obs_h = HIGH_OBSTACLE_H if choose_obstacle_type() == "high" else OBSTACLE_H
+            obs_type = choose_obstacle_type()
+            obs_h = HIGH_OBSTACLE_H if obs_type == "high" else OBSTACLE_H
             run_data["obstacles"].append(
                 {
                     "lane": lane,
-                    "type": "high" if obs_h == HIGH_OBSTACLE_H else "low",
+                    "type": obs_type,
+                    "kind": choose_obstacle_kind(obs_type),
                     "y": -obs_h,
                 }
             )
@@ -434,10 +442,8 @@ def draw_obstacles(screen, run_data, assets):
     for obs in run_data["obstacles"]:
         x = LANE_X[obs["lane"]] - OBSTACLE_W // 2
         y = int(obs["y"])
-        if obs["type"] == "high":
-            screen.blit(assets["obstacle_high"], (x, y))
-        else:
-            screen.blit(assets["obstacle_low"], (x, y))
+        sprite = assets["obstacles"][obs["kind"]]
+        screen.blit(sprite, (x, y))
 
 
 def draw_coins(screen, run_data, assets, t):
@@ -512,9 +518,11 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
         pygame.draw.rect(screen, (36, 40, 54), panel, border_radius=16)
         pygame.draw.rect(screen, (82, 90, 116), panel, 2, border_radius=16)
         title = font.render("RunShadowRun", True, (236, 238, 244))
-        subtitle = small_font.render("Studio13 // Endless Runner Prototype", True, (180, 188, 210))
+        subtitle = small_font.render("Shadow13 - black cat runner", True, (180, 188, 210))
         label = small_font.render("Controls", True, (208, 214, 230))
         best = small_font.render(f"Best score: {best_score}", True, (224, 230, 246))
+        lore = small_font.render("Evite cartons, sacs poubelle, plantes et chaises.", True, (206, 214, 236))
+        lore2 = small_font.render("Aide Shadow13 a traverser la ville sans se faire attraper.", True, (200, 210, 232))
         screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 190))
         screen.blit(subtitle, (WIDTH // 2 - subtitle.get_width() // 2, 226))
         screen.blit(label, (WIDTH // 2 - label.get_width() // 2, 272))
@@ -522,6 +530,8 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
         draw_key_hint(screen, WIDTH // 2 - 182, 344, "SPACE", "Start run", small_font)
         draw_key_hint(screen, WIDTH // 2 - 182, 383, "ESC", "Quit", small_font)
         screen.blit(best, (WIDTH // 2 - best.get_width() // 2, 430))
+        screen.blit(lore, (WIDTH // 2 - lore.get_width() // 2, 458))
+        screen.blit(lore2, (WIDTH // 2 - lore2.get_width() // 2, 484))
 
     elif state == STATE_RUN:
         screen.fill((50, 100, 200))
@@ -575,14 +585,26 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
             True,
             (255, 230, 230),
         )
-        tip = small_font.render("Next action", True, (255, 220, 220))
+        tip = small_font.render("Rapport de la course", True, (255, 220, 220))
+        details = small_font.render(
+            f"Objets evites: {len(run_data['obstacles'])} | Pieces a l'ecran: {len(run_data['coins'])}",
+            True,
+            (255, 220, 220),
+        )
+        detail2 = small_font.render(
+            f"Etat chat: {'PROTEGE' if run_data['shield_timer'] > 0 else 'VULNERABLE'} | Dash CD: {run_data['dash_cooldown']:.1f}s",
+            True,
+            (255, 220, 220),
+        )
         sfx = small_font.render(f"SFX: {'ON' if sfx_enabled else 'OFF'} (M)", True, (255, 220, 220))
         screen.blit(over, (WIDTH // 2 - over.get_width() // 2, 212))
         screen.blit(score_line, (WIDTH // 2 - score_line.get_width() // 2, 260))
         screen.blit(tip, (WIDTH // 2 - tip.get_width() // 2, 304))
-        draw_key_hint(screen, WIDTH // 2 - 150, 336, "R", "Restart", small_font)
-        draw_key_hint(screen, WIDTH // 2 - 150, 374, "ESC", "Quit", small_font)
-        screen.blit(sfx, (WIDTH // 2 - sfx.get_width() // 2, 425))
+        screen.blit(details, (WIDTH // 2 - details.get_width() // 2, 332))
+        screen.blit(detail2, (WIDTH // 2 - detail2.get_width() // 2, 356))
+        draw_key_hint(screen, WIDTH // 2 - 150, 382, "R", "Restart", small_font)
+        draw_key_hint(screen, WIDTH // 2 - 150, 420, "ESC", "Quit", small_font)
+        screen.blit(sfx, (WIDTH // 2 - sfx.get_width() // 2, 452))
         if hit_flash_timer > 0.0:
             alpha = int(190 * (hit_flash_timer / 0.22))
             flash = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)

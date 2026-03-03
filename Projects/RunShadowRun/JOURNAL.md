@@ -233,3 +233,33 @@
 
 ### Risques / blocages
 - Ajustements mineurs possibles sur la lisibilité selon écran
+
+## 2026-03-03 (theme chat noir + objets quotidiens)
+### Fait
+- Joueur visuel remplacé par un chat noir (Shadow13)
+- Obstacles remplacés par objets du quotidien (carton, sac poubelle, plante, chaise)
+- Menu et gameover enrichis avec détails thématiques
+
+### Décisions
+- Garder les assets procéduraux pour itérer rapidement sans pipeline externe
+
+### Prochaine étape
+- Ajuster tailles/hitboxes des nouveaux obstacles selon playtest
+
+### Risques / blocages
+- Certaines silhouettes d'obstacles peuvent nécessiter plus de contraste
+
+## 2026-03-03 (upgrade visuel realiste)
+### Fait
+- Chat noir rendu plus détaillé (silhouette, oreilles, queue, yeux, moustaches)
+- Obstacles quotidiens enrichis (textures/ombres/formes)
+- Menus ouverture/gameover rendus plus riches et lisibles
+
+### Décisions
+- Rester en procédural pour garder un workflow rapide sans assets externes
+
+### Prochaine étape
+- Remplacer progressivement par assets artistiques finaux (sprites/sons)
+
+### Risques / blocages
+- Rendu encore stylisé (pas photo-réaliste) tant qu'on reste 100% procédural
