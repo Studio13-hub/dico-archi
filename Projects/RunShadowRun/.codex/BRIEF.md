@@ -1,15 +1,18 @@
-# BRIEF — RunShadowRun
+# BRIEF — RunShadowRun (V1)
 
 ## Pitch
-Runner 3D très proche de Subway Surfers (mêmes sensations), mais univers/monde/personnages Studio13.
+Runner inspiré Subway Surfers (mêmes sensations), univers/monde/personnages Studio13.
 
 ## Personnage principal
 Nom officiel: Shadow13
 
+## Stack V1 (MVP)
+Python 3 + Pygame
+
 ## Objectif (MVP)
-Obtenir un runner jouable:
-- 3 voies + déplacement avant
-- contrôles: gauche/droite + saut + action (glissade ou dash)
+Un runner jouable (placeholders OK):
+- 3 voies + déplacement avant (simulation 2D top/3-voies)
+- contrôles: gauche/droite + saut (option dash/glissade plus tard)
 - obstacles (collision = échec) + collectibles (pièces)
 - score + meilleur score + restart
 - UI minimal (menu/run/gameover)
