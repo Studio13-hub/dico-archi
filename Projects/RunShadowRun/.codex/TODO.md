@@ -1,21 +1,33 @@
 # TODO — RunShadowRun (Python/Pygame)
 
 ## 0) Setup
-- [ ] Créer venv + installer pygame
-- [ ] Lancer une fenêtre pygame (60 FPS) + fermer proprement
-- [ ] Boucle de jeu + états: Menu / Run / GameOver
+- [x] Créer venv + installer pygame
+- [x] Implémenter bootstrap pygame (fenêtre 60 FPS + fermeture propre)
+- [x] Boucle de jeu + états: Menu / Run / GameOver
 
 ## 1) MVP Runner
-- [ ] Monde 3 voies (lane = -1,0,1) + déplacement avant simulé
-- [ ] Player (Shadow13 placeholder) + changement de voie
-- [ ] Saut (physique simple) + gravité
-- [ ] Obstacles spawn + défilement + collision -> GameOver
-- [ ] Pièces spawn + collecte -> score
-- [ ] UI score + best score + restart
+- [x] Monde 3 voies (lane = -1,0,1) + déplacement avant simulé
+- [x] Player (Shadow13 placeholder) + changement de voie
+- [x] Saut (physique simple) + gravité
+- [x] Obstacles spawn + défilement + collision -> GameOver
+- [x] Pièces spawn + collecte -> score
+- [x] UI score + best score + restart
+- [x] Action dash/glissade (touche DOWN/SHIFT) + hitbox adaptée
 
 ## 2) Progression
-- [ ] Vitesse augmente avec le temps
-- [ ] Patterns d'obstacles variés
+- [x] Vitesse augmente avec le temps
+- [x] Patterns d'obstacles variés
+- [x] Power-up invincibilité (shield)
 
 ## 3) Habillage
-- [ ] Sprites/anim simples + sons + feedback
+- [x] Feedback visuel/sonore prototype (flash, popup, beep)
+- [x] Sprites/anim placeholder procéduraux (sans assets externes)
+- [ ] Sprites/anim finals + SFX polish
+- [ ] UI finalisée (menu/gameover version art)
+
+## 4) Quality
+- [x] Persister le best score en local (fichier save)
+- [x] Pause runtime + mute/unmute SFX
+- [x] Centraliser les paramètres de tuning dans `src/settings.py`
+- [x] Overlay debug runtime (F1)
+- [x] Préparer plan de commit (fichiers + message)

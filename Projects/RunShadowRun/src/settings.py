@@ -1,0 +1,44 @@
+from pathlib import Path
+
+# --- App ---
+WIDTH = 900
+HEIGHT = 600
+FPS = 60
+TITLE = "RunShadowRun - Studio13"
+SAVE_PATH = Path("data/save.json")
+
+# --- World / Player ---
+GROUND_Y = 500
+PLAYER_W = 56
+PLAYER_H = 72
+GRAVITY = 1800.0
+JUMP_VELOCITY = -720.0
+LANES = (-1, 0, 1)
+
+# --- Obstacles / Difficulty ---
+OBSTACLE_W = 56
+OBSTACLE_H = 56
+HIGH_OBSTACLE_H = 46
+HIGH_OBSTACLE_GAP = 34
+HIGH_OBSTACLE_CHANCE = 0.28
+WORLD_SPEED = 420.0
+SPAWN_INTERVAL = 0.9
+MIN_SPAWN_INTERVAL = 0.55
+SPEED_ACCEL = 14.0
+MAX_SPEED = 680.0
+
+# --- Coins / Score ---
+COIN_RADIUS = 14
+COIN_SPAWN_INTERVAL = 0.62
+COIN_SCORE = 25
+
+# --- Action / Dash ---
+DASH_DURATION = 0.22
+DASH_COOLDOWN = 0.9
+DASH_PLAYER_H = 40
+DASH_SPEED_BOOST = 180.0
+
+# --- Power-up ---
+POWERUP_RADIUS = 16
+POWERUP_SPAWN_INTERVAL = 9.0
+SHIELD_DURATION = 2.6
