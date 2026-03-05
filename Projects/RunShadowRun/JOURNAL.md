@@ -310,3 +310,10 @@
 
 ### Risques / blocages
 - Le cache d'outline est basé sur l'identité des surfaces; à surveiller si génération dynamique de sprites plus tard
+
+### Checklist playtest (prochaine session)
+- [ ] Lancer 5 runs complets (de menu -> gameover -> restart)
+- [ ] Vérifier la fluidité perçue (pas de micro-freeze visible lors des spawns)
+- [ ] Contrôler la lisibilité des contours du chat, obstacles, pièces et powerups en mouvement
+- [ ] Valider que le parallax skyline reste discret et ne gêne pas la lecture des lanes
+- [ ] Noter 1-2 ajustements max si nécessaire (épaisseur contour, contraste, vitesse parallax)
