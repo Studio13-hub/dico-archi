@@ -293,3 +293,20 @@
 
 ### Risques / blocages
 - Décor potentiellement trop chargé selon luminosité écran
+
+## 2026-03-05 (patch perf outline + retour parallax)
+### Fait
+- Optimisation du rendu des contours: cache des outlines de sprites (`OUTLINE_CACHE`) pour éviter le recalcul `mask.from_surface` à chaque frame
+- Ajustement du tracé contour (`draw.lines`) pour réduire le coût de rendu
+- Réintroduction d'un parallax léger du skyline dans `draw_living_world` (far/near offsets)
+- Vérification syntaxe: `python3 -m py_compile src/main.py` OK
+
+### Décisions
+- Préférer un parallax discret pour conserver l'ambiance vivante sans surcharge visuelle
+- Prioriser les optimisations locales de rendu avant refactor plus large
+
+### Prochaine étape
+- Faire un mini playtest (3-5 runs) pour valider fluidité et lisibilité des contours en mouvement
+
+### Risques / blocages
+- Le cache d'outline est basé sur l'identité des surfaces; à surveiller si génération dynamique de sprites plus tard

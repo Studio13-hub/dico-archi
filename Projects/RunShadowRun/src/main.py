@@ -52,6 +52,10 @@ STATE_PAUSE = "pause"
 STATE_GAMEOVER = "gameover"
 
 
+# Cache d'outline par surface pour eviter un mask.from_surface a chaque frame.
+OUTLINE_CACHE = {}
+
+
 def new_run_data():
     return {
         "lane": 0,
@@ -435,7 +439,14 @@ def draw_player(screen, run_data, assets, t):
     else:
         frames = assets["player"]["normal"]
     frame = frames[int(t * 8) % len(frames)]
-    screen.blit(frame, (x, y + bob))
+    if run_data["shield_timer"] > 0.0:
+        outline_color = (120, 240, 255)
+    elif run_data["dash_timer"] > 0.0:
+        outline_color = (255, 190, 90)
+    else:
+        outline_color = (220, 220, 235)
+    # chat: contour plus fin pour garder le détail du visage
+    blit_with_outline(screen, frame, (x, y + bob), outline_color, width=1)
 
 
 def draw_obstacles(screen, run_data, assets):
@@ -443,7 +454,16 @@ def draw_obstacles(screen, run_data, assets):
         x = LANE_X[obs["lane"]] - OBSTACLE_W // 2
         y = int(obs["y"])
         sprite = assets["obstacles"][obs["kind"]]
-        screen.blit(sprite, (x, y))
+        if obs["kind"] == "box":
+            outline_color = (250, 190, 120)
+        elif obs["kind"] == "binbag":
+            outline_color = (150, 170, 210)
+        elif obs["kind"] == "plant":
+            outline_color = (130, 230, 140)
+        else:  # chair
+            outline_color = (255, 140, 140)
+        # obstacles: contour plus épais pour lisibilité en mouvement
+        blit_with_outline(screen, sprite, (x, y), outline_color, width=3)
 
 
 def draw_coins(screen, run_data, assets, t):
@@ -451,7 +471,8 @@ def draw_coins(screen, run_data, assets, t):
     for coin in run_data["coins"]:
         x = LANE_X[coin["lane"]]
         y = int(coin["y"] + COIN_RADIUS + 3)
-        screen.blit(frame, (x - frame.get_width() // 2, y - frame.get_height() // 2))
+        pos = (x - frame.get_width() // 2, y - frame.get_height() // 2)
+        blit_with_outline(screen, frame, pos, (255, 245, 170), width=1)
 
 
 def draw_powerups(screen, run_data, assets, t):
@@ -459,7 +480,21 @@ def draw_powerups(screen, run_data, assets, t):
     for powerup in run_data["powerups"]:
         x = LANE_X[powerup["lane"]]
         y = int(powerup["y"] + POWERUP_RADIUS + 3)
-        screen.blit(frame, (x - frame.get_width() // 2, y - frame.get_height() // 2))
+        pos = (x - frame.get_width() // 2, y - frame.get_height() // 2)
+        blit_with_outline(screen, frame, pos, (180, 255, 245), width=2)
+
+
+def blit_with_outline(screen, sprite, pos, color, width=2):
+    sprite_id = id(sprite)
+    outline = OUTLINE_CACHE.get(sprite_id)
+    if outline is None:
+        outline = pygame.mask.from_surface(sprite).outline()
+        OUTLINE_CACHE[sprite_id] = outline
+    if outline:
+        ox, oy = pos
+        pts = [(ox + px, oy + py) for px, py in outline]
+        pygame.draw.lines(screen, color, True, pts, width=width)
+    screen.blit(sprite, pos)
 
 
 def draw_popups(screen, run_data, small_font):
@@ -523,42 +558,60 @@ def draw_living_world(screen, run_data):
     t = pygame.time.get_ticks() / 1000.0
 
     # sky gradient (top->bottom)
-    for i in range(12):
-        c = 20 + i * 6
-        pygame.draw.rect(screen, (14, 18 + i * 3, c), (0, i * (GROUND_Y // 12), WIDTH, GROUND_Y // 12 + 1))
+    for i in range(10):
+        c = 16 + i * 4
+        pygame.draw.rect(screen, (12, 14 + i * 2, c), (0, i * (GROUND_Y // 10), WIDTH, GROUND_Y // 10 + 1))
 
-    # moon
+    # fixed half-moon
     moon_x = int(WIDTH * 0.82)
-    moon_y = int(78 + 6 * math.sin(t * 0.35))
+    moon_y = 74
     pygame.draw.circle(screen, (246, 246, 230), (moon_x, moon_y), 24)
-    pygame.draw.circle(screen, (20, 26, 42), (moon_x + 8, moon_y - 4), 22)
+    # cache la moitié droite pour obtenir une demi-lune fixe
+    pygame.draw.circle(screen, (12, 16, 28), (moon_x + 10, moon_y - 1), 23)
+    # halo léger
+    halo = pygame.Surface((120, 120), pygame.SRCALPHA)
+    pygame.draw.circle(halo, (210, 220, 255, 35), (60, 60), 42)
+    screen.blit(halo, (moon_x - 60, moon_y - 60))
 
-    # stars (twinkle)
-    for i in range(30):
-        sx = (i * 89) % WIDTH
-        sy = 26 + ((i * 41) % 180)
-        tw = 140 + int(90 * (0.5 + 0.5 * math.sin(t * 2.0 + i)))
+    # few calm stars (gentle twinkle)
+    stars = [
+        (90, 42), (160, 72), (240, 58), (330, 94), (420, 48),
+        (520, 86), (610, 60), (700, 98), (780, 52), (850, 76),
+    ]
+    for i, (sx, sy) in enumerate(stars):
+        tw = 140 + int(28 * (0.5 + 0.5 * math.sin(t * 0.8 + i * 0.7)))
         pygame.draw.circle(screen, (tw, tw, tw), (sx, sy), 1)
 
-    # skyline parallax
-    near_offset = int((run_data["road_offset"] * 1.5) % 120)
-    far_offset = int((run_data["road_offset"] * 0.6) % 160)
+    # occasional shooting star (short window every ~15s)
+    cycle = t % 15.0
+    if cycle < 0.55:
+        prog = cycle / 0.55
+        sx = int(WIDTH * 0.15 + prog * 260)
+        sy = int(58 + prog * 110)
+        ex = sx - 26
+        ey = sy - 12
+        pygame.draw.line(screen, (235, 235, 255), (sx, sy), (ex, ey), 2)
+        pygame.draw.line(screen, (170, 170, 210), (ex, ey), (ex - 20, ey - 8), 1)
+
+    # skyline avec parallax leger pour garder un monde vivant sans agitation.
+    near_offset = int((run_data["road_offset"] * 0.9) % 120)
+    far_offset = int((run_data["road_offset"] * 0.45) % 160)
+
     base_y_far = GROUND_Y - 170
     base_y_near = GROUND_Y - 120
 
-    for x in range(-160, WIDTH + 180, 80):
+    for x in range(-160, WIDTH + 180, 95):
         h = 60 + ((x // 80) % 4) * 20
         rx = x - far_offset
-        pygame.draw.rect(screen, (26, 34, 52), (rx, base_y_far - h, 56, h))
+        pygame.draw.rect(screen, (22, 28, 42), (rx, base_y_far - h, 56, h))
 
-    for x in range(-120, WIDTH + 140, 70):
+    for x in range(-120, WIDTH + 140, 88):
         h = 70 + ((x // 70) % 5) * 18
         rx = x - near_offset
-        pygame.draw.rect(screen, (34, 44, 64), (rx, base_y_near - h, 52, h))
+        pygame.draw.rect(screen, (28, 36, 52), (rx, base_y_near - h, 52, h))
         for wy in range(base_y_near - h + 8, base_y_near - 8, 14):
-            if (wy + x) % 3 == 0:
-                pygame.draw.rect(screen, (222, 196, 122), (rx + 8, wy, 8, 6))
-                pygame.draw.rect(screen, (222, 196, 122), (rx + 24, wy, 8, 6))
+            if (wy + x) % 5 == 0:
+                pygame.draw.rect(screen, (185, 165, 104), (rx + 8, wy, 8, 6))
 
 
 def draw_key_hint(screen, x, y, key_label, action_label, font):
@@ -575,15 +628,15 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
     t = pygame.time.get_ticks() / 1000.0
     if state == STATE_MENU:
         screen.fill((8, 8, 10))
-        for i in range(10):
+        for i in range(5):
             pygame.draw.circle(
                 screen,
-                (18 + i * 4, 18 + i * 4, 24 + i * 5),
-                (90 + i * 28, 80 + i * 14),
-                70 + i * 22,
-                2,
+                (14 + i * 3, 14 + i * 3, 18 + i * 3),
+                (120 + i * 34, 90 + i * 10),
+                56 + i * 16,
+                1,
             )
-        draw_cat_logo(screen, WIDTH // 2, 92, 1.0, glow=(120, 200, 255))
+        draw_cat_logo(screen, WIDTH // 2, 92, 0.92, glow=(90, 150, 220))
         panel = pygame.Rect(WIDTH // 2 - 280, 150, 560, 320)
         pygame.draw.rect(screen, (36, 40, 54), panel, border_radius=16)
         pygame.draw.rect(screen, (82, 90, 116), panel, 2, border_radius=16)
@@ -646,7 +699,7 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
 
     elif state == STATE_GAMEOVER:
         screen.fill((8, 8, 10))
-        draw_cat_logo(screen, WIDTH // 2, 110, 0.9, glow=(255, 120, 120))
+        draw_cat_logo(screen, WIDTH // 2, 110, 0.82, glow=(190, 95, 95))
         panel = pygame.Rect(WIDTH // 2 - 280, 170, 560, 290)
         pygame.draw.rect(screen, (148, 34, 40), panel, border_radius=16)
         pygame.draw.rect(screen, (225, 110, 110), panel, 2, border_radius=16)
