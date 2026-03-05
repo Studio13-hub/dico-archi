@@ -317,3 +317,20 @@
 - [ ] Contrôler la lisibilité des contours du chat, obstacles, pièces et powerups en mouvement
 - [ ] Valider que le parallax skyline reste discret et ne gêne pas la lecture des lanes
 - [ ] Noter 1-2 ajustements max si nécessaire (épaisseur contour, contraste, vitesse parallax)
+
+## 2026-03-05 (tuning visuel configurable + debug FPS)
+### Fait
+- Paramètres visuels déplacés vers `src/settings.py` (épaisseur contours + facteurs/boucles parallax)
+- `src/main.py` raccordé à ces paramètres (plus de hardcode sur ces valeurs)
+- Overlay debug F1 enrichi avec `fps` courant vs `target`
+- Vérification syntaxe: `python3 -m py_compile src/main.py src/settings.py` OK
+
+### Décisions
+- Prioriser un tuning “data-first” via `settings.py` pour itérer vite après playtest
+- Utiliser l’overlay debug comme signal minimal de perf pendant les runs
+
+### Prochaine étape
+- Exécuter la checklist playtest et ajuster uniquement les constantes nécessaires
+
+### Risques / blocages
+- Le FPS debug est indicatif (valeur instantanée), pas un profilage complet

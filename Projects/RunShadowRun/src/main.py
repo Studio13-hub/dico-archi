@@ -36,6 +36,14 @@ from settings import (
     POWERUP_RADIUS,
     POWERUP_SPAWN_INTERVAL,
     SHIELD_DURATION,
+    OUTLINE_WIDTH_PLAYER,
+    OUTLINE_WIDTH_OBSTACLE,
+    OUTLINE_WIDTH_COIN,
+    OUTLINE_WIDTH_POWERUP,
+    PARALLAX_NEAR_FACTOR,
+    PARALLAX_FAR_FACTOR,
+    PARALLAX_NEAR_LOOP,
+    PARALLAX_FAR_LOOP,
 )
 
 # --- Derived config ---
@@ -283,6 +291,7 @@ def main():
             sfx_enabled,
             debug_visible,
             assets,
+            clock.get_fps(),
         )
         pygame.display.flip()
 
@@ -446,7 +455,7 @@ def draw_player(screen, run_data, assets, t):
     else:
         outline_color = (220, 220, 235)
     # chat: contour plus fin pour garder le détail du visage
-    blit_with_outline(screen, frame, (x, y + bob), outline_color, width=1)
+    blit_with_outline(screen, frame, (x, y + bob), outline_color, width=OUTLINE_WIDTH_PLAYER)
 
 
 def draw_obstacles(screen, run_data, assets):
@@ -463,7 +472,7 @@ def draw_obstacles(screen, run_data, assets):
         else:  # chair
             outline_color = (255, 140, 140)
         # obstacles: contour plus épais pour lisibilité en mouvement
-        blit_with_outline(screen, sprite, (x, y), outline_color, width=3)
+        blit_with_outline(screen, sprite, (x, y), outline_color, width=OUTLINE_WIDTH_OBSTACLE)
 
 
 def draw_coins(screen, run_data, assets, t):
@@ -472,7 +481,7 @@ def draw_coins(screen, run_data, assets, t):
         x = LANE_X[coin["lane"]]
         y = int(coin["y"] + COIN_RADIUS + 3)
         pos = (x - frame.get_width() // 2, y - frame.get_height() // 2)
-        blit_with_outline(screen, frame, pos, (255, 245, 170), width=1)
+        blit_with_outline(screen, frame, pos, (255, 245, 170), width=OUTLINE_WIDTH_COIN)
 
 
 def draw_powerups(screen, run_data, assets, t):
@@ -481,7 +490,7 @@ def draw_powerups(screen, run_data, assets, t):
         x = LANE_X[powerup["lane"]]
         y = int(powerup["y"] + POWERUP_RADIUS + 3)
         pos = (x - frame.get_width() // 2, y - frame.get_height() // 2)
-        blit_with_outline(screen, frame, pos, (180, 255, 245), width=2)
+        blit_with_outline(screen, frame, pos, (180, 255, 245), width=OUTLINE_WIDTH_POWERUP)
 
 
 def blit_with_outline(screen, sprite, pos, color, width=2):
@@ -505,9 +514,10 @@ def draw_popups(screen, run_data, small_font):
         screen.blit(text, (popup["x"] - text.get_width() // 2, int(popup["y"])))
 
 
-def draw_debug(screen, run_data, best_score, small_font):
+def draw_debug(screen, run_data, best_score, small_font, fps):
     lines = [
         "DEBUG (F1)",
+        f"fps={fps:.1f} target={FPS}",
         f"score={run_data['score']} best={best_score}",
         f"speed={run_data['speed']:.1f} world_speed={current_world_speed(run_data):.1f}",
         f"dash_timer={run_data['dash_timer']:.2f} dash_cd={run_data['dash_cooldown']:.2f}",
@@ -594,8 +604,8 @@ def draw_living_world(screen, run_data):
         pygame.draw.line(screen, (170, 170, 210), (ex, ey), (ex - 20, ey - 8), 1)
 
     # skyline avec parallax leger pour garder un monde vivant sans agitation.
-    near_offset = int((run_data["road_offset"] * 0.9) % 120)
-    far_offset = int((run_data["road_offset"] * 0.45) % 160)
+    near_offset = int((run_data["road_offset"] * PARALLAX_NEAR_FACTOR) % PARALLAX_NEAR_LOOP)
+    far_offset = int((run_data["road_offset"] * PARALLAX_FAR_FACTOR) % PARALLAX_FAR_LOOP)
 
     base_y_far = GROUND_Y - 170
     base_y_near = GROUND_Y - 120
@@ -624,7 +634,7 @@ def draw_key_hint(screen, x, y, key_label, action_label, font):
     screen.blit(action_surf, (key_rect.right + 10, key_rect.y + 6))
 
 
-def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer, sfx_enabled, debug_visible, assets):
+def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer, sfx_enabled, debug_visible, assets, fps):
     t = pygame.time.get_ticks() / 1000.0
     if state == STATE_MENU:
         screen.fill((8, 8, 10))
@@ -688,7 +698,7 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
         screen.blit(hud, (16, 15))
 
     elif state == STATE_PAUSE:
-        draw(screen, STATE_RUN, run_data, best_score, font, small_font, 0.0, sfx_enabled, False, assets)
+        draw(screen, STATE_RUN, run_data, best_score, font, small_font, 0.0, sfx_enabled, False, assets, fps)
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 120))
         screen.blit(overlay, (0, 0))
@@ -736,7 +746,7 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
             screen.blit(flash, (0, 0))
 
     if debug_visible:
-        draw_debug(screen, run_data, best_score, small_font)
+        draw_debug(screen, run_data, best_score, small_font, fps)
 
 
 if __name__ == "__main__":
