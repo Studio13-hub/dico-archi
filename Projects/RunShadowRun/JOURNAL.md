@@ -334,3 +334,19 @@
 
 ### Risques / blocages
 - Le FPS debug est indicatif (valeur instantanée), pas un profilage complet
+
+## 2026-03-05 (SFX polish actions)
+### Fait
+- Ajout de SFX procéduraux `jump` et `dash` (sweeps générés en code)
+- Ajout d’un SFX `shield_end` quand l’invincibilité se termine
+- Extension du routage audio runtime pour inclure ces nouveaux événements
+- Vérification syntaxe: `python3 -m py_compile src/main.py` OK
+
+### Décisions
+- Rester 100% audio procédural pour itérer vite sans pipeline assets
+
+### Prochaine étape
+- Playtester le mix audio (volume/perception) et ajuster au besoin
+
+### Risques / blocages
+- Risque de fatigue sonore si trop d’actions en chaîne (à valider en run long)

@@ -9,3 +9,4 @@ Format: YYYY-MM-DD — Décision — Pourquoi — Impact
 - 2026-03-03 — Overlay debug F1 en jeu — Tuning rapide des paramètres — Itérations gameplay accélérées
 - 2026-03-05 — Cache des outlines sprites + parallax skyline léger — Réduire le coût CPU du rendu et restaurer le dynamisme visuel — Run plus fluide sans changer le gameplay cœur
 - 2026-03-05 — Tuning visuel externalisé dans `settings.py` + FPS debug affiché — Accélérer les itérations de playtest sans toucher la logique core — Ajustements plus sûrs et plus rapides
+- 2026-03-05 — SFX actions (jump/dash/shield_end) en procédural — Renforcer le feedback gameplay sans dépendance assets — Boucle de jeu plus lisible à l’oreille

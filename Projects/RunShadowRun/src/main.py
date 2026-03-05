@@ -105,12 +105,22 @@ def choose_obstacle_kind(obstacle_type):
 
 
 def init_audio():
-    sounds = {"coin": None, "hit": None, "shield": None}
+    sounds = {
+        "coin": None,
+        "hit": None,
+        "shield": None,
+        "jump": None,
+        "dash": None,
+        "shield_end": None,
+    }
     try:
         pygame.mixer.init(frequency=22050, size=-16, channels=1)
         sounds["coin"] = make_beep(900, 80, 0.25)
         sounds["hit"] = make_beep(180, 220, 0.35)
         sounds["shield"] = make_beep(520, 160, 0.30)
+        sounds["jump"] = make_sweep(780, 1120, 85, 0.22)
+        sounds["dash"] = make_sweep(260, 620, 110, 0.28)
+        sounds["shield_end"] = make_sweep(520, 340, 140, 0.20)
     except pygame.error:
         pass
     return sounds
@@ -133,6 +143,23 @@ def make_beep(freq_hz, duration_ms, volume):
         t = i / sample_rate
         env = 1.0 - (i / n_samples)
         sample = int(amplitude * env * math.sin(2.0 * math.pi * freq_hz * t))
+        buf.append(sample)
+    return pygame.mixer.Sound(buffer=buf.tobytes())
+
+
+def make_sweep(freq_start_hz, freq_end_hz, duration_ms, volume):
+    if not pygame.mixer.get_init():
+        return None
+    sample_rate = pygame.mixer.get_init()[0]
+    n_samples = max(1, int(sample_rate * duration_ms / 1000))
+    amplitude = int(32767 * max(0.0, min(volume, 1.0)))
+    buf = array("h")
+    for i in range(n_samples):
+        progress = i / max(1, n_samples - 1)
+        freq = freq_start_hz + (freq_end_hz - freq_start_hz) * progress
+        t = i / sample_rate
+        env = 1.0 - progress
+        sample = int(amplitude * env * math.sin(2.0 * math.pi * freq * t))
         buf.append(sample)
     return pygame.mixer.Sound(buffer=buf.tobytes())
 
@@ -238,12 +265,16 @@ def main():
                     elif event.key == pygame.K_SPACE:
                         if run_data["y"] >= GROUND_Y - current_player_h(run_data):
                             run_data["vy"] = JUMP_VELOCITY
+                            if sfx_enabled and sounds["jump"] is not None:
+                                sounds["jump"].play()
                     elif event.key in (pygame.K_DOWN, pygame.K_LSHIFT, pygame.K_RSHIFT):
                         if run_data["dash_cooldown"] <= 0.0 and run_data["dash_timer"] <= 0.0:
                             run_data["dash_timer"] = DASH_DURATION
                             run_data["dash_cooldown"] = DASH_COOLDOWN
                             if run_data["vy"] == 0.0:
                                 run_data["y"] = float(GROUND_Y - DASH_PLAYER_H)
+                            if sfx_enabled and sounds["dash"] is not None:
+                                sounds["dash"].play()
                     elif event.key == pygame.K_p:
                         state = STATE_PAUSE
                     elif event.key == pygame.K_m:
@@ -268,7 +299,18 @@ def main():
                         set_sfx_enabled(sfx_enabled)
 
         if state == STATE_RUN:
-            active_sounds = sounds if sfx_enabled else {"coin": None, "hit": None, "shield": None}
+            active_sounds = (
+                sounds
+                if sfx_enabled
+                else {
+                    "coin": None,
+                    "hit": None,
+                    "shield": None,
+                    "jump": None,
+                    "dash": None,
+                    "shield_end": None,
+                }
+            )
             alive, got_hit = update_game(run_data, dt, active_sounds)
             if got_hit and sfx_enabled and sounds["hit"] is not None:
                 sounds["hit"].play()
@@ -300,9 +342,13 @@ def main():
 
 
 def update_game(run_data, dt, sounds):
+    shield_was_active = run_data["shield_timer"] > 0.0
     run_data["dash_timer"] = max(0.0, run_data["dash_timer"] - dt)
     run_data["dash_cooldown"] = max(0.0, run_data["dash_cooldown"] - dt)
     run_data["shield_timer"] = max(0.0, run_data["shield_timer"] - dt)
+    if shield_was_active and run_data["shield_timer"] <= 0.0:
+        if sounds.get("shield_end") is not None:
+            sounds["shield_end"].play()
 
     if run_data["dash_timer"] <= 0.0 and run_data["vy"] == 0.0:
         run_data["y"] = float(min(run_data["y"], GROUND_Y - PLAYER_H))
