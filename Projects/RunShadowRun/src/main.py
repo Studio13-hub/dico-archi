@@ -5,6 +5,32 @@ import math
 from array import array
 import pygame
 from visuals import make_visual_assets
+import ui_components as ui
+from ui_theme import (
+    ACCENT_CYAN,
+    ACCENT_DANGER,
+    ACCENT_MAGENTA,
+    BG_BOTTOM,
+    BG_TOP,
+    GAMEOVER_FADE_DURATION,
+    GAMEOVER_SCALE_DURATION,
+    MENU_COL_GAP,
+    MENU_FADE_DURATION,
+    MENU_HEIGHT,
+    MENU_LEFT_RATIO,
+    MENU_SLIDE_DURATION,
+    MENU_TOP,
+    OUTER_MARGIN,
+    SIZE_BODY,
+    SIZE_H2,
+    SIZE_HERO,
+    SIZE_MICRO,
+    SIZE_SUBTITLE,
+    TEXT_MUTED,
+    TEXT_PRIMARY,
+    TEXT_SECONDARY,
+    CTA_PULSE_SPEED,
+)
 from settings import (
     WIDTH,
     HEIGHT,
@@ -78,6 +104,8 @@ def new_run_data():
         "powerups": [],
         "road_offset": 0.0,
         "score": 0,
+        "coins_collected": 0,
+        "obstacles_avoided": 0,
         "coin_flash": 0.0,
         "shield_timer": 0.0,
         "dash_timer": 0.0,
@@ -233,11 +261,18 @@ def main():
     clock = pygame.time.Clock()
     running = True
     state = STATE_MENU
+    state_age = 0.0
     run_data = new_run_data()
     best_score = load_best_score()
     hit_flash_timer = 0.0
     sfx_enabled = True
     debug_visible = False
+
+    def switch_state(next_state):
+        nonlocal state, state_age
+        if next_state != state:
+            state = next_state
+            state_age = 0.0
 
     while running:
         dt = clock.tick(FPS) / 1000
@@ -254,7 +289,7 @@ def main():
             if state == STATE_MENU:
                 if event.type == pygame.KEYDOWN and event.key in (pygame.K_RETURN, pygame.K_SPACE):
                     run_data = new_run_data()
-                    state = STATE_RUN
+                    switch_state(STATE_RUN)
 
             elif state == STATE_RUN:
                 if event.type == pygame.KEYDOWN:
@@ -276,7 +311,7 @@ def main():
                             if sfx_enabled and sounds["dash"] is not None:
                                 sounds["dash"].play()
                     elif event.key == pygame.K_p:
-                        state = STATE_PAUSE
+                        switch_state(STATE_PAUSE)
                     elif event.key == pygame.K_m:
                         sfx_enabled = not sfx_enabled
                         set_sfx_enabled(sfx_enabled)
@@ -284,7 +319,7 @@ def main():
             elif state == STATE_PAUSE:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_p:
-                        state = STATE_RUN
+                        switch_state(STATE_RUN)
                     elif event.key == pygame.K_m:
                         sfx_enabled = not sfx_enabled
                         set_sfx_enabled(sfx_enabled)
@@ -293,7 +328,7 @@ def main():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:
                         run_data = new_run_data()
-                        state = STATE_RUN
+                        switch_state(STATE_RUN)
                     elif event.key == pygame.K_m:
                         sfx_enabled = not sfx_enabled
                         set_sfx_enabled(sfx_enabled)
@@ -314,13 +349,13 @@ def main():
             alive, got_hit = update_game(run_data, dt, active_sounds)
             if got_hit and sfx_enabled and sounds["hit"] is not None:
                 sounds["hit"].play()
-            if not alive:
-                new_best = max(best_score, run_data["score"])
-                if new_best != best_score:
-                    best_score = new_best
-                    save_best_score(best_score)
-                hit_flash_timer = 0.22
-                state = STATE_GAMEOVER
+                if not alive:
+                    new_best = max(best_score, run_data["score"])
+                    if new_best != best_score:
+                        best_score = new_best
+                        save_best_score(best_score)
+                    hit_flash_timer = 0.22
+                    switch_state(STATE_GAMEOVER)
 
         draw(
             screen,
@@ -334,8 +369,10 @@ def main():
             debug_visible,
             assets,
             clock.get_fps(),
+            state_age,
         )
         pygame.display.flip()
+        state_age += dt
 
     pygame.quit()
     sys.exit()
@@ -400,7 +437,13 @@ def update_game(run_data, dt, sounds):
 
     for obs in run_data["obstacles"]:
         obs["y"] += world_speed * dt
-    run_data["obstacles"] = [o for o in run_data["obstacles"] if o["y"] < HEIGHT + OBSTACLE_H]
+    kept_obstacles_scroll = []
+    for obs in run_data["obstacles"]:
+        if obs["y"] < HEIGHT + OBSTACLE_H:
+            kept_obstacles_scroll.append(obs)
+        else:
+            run_data["obstacles_avoided"] += 1
+    run_data["obstacles"] = kept_obstacles_scroll
 
     for coin in run_data["coins"]:
         coin["y"] += world_speed * dt
@@ -432,6 +475,7 @@ def update_game(run_data, dt, sounds):
         )
         if player_rect.colliderect(coin_rect):
             collected += 1
+            run_data["coins_collected"] += 1
             run_data["popups"].append(
                 {
                     "x": LANE_X[coin["lane"]],
@@ -671,46 +715,167 @@ def draw_living_world(screen, run_data):
 
 
 def draw_key_hint(screen, x, y, key_label, action_label, font):
-    key_surf = font.render(key_label, True, (250, 250, 255))
-    action_surf = font.render(action_label, True, (214, 220, 238))
-    key_rect = pygame.Rect(x, y, key_surf.get_width() + 18, key_surf.get_height() + 10)
-    pygame.draw.rect(screen, (56, 66, 92), key_rect, border_radius=8)
-    pygame.draw.rect(screen, (120, 136, 180), key_rect, 1, border_radius=8)
-    screen.blit(key_surf, (key_rect.x + 9, key_rect.y + 5))
-    screen.blit(action_surf, (key_rect.right + 10, key_rect.y + 6))
+    key_surf = font.render(key_label, True, (246, 248, 255))
+    action_surf = font.render(action_label, True, (206, 214, 234))
+    key_rect = pygame.Rect(x, y, key_surf.get_width() + 22, key_surf.get_height() + 12)
+    pygame.draw.rect(screen, (42, 50, 74), key_rect, border_radius=10)
+    pygame.draw.rect(screen, (112, 130, 180), key_rect, 2, border_radius=10)
+    screen.blit(key_surf, (key_rect.x + 11, key_rect.y + 6))
+    screen.blit(action_surf, (key_rect.right + 12, key_rect.y + 7))
 
 
-def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer, sfx_enabled, debug_visible, assets, fps):
+def draw_menu_backdrop(screen, t, danger=False):
+    top = BG_TOP
+    bottom = BG_BOTTOM
+    halo_color = ACCENT_DANGER if danger else ACCENT_CYAN
+    ui.draw_vertical_gradient(screen, top, bottom)
+    ui.draw_soft_glow(screen, (WIDTH // 2, 170), halo_color, 220, alpha=34)
+    ui.draw_soft_glow(screen, (int(WIDTH * 0.72), 130), ACCENT_MAGENTA, 170, alpha=24)
+    for i in range(22):
+        px = int((i * 83 + t * (10 + i % 4)) % (WIDTH + 36)) - 18
+        py = 62 + ((i * 57) % 430)
+        tw = 90 + int(55 * (0.5 + 0.5 * math.sin(t * 1.2 + i * 0.6)))
+        pygame.draw.circle(screen, (205, 225, 255, tw), (px, py), 1)
+    ui.draw_vignette(screen, alpha=62 if danger else 54)
+
+
+def get_gameover_feedback(score, best_score):
+    if score <= 0:
+        return "Première sortie. Le prochain run sera meilleur."
+    if score >= best_score:
+        return "Belle course. Nouveau sommet."
+    if best_score > 0 and score >= int(best_score * 0.8):
+        return "Belle course."
+    if best_score > 0 and score >= int(best_score * 0.45):
+        return "Presque."
+    return "Brutal."
+
+
+def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer, sfx_enabled, debug_visible, assets, fps, state_age):
     t = pygame.time.get_ticks() / 1000.0
     if state == STATE_MENU:
-        screen.fill((8, 8, 10))
-        for i in range(5):
-            pygame.draw.circle(
-                screen,
-                (14 + i * 3, 14 + i * 3, 18 + i * 3),
-                (120 + i * 34, 90 + i * 10),
-                56 + i * 16,
-                1,
-            )
-        draw_cat_logo(screen, WIDTH // 2, 92, 0.92, glow=(90, 150, 220))
-        panel = pygame.Rect(WIDTH // 2 - 280, 150, 560, 320)
-        pygame.draw.rect(screen, (36, 40, 54), panel, border_radius=16)
-        pygame.draw.rect(screen, (82, 90, 116), panel, 2, border_radius=16)
-        title = font.render("RunShadowRun", True, (236, 238, 244))
-        subtitle = small_font.render("Shadow13 - black cat runner", True, (180, 188, 210))
-        label = small_font.render("Controls", True, (208, 214, 230))
-        best = small_font.render(f"Best score: {best_score}", True, (224, 230, 246))
-        lore = small_font.render("Evite cartons, sacs poubelle, plantes et chaises.", True, (206, 214, 236))
-        lore2 = small_font.render("Aide Shadow13 a traverser la ville sans se faire attraper.", True, (200, 210, 232))
-        screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 190))
-        screen.blit(subtitle, (WIDTH // 2 - subtitle.get_width() // 2, 226))
-        screen.blit(label, (WIDTH // 2 - label.get_width() // 2, 272))
-        draw_key_hint(screen, WIDTH // 2 - 182, 305, "ENTER", "Start run", small_font)
-        draw_key_hint(screen, WIDTH // 2 - 182, 344, "SPACE", "Start run", small_font)
-        draw_key_hint(screen, WIDTH // 2 - 182, 383, "ESC", "Quit", small_font)
-        screen.blit(best, (WIDTH // 2 - best.get_width() // 2, 430))
-        screen.blit(lore, (WIDTH // 2 - lore.get_width() // 2, 458))
-        screen.blit(lore2, (WIDTH // 2 - lore2.get_width() // 2, 484))
+        draw_menu_backdrop(screen, t, danger=False)
+        menu_alpha = ui.ease_out_cubic(min(1.0, state_age / MENU_FADE_DURATION))
+        slide = 1.0 - ui.ease_out_cubic(min(1.0, state_age / MENU_SLIDE_DURATION))
+        slide_px = int(34 * slide)
+        alpha = int(255 * menu_alpha)
+
+        draw_cat_logo(screen, WIDTH // 2, 84, 0.95, glow=(95, 170, 255))
+        ui.ui_text(screen, "RUN SHADOW RUN", (WIDTH // 2, 42), SIZE_H2, "bold", TEXT_PRIMARY, glow=True, align="midtop", alpha=alpha)
+
+        container_w = WIDTH - OUTER_MARGIN * 2
+        left_w = int((container_w - MENU_COL_GAP) * MENU_LEFT_RATIO)
+        right_w = container_w - MENU_COL_GAP - left_w
+        left = pygame.Rect(OUTER_MARGIN - slide_px, MENU_TOP, left_w, MENU_HEIGHT)
+        right = pygame.Rect(OUTER_MARGIN + left_w + MENU_COL_GAP + slide_px, MENU_TOP, right_w, MENU_HEIGHT)
+
+        ui.ui_panel(
+            screen,
+            left,
+            {
+                "fill": (20, 26, 44, 180),
+                "border": (106, 136, 194, 210),
+                "glow_color": ACCENT_CYAN,
+                "radius": 18,
+            },
+        )
+        ui.ui_panel(
+            screen,
+            right,
+            {
+                "fill": (22, 24, 40, 178),
+                "border": (126, 116, 184, 205),
+                "glow_color": ACCENT_MAGENTA,
+                "radius": 18,
+            },
+        )
+
+        ui.ui_text(screen, "RUN SHADOW RUN", (left.x + 30, left.y + 28), SIZE_HERO, "heavy", TEXT_PRIMARY, glow=True, alpha=alpha)
+        ui.ui_text(
+            screen,
+            "Runner de nuit. Réflexes serrés. Zéro erreur.",
+            (left.x + 30, left.y + 96),
+            SIZE_SUBTITLE,
+            "normal",
+            TEXT_SECONDARY,
+            alpha=alpha,
+        )
+
+        chip_w = int((left.width - 80) / 3)
+        chips = [
+            f"Meilleur : {best_score}",
+            "3 voies",
+            "Mode : infini",
+        ]
+        for idx, label in enumerate(chips):
+            chip_rect = pygame.Rect(left.x + 30 + idx * (chip_w + 10), left.y + 144, chip_w, 42)
+            ui.ui_chip(screen, label, chip_rect)
+
+        start_rect = pygame.Rect(left.x + 30, left.y + 214, left.width - 60, 56)
+        quit_rect = pygame.Rect(left.x + 30, left.y + 286, left.width - 60, 52)
+        ui.ui_button(screen, start_rect, "DÉMARRER", badges=["ENTRÉE", "ESPACE"], state="primary")
+        ui.ui_button(screen, quit_rect, "QUITTER", badges=["ÉCHAP"], state="normal")
+
+        pulse = 172 + int(60 * (0.5 + 0.5 * math.sin(t * CTA_PULSE_SPEED)))
+        ui.ui_text(
+            screen,
+            "Appuie sur ENTRÉE",
+            (left.centerx, left.bottom - 20),
+            SIZE_BODY,
+            "bold",
+            (pulse, pulse, 255),
+            shadow=False,
+            align="midbottom",
+            alpha=alpha,
+        )
+
+        ui.ui_text(screen, "But", (right.x + 24, right.y + 24), SIZE_SUBTITLE, "bold", TEXT_PRIMARY, alpha=alpha)
+        ui.ui_text(
+            screen,
+            "Évite cartons, sacs, plantes, chaises.",
+            (right.x + 24, right.y + 60),
+            SIZE_BODY,
+            "normal",
+            TEXT_SECONDARY,
+            alpha=alpha,
+        )
+        ui.ui_text(
+            screen,
+            "Survis, collecte, accélère.",
+            (right.x + 24, right.y + 90),
+            SIZE_BODY,
+            "normal",
+            TEXT_SECONDARY,
+            alpha=alpha,
+        )
+
+        ui.ui_text(screen, "Commandes", (right.x + 24, right.y + 138), SIZE_SUBTITLE, "bold", TEXT_PRIMARY, alpha=alpha)
+        controls = [
+            ("Dash", ["BAS", "SHIFT"]),
+            ("Pause", ["P"]),
+            ("Son", ["M"]),
+            ("Débogage FPS", ["F1"]),
+        ]
+        row_y = right.y + 172
+        for label, badges in controls:
+            ui.ui_text(screen, f"{label} :", (right.x + 24, row_y + 6), SIZE_BODY, "normal", TEXT_SECONDARY, alpha=alpha)
+            bx = right.right - 22
+            for badge in reversed(badges):
+                bw = max(60, 18 + len(badge) * 10)
+                brect = pygame.Rect(bx - bw, row_y, bw, 34)
+                ui.ui_keybadge(screen, badge, brect)
+                bx -= bw + 8
+            row_y += 42
+
+        ui.ui_text(
+            screen,
+            "Astuce : déclenche le dash au bon timing pour passer un obstacle.",
+            (right.x + 24, right.bottom - 34),
+            SIZE_MICRO,
+            "normal",
+            TEXT_MUTED,
+            alpha=alpha,
+        )
 
     elif state == STATE_RUN:
         draw_living_world(screen, run_data)
@@ -744,7 +909,7 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
         screen.blit(hud, (16, 15))
 
     elif state == STATE_PAUSE:
-        draw(screen, STATE_RUN, run_data, best_score, font, small_font, 0.0, sfx_enabled, False, assets, fps)
+        draw(screen, STATE_RUN, run_data, best_score, font, small_font, 0.0, sfx_enabled, False, assets, fps, state_age)
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 120))
         screen.blit(overlay, (0, 0))
@@ -754,37 +919,71 @@ def draw(screen, state, run_data, best_score, font, small_font, hit_flash_timer,
         screen.blit(tip, (WIDTH // 2 - tip.get_width() // 2, 290))
 
     elif state == STATE_GAMEOVER:
-        screen.fill((8, 8, 10))
-        draw_cat_logo(screen, WIDTH // 2, 110, 0.82, glow=(190, 95, 95))
-        panel = pygame.Rect(WIDTH // 2 - 280, 170, 560, 290)
-        pygame.draw.rect(screen, (148, 34, 40), panel, border_radius=16)
-        pygame.draw.rect(screen, (225, 110, 110), panel, 2, border_radius=16)
-        over = font.render("GAME OVER", True, (255, 240, 240))
-        score_line = small_font.render(
-            f"Score: {run_data['score']} | Best: {best_score}",
-            True,
-            (255, 230, 230),
+        draw_menu_backdrop(screen, t, danger=True)
+        ui.draw_vignette(screen, alpha=92)
+        go_fade = ui.ease_out_cubic(min(1.0, state_age / GAMEOVER_FADE_DURATION))
+        go_scale = 1.0 + 0.02 * (1.0 - ui.ease_out_cubic(min(1.0, state_age / GAMEOVER_SCALE_DURATION)))
+        panel_w = int(640 * go_scale)
+        panel_h = int(332 * go_scale)
+        panel = pygame.Rect(WIDTH // 2 - panel_w // 2, 156 - int((go_scale - 1.0) * 24), panel_w, panel_h)
+        ui.ui_panel(
+            screen,
+            panel,
+            {
+                "fill": (56, 22, 36, 190),
+                "border": (214, 120, 142, 220),
+                "glow_color": ACCENT_DANGER,
+                "radius": 20,
+            },
         )
-        tip = small_font.render("Rapport de la course", True, (255, 220, 220))
-        details = small_font.render(
-            f"Objets evites: {len(run_data['obstacles'])} | Pieces a l'ecran: {len(run_data['coins'])}",
-            True,
-            (255, 220, 220),
+        draw_cat_logo(screen, WIDTH // 2, 108, 0.88, glow=(220, 92, 118))
+
+        alpha = int(255 * go_fade)
+        ui.ui_text(screen, "FIN DE COURSE", (panel.centerx, panel.y + 26), SIZE_H2, "heavy", TEXT_PRIMARY, glow=True, align="midtop", alpha=alpha)
+        ui.ui_text(
+            screen,
+            get_gameover_feedback(run_data["score"], best_score),
+            (panel.centerx, panel.y + 68),
+            SIZE_BODY,
+            "normal",
+            TEXT_SECONDARY,
+            align="midtop",
+            alpha=alpha,
         )
-        detail2 = small_font.render(
-            f"Etat chat: {'PROTEGE' if run_data['shield_timer'] > 0 else 'VULNERABLE'} | Dash CD: {run_data['dash_cooldown']:.1f}s",
-            True,
-            (255, 220, 220),
+        ui.ui_text(screen, f"{run_data['score']}", (panel.centerx, panel.y + 112), 78, "heavy", TEXT_PRIMARY, align="midtop", alpha=alpha)
+        ui.ui_text(
+            screen,
+            f"Meilleur : {best_score}",
+            (panel.centerx, panel.y + 184),
+            SIZE_BODY,
+            "normal",
+            TEXT_SECONDARY,
+            align="midtop",
+            alpha=alpha,
         )
-        sfx = small_font.render(f"SFX: {'ON' if sfx_enabled else 'OFF'} (M)", True, (255, 220, 220))
-        screen.blit(over, (WIDTH // 2 - over.get_width() // 2, 212))
-        screen.blit(score_line, (WIDTH // 2 - score_line.get_width() // 2, 260))
-        screen.blit(tip, (WIDTH // 2 - tip.get_width() // 2, 304))
-        screen.blit(details, (WIDTH // 2 - details.get_width() // 2, 332))
-        screen.blit(detail2, (WIDTH // 2 - detail2.get_width() // 2, 356))
-        draw_key_hint(screen, WIDTH // 2 - 150, 382, "R", "Restart", small_font)
-        draw_key_hint(screen, WIDTH // 2 - 150, 420, "ESC", "Quit", small_font)
-        screen.blit(sfx, (WIDTH // 2 - sfx.get_width() // 2, 452))
+
+        dash_status = "prêt" if run_data["dash_cooldown"] <= 0.0 else f"recharge {run_data['dash_cooldown']:.1f} s"
+        rows_top = panel.y + 222
+        ui.ui_statrow(screen, "Obstacles évités", f"{run_data['obstacles_avoided']}", rows_top, panel.x + 42, panel.right - 42)
+        ui.ui_statrow(screen, "Pièces collectées", f"{run_data['coins_collected']}", rows_top + 30, panel.x + 42, panel.right - 42)
+        ui.ui_statrow(screen, "Dash", dash_status, rows_top + 60, panel.x + 42, panel.right - 42)
+
+        btn_y = panel.bottom - 86
+        btn_w = (panel.width - 122) // 2
+        ui.ui_button(screen, pygame.Rect(panel.x + 42, btn_y, btn_w, 50), "REJOUER", badges=["R"], state="primary")
+        ui.ui_button(screen, pygame.Rect(panel.x + 80 + btn_w, btn_y, btn_w, 50), "QUITTER", badges=["ÉCHAP"], state="normal")
+
+        son_label = "ACTIVÉ" if sfx_enabled else "DÉSACTIVÉ"
+        ui.ui_text(
+            screen,
+            f"Son : {son_label} (M)",
+            (panel.centerx, panel.bottom - 12),
+            SIZE_MICRO,
+            "normal",
+            TEXT_MUTED,
+            align="midbottom",
+            alpha=alpha,
+        )
         if hit_flash_timer > 0.0:
             alpha = int(190 * (hit_flash_timer / 0.22))
             flash = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)

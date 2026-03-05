@@ -350,3 +350,25 @@
 
 ### Risques / blocages
 - Risque de fatigue sonore si trop d’actions en chaîne (à valider en run long)
+
+## 2026-03-05 (refonte UI menu + game over cyber-néon)
+### Fait
+- Refonte complète de `STATE_MENU` en layout 2 colonnes asymétriques (hero + infos)
+- Refonte complète de `STATE_GAMEOVER` en panel premium glass avec résumé lisible
+- Création de `src/ui_theme.py` (palette, typo, layout, timings)
+- Création de `src/ui_components.py` (`ui_panel`, `ui_text`, `ui_keybadge`, `ui_button`, `ui_chip`, `ui_statrow`)
+- Intégration d’animations subtiles (fade/slide menu, fade/micro-scale game over, pulse CTA)
+- Microcopy FR harmonisée (accents, libellés, cohérence)
+- Ajout métriques d’affichage run: `coins_collected`, `obstacles_avoided`
+- Création du guide `.codex/UI_STYLE.md`
+- Vérification syntaxe: `python3 -m py_compile src/main.py src/ui_components.py src/ui_theme.py` OK
+
+### Décisions
+- Séparer thème et composants UI du gameplay pour accélérer les itérations visuelles
+- Garder une esthétique cyber-néon/glass subtile sans dégrader la lisibilité
+
+### Prochaine étape
+- QA visuelle ciblée (alignements, contraste, densité d’effets) + micro-ajustements
+
+### Risques / blocages
+- Selon écran/luminosité, de légers ajustements de contraste peuvent rester nécessaires
