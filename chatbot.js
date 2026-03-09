@@ -317,7 +317,8 @@
 
   function setOpen(open) {
     panel.hidden = !open;
-    toggle.hidden = open;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    toggle.textContent = open ? "Fermer assistant" : "Assistant";
     try {
       window.localStorage.setItem(STORAGE_KEY, open ? "1" : "0");
     } catch (_error) {
@@ -326,8 +327,21 @@
     if (open) input.focus();
   }
 
-  toggle.addEventListener("click", () => setOpen(true));
+  toggle.addEventListener("click", () => setOpen(panel.hidden));
   closeButton.addEventListener("click", () => setOpen(false));
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") setOpen(false);
+  });
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+    if (panel.hidden) return;
+    if (panel.contains(target)) return;
+    if (toggle.contains(target)) return;
+    setOpen(false);
+  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();

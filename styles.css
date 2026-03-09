@@ -194,6 +194,10 @@ p {
   justify-self: end;
 }
 
+.chatbot__msg--user p {
+  color: #fff;
+}
+
 .chatbot__form {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -205,6 +209,8 @@ p {
 
 .chatbot__input {
   min-width: 0;
+  background: #fff;
+  color: #121212;
 }
 
 .chatbot__send {
