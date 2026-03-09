@@ -23,41 +23,80 @@
     return [];
   }
 
-  function findTermAnswer(question) {
-    const terms = getLocalTerms();
-    if (!terms.length) return null;
+  const TERM_INDEX = getLocalTerms()
+    .map((item) => ({
+      term: String(item?.term || "").trim(),
+      key: normalize(item?.term || ""),
+      definition: String(item?.definition || "").trim(),
+      example: String(item?.example || "").trim(),
+      category: String(item?.category || "").trim()
+    }))
+    .filter((item) => item.term && item.key)
+    .sort((a, b) => b.key.length - a.key.length);
 
-    const q = normalize(question);
-    let best = null;
-
-    for (const item of terms) {
-      const term = String(item.term || "").trim();
-      if (!term) continue;
-      const key = normalize(term);
-      if (!key) continue;
-      if (q === key || q.includes(key)) {
-        if (!best || key.length > best.key.length) {
-          best = { key, item };
-        }
-      }
+  function findBestTermInText(text) {
+    const q = normalize(text);
+    if (!q) return null;
+    for (const entry of TERM_INDEX) {
+      if (q === entry.key || q.includes(entry.key)) return entry;
     }
+    return null;
+  }
 
+  function makeTermUrl(term) {
+    return `term.html?term=${encodeURIComponent(term || "")}`;
+  }
+
+  function findTermAnswer(question) {
+    const best = findBestTermInText(question);
     if (!best) return null;
 
-    const term = best.item;
     const parts = [];
-    parts.push(`Terme: ${term.term}`);
-    if (term.definition) parts.push(`Définition: ${term.definition}`);
-    if (term.example) parts.push(`Exemple: ${term.example}`);
-    if (term.category) parts.push(`Catégorie: ${term.category}`);
-    parts.push(`Fiche: term.html?term=${encodeURIComponent(term.term || "")}`);
+    parts.push(`Terme: ${best.term}`);
+    if (best.definition) parts.push(`Définition: ${best.definition}`);
+    if (best.example) parts.push(`Exemple: ${best.example}`);
+    if (best.category) parts.push(`Catégorie: ${best.category}`);
+    parts.push(`Fiche: ${makeTermUrl(best.term)}`);
     return parts.join("\n");
+  }
+
+  function isLikelyOutOfScope(question) {
+    const q = normalize(question);
+    if (!q) return false;
+    const architectureHints = [
+      "sia",
+      "aeai",
+      "beton",
+      "béton",
+      "chantier",
+      "architect",
+      "dessin",
+      "construction",
+      "materiau",
+      "matériau",
+      "dictionnaire",
+      "quiz",
+      "contrib",
+      "admin",
+      "compte",
+      "terme",
+      "categorie",
+      "catégorie"
+    ];
+    if (architectureHints.some((hint) => q.includes(normalize(hint)))) return false;
+
+    const offTopicHints = ["foot", "bitcoin", "bourse", "musique", "recette", "voyage", "politique"];
+    return offTopicHints.some((hint) => q.includes(hint));
   }
 
   function getFallbackAnswer(question) {
     const q = normalize(question);
     const termAnswer = findTermAnswer(question);
     if (termAnswer) return termAnswer;
+
+    if (isLikelyOutOfScope(question)) {
+      return "Je suis spécialisé dans l’architecture et l’usage de ce site. Pose-moi une question sur les termes, le quiz, la connexion, les contributions ou l’administration.";
+    }
 
     if (q.includes("connexion") || q.includes("compte") || q.includes("login")) {
       return "Tu peux te connecter sur la page auth.html, puis ouvrir compte.html pour voir ton rôle.";
@@ -76,6 +115,21 @@
     }
 
     return "Je peux t’aider sur le vocabulaire d’architecture et l’usage du site (connexion, quiz, contributions, admin).";
+  }
+
+  function enrichAnswer(answer, question) {
+    const clean = String(answer || "").trim();
+    if (!clean) return { text: "", relatedTerm: null };
+
+    const currentBest = findBestTermInText(clean) || findBestTermInText(question);
+    if (!currentBest) return { text: clean, relatedTerm: null };
+
+    if (normalize(clean).includes(normalize("fiche:"))) {
+      return { text: clean, relatedTerm: currentBest.term };
+    }
+
+    const withLink = `${clean}\nFiche: ${makeTermUrl(currentBest.term)}`;
+    return { text: withLink, relatedTerm: currentBest.term };
   }
 
   async function askServer(messages) {
@@ -125,16 +179,54 @@
   form.appendChild(input);
   form.appendChild(sendButton);
 
+  const note = createElement(
+    "div",
+    "chatbot__note",
+    "Réponse IA: vérifie les points techniques importants dans les fiches du dictionnaire."
+  );
+
   panel.appendChild(header);
   panel.appendChild(messagesNode);
   panel.appendChild(form);
+  panel.appendChild(note);
   root.appendChild(toggle);
   root.appendChild(panel);
   document.body.appendChild(root);
 
   const history = [];
 
-  function pushMessage(role, text) {
+  function addAssistantActions(container, text, relatedTerm) {
+    const actions = createElement("div", "chatbot__actions");
+
+    const copyBtn = createElement("button", "chatbot__action", "Copier");
+    copyBtn.type = "button";
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = "Copié";
+        setTimeout(() => {
+          copyBtn.textContent = "Copier";
+        }, 1200);
+      } catch (_error) {
+        copyBtn.textContent = "Échec copie";
+        setTimeout(() => {
+          copyBtn.textContent = "Copier";
+        }, 1200);
+      }
+    });
+
+    actions.appendChild(copyBtn);
+
+    if (relatedTerm) {
+      const link = createElement("a", "chatbot__action chatbot__action--link", "Voir la fiche");
+      link.href = makeTermUrl(relatedTerm);
+      actions.appendChild(link);
+    }
+
+    container.appendChild(actions);
+  }
+
+  function pushMessage(role, text, options = {}) {
     const cleanText = String(text || "").trim();
     if (!cleanText) return;
 
@@ -146,6 +238,11 @@
     for (const line of lines) {
       bubble.appendChild(createElement("p", "", line));
     }
+
+    if (role === "assistant" && !options.noActions) {
+      addAssistantActions(bubble, cleanText, options.relatedTerm || null);
+    }
+
     messagesNode.appendChild(bubble);
     messagesNode.scrollTop = messagesNode.scrollHeight;
   }
@@ -170,7 +267,7 @@
     if (!question) return;
 
     input.value = "";
-    pushMessage("user", question);
+    pushMessage("user", question, { noActions: true });
     sendButton.disabled = true;
 
     const typing = createElement("div", "chatbot__msg chatbot__msg--assistant", "...");
@@ -185,8 +282,9 @@
         answer = getFallbackAnswer(question);
       }
 
+      const enriched = enrichAnswer(answer || getFallbackAnswer(question), question);
       typing.remove();
-      pushMessage("assistant", answer || getFallbackAnswer(question));
+      pushMessage("assistant", enriched.text, { relatedTerm: enriched.relatedTerm });
     } finally {
       sendButton.disabled = false;
       input.focus();
@@ -195,7 +293,8 @@
 
   pushMessage(
     "assistant",
-    "Bonjour. Je peux t’aider sur les termes d’architecture, le quiz, la connexion, les contributions et la navigation du site."
+    "Bonjour. Je peux t’aider sur les termes d’architecture, le quiz, la connexion, les contributions et la navigation du site.",
+    { noActions: false }
   );
 
   let shouldOpen = false;

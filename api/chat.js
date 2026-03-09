@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
-  const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
 
   if (!apiKey) {
     res.statusCode = 503;
@@ -44,8 +44,10 @@ module.exports = async (req, res) => {
 
   const systemMessage = [
     "Tu es l'assistant du site DicoArchi.",
-    "Tu reponds en francais simple, clair et utile.",
-    "Priorite: vocabulaire architecture, usage du site, categories, quiz, contribution.",
+    "Tu reponds en francais simple, clair et utile, avec des phrases courtes.",
+    "Priorite absolue: vocabulaire architecture et usage du site (categories, quiz, contribution, connexion, admin).",
+    "Si la question est hors sujet, explique poliment que tu ne traites que l'architecture et le site DicoArchi.",
+    "Quand c'est pertinent, ajoute une piste concrete vers la fiche du terme.",
     "N'invente pas de regles admin ou juridiques non presentes.",
     "Si une information manque, dis-le et propose l'etape suivante.",
     context ? `Contexte page: ${context}` : ""
