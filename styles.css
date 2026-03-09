@@ -79,6 +79,44 @@ p {
   color: rgba(18, 18, 18, 0.8);
 }
 
+.welcome-cover {
+  min-height: 84vh;
+  display: grid;
+  align-items: center;
+}
+
+.welcome-cover__links {
+  display: inline-flex;
+  position: static;
+  border: 0;
+  box-shadow: none;
+  width: auto;
+  max-height: none;
+  overflow: visible;
+  padding: 0;
+}
+
+.welcome-cover__lead {
+  max-width: 860px;
+}
+
+.welcome-cover__actions {
+  margin-top: 24px;
+}
+
+.welcome-cover__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--accent);
+  text-decoration: none;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
 .controls {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

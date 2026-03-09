@@ -518,7 +518,7 @@ document.addEventListener("keydown", (event) => {
 
 if (dockTermQuizButton) {
   dockTermQuizButton.addEventListener("click", () => {
-    window.location.href = "index.html#quiz";
+    window.location.href = "dictionnaire.html#quiz";
   });
 }
 

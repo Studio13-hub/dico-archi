@@ -40,7 +40,7 @@ function setupBadgeHomeLink() {
   badge.setAttribute("aria-label", "Retour au dictionnaire");
 
   const goHome = () => {
-    window.location.href = "index.html";
+    window.location.href = "dictionnaire.html";
   };
 
   badge.addEventListener("click", goHome);
