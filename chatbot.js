@@ -1,7 +1,9 @@
 (function initDicoArchiChatbot() {
   const STORAGE_KEY = "dico_archi_chatbot_open_v1";
+  const SESSION_KEY = "dico_archi_chatbot_session_v1";
   const pageTitle = document.title || "DicoArchi";
   const pagePath = window.location.pathname || "/";
+  const feedbackState = new Set();
 
   function normalize(value) {
     return String(value || "")
@@ -45,6 +47,18 @@
 
   function makeTermUrl(term) {
     return `term.html?term=${encodeURIComponent(term || "")}`;
+  }
+
+  function getSessionId() {
+    try {
+      const existing = window.localStorage.getItem(SESSION_KEY);
+      if (existing) return existing;
+      const created = `s_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+      window.localStorage.setItem(SESSION_KEY, created);
+      return created;
+    } catch (_error) {
+      return `s_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    }
   }
 
   function findTermAnswer(question) {
@@ -151,6 +165,19 @@
     return String(payload?.answer || "").trim();
   }
 
+  async function sendFeedback(payload) {
+    const response = await fetch("/api/chat-feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err?.error || `http_${response.status}`);
+    }
+  }
+
   const root = createElement("div", "chatbot");
   const toggle = createElement("button", "chatbot__toggle", "Assistant");
   toggle.type = "button";
@@ -195,7 +222,7 @@
 
   const history = [];
 
-  function addAssistantActions(container, text, relatedTerm) {
+  function addAssistantActions(container, text, relatedTerm, messageKey, source) {
     const actions = createElement("div", "chatbot__actions");
 
     const copyBtn = createElement("button", "chatbot__action", "Copier");
@@ -223,6 +250,46 @@
       actions.appendChild(link);
     }
 
+    const usefulBtn = createElement("button", "chatbot__action", "Utile");
+    usefulBtn.type = "button";
+
+    const improveBtn = createElement("button", "chatbot__action", "À améliorer");
+    improveBtn.type = "button";
+
+    const status = createElement("span", "chatbot__feedback-status");
+
+    async function submitFeedback(rating) {
+      if (feedbackState.has(messageKey)) return;
+      usefulBtn.disabled = true;
+      improveBtn.disabled = true;
+      status.textContent = "Envoi...";
+      try {
+        await sendFeedback({
+          rating,
+          assistantMessage: text,
+          userMessage: history.filter((item) => item.role === "user").slice(-1)[0]?.content || "",
+          pagePath,
+          pageTitle,
+          source: source || "fallback",
+          model: window.__DICO_CHAT_MODEL__ || "",
+          sessionId: getSessionId()
+        });
+        feedbackState.add(messageKey);
+        status.textContent = "Merci pour ton retour.";
+      } catch (_error) {
+        usefulBtn.disabled = false;
+        improveBtn.disabled = false;
+        status.textContent = "Retour non enregistré.";
+      }
+    }
+
+    usefulBtn.addEventListener("click", () => submitFeedback("up"));
+    improveBtn.addEventListener("click", () => submitFeedback("down"));
+
+    actions.appendChild(usefulBtn);
+    actions.appendChild(improveBtn);
+    actions.appendChild(status);
+
     container.appendChild(actions);
   }
 
@@ -240,7 +307,8 @@
     }
 
     if (role === "assistant" && !options.noActions) {
-      addAssistantActions(bubble, cleanText, options.relatedTerm || null);
+      const key = options.messageKey || `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+      addAssistantActions(bubble, cleanText, options.relatedTerm || null, key, options.source || "fallback");
     }
 
     messagesNode.appendChild(bubble);
@@ -276,15 +344,21 @@
 
     try {
       let answer = "";
+      let source = "fallback";
       try {
         answer = await askServer(history.slice(-8));
+        source = "ai";
       } catch (_error) {
         answer = getFallbackAnswer(question);
       }
 
       const enriched = enrichAnswer(answer || getFallbackAnswer(question), question);
       typing.remove();
-      pushMessage("assistant", enriched.text, { relatedTerm: enriched.relatedTerm });
+      pushMessage("assistant", enriched.text, {
+        relatedTerm: enriched.relatedTerm,
+        messageKey: `${Date.now()}_${Math.random().toString(16).slice(2)}`,
+        source
+      });
     } finally {
       sendButton.disabled = false;
       input.focus();

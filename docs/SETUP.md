@@ -43,5 +43,12 @@
 2. La route serveur est `api/chat.js` (Vercel Function).
 3. Configure les variables d'environnement dans Vercel:
    - `GEMINI_API_KEY` (obligatoire pour les reponses IA)
-   - `GEMINI_MODEL` (optionnel, defaut: `gemini-2.0-flash`)
+   - `GEMINI_MODEL` (optionnel, defaut: `gemini-2.5-flash-lite`)
 4. Sans cle API, le chatbot reste actif avec reponses locales de secours.
+
+## 7) Feedback chatbot vers Supabase (optionnel mais recommande)
+1. Execute `supabase/chatbot_feedback.sql` dans le SQL Editor.
+2. Configure dans Vercel:
+   - `SUPABASE_URL` (URL du projet)
+   - `SUPABASE_SERVICE_ROLE_KEY` (cle service role, serveur uniquement)
+3. La route `api/chat-feedback.js` enregistre les retours `👍/👎` pour ameliorer les reponses.
