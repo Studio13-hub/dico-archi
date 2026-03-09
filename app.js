@@ -135,7 +135,7 @@ function isStaffProfile(profile) {
 function setAuthUi({ user, profile }) {
   const isStaff = isStaffProfile(profile);
   if (authStatus) {
-    authStatus.textContent = user ? `Connecte: ${user.email}` : "Non connecte";
+    authStatus.textContent = user ? `Connecté: ${user.email}` : "Non connecté";
   }
   if (authLink) {
     authLink.hidden = false;
@@ -334,7 +334,7 @@ function buildCategoryOptions(terms) {
 
   const allOption = document.createElement("option");
   allOption.value = "all";
-  allOption.textContent = "Toutes les categories";
+  allOption.textContent = "Toutes les catégories";
   categorySelect.appendChild(allOption);
 
   for (const category of categories) {
@@ -360,7 +360,7 @@ function renderCategoryGrid(terms) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "category-tile";
-    button.setAttribute("aria-label", `Ouvrir la categorie ${category}`);
+    button.setAttribute("aria-label", `Ouvrir la catégorie ${category}`);
 
     const title = document.createElement("strong");
     title.textContent = category;
@@ -423,10 +423,10 @@ function render(list, totalCount = list.length) {
     const empty = document.createElement("div");
     empty.className = "card";
     const title = document.createElement("h3");
-    title.textContent = "Pas de resultat";
+    title.textContent = "Pas de résultat";
     const example = document.createElement("div");
     example.className = "example";
-    example.textContent = "Essaie un autre mot ou categorie.";
+    example.textContent = "Essaie un autre mot ou une autre catégorie.";
     empty.appendChild(title);
     empty.appendChild(example);
     cards.appendChild(empty);
@@ -465,7 +465,7 @@ function render(list, totalCount = list.length) {
 
     const related = document.createElement("div");
     related.className = "related";
-    related.textContent = item.related.length ? `Lie a: ${item.related.join(", ")}` : "";
+    related.textContent = item.related.length ? `Lié à: ${item.related.join(", ")}` : "";
 
     card.appendChild(tag);
     card.appendChild(title);
@@ -543,7 +543,7 @@ function filterTerms() {
     if (termsPanel) termsPanel.hidden = true;
     filteredTerms = [];
     visibleTermsCount = 0;
-    if (meta) meta.textContent = "Choisis une categorie pour commencer.";
+    if (meta) meta.textContent = "Choisis une catégorie pour commencer.";
     updateStats(0);
     updateLoadMoreUi();
     return;
@@ -660,7 +660,7 @@ function renderLeaderboard() {
   const scores = safeReadScores();
   const bucket = scores[quizPrefs.mode] || [];
   if (!bucket.length) {
-    quizLeaderboard.textContent = "Aucune manche terminee.";
+    quizLeaderboard.textContent = "Aucune manche terminée.";
     return;
   }
   const lines = bucket.map((entry, index) => {
@@ -708,11 +708,11 @@ function pulseQuizSection(className) {
 
 function updateScore() {
   quizScore.textContent = `${quizState.correct} / ${quizState.total}`;
-  if (quizStreak) quizStreak.textContent = `Serie: ${quizState.streak} (best: ${quizState.bestStreak})`;
+  if (quizStreak) quizStreak.textContent = `Série: ${quizState.streak} (meilleure: ${quizState.bestStreak})`;
   if (quizTimer) quizTimer.textContent = `Temps: ${quizState.timeLeft}s`;
   if (quizLevel) {
     if (quizState.total < 3) {
-      quizLevel.textContent = `Niveau: ${getCurrentQuizModeConfig().label} · Echauffement`;
+      quizLevel.textContent = `Niveau: ${getCurrentQuizModeConfig().label} · Échauffement`;
     } else {
       const ratio = quizState.correct / quizState.total;
       if (ratio >= 0.8) quizLevel.textContent = `Niveau: ${getCurrentQuizModeConfig().label} · Expert`;
@@ -793,7 +793,7 @@ function resetQuizIntro() {
     timerId: null,
     ended: false
   };
-  quizQuestion.textContent = `Pret ? Clique sur “Demarrer le quiz” (chrono ${formatQuizDuration()}).`;
+  quizQuestion.textContent = `Prêt ? Clique sur “Démarrer le quiz” (chrono ${formatQuizDuration()}).`;
   quizFeedback.textContent = "";
   quizFeedback.classList.remove("ok", "ko");
   quizOptions.innerHTML = "";
@@ -803,7 +803,7 @@ function resetQuizIntro() {
     quizBadge.classList.remove("gold", "silver", "bronze");
   }
   if (quizReplay) quizReplay.classList.add("hidden");
-  quizNext.textContent = "Demarrer le quiz";
+  quizNext.textContent = "Démarrer le quiz";
   quizNext.disabled = false;
   if (quizEffectsToggle) quizEffectsToggle.textContent = `Effets: ${quizPrefs.effectsOn ? "ON" : "OFF"}`;
   if (quizModeSelect) quizModeSelect.value = quizPrefs.mode;
@@ -826,7 +826,7 @@ function buildQuestion() {
   if (pool.length < 2) {
     quizQuestion.textContent = "Ajoute plus de termes ou elargis les filtres pour lancer un quiz.";
     quizOptions.innerHTML = "";
-    quizNext.textContent = "Demarrer le quiz";
+    quizNext.textContent = "Démarrer le quiz";
     quizNext.disabled = true;
     return;
   }
@@ -1013,10 +1013,10 @@ async function loadTerms() {
     allTerms = mergeTerms(remoteTerms, localTerms).filter(isVisibleTerm);
 
     if (!remoteTerms.length && localTerms.length) {
-      setSyncStatus("Supabase vide: affichage local en secours.");
+      setSyncStatus("Supabase vide: affichage local de secours.");
     } else {
       setSyncStatus(
-        `Donnees synchronisees (${remoteTerms.length} Supabase + ${localTerms.length} local).`
+        `Données synchronisées (${remoteTerms.length} Supabase + ${localTerms.length} local).`
       );
     }
   } catch (err) {
@@ -1027,7 +1027,7 @@ async function loadTerms() {
 
   if (!allTerms.length) {
     allTerms = FALLBACK_TERMS.map(normalizeTerm).filter(isVisibleTerm);
-    setSyncStatus("Mode secours: affichage d'un contenu integre.");
+    setSyncStatus("Mode secours: affichage d’un contenu intégré.");
   }
 
   buildCategoryOptions(allTerms);
@@ -1046,7 +1046,7 @@ if (logoutButton) {
       await supabaseClient.auth.signOut();
       setAuthUi({ user: null, profile: null });
     } catch (_error) {
-      setSyncStatus("Erreur deconnexion: recharge la page si besoin.");
+      setSyncStatus("Erreur de déconnexion: recharge la page si besoin.");
     }
   });
 }

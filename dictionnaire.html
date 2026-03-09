@@ -25,34 +25,23 @@
             <span></span><span></span><span></span>
           </button>
           <div class="hero__actions" data-menu-panel>
-            <span id="auth-status" class="meta meta--subtle">Non connecte</span>
+            <span id="auth-status" class="meta meta--subtle">Non connecté</span>
             <a class="link-button" href="auth.html" id="auth-link">Connexion</a>
-            <button class="link-button" id="logout" type="button" hidden>Se deconnecter</button>
+            <button class="link-button" id="logout" type="button" hidden>Se déconnecter</button>
             <a class="link-button" href="contribuer.html">Contribuer</a>
             <a class="link-button" href="admin.html" id="admin-link" hidden>Admin</a>
           </div>
         </div>
-        <h1>Le dictionnaire pratique du dessinateur en architecture</h1>
-        <p>
-          Cet ouvrage est conçu pour accompagner les personnes qui découvrent le métier de dessinateur en architecture,
-          en particulier celles pour qui le français n’est pas la langue maternelle. Il rassemble des définitions
-          claires et accessibles du vocabulaire utilisé au bureau d’architecture et sur le chantier, tout en
-          introduisant les notions essentielles liées aux normes SIA et AEAI. Pensé dans une démarche d’inclusion et de
-          transmission des savoirs, ce dictionnaire vise à faciliter la compréhension du langage technique de la
-          profession et à soutenir l’intégration des personnes allophones dans le monde de l’architecture. L’objectif
-          est d’offrir des repères techniques simples et concrets pour mieux comprendre les plans, les détails
-          constructifs et les pratiques du métier au quotidien. Cet outil pratique s’adresse aux étudiants, apprentis
-          et jeunes professionnels, et constitue également un support pour favoriser l’accès à la formation et à
-          l’emploi dans une perspective de diversité et d’égalité des chances.
-        </p>
+        <h1>Dictionnaire pratique d’architecture</h1>
+        <p>Recherchez un terme, explorez les catégories et révisez avec le mode quiz.</p>
         <div class="controls">
           <input id="search" type="search" placeholder="Rechercher un terme…" autocomplete="off" />
           <select id="category">
-            <option value="all">Toutes les categories</option>
+            <option value="all">Toutes les catégories</option>
           </select>
           <select id="sort">
             <option value="az">Tri A-Z</option>
-            <option value="category">Tri par categorie</option>
+            <option value="category">Tri par catégorie</option>
           </select>
           <button id="random">Terme au hasard</button>
           <button id="quiz-toggle" class="ghost">Mode quiz</button>
@@ -63,11 +52,11 @@
             <strong id="stat-total">0</strong>
           </div>
           <div class="dashboard__item">
-            <span class="dashboard__label">Categories</span>
+            <span class="dashboard__label">Catégories</span>
             <strong id="stat-categories">0</strong>
           </div>
           <div class="dashboard__item">
-            <span class="dashboard__label">Etat synchro</span>
+            <span class="dashboard__label">État synchro</span>
             <strong id="sync-status">-</strong>
           </div>
         </div>
@@ -77,7 +66,7 @@
 
     <main>
       <section class="panel action-hub">
-        <h2>Acces rapide</h2>
+        <h2>Accès rapide</h2>
         <div class="action-hub__grid">
           <button id="qa-all" class="action-tile" type="button">
             <strong>Tous les termes</strong>
@@ -85,10 +74,10 @@
           </button>
           <button id="qa-quiz" class="action-tile" type="button">
             <strong>Quiz</strong>
-            <span>Demarrer une manche</span>
+            <span>Démarrer une manche</span>
           </button>
           <button id="qa-categories" class="action-tile" type="button">
-            <strong>Categories</strong>
+            <strong>Catégories</strong>
             <span>Explorer par domaine</span>
           </button>
           <a id="qa-contrib" class="action-tile action-tile--link" href="contribuer.html">
@@ -99,10 +88,10 @@
       </section>
       <section class="panel quick">
         <div class="quick__header">
-          <h2>Explorer par categorie</h2>
+          <h2>Explorer par catégorie</h2>
           <div class="quick__actions">
             <button id="view-all-terms" class="ghost" type="button">Voir toutes les fiches</button>
-            <button id="clear-filters" class="ghost" type="button">Reinitialiser filtres</button>
+            <button id="clear-filters" class="ghost" type="button">Réinitialiser les filtres</button>
           </div>
         </div>
         <div id="category-grid" class="category-grid"></div>
@@ -121,8 +110,8 @@
               <option value="hard">Difficile</option>
             </select>
           </label>
-          <span id="quiz-streak" class="meta meta--subtle">Serie: 0</span>
-          <span id="quiz-level" class="meta meta--subtle">Niveau: Echauffement</span>
+          <span id="quiz-streak" class="meta meta--subtle">Série: 0</span>
+          <span id="quiz-level" class="meta meta--subtle">Niveau: Échauffement</span>
           <span id="quiz-timer" class="meta meta--subtle">Temps: 30s</span>
           <button id="quiz-effects-toggle" class="ghost" type="button">Effets: ON</button>
         </div>
@@ -134,13 +123,13 @@
         <div id="quiz-feedback" class="quiz__feedback"></div>
         <div id="quiz-badge" class="quiz__badge hidden"></div>
         <div class="quiz__actions">
-          <button id="quiz-next">Demarrer le quiz</button>
+          <button id="quiz-next">Démarrer le quiz</button>
           <button id="quiz-replay" class="ghost hidden">Rejouer</button>
           <button id="quiz-exit" class="ghost">Quitter le quiz</button>
         </div>
         <div class="quiz__leaderboard">
           <h3>Top scores locaux</h3>
-          <div id="quiz-leaderboard" class="meta meta--subtle">Aucune manche terminee.</div>
+          <div id="quiz-leaderboard" class="meta meta--subtle">Aucune manche terminée.</div>
         </div>
       </section>
       <section class="panel" id="terms-panel">
@@ -150,7 +139,7 @@
 
     <footer>
       <div class="footer__inner">
-        <span>Realise par RDR Architectes SA.</span>
+        <span>Réalisé par RDR Architectes SA.</span>
       </div>
     </footer>
 

@@ -37,10 +37,10 @@ function setupBadgeHomeLink() {
 
   badge.setAttribute("role", "link");
   badge.setAttribute("tabindex", "0");
-  badge.setAttribute("aria-label", "Retour au dictionnaire");
+  badge.setAttribute("aria-label", "Retour à la page de bienvenue");
 
   const goHome = () => {
-    window.location.href = "dictionnaire.html";
+    window.location.href = "index.html";
   };
 
   badge.addEventListener("click", goHome);
