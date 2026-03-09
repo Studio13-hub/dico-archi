@@ -142,6 +142,10 @@ p {
   overflow: hidden;
 }
 
+.chatbot__panel[hidden] {
+  display: none !important;
+}
+
 .chatbot__header {
   display: flex;
   align-items: center;

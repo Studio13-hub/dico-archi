@@ -317,6 +317,7 @@
 
   function setOpen(open) {
     panel.hidden = !open;
+    panel.style.display = open ? "grid" : "none";
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
     toggle.textContent = open ? "Fermer assistant" : "Assistant";
     try {
@@ -327,8 +328,23 @@
     if (open) input.focus();
   }
 
-  toggle.addEventListener("click", () => setOpen(panel.hidden));
-  closeButton.addEventListener("click", () => setOpen(false));
+  toggle.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setOpen(panel.hidden);
+  });
+
+  closeButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setOpen(false);
+  });
+
+  closeButton.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setOpen(false);
+  });
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") setOpen(false);
