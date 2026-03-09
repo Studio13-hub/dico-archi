@@ -7,12 +7,12 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+  const apiKey = process.env.GEMINI_API_KEY;
+  const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
   if (!apiKey) {
     res.statusCode = 503;
-    res.end(JSON.stringify({ error: "missing_openai_api_key" }));
+    res.end(JSON.stringify({ error: "missing_gemini_api_key" }));
     return;
   }
 
@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
   const messages = rawMessages
     .filter((entry) => entry && (entry.role === "user" || entry.role === "assistant"))
     .map((entry) => ({
-      role: entry.role,
+      role: entry.role === "assistant" ? "model" : "user",
       content: String(entry.content || "").slice(0, 2000)
     }))
     .slice(-10);
@@ -54,30 +54,42 @@ module.exports = async (req, res) => {
     .join(" ");
 
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`,
+      {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model,
-        temperature: 0.3,
-        max_tokens: 380,
-        messages: [{ role: "system", content: systemMessage }, ...messages]
+        system_instruction: {
+          parts: [{ text: systemMessage }]
+        },
+        generationConfig: {
+          temperature: 0.3,
+          maxOutputTokens: 380
+        },
+        contents: messages.map((entry) => ({
+          role: entry.role,
+          parts: [{ text: entry.content }]
+        }))
       })
-    });
+    }
+    );
 
     const payload = await response.json();
 
     if (!response.ok) {
-      const message = payload?.error?.message || "openai_request_failed";
+      const message = payload?.error?.message || "gemini_request_failed";
       res.statusCode = 502;
       res.end(JSON.stringify({ error: message }));
       return;
     }
 
-    const answer = payload?.choices?.[0]?.message?.content;
+    const answer = (payload?.candidates?.[0]?.content?.parts || [])
+      .map((part) => String(part?.text || ""))
+      .join("\n")
+      .trim();
     if (!answer) {
       res.statusCode = 502;
       res.end(JSON.stringify({ error: "empty_model_response" }));
