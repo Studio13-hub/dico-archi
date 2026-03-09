@@ -37,3 +37,11 @@
 ## 5) Hebergement simple
 - Vercel ou Netlify: depose le dossier.
 - Pointage d'un domaine perso possible plus tard.
+
+## 6) Chatbot IA (optionnel)
+1. Le widget chatbot est charge sur toutes les pages (`chatbot.js`).
+2. La route serveur est `api/chat.js` (Vercel Function).
+3. Configure les variables d'environnement dans Vercel:
+   - `OPENAI_API_KEY` (obligatoire pour les reponses IA)
+   - `OPENAI_MODEL` (optionnel, defaut: `gpt-4o-mini`)
+4. Sans cle API, le chatbot reste actif avec reponses locales de secours.
