@@ -27,7 +27,7 @@ function setAuthLinks({ user }) {
   for (const node of nodes) {
     node.href = user ? "compte.html" : "auth.html";
     node.textContent = user ? "Mon compte" : "Connexion";
-    node.hidden = Boolean(user);
+    node.hidden = false;
   }
 }
 

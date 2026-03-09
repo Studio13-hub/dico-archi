@@ -42,7 +42,6 @@ const dockTopButton = document.getElementById("dock-top");
 
 let allTerms = [];
 let supabaseClient = null;
-let currentSyncText = "-";
 let filterRafId = 0;
 let filteredTerms = [];
 let visibleTermsCount = 0;
@@ -123,7 +122,6 @@ function hasSupabaseConfig() {
 
 function setSyncStatus(text) {
   if (!syncStatus) return;
-  currentSyncText = text;
   syncStatus.textContent = text;
 }
 
@@ -140,7 +138,7 @@ function setAuthUi({ user, profile }) {
     authStatus.textContent = user ? `Connecte: ${user.email}` : "Non connecte";
   }
   if (authLink) {
-    authLink.hidden = Boolean(user);
+    authLink.hidden = false;
     authLink.href = user ? "compte.html" : "auth.html";
     authLink.textContent = user ? "Mon compte" : "Connexion";
   }
