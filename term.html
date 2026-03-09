@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fiche terme - DicoArchi</title>
+    <meta name="description" content="Fiche detaillee d'un terme du dictionnaire DicoArchi." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Fiche terme</div>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Non connecte</span>
+            <a class="link-button" href="index.html">Dictionnaire</a>
+            <a class="link-button" href="contribuer.html">Contribuer</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se deconnecter</button>
+          </div>
+        </div>
+        <h1 id="term-title">Chargement...</h1>
+        <div class="term-hero-meta">
+          <span id="term-reading" class="term-reading"></span>
+          <span id="term-category-chip" class="term-category-chip"></span>
+        </div>
+        <p id="term-subtitle">Recherche de la fiche en cours.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel term-panel">
+        <div id="term-breadcrumb" class="meta"></div>
+        <img id="term-image" class="term-image" alt="Illustration du terme" />
+        <section id="term-media-section" class="term-media" hidden>
+          <h2>Galerie de la fiche</h2>
+          <div id="term-media-grid" class="term-media-grid"></div>
+        </section>
+        <div class="term-grid">
+          <div class="term-block">
+            <h2>Definition</h2>
+            <p id="term-definition"></p>
+          </div>
+          <div class="term-block">
+            <h2>Exemple</h2>
+            <p id="term-example"></p>
+          </div>
+          <div class="term-block">
+            <h2>Lie a</h2>
+            <div id="term-related" class="chips"></div>
+          </div>
+          <div class="term-block">
+            <h2>Types et variantes</h2>
+            <div id="term-variants" class="term-variants"></div>
+          </div>
+          <div class="term-block">
+            <h2>Termes qui referencent cette fiche</h2>
+            <div id="term-backlinks" class="chips"></div>
+          </div>
+        </div>
+      </section>
+      <section class="panel">
+        <div id="term-status" class="meta">-</div>
+      </section>
+    </main>
+
+    <div id="media-lightbox" class="media-lightbox" hidden>
+      <button id="media-lightbox-close" class="media-lightbox__close" type="button" aria-label="Fermer l'image">
+        Fermer
+      </button>
+      <button id="media-lightbox-prev" class="media-lightbox__nav media-lightbox__nav--prev" type="button" aria-label="Image precedente">
+        Precedent
+      </button>
+      <button id="media-lightbox-next" class="media-lightbox__nav media-lightbox__nav--next" type="button" aria-label="Image suivante">
+        Suivant
+      </button>
+      <img id="media-lightbox-image" alt="Agrandissement de l'image" />
+    </div>
+
+    <nav class="mobile-dock" aria-label="Navigation rapide mobile">
+      <a href="index.html" class="mobile-dock__item mobile-dock__item--link">Accueil</a>
+      <button id="dock-term-quiz" type="button" class="mobile-dock__item">Quiz</button>
+      <button id="dock-term-share" type="button" class="mobile-dock__item">Copier lien</button>
+      <button id="dock-term-top" type="button" class="mobile-dock__item">Haut</button>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
+    <script src="data.js"></script>
+    <script src="term.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+  </body>
+</html>

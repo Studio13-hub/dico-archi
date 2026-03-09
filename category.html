@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Categorie - DicoArchi</title>
+    <meta name="description" content="Parcours des termes par categorie sur DicoArchi." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Par categorie</div>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Non connecte</span>
+            <a class="link-button" href="index.html">Dictionnaire</a>
+            <a class="link-button" href="contribuer.html">Contribuer</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se deconnecter</button>
+          </div>
+        </div>
+        <h1 id="category-title">Categorie</h1>
+        <p id="category-subtitle">Chargement...</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div id="category-breadcrumb" class="meta"></div>
+        <div id="category-cards" class="cards"></div>
+      </section>
+    </main>
+
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
+    <script src="data.js"></script>
+    <script src="category.js"></script>
+  </body>
+</html>

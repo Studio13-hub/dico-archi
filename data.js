@@ -481,5 +481,276 @@ const TERMS = [
     definition: "Chemin d'evacuation securise en cas d'incendie.",
     example: "Escalier protege.",
     related: ["AEAI (PPI)", "Compartimentage"]
+  },
+  {
+    term: "Toitures plates",
+    category: "Toitures plates",
+    definition: "Systeme de toiture a faible pente integrant structure porteuse, isolation, etancheite et evacuation des eaux.",
+    example: "En logement collectif, la toiture plate facilite l'integration technique et la maintenance.",
+    related: ["Types de toitures plates", "Composition des toitures plates"]
+  },
+  {
+    term: "Types de toitures plates",
+    category: "Toitures plates",
+    definition: "Differentes conceptions de toitures plates selon l'ordre des couches et le principe constructif.",
+    example: "Le choix entre toiture chaude, compacte, duo ou froide depend du contexte du projet.",
+    related: ["Toiture chaude", "Toiture compacte", "Toiture duo", "Toiture froide"]
+  },
+  {
+    term: "Toiture chaude",
+    category: "Toitures plates",
+    definition: "Toiture plate non ventilee dont l'isolation est placee sous la membrane d'etancheite.",
+    example: "Solution courante pour assurer une continuite thermique simple.",
+    related: ["Pare-vapeur", "Isolation thermique et phonique (toitures plates)"]
+  },
+  {
+    term: "Toiture compacte",
+    category: "Toitures plates",
+    definition: "Variante de toiture plate avec couches assemblees de facon dense sans lame d'air ventilee.",
+    example: "Utilisee quand on recherche une composition simple et continue.",
+    related: ["Toiture chaude", "Tableau synoptique des toitures plates"]
+  },
+  {
+    term: "Toiture duo",
+    category: "Toitures plates",
+    definition: "Systeme combinant isolation sous et sur l'etancheite afin d'optimiser la performance thermique.",
+    example: "Souvent choisie lors d'une amelioration energetique de toiture existante.",
+    related: ["Toiture chaude", "Isolation thermique et phonique (toitures plates)"]
+  },
+  {
+    term: "Toiture froide",
+    category: "Toitures plates",
+    definition: "Toiture plate avec lame d'air ventilee entre les couches pour gerer les transferts d'humidite.",
+    example: "Solution specifique quand la conception impose une ventilation interne.",
+    related: ["Pare-vapeur", "Exigences des toitures plates"]
+  },
+  {
+    term: "Toiture nue",
+    category: "Toitures plates",
+    definition: "Toiture plate avec membrane apparente, sans protection lourde de surface.",
+    example: "Approche frequente pour des surfaces non amenagees en terrasse accessible.",
+    related: ["Entretien des toitures plates", "Travaux de ferblanterie (toitures plates)"]
+  },
+  {
+    term: "Tableau synoptique des toitures plates",
+    category: "Toitures plates",
+    definition: "Outil de comparaison rapide des systemes de toitures plates et de leurs conditions d'emploi.",
+    example: "Permet de choisir une variante en avant-projet sur des bases comparables.",
+    related: ["Types de toitures plates", "Exigences des toitures plates"]
+  },
+  {
+    term: "Composition des toitures plates",
+    category: "Toitures plates",
+    definition: "Organisation des couches fonctionnelles: structure, pare-vapeur, isolation, etancheite et protection.",
+    example: "Le detail varie selon la destination et les contraintes techniques.",
+    related: ["Structure porteuse (toitures plates)", "Pare-vapeur", "Pente des toitures plates"]
+  },
+  {
+    term: "Structure porteuse (toitures plates)",
+    category: "Toitures plates",
+    definition: "Element support principal qui reprend les charges permanentes et climatiques de la toiture plate.",
+    example: "Dalle beton ou support equivalent dimensionne selon les exigences du projet.",
+    related: ["Composition des toitures plates", "Exigences des toitures plates"]
+  },
+  {
+    term: "Pente des toitures plates",
+    category: "Toitures plates",
+    definition: "Inclinaison minimale necessaire pour assurer l'ecoulement des eaux de pluie vers les points de collecte.",
+    example: "Une pente reguliere limite les stagnations d'eau.",
+    related: ["Indications de construction (toitures plates)", "Entretien des toitures plates"]
+  },
+  {
+    term: "Pare-vapeur",
+    category: "Toitures plates",
+    definition: "Couche limitant le passage de vapeur d'eau depuis l'interieur vers les zones froides de la toiture.",
+    example: "Place sous l'isolation pour reduire les risques de condensation.",
+    related: ["Toiture chaude", "Isolation thermique et phonique (toitures plates)"]
+  },
+  {
+    term: "Isolation thermique et phonique (toitures plates)",
+    category: "Toitures plates",
+    definition: "Dispositif d'isolation garantissant performance energetique et confort acoustique en toiture plate.",
+    example: "Le choix de l'isolant depend des objectifs thermiques et de la destination des locaux.",
+    related: ["Toiture duo", "Exigences des toitures plates"]
+  },
+  {
+    term: "Travaux de ferblanterie (toitures plates)",
+    category: "Toitures plates",
+    definition: "Elements metalliques de raccord et finition assurant etancheite et durabilite des points singuliers.",
+    example: "Habillage d'acrotere et raccord de releve d'etancheite.",
+    related: ["Terminologie des toitures plates", "Indications de construction (toitures plates)"]
+  },
+  {
+    term: "Exigences des toitures plates",
+    category: "Toitures plates",
+    definition: "Contraintes techniques, normatives et d'usage a respecter pour concevoir une toiture plate fiable.",
+    example: "Verification simultanee de l'etancheite, de la securite et de la maintenance.",
+    related: ["Normes et recommandations", "Criteres techniques"]
+  },
+  {
+    term: "Terminologie des toitures plates",
+    category: "Toitures plates",
+    definition: "Vocabulaire de base pour decrire correctement les composants et details des toitures plates.",
+    example: "Permet d'aligner les echanges entre bureau, chantier et entreprises.",
+    related: ["Glossaire des toitures plates", "Travaux de ferblanterie (toitures plates)"]
+  },
+  {
+    term: "Indications de construction (toitures plates)",
+    category: "Toitures plates",
+    definition: "Recommandations de mise en oeuvre pour limiter les pathologies et garantir la qualite d'execution.",
+    example: "Respect de la sequence de pose des couches et des raccords.",
+    related: ["Pente des toitures plates", "Exigences des toitures plates"]
+  },
+  {
+    term: "Entretien des toitures plates",
+    category: "Toitures plates",
+    definition: "Operations periodiques de controle, nettoyage et maintenance pour conserver la performance de la toiture.",
+    example: "Inspection des evacuations, relevés et points singuliers.",
+    related: ["Dispositifs antichutes", "Toiture nue"]
+  },
+  {
+    term: "Dispositifs antichutes",
+    category: "Toitures plates",
+    definition: "Equipements de securite en toiture destines a prevenir les chutes de hauteur lors des interventions.",
+    example: "Ligne de vie et points d'ancrage lors des operations d'entretien.",
+    related: ["Entretien des toitures plates", "Exigences des toitures plates"]
+  },
+  {
+    term: "Glossaire des toitures plates",
+    category: "Toitures plates",
+    definition: "Referentiel de definitions pour harmoniser la communication entre conception, execution et maintenance.",
+    example: "Utilise pour clarifier les termes techniques dans les documents de projet.",
+    related: ["Terminologie des toitures plates", "Publications techniques (toitures plates)"]
+  },
+  {
+    term: "Publications techniques (toitures plates)",
+    category: "Toitures plates",
+    definition: "Documents de reference pour approfondir conception, execution et entretien des toitures plates.",
+    example: "Consultes pour verifier un detail de principe avant execution.",
+    related: ["Sites Internet techniques (toitures plates)", "Normes et recommandations"]
+  },
+  {
+    term: "Sites Internet techniques (toitures plates)",
+    category: "Toitures plates",
+    definition: "Sources en ligne utiles pour suivre les bonnes pratiques et mises a jour techniques sur les toitures plates.",
+    example: "Verification d'un detail de raccord sur une fiche technique actualisee.",
+    related: ["Publications techniques (toitures plates)", "Exigences des toitures plates"]
+  },
+  {
+    term: "Introduction aux materiaux de construction",
+    category: "Bases des materiaux",
+    definition: "Vue d'ensemble des familles de materiaux, de leurs usages et des criteres de choix dans un projet de construction.",
+    example: "En phase d'avant-projet, on compare plusieurs familles de materiaux avant de fixer une solution.",
+    related: ["Objectifs de l'etude des materiaux", "Classification des materiaux"]
+  },
+  {
+    term: "Objectifs de l'etude des materiaux",
+    category: "Bases des materiaux",
+    definition: "Comprendre les proprietes, limites et conditions d'emploi des materiaux pour choisir des solutions fiables, durables et conformes.",
+    example: "Selectionner un materiau en tenant compte des contraintes techniques, normatives et economiques.",
+    related: ["Evaluation des materiaux de construction", "Normes et recommandations"]
+  },
+  {
+    term: "Structure des materiaux",
+    category: "Bases des materiaux",
+    definition: "Organisation interne d'un materiau (composition et arrangement) qui influence ses performances mecaniques, thermiques et hygriques.",
+    example: "Une structure poreuse modifie la resistance mecanique et le comportement a l'humidite.",
+    related: ["Classification par composition", "Criteres techniques"]
+  },
+  {
+    term: "Classification des materiaux",
+    category: "Bases des materiaux",
+    definition: "Methode de tri des materiaux selon leur origine, leur composition, leur comportement ou leur usage en construction.",
+    example: "On classe les materiaux par famille minerale, metallique, organique ou synthetique.",
+    related: ["Classification par composition", "Classification en pratique"]
+  },
+  {
+    term: "Classification par composition",
+    category: "Bases des materiaux",
+    definition: "Classement fonde sur les constituants principaux d'un materiau afin d'anticiper ses proprietes et son domaine d'emploi.",
+    example: "Distinguer un materiau a base minerale d'un materiau polymere pour choisir la bonne mise en oeuvre.",
+    related: ["Classification des materiaux", "Definitions des materiaux"]
+  },
+  {
+    term: "Classification en pratique",
+    category: "Bases des materiaux",
+    definition: "Application concrete des systemes de classification pour comparer des variantes et documenter un choix de projet.",
+    example: "Comparer deux solutions de facade en utilisant une grille identique de criteres.",
+    related: ["Evaluation des materiaux de construction", "Criteres architecturaux"]
+  },
+  {
+    term: "Definitions des materiaux",
+    category: "Bases des materiaux",
+    definition: "Ensemble de notions de base (termes et vocabulaire) utilisees pour decrire correctement les materiaux et leurs proprietes.",
+    example: "Clarifier la difference entre densite, resistance et durabilite avant de specifier un produit.",
+    related: ["Introduction aux materiaux de construction", "Classification des materiaux"]
+  },
+  {
+    term: "Evaluation des materiaux de construction",
+    category: "Bases des materiaux",
+    definition: "Analyse multicritere permettant de juger la pertinence d'un materiau pour un usage donne.",
+    example: "Une solution est retenue apres analyse technique, environnementale et economique.",
+    related: ["Criteres architecturaux", "Criteres techniques", "Ecologie", "Criteres economiques"]
+  },
+  {
+    term: "Criteres architecturaux",
+    category: "Bases des materiaux",
+    definition: "Critiques de choix lies a l'expression architecturale, a l'integration visuelle et a la coherence du projet.",
+    example: "Choix d'un parement en fonction de la texture, de la teinte et du contexte urbain.",
+    related: ["Evaluation des materiaux de construction", "Criteres techniques"]
+  },
+  {
+    term: "Criteres techniques",
+    category: "Bases des materiaux",
+    definition: "Exigences de performance (resistance, durabilite, feu, humidite, mise en oeuvre) pour garantir la conformite et la fiabilite.",
+    example: "Verification de la resistance a l'usure d'un materiau de sol dans une zone a fort passage.",
+    related: ["Evaluation des materiaux de construction", "Normes et recommandations"]
+  },
+  {
+    term: "Sante et bien-etre",
+    category: "Bases des materiaux",
+    definition: "Impact des materiaux sur la qualite de l'air interieur, le confort et la securite des occupants.",
+    example: "Preference pour des produits faibles en emissions dans des locaux occupes en continu.",
+    related: ["Ecologie", "Criteres techniques"]
+  },
+  {
+    term: "Ecologie",
+    category: "Bases des materiaux",
+    definition: "Evaluation environnementale des materiaux sur leur cycle de vie: extraction, fabrication, transport, usage et fin de vie.",
+    example: "Comparer l'empreinte carbone de deux alternatives avant specification.",
+    related: ["Criteres economiques", "Sante et bien-etre"]
+  },
+  {
+    term: "Criteres economiques",
+    category: "Bases des materiaux",
+    definition: "Analyse des couts directs et indirects d'un materiau, y compris entretien, duree de vie et remplacement.",
+    example: "Une solution plus chere a l'achat peut etre plus rentable sur la duree.",
+    related: ["Evaluation des materiaux de construction", "Ecologie"]
+  },
+  {
+    term: "Normes et recommandations",
+    category: "Bases des materiaux",
+    definition: "Documents de reference (dont normes SIA) qui cadrent les exigences techniques et la bonne pratique de mise en oeuvre.",
+    example: "Verification d'une solution constructive selon les exigences normatives applicables.",
+    related: ["Criteres techniques", "Bibliographie technique"]
+  },
+  {
+    term: "Bibliographie technique",
+    category: "Bases des materiaux",
+    definition: "Ensemble des references documentaires utiles pour approfondir les proprietes et l'emploi des materiaux.",
+    example: "Consultation de references metier avant validation d'un detail.",
+    related: ["Publications et adresses", "Normes et recommandations"]
+  },
+  {
+    term: "Publications et adresses",
+    category: "Bases des materiaux",
+    definition: "Repertoire de sources, organismes et contacts utiles pour obtenir des informations techniques fiables.",
+    example: "Utiliser un organisme de reference pour confirmer un point de conformite.",
+    related: ["Bibliographie technique", "Normes et recommandations"]
   }
 ];
+
+// Ensure terms are available globally for app.js in all browsers.
+if (typeof window !== "undefined") {
+  window.TERMS = TERMS;
+}

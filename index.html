@@ -21,62 +21,148 @@
       <div class="hero__content">
         <div class="hero__top">
           <div class="badge">Dico Architecture CH</div>
-          <div class="hero__actions">
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
             <span id="auth-status" class="meta meta--subtle">Non connecte</span>
-            <a class="link-button" href="auth.html" id="auth-link">Se connecter / Creer un compte</a>
+            <a class="link-button" href="auth.html" id="auth-link">Connexion</a>
             <button class="link-button" id="logout" type="button" hidden>Se deconnecter</button>
             <a class="link-button" href="contribuer.html">Contribuer</a>
             <a class="link-button" href="admin.html" id="admin-link" hidden>Admin</a>
           </div>
         </div>
-        <h1>Le dictionnaire du dessinateur en architecture</h1>
+        <h1>Le dictionnaire pratique du dessinateur en architecture</h1>
         <p>
-          Definitions claires pour debutants en Suisse romande : vocabulaire de bureau,
-          de chantier, et normes SIA / AEAI. Niveau debutant+ avec un peu de precision technique.
+          Un ouvrage concu pour accompagner les debutants dans la decouverte du metier de dessinateur en architecture.
+          Il rassemble des definitions claires du vocabulaire utilise au bureau d'architecture et sur le chantier,
+          tout en introduisant les notions essentielles liees aux normes SIA et AEAI.
+          L'objectif est d'offrir des reperes techniques simples et concrets pour mieux comprendre les plans,
+          les details constructifs et la pratique quotidienne de l'architecture.
+          Pense comme un outil pratique, ce dictionnaire aide etudiants, apprentis et jeunes professionnels
+          a se familiariser rapidement avec le langage du metier et les bases techniques indispensables a leur evolution.
         </p>
         <div class="controls">
           <input id="search" type="search" placeholder="Rechercher un terme…" autocomplete="off" />
           <select id="category">
             <option value="all">Toutes les categories</option>
           </select>
+          <select id="sort">
+            <option value="az">Tri A-Z</option>
+            <option value="category">Tri par categorie</option>
+          </select>
           <button id="random">Terme au hasard</button>
           <button id="quiz-toggle" class="ghost">Mode quiz</button>
         </div>
+        <div class="dashboard">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Termes visibles</span>
+            <strong id="stat-total">0</strong>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Categories</span>
+            <strong id="stat-categories">0</strong>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Etat synchro</span>
+            <strong id="sync-status">-</strong>
+          </div>
+        </div>
         <div class="meta" id="meta"></div>
-        <div class="meta meta--subtle" id="sync-status"></div>
       </div>
     </header>
 
     <main>
+      <section class="panel action-hub">
+        <h2>Acces rapide</h2>
+        <div class="action-hub__grid">
+          <button id="qa-all" class="action-tile" type="button">
+            <strong>Tous les termes</strong>
+            <span>Afficher toutes les fiches</span>
+          </button>
+          <button id="qa-quiz" class="action-tile" type="button">
+            <strong>Quiz</strong>
+            <span>Demarrer une manche</span>
+          </button>
+          <button id="qa-categories" class="action-tile" type="button">
+            <strong>Categories</strong>
+            <span>Explorer par domaine</span>
+          </button>
+          <a id="qa-contrib" class="action-tile action-tile--link" href="contribuer.html">
+            <strong>Contribuer</strong>
+            <span>Proposer un nouveau terme</span>
+          </a>
+        </div>
+      </section>
+      <section class="panel quick">
+        <div class="quick__header">
+          <h2>Explorer par categorie</h2>
+          <div class="quick__actions">
+            <button id="view-all-terms" class="ghost" type="button">Voir toutes les fiches</button>
+            <button id="clear-filters" class="ghost" type="button">Reinitialiser filtres</button>
+          </div>
+        </div>
+        <div id="category-grid" class="category-grid"></div>
+      </section>
       <section id="quiz" class="panel quiz hidden">
         <div class="quiz__header">
           <h2>Quiz</h2>
           <div id="quiz-score" class="quiz__score">0 / 0</div>
         </div>
+        <div class="quiz__meta">
+          <label class="quiz__mode">
+            Mode
+            <select id="quiz-mode">
+              <option value="easy">Facile</option>
+              <option value="medium" selected>Moyen</option>
+              <option value="hard">Difficile</option>
+            </select>
+          </label>
+          <span id="quiz-streak" class="meta meta--subtle">Serie: 0</span>
+          <span id="quiz-level" class="meta meta--subtle">Niveau: Echauffement</span>
+          <span id="quiz-timer" class="meta meta--subtle">Temps: 30s</span>
+          <button id="quiz-effects-toggle" class="ghost" type="button">Effets: ON</button>
+        </div>
+        <div class="quiz__progress">
+          <div id="quiz-progress-bar" class="quiz__progress-bar"></div>
+        </div>
         <div id="quiz-question" class="quiz__question">Clique sur “Mode quiz” pour commencer.</div>
         <div id="quiz-options" class="quiz__options"></div>
         <div id="quiz-feedback" class="quiz__feedback"></div>
+        <div id="quiz-badge" class="quiz__badge hidden"></div>
         <div class="quiz__actions">
-          <button id="quiz-next">Question suivante</button>
+          <button id="quiz-next">Demarrer le quiz</button>
+          <button id="quiz-replay" class="ghost hidden">Rejouer</button>
           <button id="quiz-exit" class="ghost">Quitter le quiz</button>
         </div>
+        <div class="quiz__leaderboard">
+          <h3>Top scores locaux</h3>
+          <div id="quiz-leaderboard" class="meta meta--subtle">Aucune manche terminee.</div>
+        </div>
       </section>
-      <section class="panel">
+      <section class="panel" id="terms-panel">
         <div id="cards" class="cards"></div>
       </section>
     </main>
 
     <footer>
       <div class="footer__inner">
-        <span>Fait pour apprendre sans jargon inutile.</span>
-        <span class="dot"></span>
-        <span>Alimente via Google Sheets / CSV et Supabase.</span>
+        <span>Realise par RDR Architectes SA.</span>
       </div>
     </footer>
 
+    <nav class="mobile-dock" aria-label="Navigation rapide mobile">
+      <button id="dock-home" type="button" class="mobile-dock__item">Accueil</button>
+      <button id="dock-quiz" type="button" class="mobile-dock__item">Quiz</button>
+      <button id="dock-random" type="button" class="mobile-dock__item">Hasard</button>
+      <button id="dock-top" type="button" class="mobile-dock__item">Haut</button>
+    </nav>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
+    <script src="menu.js"></script>
     <script src="data.js"></script>
     <script src="app.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>

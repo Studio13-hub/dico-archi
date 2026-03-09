@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Contribuer - Dico Architecture CH</title>
-    <meta name="description" content="Proposer un terme pour le dictionnaire." />
+    <title>Mon compte - Dico Architecture CH</title>
+    <meta name="description" content="Espace compte: role, etat d'acces et navigation vers contribution/admin." />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -25,38 +25,34 @@
             <button class="link-button" type="button" data-nav-logout hidden>Se deconnecter</button>
           </div>
         </div>
-        <h1>Proposer un terme</h1>
-        <p>Les contributions sont en attente de validation par un editeur.</p>
+        <h1>Mon compte</h1>
+        <p>Vue claire de ton acces et liens rapides vers les bons espaces.</p>
       </div>
     </header>
 
-    <main class="admin">
-      <section class="panel admin__status">
-        <div class="admin__status-row">
-          <div id="contrib-user">Utilisateur: -</div>
-        </div>
-        <div class="auth__message" id="contrib-message"></div>
-      </section>
-
-      <section class="panel admin__form">
-        <h2>Formulaire de contribution</h2>
-        <div class="admin__inputs">
-          <input id="term" type="text" placeholder="Terme" />
-          <input id="category" type="text" placeholder="Categorie" />
-          <textarea id="definition" placeholder="Definition"></textarea>
-          <textarea id="example" placeholder="Exemple"></textarea>
-          <input id="related" type="text" placeholder="Lie a (separe par |)" />
-          <input id="image-url" type="text" placeholder="Media URL (optionnel: .png/.jpg/.webp/.gif/.svg/.pdf)" />
+    <main class="auth">
+      <section class="panel account">
+        <div id="account-message" class="auth__message"></div>
+        <div class="account__grid">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Email</span>
+            <strong id="account-email">-</strong>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Role</span>
+            <strong id="account-role">-</strong>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Etat</span>
+            <strong id="account-active">-</strong>
+          </div>
         </div>
         <div class="auth__actions">
-          <button id="submit">Envoyer la proposition</button>
-          <button id="reset" class="ghost">Reinitialiser</button>
+          <a id="account-login-link" class="link-button" href="auth.html">Changer de compte</a>
+          <a id="account-contrib-link" class="link-button" href="contribuer.html">Contribuer</a>
+          <a id="account-admin-link" class="link-button" href="admin.html" hidden>Espace admin</a>
+          <button id="account-logout" type="button" hidden>Se deconnecter</button>
         </div>
-      </section>
-
-      <section class="panel admin__list">
-        <h2>Mes propositions</h2>
-        <div id="contrib-list" class="admin__table"></div>
       </section>
     </main>
 
@@ -64,7 +60,7 @@
     <script src="config.js"></script>
     <script src="menu.js"></script>
     <script src="nav.js"></script>
-    <script src="contribuer.js"></script>
+    <script src="compte.js"></script>
     <script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>

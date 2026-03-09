@@ -3,17 +3,18 @@
 ## Vue d'ensemble
 1. Le site public lit les termes depuis Supabase.
 2. Les utilisateurs creent un compte via `auth.html`.
-3. Tu actives le role editeur dans Supabase.
-4. Les editeurs ajoutent/modifient dans `admin.html` ou via import CSV.
+3. Tu attribues un role (`super_admin`, `maitre_apprentissage`, `apprenti`) dans Supabase.
+4. L'equipe de pilotage (super admin + maitre apprentissage) ajoute/modifie dans `admin.html`.
 
 ## Donnees
 - Table `terms`: les termes du dictionnaire.
-- Table `profiles`: roles des utilisateurs (is_editor).
+- Table `profiles`: roles des utilisateurs (`role`, `active`, compatibilite `is_editor`).
 - Bucket `term-images`: images publiques.
 
 ## Acces
 - Tout le monde peut lire.
-- Seuls les editeurs peuvent ecrire.
+- Seule l'equipe de pilotage peut ecrire.
+- Les apprentis peuvent proposer via `term_submissions`.
 
 ## Import CSV (tableau partage)
 1. Feuille Google Sheets avec colonnes:

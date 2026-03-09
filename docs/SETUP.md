@@ -3,16 +3,29 @@
 ## 1) Creer Supabase
 1. Va sur Supabase et cree un projet.
 2. Recupere l'URL du projet et la cle `anon`.
-3. Dans l'onglet SQL Editor, colle `supabase/schema.sql` et execute.
-4. Dans l'onglet SQL Editor, colle `supabase/storage.sql` et execute.
+3. Dans l'onglet SQL Editor, execute les scripts dans cet ordre:
+   - `supabase/schema.sql`
+   - `supabase/storage.sql`
+   - `supabase/submissions.sql`
+   - `supabase/submissions_update.sql`
+   - `supabase/audit.sql`
+   - `supabase/terms_workflow.sql`
+   - `supabase/roles_rdr.sql`
 
 ## 2) Configurer le site
 1. Remplis `config.js` avec les valeurs Supabase.
 2. Ouvre `index.html` pour tester.
 
-## 3) Ajouter des editeurs
-1. L'editeur se cree un compte via `auth.html`.
-2. Dans Supabase (Table editor), passe `profiles.is_editor` a `true` pour cet utilisateur.
+## 3) Ajouter les roles RDR
+1. Chaque personne cree son compte via `auth.html`.
+2. Dans Supabase (Table editor), mets a jour `profiles.role`:
+   - `super_admin`: gestion totale + gestion utilisateurs
+   - `maitre_apprentissage`: gestion editoriale (termes, propositions, audit)
+   - `apprenti`: contribution via `contribuer.html`
+3. Active/desactive un compte avec `profiles.active` (`true`/`false`).
+4. Verifie l'acces a `admin.html`:
+   - autorise pour `super_admin` et `maitre_apprentissage`
+   - refuse pour `apprenti` ou compte inactif
 
 ## 4) Importer un tableau partage (Google Sheets)
 1. Cree une feuille Google Sheets avec les colonnes:

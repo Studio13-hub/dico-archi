@@ -13,9 +13,16 @@
       <div class="hero__content">
         <div class="hero__top">
           <div class="badge">Dico Architecture CH</div>
-          <div class="hero__actions">
-            <a class="link-button" href="index.html">Retour au dictionnaire</a>
-            <a class="link-button" href="admin.html">Espace admin</a>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Non connecte</span>
+            <a class="link-button" href="index.html">Dictionnaire</a>
+            <a class="link-button" href="contribuer.html">Contribuer</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se deconnecter</button>
           </div>
         </div>
         <h1>Connexion / Creation de compte</h1>
@@ -25,23 +32,49 @@
 
     <main class="auth">
       <section class="panel">
-        <div class="auth__inputs">
-          <input id="email" type="email" placeholder="Adresse email" autocomplete="email" />
-          <input id="password" type="password" placeholder="Mot de passe" autocomplete="current-password" />
-        </div>
-        <div class="auth__actions">
-          <button id="login">Se connecter</button>
-          <button id="signup" class="ghost">Creer un compte</button>
-        </div>
+        <form id="auth-form" novalidate>
+          <div class="auth__inputs">
+            <input id="email" type="email" placeholder="Adresse email" autocomplete="email" />
+            <input id="password" type="password" placeholder="Mot de passe" autocomplete="current-password" />
+          </div>
+          <div class="auth__actions">
+            <button id="login" type="submit">Se connecter</button>
+            <button id="signup" type="button" class="ghost">Creer un compte</button>
+            <button id="forgot-password" type="button" class="ghost">Mot de passe oublie ?</button>
+          </div>
+        </form>
+        <form id="reset-form" novalidate hidden>
+          <div class="auth__inputs">
+            <input
+              id="new-password"
+              type="password"
+              placeholder="Nouveau mot de passe"
+              autocomplete="new-password"
+            />
+            <input
+              id="confirm-password"
+              type="password"
+              placeholder="Confirmer le nouveau mot de passe"
+              autocomplete="new-password"
+            />
+          </div>
+          <div class="auth__actions">
+            <button id="save-new-password" type="submit">Enregistrer le nouveau mot de passe</button>
+            <button id="back-to-login" type="button" class="ghost">Retour connexion</button>
+          </div>
+        </form>
         <div class="auth__message" id="auth-message"></div>
         <div class="meta meta--subtle">
-          Pour obtenir les droits d'editeur, contacte l'administrateur apres creation de ton compte.
+          Apres creation de ton compte, contacte un super admin pour recevoir un role.
         </div>
       </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
     <script src="auth.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>
