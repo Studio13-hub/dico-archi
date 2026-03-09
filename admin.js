@@ -29,6 +29,12 @@ const statPublished = document.getElementById("admin-stat-published");
 const usersPanel = document.getElementById("users-panel");
 const usersTable = document.getElementById("users-table");
 const usersEmpty = document.getElementById("users-empty");
+const chatFeedbackPanel = document.getElementById("chat-feedback-panel");
+const chatFeedbackList = document.getElementById("chat-feedback-list");
+const chatFeedbackEmpty = document.getElementById("chat-feedback-empty");
+const chatFeedbackRating = document.getElementById("chat-feedback-rating");
+const chatFeedbackSource = document.getElementById("chat-feedback-source");
+const chatFeedbackRefresh = document.getElementById("chat-feedback-refresh");
 
 let supabaseClient = null;
 let currentUser = null;
@@ -46,6 +52,7 @@ let isProcessingSubmission = false;
 let isDeletingTerm = false;
 let updatingProfileId = null;
 let adminFilterRafId = 0;
+let isLoadingChatFeedback = false;
 
 const ROLE_LABELS = {
   super_admin: "Super admin",
@@ -536,6 +543,81 @@ function renderAudit(list) {
     row.appendChild(info);
     row.appendChild(meta);
     auditList.appendChild(row);
+  }
+}
+
+function renderChatFeedback(list) {
+  if (!chatFeedbackList || !chatFeedbackEmpty) return;
+  chatFeedbackList.innerHTML = "";
+
+  if (!list.length) {
+    chatFeedbackEmpty.style.display = "block";
+    return;
+  }
+
+  chatFeedbackEmpty.style.display = "none";
+
+  for (const item of list) {
+    const row = document.createElement("div");
+    row.className = "admin__row";
+
+    const when = item.created_at ? new Date(item.created_at).toLocaleString() : "-";
+    const ratingLabel = item.rating === "up" ? "Utile" : "À améliorer";
+    const sourceLabel = item.source === "ai" ? "IA" : "Fallback";
+
+    const title = document.createElement("div");
+    title.className = "admin__row-title";
+    title.textContent = `${ratingLabel} · ${sourceLabel} · ${when}`;
+
+    const info = document.createElement("div");
+    info.className = "admin__row-info";
+    info.textContent = item.user_message ? `Question: ${item.user_message}` : "Question: (non fournie)";
+
+    const meta = document.createElement("div");
+    meta.className = "admin__row-meta";
+    const page = [item.page_title || "", item.page_path || ""].filter(Boolean).join(" · ");
+    meta.textContent = page || "Page: inconnue";
+
+    const answer = document.createElement("div");
+    answer.className = "admin__row-meta";
+    answer.textContent = `Réponse: ${item.assistant_message || ""}`.slice(0, 700);
+
+    row.appendChild(title);
+    row.appendChild(info);
+    row.appendChild(meta);
+    row.appendChild(answer);
+    chatFeedbackList.appendChild(row);
+  }
+}
+
+async function fetchChatFeedback() {
+  if (!isSuperAdmin || !chatFeedbackPanel || !chatFeedbackList || !chatFeedbackRefresh) return;
+  if (isLoadingChatFeedback) return;
+  isLoadingChatFeedback = true;
+  setButtonBusy(chatFeedbackRefresh, true, "Chargement...", "Rafraîchir");
+
+  try {
+    const rating = chatFeedbackRating ? chatFeedbackRating.value : "all";
+    const source = chatFeedbackSource ? chatFeedbackSource.value : "all";
+    const params = new URLSearchParams({ rating, source, limit: "120" });
+
+    const response = await fetch(`/api/chat-feedback-list?${params.toString()}`);
+    const payload = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      const errorText = payload?.error || "lecture feedback impossible";
+      setMessage(`Feedback chatbot: ${errorText}`, true);
+      renderChatFeedback([]);
+      return;
+    }
+
+    renderChatFeedback(Array.isArray(payload.items) ? payload.items : []);
+  } catch (error) {
+    setMessage(`Feedback chatbot: ${getErrorMessage(error)}`, true);
+    renderChatFeedback([]);
+  } finally {
+    isLoadingChatFeedback = false;
+    setButtonBusy(chatFeedbackRefresh, false, "Chargement...", "Rafraîchir");
   }
 }
 
@@ -1193,11 +1275,15 @@ async function loadUser() {
   }
 
   if (usersPanel) usersPanel.hidden = !isSuperAdmin;
+  if (chatFeedbackPanel) chatFeedbackPanel.hidden = !isSuperAdmin;
 
   await fetchTerms();
   await fetchSubmissions();
   await fetchAudit();
-  if (isSuperAdmin) await fetchProfiles();
+  if (isSuperAdmin) {
+    await fetchProfiles();
+    await fetchChatFeedback();
+  }
 }
 
 async function logout() {
@@ -1212,6 +1298,9 @@ adminSearch.addEventListener("input", scheduleAdminFilter);
 if (adminSort) adminSort.addEventListener("change", filterTerms);
 adminLogout.addEventListener("click", logout);
 if (exportPublishedButton) exportPublishedButton.addEventListener("click", exportPublishedCsv);
+if (chatFeedbackRefresh) chatFeedbackRefresh.addEventListener("click", fetchChatFeedback);
+if (chatFeedbackRating) chatFeedbackRating.addEventListener("change", fetchChatFeedback);
+if (chatFeedbackSource) chatFeedbackSource.addEventListener("change", fetchChatFeedback);
 for (const btn of workflowButtons) {
   btn.addEventListener("click", () => {
     currentStatusFilter = btn.dataset.termFilter || "all";

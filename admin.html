@@ -110,6 +110,28 @@
         <div id="users-table" class="admin__table"></div>
       </section>
 
+      <section class="panel admin__list" id="chat-feedback-panel" hidden>
+        <h2>Feedback chatbot</h2>
+        <p class="meta meta--subtle">
+          Réservé au super admin: retours Utiles / À améliorer pour améliorer l'assistant.
+        </p>
+        <div class="admin__toolbar">
+          <select id="chat-feedback-rating">
+            <option value="all">Filtre note: Toutes</option>
+            <option value="up">Utile</option>
+            <option value="down">À améliorer</option>
+          </select>
+          <select id="chat-feedback-source">
+            <option value="all">Source: Toutes</option>
+            <option value="ai">IA</option>
+            <option value="fallback">Fallback</option>
+          </select>
+          <button id="chat-feedback-refresh" type="button" class="ghost">Rafraîchir</button>
+        </div>
+        <div id="chat-feedback-empty" class="meta meta--subtle">Aucun feedback chargé.</div>
+        <div id="chat-feedback-list" class="admin__table"></div>
+      </section>
+
       <section class="panel admin__list">
         <h2>Termes existants</h2>
         <div class="admin__toolbar">
