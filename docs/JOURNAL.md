@@ -1,0 +1,96 @@
+# Journal de bord - Dico-archi
+
+## 2026-03-08
+- Projet deplace et consolide dans `~/Desktop/Studio13/Projects/Dico-archi`.
+- UX publique enrichie:
+  - cartes + tri + categories rapides
+  - pages `term.html` et `category.html`
+  - placeholders image et fallback contenu
+- Workflow editorial structure:
+  - statut termes `draft/review/published`
+  - panneau admin: tri/filtres/export CSV + audit
+- Roles metier introduits:
+  - `super_admin`, `maitre_apprentissage`, `apprenti`
+  - migration SQL `supabase/roles_rdr.sql`
+  - fallback RPC `supabase/profiles_admin_rpc.sql`
+- Accessibilite/navigation:
+  - page `compte.html`
+  - menu hamburger global `menu.js`
+  - focus clavier visible + comportement entree connexion corrige
+
+## 2026-03-09
+- Reprise macro `RepriseDico-archi` executee (diagnostic git/docs/code + serveur local).
+- Correctifs fiabilite session/UI appliques:
+  - `admin.js`: detection des erreurs auth (JWT/session), redirection propre vers `auth.html`, verrou suppression terme, verrou global actions de propositions pendant traitement.
+  - `contribuer.js`: verrou anti double-envoi, etat bouton "Envoi...", gestion session expiree avec blocage formulaire.
+  - `app.js`: sync auth UI via `onAuthStateChange`, deconnexion plus robuste.
+  - `nav.js` et `compte.js`: mise a jour immediate de l'etat connecte/deconnecte entre onglets.
+- Hygiene repo:
+  - `.gitignore` complete (`.DS_Store`, `*.log`, `supabase/.temp/`).
+- Correctifs fiabilite admin dans `admin.js`:
+  - fallback roles `profiles -> RPC` renforce quand lecture directe vide/incomplete
+  - update profil super admin robuste (evite faux succes RLS)
+  - verrouillage des actions sensibles (`save`, `accepter/refuser`, `appliquer role`) pendant traitement
+- Correctif workflow propositions:
+  - blocage anti-doublon avant acceptation si terme deja existant (memoire locale + verification DB).
+- Messages de retour precises par section (`Termes`, `Propositions`, `Historique`, `Gestion des roles`).
+- Ajout verrou DB pour acceptation concurrente:
+  - nouvelle RPC `supabase/submissions_accept_atomic.sql`
+  - branchement `admin.js` sur `accept_submission_atomic(...)` avec fallback legacy si migration non appliquee.
+- Durcissement securite frontend:
+  - suppression des `innerHTML` dynamiques dans `term.js` et `category.js` (DOM construit via `textContent`/`createElement`)
+  - validation des URLs image (`http/https` uniquement, ou chemin relatif) dans `admin.js`, `contribuer.js`, `app.js`, `term.js`
+- Optimisation rendu:
+  - debounce par `requestAnimationFrame` sur la recherche `index` (`app.js`) et `admin` (`admin.js`) pour reduire les re-renders pendant la frappe.
+- Hardening deploiement Vercel:
+  - ajout `vercel.json` avec CSP + headers de securite (`HSTS`, `X-Frame-Options`, `nosniff`, `Permissions-Policy`, `COOP`, `CORP`).
+- Deploiement prod execute:
+  - URL alias: `https://dico-archi.vercel.app`
+  - verification `curl -I` OK sur `/` et `/admin.html` (CSP + headers de securite presents).
+- Optimisation rendu index:
+  - pagination legere cote client dans `app.js` (batch de 24 cartes + bouton `Afficher plus`)
+  - reduction du cout de rendu initial quand beaucoup de termes sont visibles.
+- Redeploiement prod apres optimisation index:
+  - alias `https://dico-archi.vercel.app` mis a jour
+  - controle `curl -I` OK (headers securite toujours presents).
+
+- Optimisation recherche index:
+  - pre-index `search_text` calcule une fois au chargement (`app.js`)
+  - suppression des concatenations/re-lowercase a chaque frappe.
+- Redeploiement prod apres optimisation recherche:
+  - alias `https://dico-archi.vercel.app` mis a jour
+  - controle `curl -I` OK.
+- UX accueil public (categories d'abord):
+  - fiches non affichees au chargement par defaut
+  - grille de categories avec compteurs
+  - affichage des fiches seulement apres action utilisateur (categorie/recherche/voir toutes les fiches).
+- Quiz "fun" et progression:
+  - modes `Facile/Moyen/Difficile` (timer + pression adaptee)
+  - classement local des meilleurs scores (stockage localStorage)
+  - effets activables `ON/OFF` (sons + micro-animations).
+- Nouvelle categorie integree: `Toitures plates`
+  - fiches ajoutees dans `data.js` (categorie visible sur le site)
+  - script SQL d'upsert pret: `supabase/seed_toitures_plates.sql`.
+- Nouvelle categorie integree: `Bases des materiaux` (CM0)
+  - fiches ajoutees dans `data.js`
+  - script SQL d'upsert pret: `supabase/seed_bases_materiaux.sql`.
+- Fiche media: evolutions majeures
+  - support multi-medias (plusieurs images + PDF) cote admin
+  - galerie sur `term.html`
+  - lightbox image + navigation precedent/suivant + clavier.
+- Correctif bug fiche "Bibliographie technique"
+  - cause isolee: media AVIF instable
+  - mitigation appliquee: AVIF non rendu en image sur le front.
+- Durcissement securite media complet:
+  - validation stricte formats cote `admin.js` + `contribuer.js`
+  - script SQL `supabase/media_security.sql` ajoute (CHECK constraints + policies storage MIME strictes)
+  - script execute dans Supabase (retour: `Success. No rows returned`).
+- Authentification:
+  - ajout du flux standard "Mot de passe oublie ?" sur `auth.html`/`auth.js`
+  - reset par email via Supabase + ecran de definition nouveau mot de passe.
+- Refonte UX inspiree mockups initiaux:
+  - `index.html`: section "Acces rapide"
+  - dock mobile fixe (home + fiche)
+  - `term.html`: meta lecture/categorie + bloc "Types et variantes".
+- Deploiements prod multiples durant la session
+  - alias final confirme: `https://dico-archi.vercel.app`.
