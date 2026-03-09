@@ -5,6 +5,7 @@ const adminLogout = document.getElementById("admin-logout");
 
 const termInput = document.getElementById("term");
 const categoryInput = document.getElementById("category");
+const statusInput = document.getElementById("term-status");
 const definitionInput = document.getElementById("definition");
 const exampleInput = document.getElementById("example");
 const relatedInput = document.getElementById("related");
@@ -17,19 +18,216 @@ const saveButton = document.getElementById("save");
 const resetButton = document.getElementById("reset");
 const termsTable = document.getElementById("terms-table");
 const adminSearch = document.getElementById("admin-search");
+const adminSort = document.getElementById("admin-sort");
+const exportPublishedButton = document.getElementById("export-published");
 const auditList = document.getElementById("audit-list");
 const auditEmpty = document.getElementById("audit-empty");
+const workflowButtons = document.querySelectorAll("[data-term-filter]");
+const statDraft = document.getElementById("admin-stat-draft");
+const statReview = document.getElementById("admin-stat-review");
+const statPublished = document.getElementById("admin-stat-published");
+const usersPanel = document.getElementById("users-panel");
+const usersTable = document.getElementById("users-table");
+const usersEmpty = document.getElementById("users-empty");
 
 let supabaseClient = null;
 let currentUser = null;
-let isEditor = false;
+let userProfile = null;
+let canManageTerms = false;
+let isSuperAdmin = false;
 let terms = [];
 let editingId = null;
 let editingSubmission = null;
+let supportsTermStatus = true;
+let currentStatusFilter = "all";
+let profiles = [];
+let isSavingTerm = false;
+let isProcessingSubmission = false;
+let isDeletingTerm = false;
+let updatingProfileId = null;
+let adminFilterRafId = 0;
+
+const ROLE_LABELS = {
+  super_admin: "Super admin",
+  maitre_apprentissage: "Maitre apprentissage",
+  apprenti: "Apprenti"
+};
+
+function normalizeProfile(profile) {
+  if (!profile) return null;
+  return {
+    role: profile.role || (profile.is_editor ? "maitre_apprentissage" : "apprenti"),
+    active: profile.active !== false,
+    is_editor: Boolean(profile.is_editor)
+  };
+}
+
+function canManageFromProfile(profile) {
+  if (!profile || profile.active === false) return false;
+  if (profile.role === "super_admin" || profile.role === "maitre_apprentissage") return true;
+  return Boolean(profile.is_editor);
+}
+
+function isSuperAdminProfile(profile) {
+  if (!profile || profile.active === false) return false;
+  return profile.role === "super_admin";
+}
 
 function setMessage(text, isError = false) {
   adminMessage.textContent = text;
   adminMessage.style.color = isError ? "#d94e2b" : "#1f7a70";
+}
+
+function getErrorMessage(error, fallback = "Operation impossible.") {
+  if (!error) return fallback;
+  return error.message || String(error);
+}
+
+function isAuthError(error) {
+  if (!error) return false;
+  const code = String(error.code || "").toUpperCase();
+  const message = String(error.message || "").toLowerCase();
+  if (code === "401" || code === "403" || code === "PGRST301") return true;
+  if (message.includes("jwt")) return true;
+  if (message.includes("auth session missing")) return true;
+  if (message.includes("token") && message.includes("expired")) return true;
+  return false;
+}
+
+async function handleAuthError(error, contextLabel) {
+  if (!isAuthError(error)) return false;
+  const prefix = contextLabel ? `${contextLabel}: ` : "";
+  setMessage(`${prefix}session expiree. Reconnecte-toi.`, true);
+  try {
+    if (supabaseClient) await supabaseClient.auth.signOut();
+  } catch (_error) {
+    // Ignore sign out errors.
+  }
+  window.location.href = "auth.html";
+  return true;
+}
+
+function isMissingRpc(error, functionName) {
+  if (!error) return false;
+  if (error.code === "PGRST202") return true;
+  const message = (error.message || "").toLowerCase();
+  return message.includes("could not find") && message.includes((functionName || "").toLowerCase());
+}
+
+function setButtonBusy(button, busy, busyLabel, idleLabel) {
+  if (!button) return;
+  if (busy) {
+    button.dataset.idleLabel = button.textContent || idleLabel;
+    button.textContent = busyLabel;
+    button.disabled = true;
+    return;
+  }
+  button.textContent = button.dataset.idleLabel || idleLabel;
+  button.disabled = false;
+}
+
+function isSafeImageUrl(value) {
+  if (!value) return true;
+  const raw = String(value).trim();
+  if (!raw) return true;
+  if (raw.startsWith("/")) return true;
+  try {
+    const parsed = new URL(raw, window.location.origin);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch (_error) {
+    return false;
+  }
+}
+
+function parseMediaUrls(raw) {
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw.map((item) => String(item || "").trim()).filter(Boolean);
+
+  const text = String(raw).trim();
+  if (!text) return [];
+
+  if (text.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(text);
+      if (Array.isArray(parsed)) {
+        return parsed.map((item) => String(item || "").trim()).filter(Boolean);
+      }
+    } catch (_error) {
+      // Falls back to line parsing below.
+    }
+  }
+
+  if (text.includes("\n")) {
+    return text
+      .split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  if (text.includes("|")) {
+    return text
+      .split("|")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [text];
+}
+
+function dedupeMediaUrls(list) {
+  const seen = new Set();
+  const result = [];
+  for (const item of list) {
+    const normalized = String(item || "").trim();
+    if (!normalized) continue;
+    const key = normalized.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push(normalized);
+  }
+  return result;
+}
+
+function isPdfUrl(url) {
+  if (!url) return false;
+  const raw = String(url).trim().toLowerCase();
+  if (!raw) return false;
+  try {
+    const parsed = new URL(raw, window.location.origin);
+    return parsed.pathname.endsWith(".pdf");
+  } catch (_error) {
+    return raw.endsWith(".pdf");
+  }
+}
+
+function isLikelyImageUrl(url) {
+  if (!url) return false;
+  const raw = String(url).trim();
+  if (!raw) return false;
+  try {
+    const parsed = new URL(raw, window.location.origin);
+    const path = parsed.pathname.toLowerCase();
+    return [".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"].some((ext) => path.endsWith(ext));
+  } catch (_error) {
+    const lowered = raw.toLowerCase();
+    return [".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"].some((ext) => lowered.endsWith(ext));
+  }
+}
+
+function isSupportedMediaUrl(url) {
+  if (!isSafeImageUrl(url)) return false;
+  if (isPdfUrl(url)) return true;
+  return isLikelyImageUrl(url);
+}
+
+function formatMediaUrlsForInput(raw) {
+  return parseMediaUrls(raw).join("\n");
+}
+
+function serializeMediaUrls(urls) {
+  if (!urls.length) return null;
+  if (urls.length === 1) return urls[0];
+  return JSON.stringify(urls);
 }
 
 function hasSupabaseConfig() {
@@ -45,6 +243,7 @@ function clearForm() {
   editingSubmission = null;
   termInput.value = "";
   categoryInput.value = "";
+  if (statusInput) statusInput.value = "draft";
   definitionInput.value = "";
   exampleInput.value = "";
   relatedInput.value = "";
@@ -60,6 +259,126 @@ function normalizeRelated(raw) {
     .split("|")
     .map((value) => value.trim())
     .filter(Boolean);
+}
+
+function getTermStatus(item) {
+  return item.status || "published";
+}
+
+function parseDateOrZero(value) {
+  if (!value) return 0;
+  const t = Date.parse(value);
+  return Number.isNaN(t) ? 0 : t;
+}
+
+function compareTerms(a, b, mode) {
+  const termA = (a.term || "").toLowerCase();
+  const termB = (b.term || "").toLowerCase();
+  const categoryA = (a.category || "").toLowerCase();
+  const categoryB = (b.category || "").toLowerCase();
+  const statusA = getTermStatus(a);
+  const statusB = getTermStatus(b);
+  const updatedA = parseDateOrZero(a.updated_at);
+  const updatedB = parseDateOrZero(b.updated_at);
+
+  switch (mode) {
+    case "term_desc":
+      return termB.localeCompare(termA, "fr");
+    case "status": {
+      const s = statusA.localeCompare(statusB, "fr");
+      return s !== 0 ? s : termA.localeCompare(termB, "fr");
+    }
+    case "category": {
+      const c = categoryA.localeCompare(categoryB, "fr");
+      return c !== 0 ? c : termA.localeCompare(termB, "fr");
+    }
+    case "updated_desc": {
+      if (updatedB !== updatedA) return updatedB - updatedA;
+      return termA.localeCompare(termB, "fr");
+    }
+    case "updated_asc": {
+      if (updatedA !== updatedB) return updatedA - updatedB;
+      return termA.localeCompare(termB, "fr");
+    }
+    case "term_asc":
+    default:
+      return termA.localeCompare(termB, "fr");
+  }
+}
+
+function updateWorkflowStats(list) {
+  const draft = list.filter((item) => getTermStatus(item) === "draft").length;
+  const review = list.filter((item) => getTermStatus(item) === "review").length;
+  const published = list.filter((item) => getTermStatus(item) === "published").length;
+  if (statDraft) statDraft.textContent = String(draft);
+  if (statReview) statReview.textContent = String(review);
+  if (statPublished) statPublished.textContent = String(published);
+}
+
+function updateFilterButtonsUi() {
+  for (const btn of workflowButtons) {
+    const active = btn.dataset.termFilter === currentStatusFilter;
+    btn.classList.toggle("chip--active", active);
+  }
+}
+
+function applyTermsView() {
+  const query = adminSearch.value.trim().toLowerCase();
+  const sortMode = adminSort ? adminSort.value : "term_asc";
+  let filtered = terms.slice();
+  if (currentStatusFilter !== "all") {
+    filtered = filtered.filter((item) => getTermStatus(item) === currentStatusFilter);
+  }
+  if (query) {
+    filtered = filtered.filter((item) =>
+      [item.term, item.category, item.definition, item.example, ...(item.related || [])]
+        .join(" ")
+        .toLowerCase()
+        .includes(query)
+    );
+  }
+  filtered.sort((a, b) => compareTerms(a, b, sortMode));
+  renderTable(filtered);
+  updateWorkflowStats(terms);
+  updateFilterButtonsUi();
+}
+
+function exportPublishedCsv() {
+  const published = terms
+    .filter((item) => getTermStatus(item) === "published")
+    .sort((a, b) => compareTerms(a, b, "term_asc"));
+
+  const esc = (value) => {
+    const s = String(value ?? "");
+    return `"${s.replaceAll('"', '""')}"`;
+  };
+
+  const rows = [
+    ["term", "category", "status", "definition", "example", "related", "image_url", "updated_at"],
+    ...published.map((item) => [
+      item.term,
+      item.category,
+      getTermStatus(item),
+      item.definition,
+      item.example,
+      (item.related || []).join(" | "),
+      item.image_url || "",
+      item.updated_at || ""
+    ])
+  ];
+
+  const csv = rows.map((row) => row.map(esc).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `dico-archi-published-${stamp}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  setMessage(`Export CSV termine (${published.length} termes publies).`);
 }
 
 function renderTable(list) {
@@ -83,7 +402,8 @@ function renderTable(list) {
 
     const info = document.createElement("div");
     info.className = "admin__row-info";
-    info.textContent = `${item.category} · ${item.definition}`;
+    const status = item.status || "published";
+    info.textContent = `${item.category} · ${status.toUpperCase()} · ${item.definition}`;
 
     const actions = document.createElement("div");
     actions.className = "admin__row-actions";
@@ -95,7 +415,7 @@ function renderTable(list) {
 
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Supprimer";
-    deleteButton.addEventListener("click", () => removeTerm(item));
+    deleteButton.addEventListener("click", () => removeTerm(item, deleteButton));
 
     actions.appendChild(editButton);
     actions.appendChild(deleteButton);
@@ -147,16 +467,22 @@ function renderSubmissions(list) {
     const loadButton = document.createElement("button");
     loadButton.className = "ghost";
     loadButton.textContent = "Modifier";
+    loadButton.dataset.submissionAction = "1";
+    loadButton.disabled = isProcessingSubmission;
     loadButton.addEventListener("click", () => loadSubmission(item, row));
 
     const approveButton = document.createElement("button");
     approveButton.textContent = "Accepter";
-    approveButton.addEventListener("click", () => approveSubmission(item));
+    approveButton.dataset.submissionAction = "1";
+    approveButton.disabled = isProcessingSubmission;
+    approveButton.addEventListener("click", () => approveSubmission(item, approveButton));
 
     const rejectButton = document.createElement("button");
     rejectButton.className = "ghost";
     rejectButton.textContent = "Refuser";
-    rejectButton.addEventListener("click", () => rejectSubmission(item));
+    rejectButton.dataset.submissionAction = "1";
+    rejectButton.disabled = isProcessingSubmission;
+    rejectButton.addEventListener("click", () => rejectSubmission(item, rejectButton));
 
     actions.appendChild(loadButton);
     actions.appendChild(approveButton);
@@ -169,6 +495,13 @@ function renderSubmissions(list) {
     row.appendChild(actions);
 
     container.appendChild(row);
+  }
+}
+
+function setSubmissionActionsDisabled(disabled) {
+  const buttons = document.querySelectorAll("[data-submission-action]");
+  for (const button of buttons) {
+    button.disabled = disabled;
   }
 }
 
@@ -211,10 +544,11 @@ function loadTerm(item) {
   editingSubmission = null;
   termInput.value = item.term || "";
   categoryInput.value = item.category || "";
+  if (statusInput) statusInput.value = item.status || "published";
   definitionInput.value = item.definition || "";
   exampleInput.value = item.example || "";
   relatedInput.value = (item.related || []).join(" | ");
-  imageUrlInput.value = item.image_url || "";
+  imageUrlInput.value = formatMediaUrlsForInput(item.image_url || "");
   reviewerCommentInput.value = "";
   if (submissionBanner) submissionBanner.textContent = "";
   termInput.focus();
@@ -226,10 +560,11 @@ function loadSubmission(item, row) {
   editingId = null;
   termInput.value = item.term || "";
   categoryInput.value = item.category || "";
+  if (statusInput) statusInput.value = "review";
   definitionInput.value = item.definition || "";
   exampleInput.value = item.example || "";
   relatedInput.value = (item.related || []).join(" | ");
-  imageUrlInput.value = item.image_url || "";
+  imageUrlInput.value = formatMediaUrlsForInput(item.image_url || "");
   reviewerCommentInput.value = item.reviewer_comment || "";
   if (submissionBanner) submissionBanner.textContent = `Proposition chargee: ${item.term}`;
   if (row) row.classList.add("highlight");
@@ -249,25 +584,48 @@ async function logAction(action, entity, entityId, details = {}) {
   });
 }
 
-async function removeTerm(item) {
-  if (!isEditor) return;
+async function removeTerm(item, actionButton) {
+  if (!canManageTerms) return;
+  if (isDeletingTerm) return;
   const confirmed = confirm(`Supprimer le terme "${item.term}" ?`);
   if (!confirmed) return;
+  isDeletingTerm = true;
+  setButtonBusy(actionButton, true, "Suppression...", "Supprimer");
 
-  const { error } = await supabaseClient.from("terms").delete().eq("id", item.id);
-  if (error) {
-    setMessage(error.message, true);
-    return;
+  try {
+    const { error } = await supabaseClient.from("terms").delete().eq("id", item.id);
+    if (error) {
+      if (await handleAuthError(error, "Termes")) return;
+      setMessage(`Termes: ${getErrorMessage(error)}`, true);
+      return;
+    }
+
+    await logAction("term_deleted", "terms", item.id, { term: item.term });
+    setMessage("Termes: terme supprime.");
+    await fetchTerms();
+    await fetchAudit();
+  } finally {
+    isDeletingTerm = false;
+    setButtonBusy(actionButton, false, "Suppression...", "Supprimer");
   }
-
-  await logAction("term_deleted", "terms", item.id, { term: item.term });
-  setMessage("Terme supprime.");
-  await fetchTerms();
-  await fetchAudit();
 }
 
-async function uploadImage(file) {
+async function uploadAsset(file) {
   if (!file) return "";
+  const maxSizeBytes = 10 * 1024 * 1024;
+  const mime = String(file.type || "").toLowerCase();
+  const ext = String(file.name || "").toLowerCase().split(".").pop() || "";
+  const allowedImageExt = ["png", "jpg", "jpeg", "webp", "gif", "svg"];
+  const isPdf = mime === "application/pdf" || ext === "pdf";
+  const isImage = mime.startsWith("image/") || allowedImageExt.includes(ext);
+
+  if (!isPdf && !isImage) {
+    throw new Error("Format non supporte. Utilise une image (png/jpg/webp/gif/svg) ou un PDF.");
+  }
+  if (file.size > maxSizeBytes) {
+    throw new Error("Fichier trop lourd (max 10 MB).");
+  }
+
   const fileExt = file.name.split(".").pop();
   const filePath = `${Date.now()}-${Math.random().toString(16).slice(2)}.${fileExt}`;
 
@@ -288,72 +646,141 @@ async function uploadImage(file) {
 }
 
 async function saveTerm() {
-  if (!isEditor) return;
+  if (!canManageTerms) return;
+  if (isSavingTerm) return;
+  isSavingTerm = true;
+  setButtonBusy(saveButton, true, "Enregistrement...", "Enregistrer");
 
-  const term = termInput.value.trim();
-  const category = categoryInput.value.trim();
-  const definition = definitionInput.value.trim();
-  const example = exampleInput.value.trim();
-  const related = normalizeRelated(relatedInput.value || "");
-
-  if (!term || !category || !definition) {
-    setMessage("Terme, categorie et definition sont requis.", true);
-    return;
-  }
-
-  let imageUrl = imageUrlInput.value.trim();
-  if (imageFileInput.files && imageFileInput.files[0]) {
-    try {
-      imageUrl = await uploadImage(imageFileInput.files[0]);
-      imageUrlInput.value = imageUrl;
-    } catch (error) {
-      setMessage(error.message, true);
+  try {
+    const term = termInput.value.trim();
+    const category = categoryInput.value.trim();
+    const definition = definitionInput.value.trim();
+    const example = exampleInput.value.trim();
+    const related = normalizeRelated(relatedInput.value || "");
+    const typedMedia = parseMediaUrls(imageUrlInput.value);
+    if (typedMedia.some((url) => !isSupportedMediaUrl(url))) {
+      setMessage("Termes: URL media invalide (http/https + extension image ou .pdf).", true);
       return;
     }
+
+    if (!term || !category || !definition) {
+      setMessage("Termes: terme, categorie et definition sont requis.", true);
+      return;
+    }
+
+    let mediaUrls = dedupeMediaUrls(typedMedia);
+    if (imageFileInput.files && imageFileInput.files.length) {
+      try {
+        setUploadStatus(`Upload ${imageFileInput.files.length} fichier(s)...`);
+        for (const file of Array.from(imageFileInput.files)) {
+          const uploadedUrl = await uploadAsset(file);
+          mediaUrls.push(uploadedUrl);
+        }
+        mediaUrls = dedupeMediaUrls(mediaUrls);
+        imageUrlInput.value = mediaUrls.join("\n");
+      } catch (error) {
+        setMessage(`Termes: ${getErrorMessage(error)}`, true);
+        return;
+      }
+    }
+
+    const payload = {
+      term,
+      category,
+      status: (statusInput && statusInput.value) ? statusInput.value : "published",
+      definition,
+      example,
+      related,
+      image_url: serializeMediaUrls(mediaUrls),
+      updated_by: currentUser ? currentUser.id : null
+    };
+
+    const effectivePayload = supportsTermStatus
+      ? payload
+      : {
+          term: payload.term,
+          category: payload.category,
+          definition: payload.definition,
+          example: payload.example,
+          related: payload.related,
+          image_url: payload.image_url
+        };
+
+    const query = editingId
+      ? supabaseClient.from("terms").update(effectivePayload).eq("id", editingId)
+      : supabaseClient.from("terms").insert(effectivePayload).select("id").single();
+
+    let { data, error } = await query;
+    if (error && supportsTermStatus && error.message && error.message.includes("status")) {
+      supportsTermStatus = false;
+      const fallbackQuery = editingId
+        ? supabaseClient.from("terms").update({
+            term: payload.term,
+            category: payload.category,
+            definition: payload.definition,
+            example: payload.example,
+            related: payload.related,
+            image_url: payload.image_url
+          }).eq("id", editingId)
+        : supabaseClient.from("terms").insert({
+            term: payload.term,
+            category: payload.category,
+            definition: payload.definition,
+            example: payload.example,
+            related: payload.related,
+            image_url: payload.image_url
+          }).select("id").single();
+      ({ data, error } = await fallbackQuery);
+    }
+    if (error) {
+      if (await handleAuthError(error, "Termes")) return;
+      setMessage(`Termes: ${getErrorMessage(error)}`, true);
+      return;
+    }
+
+    const action = editingId ? "term_updated" : "term_created";
+    const entityId = editingId || data?.id;
+    await logAction(action, "terms", entityId, { term });
+
+    setMessage(editingId ? "Termes: terme mis a jour." : "Termes: terme ajoute.");
+    clearForm();
+    await fetchTerms();
+    await fetchAudit();
+  } finally {
+    isSavingTerm = false;
+    setButtonBusy(saveButton, false, "Enregistrement...", "Enregistrer");
   }
-
-  const payload = {
-    term,
-    category,
-    definition,
-    example,
-    related,
-    image_url: imageUrl || null
-  };
-
-  const query = editingId
-    ? supabaseClient.from("terms").update(payload).eq("id", editingId)
-    : supabaseClient.from("terms").insert(payload).select("id").single();
-
-  const { data, error } = await query;
-  if (error) {
-    setMessage(error.message, true);
-    return;
-  }
-
-  const action = editingId ? "term_updated" : "term_created";
-  const entityId = editingId || data?.id;
-  await logAction(action, "terms", entityId, { term });
-
-  setMessage(editingId ? "Terme mis a jour." : "Terme ajoute.");
-  clearForm();
-  await fetchTerms();
-  await fetchAudit();
 }
 
 async function fetchTerms() {
   const { data, error } = await supabaseClient
     .from("terms")
-    .select("id, term, category, definition, example, related, image_url")
+    .select("id, term, category, status, definition, example, related, image_url, updated_at")
     .order("term", { ascending: true });
 
   if (error) {
+    if (await handleAuthError(error, "Termes")) return;
+    if (error.message && error.message.includes("status")) {
+      supportsTermStatus = false;
+      const fallback = await supabaseClient
+        .from("terms")
+        .select("id, term, category, definition, example, related, image_url, updated_at")
+        .order("term", { ascending: true });
+      if (fallback.error) {
+        if (await handleAuthError(fallback.error, "Termes")) return;
+        setMessage(fallback.error.message, true);
+        return;
+      }
+      terms = fallback.data || [];
+      applyTermsView();
+      return;
+    }
     setMessage(error.message, true);
     return;
   }
 
   terms = data || [];
-  renderTable(terms);
+  applyTermsView();
 }
 
 async function fetchSubmissions() {
@@ -366,7 +793,8 @@ async function fetchSubmissions() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    setMessage(error.message, true);
+    if (await handleAuthError(error, "Propositions")) return;
+    setMessage(`Propositions: ${getErrorMessage(error)}`, true);
     return;
   }
 
@@ -381,6 +809,7 @@ async function fetchAudit() {
     .limit(50);
 
   if (error) {
+    if (await handleAuthError(error, "Historique")) return;
     setMessage(error.message, true);
     return;
   }
@@ -388,91 +817,321 @@ async function fetchAudit() {
   renderAudit(data || []);
 }
 
-async function approveSubmission(item) {
-  const source = editingSubmission && editingSubmission.id === item.id ? editingSubmission : item;
-  const payload = {
-    term: termInput.value.trim() || source.term,
-    category: categoryInput.value.trim() || source.category,
-    definition: definitionInput.value.trim() || source.definition,
-    example: exampleInput.value.trim() || source.example,
-    related: normalizeRelated(relatedInput.value || source.related?.join(" | ") || ""),
-    image_url: imageUrlInput.value.trim() || source.image_url
-  };
-
-  const { error: insertError } = await supabaseClient.from("terms").insert(payload).select("id").single();
-  if (insertError) {
-    setMessage(insertError.message, true);
-    return;
-  }
-
-  const { error: updateError } = await supabaseClient
-    .from("term_submissions")
-    .update({
-      term: payload.term,
-      category: payload.category,
-      definition: payload.definition,
-      example: payload.example,
-      related: payload.related,
-      image_url: payload.image_url,
-      status: "accepted",
-      reviewer_comment: reviewerCommentInput.value.trim() || null,
-      reviewed_at: new Date().toISOString()
-    })
-    .eq("id", item.id);
-
-  if (updateError) {
-    setMessage(updateError.message, true);
-    return;
-  }
-
-  await logAction("submission_accepted", "term_submissions", item.id, { term: payload.term });
-
-  setMessage("Proposition acceptee.");
-  clearForm();
-  await fetchTerms();
-  await fetchSubmissions();
-  await fetchAudit();
+function findTermByName(name) {
+  const key = (name || "").trim().toLowerCase();
+  if (!key) return null;
+  return terms.find((item) => (item.term || "").trim().toLowerCase() === key) || null;
 }
 
-async function rejectSubmission(item) {
+async function approveSubmission(item, actionButton) {
+  if (isProcessingSubmission) return;
+  isProcessingSubmission = true;
+  setSubmissionActionsDisabled(true);
+  setButtonBusy(actionButton, true, "Traitement...", "Accepter");
+
+  try {
+    const source = editingSubmission && editingSubmission.id === item.id ? editingSubmission : item;
+    const typedMedia = parseMediaUrls(imageUrlInput.value);
+    const sourceMedia = parseMediaUrls(source.image_url);
+    const mediaUrls = dedupeMediaUrls(typedMedia.length ? typedMedia : sourceMedia);
+    const payload = {
+      term: termInput.value.trim() || source.term,
+      category: categoryInput.value.trim() || source.category,
+      definition: definitionInput.value.trim() || source.definition,
+      example: exampleInput.value.trim() || source.example,
+      related: normalizeRelated(relatedInput.value || source.related?.join(" | ") || ""),
+      image_url: serializeMediaUrls(mediaUrls)
+    };
+    if (parseMediaUrls(payload.image_url).some((url) => !isSupportedMediaUrl(url))) {
+      setMessage("Propositions: URL media invalide (http/https + extension image ou .pdf).", true);
+      return;
+    }
+
+    const reviewerComment = reviewerCommentInput.value.trim() || null;
+
+    const atomic = await supabaseClient.rpc("accept_submission_atomic", {
+      target_submission_id: item.id,
+      next_term: payload.term,
+      next_category: payload.category,
+      next_definition: payload.definition,
+      next_example: payload.example || null,
+      next_related: payload.related,
+      next_image_url: payload.image_url || null,
+      next_reviewer_comment: reviewerComment
+    });
+    if (atomic.error && !isMissingRpc(atomic.error, "accept_submission_atomic")) {
+      if (await handleAuthError(atomic.error, "Propositions")) return;
+      setMessage(`Propositions: ${getErrorMessage(atomic.error)}`, true);
+      return;
+    }
+
+    if (atomic.error && isMissingRpc(atomic.error, "accept_submission_atomic")) {
+      if (findTermByName(payload.term)) {
+        setMessage(`Propositions: le terme "${payload.term}" existe deja. Utilise "Modifier".`, true);
+        return;
+      }
+
+      const { data: existingRows, error: existingError } = await supabaseClient
+        .from("terms")
+        .select("id, term")
+        .ilike("term", payload.term)
+        .limit(1);
+      if (existingError) {
+        if (await handleAuthError(existingError, "Propositions")) return;
+        setMessage(`Propositions: ${getErrorMessage(existingError)}`, true);
+        return;
+      }
+      if (existingRows && existingRows.length) {
+        setMessage(`Propositions: le terme "${payload.term}" existe deja.`, true);
+        return;
+      }
+
+      const { error: insertError } = await supabaseClient.from("terms").insert(payload).select("id").single();
+      if (insertError) {
+        if (await handleAuthError(insertError, "Propositions")) return;
+        setMessage(`Propositions: ${getErrorMessage(insertError)}`, true);
+        return;
+      }
+
+      const { error: updateError } = await supabaseClient
+        .from("term_submissions")
+        .update({
+          term: payload.term,
+          category: payload.category,
+          definition: payload.definition,
+          example: payload.example,
+          related: payload.related,
+          image_url: payload.image_url,
+          status: "accepted",
+          reviewer_comment: reviewerComment,
+          reviewed_at: new Date().toISOString()
+        })
+        .eq("id", item.id);
+
+      if (updateError) {
+        if (await handleAuthError(updateError, "Propositions")) return;
+        setMessage(`Propositions: ${getErrorMessage(updateError)}`, true);
+        return;
+      }
+    }
+
+    await logAction("submission_accepted", "term_submissions", item.id, { term: payload.term });
+    setMessage("Propositions: proposition acceptee.");
+    clearForm();
+    await fetchTerms();
+    await fetchSubmissions();
+    await fetchAudit();
+  } finally {
+    isProcessingSubmission = false;
+    setSubmissionActionsDisabled(false);
+    setButtonBusy(actionButton, false, "Traitement...", "Accepter");
+  }
+}
+
+async function rejectSubmission(item, actionButton) {
+  if (isProcessingSubmission) return;
   const confirmed = confirm(`Refuser la proposition "${item.term}" ?`);
   if (!confirmed) return;
+  isProcessingSubmission = true;
+  setSubmissionActionsDisabled(true);
+  setButtonBusy(actionButton, true, "Traitement...", "Refuser");
 
-  const { error } = await supabaseClient
-    .from("term_submissions")
-    .update({
-      status: "rejected",
-      reviewer_comment: reviewerCommentInput.value.trim() || null,
-      reviewed_at: new Date().toISOString()
-    })
-    .eq("id", item.id);
+  try {
+    const { error } = await supabaseClient
+      .from("term_submissions")
+      .update({
+        status: "rejected",
+        reviewer_comment: reviewerCommentInput.value.trim() || null,
+        reviewed_at: new Date().toISOString()
+      })
+      .eq("id", item.id);
 
-  if (error) {
-    setMessage(error.message, true);
+    if (error) {
+      if (await handleAuthError(error, "Propositions")) return;
+      setMessage(`Propositions: ${getErrorMessage(error)}`, true);
+      return;
+    }
+
+    await logAction("submission_rejected", "term_submissions", item.id, { term: item.term });
+
+    setMessage("Propositions: proposition refusee.");
+    clearForm();
+    await fetchSubmissions();
+    await fetchAudit();
+  } finally {
+    isProcessingSubmission = false;
+    setSubmissionActionsDisabled(false);
+    setButtonBusy(actionButton, false, "Traitement...", "Refuser");
+  }
+}
+
+function renderProfiles(list) {
+  if (!usersPanel || !usersTable || !usersEmpty) return;
+  usersTable.innerHTML = "";
+
+  if (!list.length) {
+    usersEmpty.style.display = "block";
+    return;
+  }
+  usersEmpty.style.display = "none";
+
+  for (const item of list) {
+    const row = document.createElement("div");
+    row.className = "admin__row";
+
+    const title = document.createElement("div");
+    title.className = "admin__row-title";
+    title.textContent = item.email || item.id;
+
+    const info = document.createElement("div");
+    info.className = "admin__row-info";
+    const roleLabel = ROLE_LABELS[item.role] || item.role || "Apprenti";
+    info.textContent = `${roleLabel} · ${item.active === false ? "Inactif" : "Actif"}`;
+
+    const actions = document.createElement("div");
+    actions.className = "admin__row-actions";
+
+    const roleSelect = document.createElement("select");
+    ["super_admin", "maitre_apprentissage", "apprenti"].forEach((role) => {
+      const option = document.createElement("option");
+      option.value = role;
+      option.textContent = ROLE_LABELS[role];
+      if ((item.role || "apprenti") === role) option.selected = true;
+      roleSelect.appendChild(option);
+    });
+
+    const activeSelect = document.createElement("select");
+    const optActive = document.createElement("option");
+    optActive.value = "true";
+    optActive.textContent = "Actif";
+    if (item.active !== false) optActive.selected = true;
+    const optInactive = document.createElement("option");
+    optInactive.value = "false";
+    optInactive.textContent = "Inactif";
+    if (item.active === false) optInactive.selected = true;
+    activeSelect.appendChild(optActive);
+    activeSelect.appendChild(optInactive);
+
+    const updateButton = document.createElement("button");
+    updateButton.type = "button";
+    updateButton.className = "ghost";
+    updateButton.textContent = "Appliquer";
+    updateButton.addEventListener("click", () =>
+      updateProfile(item.id, roleSelect.value, activeSelect.value === "true", {
+        roleSelect,
+        activeSelect,
+        updateButton
+      })
+    );
+
+    if (item.id === currentUser.id) {
+      roleSelect.disabled = true;
+      activeSelect.disabled = true;
+      updateButton.disabled = true;
+      updateButton.title = "Ton propre role se modifie depuis un autre super admin.";
+    }
+
+    actions.appendChild(roleSelect);
+    actions.appendChild(activeSelect);
+    actions.appendChild(updateButton);
+
+    row.appendChild(title);
+    row.appendChild(info);
+    row.appendChild(actions);
+    usersTable.appendChild(row);
+  }
+}
+
+async function fetchProfiles() {
+  if (!isSuperAdmin || !usersPanel) return;
+  let rows = null;
+  let finalError = null;
+
+  const direct = await supabaseClient
+    .from("profiles")
+    .select("id, email, role, active, is_editor, created_at")
+    .order("created_at", { ascending: true });
+
+  const directRows = direct.data || [];
+  const directLooksIncomplete = directRows.length === 0 || directRows.some((row) => !row.role && row.is_editor == null);
+  if (!direct.error && !directLooksIncomplete) {
+    rows = directRows;
+  } else {
+    const rpc = await supabaseClient.rpc("admin_list_profiles");
+    if (rpc.error) {
+      finalError = direct.error || rpc.error;
+      if (!direct.error && directLooksIncomplete) {
+        finalError = new Error("lecture profiles vide/incomplete");
+      }
+    } else {
+      rows = rpc.data || [];
+    }
+  }
+
+  if (finalError) {
+    if (await handleAuthError(finalError, "Gestion des roles")) return;
+    setMessage(`Gestion des roles: ${getErrorMessage(finalError)}`, true);
     return;
   }
 
-  await logAction("submission_rejected", "term_submissions", item.id, { term: item.term });
+  profiles = (rows || []).map((item) => normalizeProfile(item) ? { ...item, ...normalizeProfile(item) } : item);
+  if (!profiles.length) {
+    setMessage("Gestion des roles: aucun profil visible.", true);
+    renderProfiles([]);
+    return;
+  }
+  renderProfiles(profiles);
+}
 
-  setMessage("Proposition refusee.");
-  clearForm();
-  await fetchSubmissions();
-  await fetchAudit();
+async function updateProfile(profileId, role, active, controls) {
+  if (!isSuperAdmin) return;
+  if (updatingProfileId) return;
+  updatingProfileId = profileId;
+  if (controls?.roleSelect) controls.roleSelect.disabled = true;
+  if (controls?.activeSelect) controls.activeSelect.disabled = true;
+  setButtonBusy(controls?.updateButton, true, "Maj...", "Appliquer");
+
+  const payload = { role, active };
+  try {
+    const direct = await supabaseClient
+      .from("profiles")
+      .update(payload)
+      .eq("id", profileId)
+      .select("id");
+    const directUpdated = Array.isArray(direct.data) ? direct.data.length : 0;
+
+    if (direct.error || directUpdated === 0) {
+      const rpc = await supabaseClient.rpc("admin_update_profile", {
+        target_profile_id: profileId,
+        next_role: role,
+        next_active: active
+      });
+      if (rpc.error) {
+        if (await handleAuthError(rpc.error, "Gestion des roles")) return;
+        setMessage(`Gestion des roles: ${getErrorMessage(rpc.error)}`, true);
+        return;
+      }
+    }
+    setMessage("Gestion des roles: profil utilisateur mis a jour.");
+    await fetchProfiles();
+  } finally {
+    updatingProfileId = null;
+    if (controls?.roleSelect) controls.roleSelect.disabled = false;
+    if (controls?.activeSelect) controls.activeSelect.disabled = false;
+    setButtonBusy(controls?.updateButton, false, "Maj...", "Appliquer");
+  }
 }
 
 function filterTerms() {
-  const query = adminSearch.value.trim().toLowerCase();
-  if (!query) {
-    renderTable(terms);
-    return;
-  }
-  const filtered = terms.filter((item) =>
-    [item.term, item.category, item.definition, item.example, ...(item.related || [])]
-      .join(" ")
-      .toLowerCase()
-      .includes(query)
-  );
-  renderTable(filtered);
+  applyTermsView();
+}
+
+function scheduleAdminFilter() {
+  if (adminFilterRafId) cancelAnimationFrame(adminFilterRafId);
+  adminFilterRafId = requestAnimationFrame(() => {
+    adminFilterRafId = 0;
+    filterTerms();
+  });
 }
 
 async function loadUser() {
@@ -499,39 +1158,65 @@ async function loadUser() {
 
   adminUser.textContent = `Utilisateur: ${currentUser.email}`;
 
-  const { data: profile, error } = await supabaseClient
+  let profile = null;
+  const withRoles = await supabaseClient
     .from("profiles")
-    .select("is_editor")
+    .select("role, active, is_editor")
     .eq("id", currentUser.id)
     .single();
-
-  if (error) {
-    setMessage(error.message, true);
-    return;
+  if (!withRoles.error) {
+    profile = withRoles.data;
+  } else {
+    const fallback = await supabaseClient
+      .from("profiles")
+      .select("is_editor")
+      .eq("id", currentUser.id)
+      .single();
+    if (fallback.error) {
+      if (await handleAuthError(fallback.error, "Session")) return;
+      setMessage(fallback.error.message, true);
+      return;
+    }
+    profile = fallback.data;
   }
 
-  isEditor = Boolean(profile?.is_editor);
-  adminRole.textContent = `Role: ${isEditor ? "Editeur" : "Lecture seule"}`;
+  userProfile = normalizeProfile(profile);
+  canManageTerms = canManageFromProfile(userProfile);
+  isSuperAdmin = isSuperAdminProfile(userProfile);
+  const roleLabel = ROLE_LABELS[userProfile?.role] || "Lecture seule";
+  const activeLabel = userProfile?.active === false ? " (inactif)" : "";
+  adminRole.textContent = `Role: ${roleLabel}${activeLabel}`;
 
-  if (!isEditor) {
+  if (!canManageTerms) {
     window.location.href = "index.html";
     return;
   }
 
+  if (usersPanel) usersPanel.hidden = !isSuperAdmin;
+
   await fetchTerms();
   await fetchSubmissions();
   await fetchAudit();
+  if (isSuperAdmin) await fetchProfiles();
 }
 
 async function logout() {
   if (!supabaseClient) return;
   await supabaseClient.auth.signOut();
-  setMessage("Deconnecte.");
+  window.location.href = "index.html";
 }
 
 saveButton.addEventListener("click", saveTerm);
 resetButton.addEventListener("click", clearForm);
-adminSearch.addEventListener("input", filterTerms);
+adminSearch.addEventListener("input", scheduleAdminFilter);
+if (adminSort) adminSort.addEventListener("change", filterTerms);
 adminLogout.addEventListener("click", logout);
+if (exportPublishedButton) exportPublishedButton.addEventListener("click", exportPublishedCsv);
+for (const btn of workflowButtons) {
+  btn.addEventListener("click", () => {
+    currentStatusFilter = btn.dataset.termFilter || "all";
+    applyTermsView();
+  });
+}
 
 loadUser();
