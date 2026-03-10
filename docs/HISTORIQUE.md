@@ -44,7 +44,7 @@
 - `chatbot.js` transmet ce `model` dans les feedbacks au lieu d'un champ vide.
 - anti-spam feedback ajoute:
   - blocage doublon sur meme session/message/note
-  - cooldown 15 s cote client et cote serveur.
+  - pas de cooldown global entre deux reponses differentes.
 
 ### Admin super admin
 - section `Feedback chatbot` enrichie avec:

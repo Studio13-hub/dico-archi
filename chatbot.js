@@ -171,11 +171,6 @@
 
   function canSendFeedback({ sessionId, rating, text }) {
     const map = getStoredFeedbackMap();
-    const now = Date.now();
-    const lastAny = Number(map[`${sessionId}::__last__`] || 0);
-    if (lastAny && now - lastAny < 15000) {
-      return { ok: false, reason: "cooldown" };
-    }
     const key = buildFeedbackKey({ sessionId, rating, text });
     if (map[key]) {
       return { ok: false, reason: "duplicate" };
@@ -186,7 +181,6 @@
   function markFeedbackSent({ sessionId, rating, text }) {
     const map = getStoredFeedbackMap();
     const now = Date.now();
-    map[`${sessionId}::__last__`] = now;
     map[buildFeedbackKey({ sessionId, rating, text })] = now;
     setStoredFeedbackMap(map);
   }
@@ -311,7 +305,7 @@
       const sessionId = getSessionId();
       const gate = canSendFeedback({ sessionId, rating, text });
       if (!gate.ok) {
-        status.textContent = gate.reason === "duplicate" ? "Retour deja envoye." : "Attends quelques secondes.";
+        status.textContent = "Retour deja envoye.";
         return;
       }
       usefulBtn.disabled = true;

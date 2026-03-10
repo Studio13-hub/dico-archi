@@ -63,3 +63,6 @@
   - scripts historiques `schema.sql`, `audit.sql`, `submissions.sql`, `submissions_update.sql`, `storage.sql`, `terms_workflow.sql`
   - policies alignees sur `public.is_staff()` et sur `profiles.role` / `profiles.active`
   - compatibilite `is_editor` conservee via les helpers staff existants.
+- Ajustement UX feedback chatbot:
+  - suppression du cooldown global entre deux reponses differentes
+  - maintien du blocage doublon sur une meme reponse dans une meme session.
