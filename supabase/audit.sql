@@ -11,16 +11,14 @@ create table if not exists public.audit_logs (
 
 alter table public.audit_logs enable row level security;
 
-create policy "editors can read audit logs"
+drop policy if exists "editors can read audit logs" on public.audit_logs;
+drop policy if exists "staff can read audit logs" on public.audit_logs;
+create policy "staff can read audit logs"
   on public.audit_logs for select
-  using (exists (
-    select 1 from public.profiles
-    where profiles.id = auth.uid() and profiles.is_editor
-  ));
+  using (public.is_staff());
 
-create policy "editors can insert audit logs"
+drop policy if exists "editors can insert audit logs" on public.audit_logs;
+drop policy if exists "staff can insert audit logs" on public.audit_logs;
+create policy "staff can insert audit logs"
   on public.audit_logs for insert
-  with check (exists (
-    select 1 from public.profiles
-    where profiles.id = auth.uid() and profiles.is_editor
-  ));
+  with check (public.is_staff());

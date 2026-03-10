@@ -11,6 +11,20 @@
    - `supabase/audit.sql`
    - `supabase/terms_workflow.sql`
    - `supabase/roles_rdr.sql`
+   - `supabase/chatbot_feedback.sql` (si tu utilises le feedback chatbot)
+
+### Ordre recommande pour une base deja existante
+Si la base existe deja et que tu veux reappliquer les scripts de securite/roles apres cette session:
+1. `supabase/schema.sql`
+2. `supabase/storage.sql`
+3. `supabase/submissions.sql`
+4. `supabase/submissions_update.sql`
+5. `supabase/audit.sql`
+6. `supabase/terms_workflow.sql`
+7. `supabase/roles_rdr.sql`
+8. `supabase/chatbot_feedback.sql` (si besoin)
+
+`supabase/roles_rdr.sql` reste le script final de reference pour recaler les policies staff/super admin.
 
 ## 2) Configurer le site
 1. Remplis `config.js` avec les valeurs Supabase.

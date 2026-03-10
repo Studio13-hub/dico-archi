@@ -36,3 +36,24 @@
 - `scripts/term_quality_check.js` renforce (doublons, references, media).
 - `scripts/check_resume.sh` aligne avec arborescence actuelle.
 - `.gitignore` complete (`.DS_Store`, `*.log`, `supabase/.temp/`, `__pycache__/`, `*.pyc`).
+
+## 2026-03-10
+
+### Chatbot / feedback
+- `api/chat.js` expose maintenant le `model` Gemini effectif dans la reponse.
+- `chatbot.js` transmet ce `model` dans les feedbacks au lieu d'un champ vide.
+- anti-spam feedback ajoute:
+  - blocage doublon sur meme session/message/note
+  - cooldown 15 s cote client et cote serveur.
+
+### Admin super admin
+- section `Feedback chatbot` enrichie avec:
+  - stats compactes
+  - top questions a reprendre
+  - export CSV du jeu de resultats filtre.
+
+### SQL / roles
+- scripts Supabase legacy harmonises avec le modele de roles:
+  - ajout de `role` / `active` et helpers `profile_role()`, `is_staff()`, `is_super_admin()` dans `schema.sql`
+  - policies historiques `terms`, `submissions`, `audit_logs`, `storage.objects` recablees sur `public.is_staff()`
+  - compatibilite ancienne colonne `is_editor` maintenue comme fallback.

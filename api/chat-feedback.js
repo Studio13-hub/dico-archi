@@ -55,6 +55,56 @@ module.exports = async (req, res) => {
   };
 
   try {
+    if (sessionId) {
+      const duplicateParams = new URLSearchParams();
+      duplicateParams.set("select", "id,created_at");
+      duplicateParams.set("session_id", `eq.${sessionId}`);
+      duplicateParams.set("rating", `eq.${rating}`);
+      duplicateParams.set("assistant_message", `eq.${assistantMessage}`);
+      duplicateParams.set("order", "created_at.desc");
+      duplicateParams.set("limit", "1");
+
+      const duplicateResponse = await fetch(`${supabaseUrl}/rest/v1/chatbot_feedback?${duplicateParams.toString()}`, {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`
+        }
+      });
+
+      if (duplicateResponse.ok) {
+        const duplicateRows = await duplicateResponse.json().catch(() => []);
+        if (Array.isArray(duplicateRows) && duplicateRows.length) {
+          res.statusCode = 200;
+          res.end(JSON.stringify({ ok: true, deduped: true }));
+          return;
+        }
+      }
+
+      const recentParams = new URLSearchParams();
+      recentParams.set("select", "id,created_at");
+      recentParams.set("session_id", `eq.${sessionId}`);
+      recentParams.set("order", "created_at.desc");
+      recentParams.set("limit", "1");
+
+      const recentResponse = await fetch(`${supabaseUrl}/rest/v1/chatbot_feedback?${recentParams.toString()}`, {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`
+        }
+      });
+
+      if (recentResponse.ok) {
+        const recentRows = await recentResponse.json().catch(() => []);
+        const latest = Array.isArray(recentRows) ? recentRows[0] : null;
+        const latestAt = latest?.created_at ? Date.parse(latest.created_at) : 0;
+        if (latestAt && Date.now() - latestAt < 15000) {
+          res.statusCode = 429;
+          res.end(JSON.stringify({ error: "feedback_cooldown_active" }));
+          return;
+        }
+      }
+    }
+
     const response = await fetch(`${supabaseUrl}/rest/v1/chatbot_feedback`, {
       method: "POST",
       headers: {

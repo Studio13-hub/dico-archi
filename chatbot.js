@@ -1,6 +1,7 @@
 (function initDicoArchiChatbot() {
   const STORAGE_KEY = "dico_archi_chatbot_open_v1";
   const SESSION_KEY = "dico_archi_chatbot_session_v1";
+  const FEEDBACK_KEY = "dico_archi_chatbot_feedback_v1";
   const pageTitle = document.title || "DicoArchi";
   const pagePath = window.location.pathname || "/";
   const feedbackState = new Set();
@@ -146,6 +147,50 @@
     return { text: withLink, relatedTerm: currentBest.term };
   }
 
+  function getStoredFeedbackMap() {
+    try {
+      const raw = window.localStorage.getItem(FEEDBACK_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === "object" ? parsed : {};
+    } catch (_error) {
+      return {};
+    }
+  }
+
+  function setStoredFeedbackMap(value) {
+    try {
+      window.localStorage.setItem(FEEDBACK_KEY, JSON.stringify(value));
+    } catch (_error) {
+      // Ignore storage errors.
+    }
+  }
+
+  function buildFeedbackKey({ sessionId, rating, text }) {
+    return `${sessionId}::${rating}::${normalize(text).slice(0, 220)}`;
+  }
+
+  function canSendFeedback({ sessionId, rating, text }) {
+    const map = getStoredFeedbackMap();
+    const now = Date.now();
+    const lastAny = Number(map[`${sessionId}::__last__`] || 0);
+    if (lastAny && now - lastAny < 15000) {
+      return { ok: false, reason: "cooldown" };
+    }
+    const key = buildFeedbackKey({ sessionId, rating, text });
+    if (map[key]) {
+      return { ok: false, reason: "duplicate" };
+    }
+    return { ok: true, key };
+  }
+
+  function markFeedbackSent({ sessionId, rating, text }) {
+    const map = getStoredFeedbackMap();
+    const now = Date.now();
+    map[`${sessionId}::__last__`] = now;
+    map[buildFeedbackKey({ sessionId, rating, text })] = now;
+    setStoredFeedbackMap(map);
+  }
+
   async function askServer(messages) {
     const response = await fetch("/api/chat", {
       method: "POST",
@@ -162,7 +207,10 @@
     }
 
     const payload = await response.json();
-    return String(payload?.answer || "").trim();
+    return {
+      answer: String(payload?.answer || "").trim(),
+      model: String(payload?.model || "").trim()
+    };
   }
 
   async function sendFeedback(payload) {
@@ -222,7 +270,7 @@
 
   const history = [];
 
-  function addAssistantActions(container, text, relatedTerm, messageKey, source) {
+  function addAssistantActions(container, text, relatedTerm, messageKey, source, model) {
     const actions = createElement("div", "chatbot__actions");
 
     const copyBtn = createElement("button", "chatbot__action", "Copier");
@@ -260,6 +308,12 @@
 
     async function submitFeedback(rating) {
       if (feedbackState.has(messageKey)) return;
+      const sessionId = getSessionId();
+      const gate = canSendFeedback({ sessionId, rating, text });
+      if (!gate.ok) {
+        status.textContent = gate.reason === "duplicate" ? "Retour deja envoye." : "Attends quelques secondes.";
+        return;
+      }
       usefulBtn.disabled = true;
       improveBtn.disabled = true;
       status.textContent = "Envoi...";
@@ -271,15 +325,16 @@
           pagePath,
           pageTitle,
           source: source || "fallback",
-          model: window.__DICO_CHAT_MODEL__ || "",
-          sessionId: getSessionId()
+          model: model || "",
+          sessionId
         });
+        markFeedbackSent({ sessionId, rating, text });
         feedbackState.add(messageKey);
         status.textContent = "Merci pour ton retour.";
       } catch (_error) {
         usefulBtn.disabled = false;
         improveBtn.disabled = false;
-        status.textContent = "Retour non enregistré.";
+        status.textContent = "Retour non enregistre.";
       }
     }
 
@@ -308,7 +363,14 @@
 
     if (role === "assistant" && !options.noActions) {
       const key = options.messageKey || `${Date.now()}_${Math.random().toString(16).slice(2)}`;
-      addAssistantActions(bubble, cleanText, options.relatedTerm || null, key, options.source || "fallback");
+      addAssistantActions(
+        bubble,
+        cleanText,
+        options.relatedTerm || null,
+        key,
+        options.source || "fallback",
+        options.model || ""
+      );
     }
 
     messagesNode.appendChild(bubble);
@@ -375,8 +437,11 @@
     try {
       let answer = "";
       let source = "fallback";
+      let model = "";
       try {
-        answer = await askServer(history.slice(-8));
+        const serverResult = await askServer(history.slice(-8));
+        answer = serverResult.answer;
+        model = serverResult.model;
         source = "ai";
       } catch (_error) {
         answer = getFallbackAnswer(question);
@@ -387,7 +452,8 @@
       pushMessage("assistant", enriched.text, {
         relatedTerm: enriched.relatedTerm,
         messageKey: `${Date.now()}_${Math.random().toString(16).slice(2)}`,
-        source
+        source,
+        model
       });
     } finally {
       sendButton.disabled = false;

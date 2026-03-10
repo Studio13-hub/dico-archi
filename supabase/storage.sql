@@ -4,37 +4,35 @@ values ('term-images', 'term-images', true)
 on conflict (id) do nothing;
 
 -- Lecture publique des images
+drop policy if exists "public read term images" on storage.objects;
 create policy "public read term images"
   on storage.objects for select
   using (bucket_id = 'term-images');
 
--- Upload reserve aux editeurs
-create policy "editors can upload term images"
+-- Upload reserve aux profils staff actifs
+drop policy if exists "editors can upload term images" on storage.objects;
+drop policy if exists "staff can upload term images" on storage.objects;
+create policy "staff can upload term images"
   on storage.objects for insert
   with check (
     bucket_id = 'term-images'
-    and exists (
-      select 1 from public.profiles
-      where profiles.id = auth.uid() and profiles.is_editor
-    )
+    and public.is_staff()
   );
 
-create policy "editors can update term images"
+drop policy if exists "editors can update term images" on storage.objects;
+drop policy if exists "staff can update term images" on storage.objects;
+create policy "staff can update term images"
   on storage.objects for update
   using (
     bucket_id = 'term-images'
-    and exists (
-      select 1 from public.profiles
-      where profiles.id = auth.uid() and profiles.is_editor
-    )
+    and public.is_staff()
   );
 
-create policy "editors can delete term images"
+drop policy if exists "editors can delete term images" on storage.objects;
+drop policy if exists "staff can delete term images" on storage.objects;
+create policy "staff can delete term images"
   on storage.objects for delete
   using (
     bucket_id = 'term-images'
-    and exists (
-      select 1 from public.profiles
-      where profiles.id = auth.uid() and profiles.is_editor
-    )
+    and public.is_staff()
   );

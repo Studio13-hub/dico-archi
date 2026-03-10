@@ -5,14 +5,15 @@ alter table public.term_submissions
   add column if not exists reviewed_at timestamptz;
 
 -- Les editeurs peuvent mettre a jour les propositions
-create policy "editors can update submissions"
+drop policy if exists "editors can update submissions" on public.term_submissions;
+drop policy if exists "staff can update submissions" on public.term_submissions;
+create policy "staff can update submissions"
   on public.term_submissions for update
-  using (exists (
-    select 1 from public.profiles
-    where profiles.id = auth.uid() and profiles.is_editor
-  ));
+  using (public.is_staff())
+  with check (public.is_staff());
 
 -- Les auteurs peuvent voir leurs propositions
+drop policy if exists "submitters can read own submissions" on public.term_submissions;
 create policy "submitters can read own submissions"
   on public.term_submissions for select
   using (auth.uid() = submitted_by);

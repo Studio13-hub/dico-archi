@@ -13,21 +13,27 @@ create table if not exists public.term_submissions (
 alter table public.term_submissions enable row level security;
 
 -- Les utilisateurs connectes peuvent proposer
+drop policy if exists "authenticated can insert submissions" on public.term_submissions;
 create policy "authenticated can insert submissions"
   on public.term_submissions for insert
-  with check (auth.uid() is not null);
+  with check (
+    auth.uid() is not null
+    and exists (
+      select 1 from public.profiles p
+      where p.id = auth.uid()
+        and coalesce(p.active, true) = true
+    )
+  );
 
--- Les editeurs peuvent lire et supprimer
-create policy "editors can read submissions"
+-- Les profils staff actifs peuvent lire et supprimer
+drop policy if exists "editors can read submissions" on public.term_submissions;
+drop policy if exists "staff can read submissions" on public.term_submissions;
+create policy "staff can read submissions"
   on public.term_submissions for select
-  using (exists (
-    select 1 from public.profiles
-    where profiles.id = auth.uid() and profiles.is_editor
-  ));
+  using (public.is_staff());
 
-create policy "editors can delete submissions"
+drop policy if exists "editors can delete submissions" on public.term_submissions;
+drop policy if exists "staff can delete submissions" on public.term_submissions;
+create policy "staff can delete submissions"
   on public.term_submissions for delete
-  using (exists (
-    select 1 from public.profiles
-    where profiles.id = auth.uid() and profiles.is_editor
-  ));
+  using (public.is_staff());

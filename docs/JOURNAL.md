@@ -44,3 +44,22 @@
   - validation URL media.
 - `scripts/check_resume.sh` aligne avec structure actuelle et checks JS/quality.
 - `.gitignore` complete (`.DS_Store`, logs, temp, pycache).
+
+## 2026-03-10
+- Reprise `RepriseDico-archi` executee en diagnostic lecture seule (git/docs/code + roles SQL + serveur local).
+- Chatbot / feedback durcis:
+  - `api/chat.js` retourne aussi le `model` Gemini effectif pour tracer la reponse servie.
+  - `chatbot.js` attache le `model` au feedback et ajoute un anti-spam par session:
+    - doublon meme message/note bloque
+    - cooldown court entre deux feedbacks.
+  - `api/chat-feedback.js` ajoute une protection serveur:
+    - dedupe par `session_id + rating + assistant_message`
+    - cooldown serveur 15 s par session.
+- Dashboard super admin enrichi:
+  - stats compactes feedback chatbot
+  - top questions les plus negativement notees
+  - export CSV depuis `admin.html` / `admin.js`.
+- Assainissement SQL legacy:
+  - scripts historiques `schema.sql`, `audit.sql`, `submissions.sql`, `submissions_update.sql`, `storage.sql`, `terms_workflow.sql`
+  - policies alignees sur `public.is_staff()` et sur `profiles.role` / `profiles.active`
+  - compatibilite `is_editor` conservee via les helpers staff existants.

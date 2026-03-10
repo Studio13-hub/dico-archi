@@ -115,6 +115,7 @@
         <p class="meta meta--subtle">
           Réservé au super admin: retours Utiles / À améliorer pour améliorer l'assistant.
         </p>
+        <div id="chat-feedback-summary" class="dashboard"></div>
         <div class="admin__toolbar">
           <select id="chat-feedback-rating">
             <option value="all">Filtre note: Toutes</option>
@@ -126,8 +127,10 @@
             <option value="ai">IA</option>
             <option value="fallback">Fallback</option>
           </select>
+          <button id="chat-feedback-export" type="button" class="ghost">Exporter CSV</button>
           <button id="chat-feedback-refresh" type="button" class="ghost">Rafraîchir</button>
         </div>
+        <div id="chat-feedback-top" class="meta meta--subtle"></div>
         <div id="chat-feedback-empty" class="meta meta--subtle">Aucun feedback chargé.</div>
         <div id="chat-feedback-list" class="admin__table"></div>
       </section>

@@ -30,10 +30,13 @@ const usersPanel = document.getElementById("users-panel");
 const usersTable = document.getElementById("users-table");
 const usersEmpty = document.getElementById("users-empty");
 const chatFeedbackPanel = document.getElementById("chat-feedback-panel");
+const chatFeedbackSummary = document.getElementById("chat-feedback-summary");
+const chatFeedbackTop = document.getElementById("chat-feedback-top");
 const chatFeedbackList = document.getElementById("chat-feedback-list");
 const chatFeedbackEmpty = document.getElementById("chat-feedback-empty");
 const chatFeedbackRating = document.getElementById("chat-feedback-rating");
 const chatFeedbackSource = document.getElementById("chat-feedback-source");
+const chatFeedbackExport = document.getElementById("chat-feedback-export");
 const chatFeedbackRefresh = document.getElementById("chat-feedback-refresh");
 
 let supabaseClient = null;
@@ -53,6 +56,7 @@ let isDeletingTerm = false;
 let updatingProfileId = null;
 let adminFilterRafId = 0;
 let isLoadingChatFeedback = false;
+let lastChatFeedbackItems = [];
 
 const ROLE_LABELS = {
   super_admin: "Super admin",
@@ -590,6 +594,125 @@ function renderChatFeedback(list) {
   }
 }
 
+function normalizeQuestionKey(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function renderChatFeedbackSummary(list) {
+  if (chatFeedbackSummary) chatFeedbackSummary.innerHTML = "";
+  if (chatFeedbackTop) chatFeedbackTop.textContent = "";
+  if (!chatFeedbackSummary) return;
+
+  const up = list.filter((item) => item.rating === "up").length;
+  const down = list.filter((item) => item.rating === "down").length;
+  const total = list.length;
+  const aiCount = list.filter((item) => item.source === "ai").length;
+  const fallbackCount = total - aiCount;
+  const usefulRatio = total ? Math.round((up / total) * 100) : 0;
+
+  const stats = [
+    ["Total", total],
+    ["Utile", up],
+    ["A ameliorer", down],
+    ["Ratio utile", `${usefulRatio}%`],
+    ["IA", aiCount],
+    ["Fallback", fallbackCount]
+  ];
+
+  for (const [label, value] of stats) {
+    const item = document.createElement("div");
+    item.className = "dashboard__item";
+    const itemLabel = document.createElement("span");
+    itemLabel.className = "dashboard__label";
+    itemLabel.textContent = label;
+    const itemValue = document.createElement("strong");
+    itemValue.textContent = String(value);
+    item.appendChild(itemLabel);
+    item.appendChild(itemValue);
+    chatFeedbackSummary.appendChild(item);
+  }
+
+  if (!chatFeedbackTop) return;
+  if (!list.length) {
+    chatFeedbackTop.textContent = "Aucune question a analyser.";
+    return;
+  }
+
+  const counts = new Map();
+  for (const item of list) {
+    const key = normalizeQuestionKey(item.user_message);
+    if (!key) continue;
+    const existing = counts.get(key) || {
+      label: String(item.user_message || "").trim(),
+      total: 0,
+      down: 0
+    };
+    existing.total += 1;
+    if (item.rating === "down") existing.down += 1;
+    counts.set(key, existing);
+  }
+
+  const topItems = Array.from(counts.values())
+    .sort((a, b) => {
+      if (b.down !== a.down) return b.down - a.down;
+      return b.total - a.total;
+    })
+    .slice(0, 3);
+
+  if (!topItems.length) {
+    chatFeedbackTop.textContent = "Pas assez de questions renseignées pour calculer un top.";
+    return;
+  }
+
+  chatFeedbackTop.textContent = topItems
+    .map((item) => `${item.label.slice(0, 90)} (${item.down} negatif(s) / ${item.total})`)
+    .join(" | ");
+}
+
+function exportChatFeedbackCsv() {
+  const items = lastChatFeedbackItems.slice();
+  if (!items.length) {
+    setMessage("Feedback chatbot: aucun resultat a exporter.", true);
+    return;
+  }
+
+  const esc = (value) => {
+    const s = String(value ?? "");
+    return `"${s.replaceAll('"', '""')}"`;
+  };
+
+  const rows = [
+    ["created_at", "rating", "source", "model", "page_title", "page_path", "user_message", "assistant_message"],
+    ...items.map((item) => [
+      item.created_at || "",
+      item.rating || "",
+      item.source || "",
+      item.meta?.model || "",
+      item.page_title || "",
+      item.page_path || "",
+      item.user_message || "",
+      item.assistant_message || ""
+    ])
+  ];
+
+  const csv = rows.map((row) => row.map(esc).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `dico-archi-chat-feedback-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  setMessage(`Feedback chatbot: export CSV termine (${items.length} ligne(s)).`);
+}
+
 async function fetchChatFeedback() {
   if (!isSuperAdmin || !chatFeedbackPanel || !chatFeedbackList || !chatFeedbackRefresh) return;
   if (isLoadingChatFeedback) return;
@@ -607,13 +730,19 @@ async function fetchChatFeedback() {
     if (!response.ok) {
       const errorText = payload?.error || "lecture feedback impossible";
       setMessage(`Feedback chatbot: ${errorText}`, true);
+      lastChatFeedbackItems = [];
+      renderChatFeedbackSummary([]);
       renderChatFeedback([]);
       return;
     }
 
-    renderChatFeedback(Array.isArray(payload.items) ? payload.items : []);
+    lastChatFeedbackItems = Array.isArray(payload.items) ? payload.items : [];
+    renderChatFeedbackSummary(lastChatFeedbackItems);
+    renderChatFeedback(lastChatFeedbackItems);
   } catch (error) {
     setMessage(`Feedback chatbot: ${getErrorMessage(error)}`, true);
+    lastChatFeedbackItems = [];
+    renderChatFeedbackSummary([]);
     renderChatFeedback([]);
   } finally {
     isLoadingChatFeedback = false;
@@ -1301,6 +1430,7 @@ if (exportPublishedButton) exportPublishedButton.addEventListener("click", expor
 if (chatFeedbackRefresh) chatFeedbackRefresh.addEventListener("click", fetchChatFeedback);
 if (chatFeedbackRating) chatFeedbackRating.addEventListener("change", fetchChatFeedback);
 if (chatFeedbackSource) chatFeedbackSource.addEventListener("change", fetchChatFeedback);
+if (chatFeedbackExport) chatFeedbackExport.addEventListener("click", exportChatFeedbackCsv);
 for (const btn of workflowButtons) {
   btn.addEventListener("click", () => {
     currentStatusFilter = btn.dataset.termFilter || "all";

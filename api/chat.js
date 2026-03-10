@@ -99,7 +99,7 @@ module.exports = async (req, res) => {
     }
 
     res.statusCode = 200;
-    res.end(JSON.stringify({ answer }));
+    res.end(JSON.stringify({ answer, model }));
   } catch (error) {
     res.statusCode = 500;
     res.end(JSON.stringify({ error: error?.message || "internal_error" }));
