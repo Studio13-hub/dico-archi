@@ -4,7 +4,7 @@
 1. Le site public lit les termes depuis Supabase.
 2. Les utilisateurs creent un compte via `auth.html`.
 3. Tu attribues un role (`super_admin`, `maitre_apprentissage`, `apprenti`) dans Supabase.
-4. L'equipe de pilotage (super admin + maitre apprentissage) ajoute/modifie dans `admin.html`.
+4. L'equipe de pilotage (super admin + formateur, nom affiche pour `maitre_apprentissage`) ajoute/modifie dans `admin.html`.
 
 ## Donnees
 - Table `terms`: les termes du dictionnaire.

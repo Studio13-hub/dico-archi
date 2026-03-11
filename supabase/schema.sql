@@ -89,7 +89,7 @@ as $$
       and coalesce(p.active, true) = true
       and (
         p.role in ('super_admin', 'maitre_apprentissage')
-        or coalesce(p.is_editor, false) = true
+        or (p.role is null and coalesce(p.is_editor, false) = true)
       )
   )
 $$;

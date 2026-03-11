@@ -34,11 +34,11 @@ Si la base existe deja et que tu veux reappliquer les scripts de securite/roles 
 1. Chaque personne cree son compte via `auth.html`.
 2. Dans Supabase (Table editor), mets a jour `profiles.role`:
    - `super_admin`: gestion totale + gestion utilisateurs
-   - `maitre_apprentissage`: gestion editoriale (termes, propositions, audit)
+   - `maitre_apprentissage`: affiche comme `Formateur` sur le site, gestion editoriale (termes, propositions, audit)
    - `apprenti`: contribution via `contribuer.html`
 3. Active/desactive un compte avec `profiles.active` (`true`/`false`).
 4. Verifie l'acces a `admin.html`:
-   - autorise pour `super_admin` et `maitre_apprentissage`
+   - autorise pour `super_admin` et `maitre_apprentissage` (`Formateur`)
    - refuse pour `apprenti` ou compte inactif
 
 ## 4) Importer un tableau partage (Google Sheets)

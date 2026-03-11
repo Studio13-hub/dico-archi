@@ -14,6 +14,12 @@ const resetButton = document.getElementById("reset");
 let supabaseClient = null;
 let currentUser = null;
 let currentProfile = null;
+
+function getRoleLabel(role) {
+  if (role === "super_admin") return "Super admin";
+  if (role === "maitre_apprentissage") return "Formateur";
+  return "Apprenti";
+}
 let isSubmitting = false;
 
 function setMessage(text, isError = false) {
@@ -236,7 +242,7 @@ async function loadUser() {
   }
 
   setFormDisabled(false);
-  contribUser.textContent = `Utilisateur: ${currentUser.email} · Role: ${currentProfile.role}`;
+  contribUser.textContent = `Utilisateur: ${currentUser.email} · Role: ${getRoleLabel(currentProfile.role)}`;
   await fetchMySubmissions();
 }
 

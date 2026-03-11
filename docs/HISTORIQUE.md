@@ -57,3 +57,20 @@
   - ajout de `role` / `active` et helpers `profile_role()`, `is_staff()`, `is_super_admin()` dans `schema.sql`
   - policies historiques `terms`, `submissions`, `audit_logs`, `storage.objects` recablees sur `public.is_staff()`
   - compatibilite ancienne colonne `is_editor` maintenue comme fallback.
+
+## 2026-03-11
+
+### Roles / autorisations
+- faille legacy corrigee:
+  - un profil `apprenti` avec `is_editor = true` ne conserve plus de droits staff
+  - `is_staff()` et le front appliquent maintenant une logique `role` d'abord, fallback `is_editor` uniquement si `role` est absent
+  - `admin_update_profile(...)` remet `is_editor` en coherence lors d'un changement de role
+  - `roles_rdr.sql` ajoute un backfill pour nettoyer les profils incoherents.
+
+### Vocabulaire UI
+- libelle `Formateur` adopte cote site pour le role technique `maitre_apprentissage`.
+- structure fonctionnelle explicitee:
+  - `Super admin`: gestion complete
+  - `Formateur`: validation et correction editoriale
+  - `Apprenti`: contribution soumise a validation
+  - `Public`: consultation.

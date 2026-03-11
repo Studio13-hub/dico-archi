@@ -5,15 +5,15 @@ function hasSupabaseConfig() {
 function isStaffProfile(profile) {
   if (!profile) return false;
   if (profile.active === false) return false;
-  if (profile.role === "super_admin" || profile.role === "maitre_apprentissage") return true;
-  return Boolean(profile.is_editor);
+  const role = profile.role || (profile.is_editor ? "maitre_apprentissage" : "apprenti");
+  return role === "super_admin" || role === "maitre_apprentissage";
 }
 
 function getRoleLabel(profile) {
-  if (!profile) return "Visiteur";
+  if (!profile) return "Public";
   const role = profile.role || (profile.is_editor ? "maitre_apprentissage" : "apprenti");
   if (role === "super_admin") return "Super admin";
-  if (role === "maitre_apprentissage") return "Maitre apprentissage";
+  if (role === "maitre_apprentissage") return "Formateur";
   return "Apprenti";
 }
 
@@ -42,7 +42,7 @@ function setLogoutVisibility(visible) {
 }
 
 function applyLoggedOutState() {
-  setStatusText("Non connecte");
+  setStatusText("Public · consultation");
   setAuthLinks({ user: null });
   setAdminVisibility(false);
   setLogoutVisibility(false);

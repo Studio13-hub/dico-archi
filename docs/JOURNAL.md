@@ -66,3 +66,17 @@
 - Ajustement UX feedback chatbot:
   - suppression du cooldown global entre deux reponses differentes
   - maintien du blocage doublon sur une meme reponse dans une meme session.
+
+## 2026-03-11
+- Reprise `RepriseDico-archi` executee avec diagnostic lecture seule puis patch role/permissions valide.
+- Durcissement roles / permissions:
+  - correction du risque legacy ou un profil retrograde en `apprenti` pouvait conserver des droits staff via `is_editor = true`
+  - `public.is_staff()` passe en logique `role` prioritaire, `is_editor` uniquement en fallback si `role` est absent
+  - `admin_update_profile(...)` resynchronise maintenant `is_editor` avec le role cible
+  - backfill ajoute dans `supabase/roles_rdr.sql` pour remettre `is_editor` en coherence avec `role`.
+- Alignement UX des roles:
+  - libelle public `Formateur` affiche a la place de `Maitre apprentissage`
+  - pages `admin`, `compte`, `contribuer`, `auth`, `nav` alignees sur ce vocabulaire
+  - le slug technique `maitre_apprentissage` est conserve en base pour compatibilite.
+- Serveur local relance:
+  - `python3 -m http.server 4173` actif pendant la session de reprise.

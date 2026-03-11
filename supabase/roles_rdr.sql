@@ -37,6 +37,17 @@ where active is null;
 create index if not exists profiles_role_idx on public.profiles (role);
 create index if not exists profiles_active_idx on public.profiles (active);
 
+update public.profiles
+set is_editor = case
+  when role in ('super_admin', 'maitre_apprentissage') then true
+  else false
+end
+where role is not null
+  and coalesce(is_editor, false) is distinct from case
+    when role in ('super_admin', 'maitre_apprentissage') then true
+    else false
+  end;
+
 create or replace function public.profile_role()
 returns text
 language sql
@@ -64,7 +75,7 @@ as $$
       and coalesce(p.active, true) = true
       and (
         p.role in ('super_admin', 'maitre_apprentissage')
-        or coalesce(p.is_editor, false) = true
+        or (p.role is null and coalesce(p.is_editor, false) = true)
       )
   )
 $$;

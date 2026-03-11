@@ -60,7 +60,7 @@ let lastChatFeedbackItems = [];
 
 const ROLE_LABELS = {
   super_admin: "Super admin",
-  maitre_apprentissage: "Maitre apprentissage",
+  maitre_apprentissage: "Formateur",
   apprenti: "Apprenti"
 };
 
@@ -75,8 +75,7 @@ function normalizeProfile(profile) {
 
 function canManageFromProfile(profile) {
   if (!profile || profile.active === false) return false;
-  if (profile.role === "super_admin" || profile.role === "maitre_apprentissage") return true;
-  return Boolean(profile.is_editor);
+  return profile.role === "super_admin" || profile.role === "maitre_apprentissage";
 }
 
 function isSuperAdminProfile(profile) {

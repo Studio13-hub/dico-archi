@@ -128,8 +128,8 @@ function setSyncStatus(text) {
 function isStaffProfile(profile) {
   if (!profile) return false;
   if (profile.active === false) return false;
-  if (profile.role === "super_admin" || profile.role === "maitre_apprentissage") return true;
-  return Boolean(profile.is_editor);
+  const role = profile.role || (profile.is_editor ? "maitre_apprentissage" : "apprenti");
+  return role === "super_admin" || role === "maitre_apprentissage";
 }
 
 function setAuthUi({ user, profile }) {

@@ -51,7 +51,11 @@ begin
 
   update public.profiles
   set role = next_role,
-      active = coalesce(next_active, true)
+      active = coalesce(next_active, true),
+      is_editor = case
+        when next_role in ('super_admin', 'maitre_apprentissage') then true
+        else false
+      end
   where id = target_profile_id;
 end;
 $$;

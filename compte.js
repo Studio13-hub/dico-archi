@@ -26,25 +26,25 @@ function normalizeProfile(profile) {
 
 function isStaffProfile(profile) {
   if (!profile || profile.active === false) return false;
-  return profile.role === "super_admin" || profile.role === "maitre_apprentissage" || profile.is_editor;
+  return profile.role === "super_admin" || profile.role === "maitre_apprentissage";
 }
 
 function roleLabel(role) {
   if (role === "super_admin") return "Super admin";
-  if (role === "maitre_apprentissage") return "Maitre apprentissage";
+  if (role === "maitre_apprentissage") return "Formateur";
   return "Apprenti";
 }
 
 function renderGuestState() {
   accountEmail.textContent = "-";
-  accountRole.textContent = "Visiteur";
-  accountActive.textContent = "Non connecte";
+  accountRole.textContent = "Public";
+  accountActive.textContent = "Consultation";
   accountLoginLink.hidden = false;
   accountLoginLink.textContent = "Se connecter";
   accountLoginLink.href = "auth.html";
   accountAdminLink.hidden = true;
   accountLogout.hidden = true;
-  setMessage("Connecte-toi pour voir ton role et tes acces.");
+  setMessage("Tu es en mode Public: consultation libre des definitions.");
 }
 
 async function loadAccount() {

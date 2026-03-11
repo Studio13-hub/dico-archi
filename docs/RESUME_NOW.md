@@ -3,6 +3,11 @@
 ## Etat global
 - Production active: `https://dico-archi.vercel.app`
 - `main` a ete mis a jour et pousse sur `origin/main`.
+- Structure roles produit clarifiee:
+  - `Public` = consultation libre
+  - `Apprenti` = contribution
+  - `Formateur` = validation/correction (slug technique conserve: `maitre_apprentissage`)
+  - `Super admin` = gestion complete
 - Architecture pages:
   - `index.html` = page de bienvenue
   - `dictionnaire.html` = page principale du dictionnaire
@@ -29,6 +34,8 @@ python3 -m http.server 4173
    - page de bienvenue affichee
    - bouton `Acceder au site` -> `dictionnaire.html`.
 2. `dictionnaire.html`:
+   - bloc `Qui peut faire quoi ?` visible avec les 4 roles
+   - ligne workflow `Apprenti -> Formateur -> Publication -> Public` visible
    - chatbot ouvrable/fermeture OK (bouton + ESC + clic exterieur)
    - contraste saisie + bulles utilisateur lisible
    - lien `Voir la fiche` present sur reponses pertinentes.
