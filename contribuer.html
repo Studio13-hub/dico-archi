@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contribuer - Dico Architecture CH</title>
+    <meta name="description" content="Proposer un terme pour le dictionnaire." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Dico Architecture CH</div>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Non connecte</span>
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+            <a class="link-button" href="contribuer.html">Contribuer</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se deconnecter</button>
+          </div>
+        </div>
+        <h1>Proposer un terme</h1>
+        <p>Le terme sera enregistre dans les soumissions en attente de validation.</p>
+      </div>
+    </header>
+
+    <main class="auth">
+      <section class="panel">
+        <form id="contrib-form" novalidate>
+          <div class="auth__inputs">
+            <input id="term" type="text" placeholder="Terme" />
+            <select id="category">
+              <option value="">Choisir une categorie</option>
+            </select>
+            <textarea id="definition" placeholder="Definition"></textarea>
+            <textarea id="example" placeholder="Exemple"></textarea>
+          </div>
+          <div class="auth__actions">
+            <button id="submit" type="submit">Envoyer</button>
+          </div>
+        </form>
+        <div id="contrib-message" class="auth__message"></div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
+    <script>
+      const form = document.getElementById("contrib-form");
+      const message = document.getElementById("contrib-message");
+      const termInput = document.getElementById("term");
+      const categoryInput = document.getElementById("category");
+      const definitionInput = document.getElementById("definition");
+      const exampleInput = document.getElementById("example");
+      let supabaseClient = null;
+
+      function setMessage(text, isError = false) {
+        message.textContent = text;
+        message.style.color = isError ? "#d94e2b" : "#1f7a70";
+      }
+
+      function slugify(value) {
+        return String(value || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "");
+      }
+
+      async function loadCategories() {
+        const { data, error } = await supabaseClient
+          .from("categories")
+          .select("id, name")
+          .order("name", { ascending: true });
+
+        if (error) {
+          setMessage(`Impossible de charger les categories: ${error.message}`, true);
+          return;
+        }
+
+        for (const item of data || []) {
+          const option = document.createElement("option");
+          option.value = item.id;
+          option.textContent = item.name;
+          categoryInput.appendChild(option);
+        }
+      }
+
+      async function submitContribution(event) {
+        event.preventDefault();
+
+        if (!window.supabase || !window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
+          setMessage("Configuration Supabase manquante.", true);
+          return;
+        }
+
+        const term = termInput.value.trim();
+        const categoryId = categoryInput.value.trim();
+        const definition = definitionInput.value.trim();
+        const example = exampleInput.value.trim();
+
+        if (!term || !categoryId || !definition) {
+          setMessage("Terme, categorie et definition sont obligatoires.", true);
+          return;
+        }
+
+        const { data: authData } = await supabaseClient.auth.getUser();
+        const user = authData?.user || null;
+        if (!user) {
+          setMessage("Connecte-toi avant d'envoyer une proposition.", true);
+          return;
+        }
+
+        const payload = {
+          term,
+          slug: slugify(term) || null,
+          category_id: categoryId,
+          definition,
+          example: example || null,
+          status: "submitted",
+          submitted_by: user.id
+        };
+
+        const { error } = await supabaseClient.from("term_submissions").insert(payload);
+        if (error) {
+          setMessage(error.message, true);
+          return;
+        }
+
+        form.reset();
+        setMessage("Proposition envoyee avec succes.");
+      }
+
+      if (window.supabase && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+        supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storage: window.localStorage
+          }
+        });
+        loadCategories();
+      } else {
+        setMessage("Configuration Supabase manquante.", true);
+      }
+
+      form.addEventListener("submit", submitContribution);
+    </script>
+    <script src="chatbot.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fiche terme - DicoArchi</title>
+    <meta name="description" content="Fiche detaillee d'un terme du dictionnaire DicoArchi." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Fiche terme</div>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Non connecte</span>
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+            <a class="link-button" href="contribuer.html">Contribuer</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se deconnecter</button>
+          </div>
+        </div>
+        <h1 id="term-title">TERME</h1>
+        <p id="term-subtitle">Chargement de la fiche du terme.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel term-panel">
+        <div id="term-status" class="meta">-</div>
+        <div class="term-grid">
+          <div class="term-block">
+            <h2>Categorie</h2>
+            <p id="term-category">-</p>
+          </div>
+          <div class="term-block">
+            <h2>Définition</h2>
+            <p id="term-definition"></p>
+          </div>
+          <div class="term-block">
+            <h2>Exemple</h2>
+            <p id="term-example"></p>
+          </div>
+          <div class="term-block">
+            <h2>Termes liés</h2>
+            <div id="term-related"></div>
+          </div>
+          <div class="term-block">
+            <h2>Médias</h2>
+            <div id="term-media"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
+    <script>
+      const titleNode = document.getElementById("term-title");
+      const subtitleNode = document.getElementById("term-subtitle");
+      const categoryNode = document.getElementById("term-category");
+      const definitionNode = document.getElementById("term-definition");
+      const exampleNode = document.getElementById("term-example");
+      const mediaNode = document.getElementById("term-media");
+      const relatedNode = document.getElementById("term-related");
+      const statusNode = document.getElementById("term-status");
+
+      function getSlug() {
+        const params = new URLSearchParams(window.location.search);
+        return (params.get("slug") || "").trim();
+      }
+
+      function clearChildren(node) {
+        while (node.firstChild) node.removeChild(node.firstChild);
+      }
+
+      function setText(node, value, fallback = "-") {
+        node.textContent = value || fallback;
+      }
+
+      function renderMedia(items) {
+        clearChildren(mediaNode);
+        if (!Array.isArray(items) || !items.length) {
+          mediaNode.textContent = "Aucun média disponible.";
+          return;
+        }
+
+        for (const item of items) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "meta";
+
+          if (item.media_type === "image") {
+            const image = document.createElement("img");
+            image.src = item.url;
+            image.alt = item.alt_text || item.title || "Media du terme";
+            image.style.maxWidth = "100%";
+            image.style.borderRadius = "12px";
+            wrapper.appendChild(image);
+          } else {
+            const link = document.createElement("a");
+            link.href = item.url;
+            link.target = "_blank";
+            link.rel = "noreferrer";
+            link.textContent = item.title || item.url;
+            wrapper.appendChild(link);
+          }
+
+          if (item.title) {
+            const caption = document.createElement("div");
+            caption.className = "meta meta--subtle";
+            caption.textContent = item.title;
+            wrapper.appendChild(caption);
+          }
+
+          mediaNode.appendChild(wrapper);
+        }
+      }
+
+      function renderRelated(items) {
+        clearChildren(relatedNode);
+        if (!Array.isArray(items) || !items.length) {
+          relatedNode.textContent = "Aucun terme lié.";
+          return;
+        }
+
+        const list = document.createElement("div");
+        list.className = "chips";
+
+        for (const item of items) {
+          const link = document.createElement("a");
+          link.className = "chip";
+          link.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
+          link.textContent = item.term;
+          list.appendChild(link);
+        }
+
+        relatedNode.appendChild(list);
+      }
+
+      async function loadTerm() {
+        const slug = getSlug();
+        if (!slug) {
+          titleNode.textContent = "Terme introuvable";
+          subtitleNode.textContent = "Aucun slug n'a ete fourni.";
+          statusNode.textContent = "Erreur: slug manquant";
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/terms?slug=${encodeURIComponent(slug)}`);
+          const payload = await response.json();
+
+          if (!response.ok) {
+            throw new Error(payload.error || "term_fetch_failed");
+          }
+
+          const term = payload.term || {};
+          titleNode.textContent = term.term || "TERME";
+          subtitleNode.textContent = "Fiche détaillée du dictionnaire DicoArchi.";
+          setText(categoryNode, term.categories?.name);
+          setText(definitionNode, term.definition, "Définition indisponible.");
+          setText(exampleNode, term.example, "Aucun exemple disponible.");
+          statusNode.textContent = `Statut: ${term.status || "-"}`;
+          renderMedia(payload.media || []);
+          renderRelated(payload.related_terms || []);
+          document.title = `${term.term || "Fiche terme"} - DicoArchi`;
+        } catch (error) {
+          titleNode.textContent = "TERME";
+          subtitleNode.textContent = "Impossible de charger cette fiche pour le moment.";
+          categoryNode.textContent = "-";
+          definitionNode.textContent = "La fiche n'a pas pu être chargée.";
+          exampleNode.textContent = "-";
+          statusNode.textContent = `Erreur: ${error.message || "internal_error"}`;
+          mediaNode.textContent = "Aucun média disponible.";
+          relatedNode.textContent = "Aucun terme lié.";
+        }
+      }
+
+      loadTerm();
+    </script>
+    <script src="chatbot.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DicoArchi - Bienvenue</title>
+    <meta
+      name="description"
+      content="Bienvenue sur DicoArchi, dictionnaire d'architecture pensé pour l'inclusion, la formation et l'intégration professionnelle."
+    />
+    <meta property="og:title" content="DicoArchi - Bienvenue" />
+    <meta
+      property="og:description"
+      content="Un dictionnaire d'architecture inclusif pour comprendre le vocabulaire technique du métier."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dico-archi.vercel.app" />
+    <meta property="og:site_name" content="DicoArchi" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="google-site-verification" content="4NuT9EaeXCrPx51yMmVDvtsuzVJwoauzwHQ5JRzBSjc" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero welcome-cover">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Dico Architecture CH</div>
+          <div class="hero__actions welcome-cover__links">
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+            <a class="link-button" href="category.html">Categories</a>
+            <a class="link-button" href="auth.html">Connexion</a>
+          </div>
+        </div>
+
+        <h1>DicoArchi</h1>
+        <p class="welcome-cover__lead">
+          Le dictionnaire d'architecture pour comprendre rapidement les termes du bureau, du chantier et des normes.
+        </p>
+        <div class="controls">
+          <input id="home-search" type="search" placeholder="Rechercher un terme..." autocomplete="off" />
+          <button id="home-search-button" type="button">Rechercher</button>
+        </div>
+        <div id="home-search-results" class="meta"></div>
+
+        <div class="welcome-cover__actions">
+          <a class="welcome-cover__cta" href="dictionnaire.html">Acceder au dictionnaire</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth">
+      <section class="panel">
+        <h2>Terme du jour</h2>
+        <div class="dashboard">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Terme</span>
+            <strong id="featured-term-title">Chargement...</strong>
+            <p id="featured-term-definition" class="meta meta--subtle">Recuperation de la fiche en cours.</p>
+            <a id="featured-term-link" class="link-button" href="dictionnaire.html">Voir la fiche</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Acces rapides</h2>
+        <div class="dashboard">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Dictionnaire</span>
+            <strong>Parcourir tous les termes</strong>
+            <p class="meta meta--subtle">Consulte les definitions par ordre alphabetique.</p>
+            <a class="link-button" href="dictionnaire.html">Ouvrir</a>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Categories</span>
+            <strong>Explorer par domaine</strong>
+            <p class="meta meta--subtle">Accede aux notions classees par themes.</p>
+            <a class="link-button" href="category.html">Explorer</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer__inner">
+        <span>Réalisé par RDR Architectes SA.</span>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script>
+      const homeSearchInput = document.getElementById("home-search");
+      const homeSearchButton = document.getElementById("home-search-button");
+      const homeSearchResults = document.getElementById("home-search-results");
+      const featuredTermTitle = document.getElementById("featured-term-title");
+      const featuredTermDefinition = document.getElementById("featured-term-definition");
+      const featuredTermLink = document.getElementById("featured-term-link");
+
+      function renderSearchResults(items) {
+        if (!Array.isArray(items) || !items.length) {
+          homeSearchResults.textContent = "Aucun resultat.";
+          return;
+        }
+
+        const links = items.slice(0, 5).map((item) => {
+          const href = `term.html?slug=${encodeURIComponent(item.slug)}`;
+          return `<a href="${href}">${item.term}</a>`;
+        });
+
+        homeSearchResults.innerHTML = `Resultats: ${links.join(" · ")}`;
+      }
+
+      async function runSearch() {
+        const query = homeSearchInput.value.trim();
+        if (!query) {
+          homeSearchResults.textContent = "Saisis un terme a rechercher.";
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+          const payload = await response.json();
+          if (!response.ok) throw new Error(payload.error || "search_failed");
+          renderSearchResults(payload.results || []);
+        } catch (error) {
+          homeSearchResults.textContent = `Erreur: ${error.message || "search_failed"}`;
+        }
+      }
+
+      async function loadFeaturedTerm() {
+        if (!window.supabase || !window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
+          featuredTermTitle.textContent = "Configuration Supabase manquante";
+          featuredTermDefinition.textContent = "Impossible de charger le terme du jour.";
+          return;
+        }
+
+        try {
+          const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true,
+              storage: window.localStorage
+            }
+          });
+
+          const { data, error } = await client
+            .from("terms")
+            .select("term, slug, definition")
+            .eq("status", "published")
+            .order("term", { ascending: true });
+
+          if (error) throw error;
+
+          const items = Array.isArray(data) ? data : [];
+          if (!items.length) {
+            featuredTermTitle.textContent = "Aucun terme publie";
+            featuredTermDefinition.textContent = "Le dictionnaire ne contient pas encore de fiche publiee.";
+            featuredTermLink.href = "dictionnaire.html";
+            return;
+          }
+
+          const dayIndex = Math.floor(Date.now() / 86400000) % items.length;
+          const item = items[dayIndex];
+
+          featuredTermTitle.textContent = item.term;
+          featuredTermDefinition.textContent = item.definition || "Definition indisponible.";
+          featuredTermLink.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
+        } catch (error) {
+          featuredTermTitle.textContent = "Erreur";
+          featuredTermDefinition.textContent = error.message || "Impossible de charger le terme du jour.";
+          featuredTermLink.href = "dictionnaire.html";
+        }
+      }
+
+      homeSearchButton.addEventListener("click", runSearch);
+      homeSearchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") runSearch();
+      });
+
+      loadFeaturedTerm();
+    </script>
+    <script src="chatbot.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+  </body>
+</html>

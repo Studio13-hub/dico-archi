@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Concepts - DicoArchi</title>
+    <meta name="description" content="Visualiser les relations entre les termes du dictionnaire DicoArchi." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Concepts</div>
+          <div class="hero__actions">
+            <a class="link-button" href="index.html">Accueil</a>
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+          </div>
+        </div>
+        <h1>Relations entre les termes</h1>
+        <p>Explorez les liens entre les notions principales du dictionnaire.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div id="concepts-status" class="meta">Chargement des concepts...</div>
+        <div id="concepts-trees"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer__inner">
+        <span>Réalisé par RDR Architectes SA.</span>
+      </div>
+    </footer>
+
+    <script>
+      const ROOT_SLUGS = [
+        "toiture-plate",
+        "avant-projet",
+        "coupe",
+        "mur-porteur"
+      ];
+
+      const statusNode = document.getElementById("concepts-status");
+      const treesNode = document.getElementById("concepts-trees");
+
+      function createLink(term) {
+        const link = document.createElement("a");
+        link.href = `term.html?slug=${encodeURIComponent(term.slug)}`;
+        link.textContent = term.term;
+        return link;
+      }
+
+      function createTreeCard(root, relatedTerms) {
+        const section = document.createElement("section");
+        section.className = "panel";
+
+        const title = document.createElement("h2");
+        title.appendChild(createLink(root));
+
+        const definition = document.createElement("p");
+        definition.textContent = root.definition || "Aucune definition disponible.";
+
+        const list = document.createElement("ul");
+
+        if (!relatedTerms.length) {
+          const empty = document.createElement("li");
+          empty.textContent = "Aucune relation disponible.";
+          list.appendChild(empty);
+        } else {
+          for (const item of relatedTerms) {
+            const li = document.createElement("li");
+            li.appendChild(createLink(item));
+            const suffix = document.createElement("span");
+            suffix.className = "meta meta--subtle";
+            suffix.textContent = item.relation_type ? ` (${item.relation_type})` : "";
+            li.appendChild(suffix);
+            list.appendChild(li);
+          }
+        }
+
+        section.appendChild(title);
+        section.appendChild(definition);
+        section.appendChild(list);
+        return section;
+      }
+
+      async function loadRoot(slug) {
+        const response = await fetch(`/api/terms?slug=${encodeURIComponent(slug)}`);
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "term_fetch_failed");
+        }
+        return payload;
+      }
+
+      async function loadConcepts() {
+        try {
+          const payloads = await Promise.all(ROOT_SLUGS.map((slug) => loadRoot(slug).catch(() => null)));
+          const validPayloads = payloads.filter(Boolean);
+
+          treesNode.textContent = "";
+
+          if (!validPayloads.length) {
+            statusNode.textContent = "Aucun concept disponible.";
+            return;
+          }
+
+          statusNode.textContent = `${validPayloads.length} arbre(s) de concepts affiché(s).`;
+
+          for (const payload of validPayloads) {
+            treesNode.appendChild(createTreeCard(payload.term || {}, payload.related_terms || []));
+          }
+        } catch (error) {
+          statusNode.textContent = `Erreur: ${error.message || "internal_error"}`;
+        }
+      }
+
+      loadConcepts();
+    </script>
+  </body>
+</html>

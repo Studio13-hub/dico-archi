@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mon compte - Dico Architecture CH</title>
+    <meta name="description" content="Espace compte: role, etat d'acces et navigation vers contribution/admin." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Dico Architecture CH</div>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Non connecte</span>
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+            <a class="link-button" href="contribuer.html">Contribuer</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se deconnecter</button>
+          </div>
+        </div>
+        <h1>Mon compte</h1>
+        <p>Vue claire de ton acces et liens rapides vers les bons espaces.</p>
+      </div>
+    </header>
+
+    <main class="auth">
+      <section class="panel account">
+        <div id="account-message" class="auth__message"></div>
+        <div class="account__grid">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Email</span>
+            <strong id="account-email">-</strong>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Role</span>
+            <strong id="account-role">-</strong>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Etat</span>
+            <strong id="account-active">-</strong>
+          </div>
+        </div>
+        <div class="auth__actions">
+          <a id="account-login-link" class="link-button" href="auth.html">Changer de compte</a>
+          <a id="account-contrib-link" class="link-button" href="contribuer.html">Contribuer</a>
+          <a id="account-admin-link" class="link-button" href="admin.html" hidden>Espace admin</a>
+          <button id="account-logout" type="button" hidden>Se deconnecter</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Roles utilisateurs</h2>
+        <div class="dashboard">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Public</span>
+            <strong>Consulte les definitions</strong>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Apprenti</span>
+            <strong>Propose des contenus</strong>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Formateur</span>
+            <strong>Valide et corrige</strong>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Super admin</span>
+            <strong>Administre le systeme</strong>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
+    <script src="compte.js"></script>
+    <script src="chatbot.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+  </body>
+</html>
