@@ -2,15 +2,12 @@ const titleEl = document.getElementById("category-title");
 const subtitleEl = document.getElementById("category-subtitle");
 const breadcrumbEl = document.getElementById("category-breadcrumb");
 const cardsEl = document.getElementById("category-cards");
+const dicoApi = window.DicoArchiApi;
 
 function getLocalTermsRaw() {
   if (Array.isArray(window.TERMS)) return window.TERMS;
   if (typeof TERMS !== "undefined" && Array.isArray(TERMS)) return TERMS;
   return [];
-}
-
-function hasSupabaseConfig() {
-  return Boolean(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase);
 }
 
 function normalizeTerm(item) {
@@ -78,13 +75,10 @@ async function loadCategoryPage() {
   }
 
   let terms = getLocalTermsRaw().map(normalizeTerm);
-  if (hasSupabaseConfig()) {
+  if (dicoApi) {
     try {
-      const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-      const { data, error } = await client
-        .from("terms")
-        .select("term, category, definition, example, related, image_url");
-      if (!error) terms = mergeTerms((data || []).map(normalizeTerm), terms);
+      const data = await dicoApi.fetchLegacyTerms();
+      terms = mergeTerms(data.map(normalizeTerm), terms);
     } catch (_err) {
       // Keep local list as fallback.
     }

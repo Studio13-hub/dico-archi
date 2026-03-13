@@ -89,6 +89,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
+    <script src="supabaseClient.js"></script>
     <script>
       const homeSearchInput = document.getElementById("home-search");
       const homeSearchButton = document.getElementById("home-search-button");
@@ -119,9 +120,13 @@
         }
 
         try {
-          const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-          const payload = await response.json();
-          if (!response.ok) throw new Error(payload.error || "search_failed");
+          const payload = window.DicoArchiApi
+            ? await window.DicoArchiApi.searchTerms(query)
+            : await fetch(`/api/search?q=${encodeURIComponent(query)}`).then(async (response) => {
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || "search_failed");
+                return data;
+              });
           renderSearchResults(payload.results || []);
         } catch (error) {
           homeSearchResults.textContent = `Erreur: ${error.message || "search_failed"}`;
@@ -129,30 +134,14 @@
       }
 
       async function loadFeaturedTerm() {
-        if (!window.supabase || !window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
+        if (!window.DicoArchiApi) {
           featuredTermTitle.textContent = "Configuration Supabase manquante";
           featuredTermDefinition.textContent = "Impossible de charger le terme du jour.";
           return;
         }
 
         try {
-          const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
-            auth: {
-              persistSession: true,
-              autoRefreshToken: true,
-              detectSessionInUrl: true,
-              storage: window.localStorage
-            }
-          });
-
-          const { data, error } = await client
-            .from("terms")
-            .select("term, slug, definition")
-            .eq("status", "published")
-            .order("term", { ascending: true });
-
-          if (error) throw error;
-
+          const data = await window.DicoArchiApi.fetchPublishedTermsBasic();
           const items = Array.isArray(data) ? data : [];
           if (!items.length) {
             featuredTermTitle.textContent = "Aucun terme publie";

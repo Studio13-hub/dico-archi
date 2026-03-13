@@ -20,6 +20,7 @@ const termVariantsEl = document.getElementById("term-variants");
 const dockTermQuizButton = document.getElementById("dock-term-quiz");
 const dockTermShareButton = document.getElementById("dock-term-share");
 const dockTermTopButton = document.getElementById("dock-term-top");
+const dicoApi = window.DicoArchiApi;
 
 let currentLightboxImages = [];
 let currentLightboxIndex = 0;
@@ -50,10 +51,6 @@ function getLocalTermsRaw() {
   return [];
 }
 
-function hasSupabaseConfig() {
-  return Boolean(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase);
-}
-
 function normalizeTerm(item) {
   const related = Array.isArray(item.related)
     ? item.related
@@ -69,6 +66,23 @@ function normalizeTerm(item) {
     related,
     image_url: item.image_url || "",
     media_urls
+  };
+}
+
+function normalizeTermDetailFromApi(payload) {
+  const term = payload?.term || {};
+  const relatedTerms = Array.isArray(payload?.related_terms) ? payload.related_terms : [];
+  const media = Array.isArray(payload?.media) ? payload.media : [];
+
+  return {
+    term: term.term || "",
+    slug: term.slug || "",
+    category: term.categories?.name || "Non classe",
+    definition: term.definition || "",
+    example: term.example || "",
+    related: relatedTerms.map((entry) => entry.term).filter(Boolean),
+    image_url: media.map((entry) => entry.url).filter(Boolean),
+    media_urls: media.map((entry) => entry.url).filter(Boolean)
   };
 }
 
@@ -271,7 +285,10 @@ function setStatus(text) {
 
 function setSeo(item) {
   const site = "https://dico-archi.vercel.app";
-  const url = `${site}/term.html?term=${encodeURIComponent(item.term)}`;
+  const query = item.slug
+    ? `slug=${encodeURIComponent(item.slug)}`
+    : `term=${encodeURIComponent(item.term)}`;
+  const url = `${site}/term.html?${query}`;
   document.title = `${item.term} - DicoArchi`;
 
   let desc = document.querySelector('meta[name="description"]');
@@ -451,8 +468,9 @@ function renderBacklinks(currentTerm, allTerms) {
 
 async function loadTermPage() {
   const params = new URLSearchParams(window.location.search);
+  const requestedSlug = (params.get("slug") || "").trim();
   const requestedTerm = (params.get("term") || "").trim();
-  if (!requestedTerm) {
+  if (!requestedSlug && !requestedTerm) {
     renderNotFound("");
     return;
   }
@@ -461,18 +479,30 @@ async function loadTermPage() {
   let terms = [...localTerms];
   let remoteCount = 0;
 
-  if (hasSupabaseConfig()) {
+  // The slug path uses the API endpoint so one term can be loaded directly
+  // without scanning the entire table client-side.
+  if (requestedSlug && dicoApi) {
     try {
-      const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-      const { data, error } = await client
-        .from("terms")
-        .select("term, category, definition, example, related, image_url")
-        .order("term", { ascending: true });
-      if (!error) {
-        const remoteTerms = (data || []).map(normalizeTerm);
-        remoteCount = remoteTerms.length;
-        terms = mergeTerms(remoteTerms, localTerms);
+      const payload = await dicoApi.fetchTermBySlug(requestedSlug);
+      const item = normalizeTermDetailFromApi(payload);
+
+      if (item.term) {
+        const mergedTerms = mergeTerms([item], localTerms);
+        renderTerm(item, mergedTerms);
+        renderBacklinks(item.term, mergedTerms);
+        setStatus("Source: API terme detail");
+        return;
       }
+    } catch (_error) {
+      // Falls back to the broader list loading below.
+    }
+  }
+
+  if (dicoApi) {
+    try {
+      const remoteTerms = (await dicoApi.fetchLegacyTerms()).map(normalizeTerm);
+      remoteCount = remoteTerms.length;
+      terms = mergeTerms(remoteTerms, localTerms);
     } catch (_err) {
       // Keep local fallback silently; status below will still mention source.
     }
@@ -482,10 +512,15 @@ async function loadTermPage() {
     terms = FALLBACK_TERMS.map(normalizeTerm);
   }
 
-  const key = requestedTerm.toLowerCase();
-  const item = terms.find((entry) => entry.term.toLowerCase() === key);
+  const lookupValue = requestedTerm || requestedSlug;
+  const key = lookupValue.toLowerCase();
+  const item = terms.find((entry) => {
+    const termKey = (entry.term || "").toLowerCase();
+    const slugKey = (entry.slug || "").toLowerCase();
+    return termKey === key || slugKey === key;
+  });
   if (!item) {
-    renderNotFound(requestedTerm);
+    renderNotFound(lookupValue);
     return;
   }
 

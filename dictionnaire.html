@@ -53,6 +53,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
+    <script src="supabaseClient.js"></script>
     <script src="menu.js"></script>
     <script src="nav.js"></script>
     <script>
@@ -90,50 +91,26 @@
       }
 
       async function loadTerms() {
-        if (!window.supabase || !window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
+        if (!window.DicoArchiApi) {
           termsStatus.textContent = "Configuration Supabase manquante.";
           return;
         }
 
-        const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
-          auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true,
-            storage: window.localStorage
+        try {
+          const items = await window.DicoArchiApi.fetchPublishedTermsBasic();
+          clearChildren(termsList);
+
+          if (!items.length) {
+            termsStatus.textContent = "Aucun terme publie.";
+            return;
           }
-        });
 
-        const { data, error } = await client
-          .from("terms")
-          .select(`
-            id,
-            term,
-            slug,
-            definition,
-            categories:category_id (
-              name
-            )
-          `)
-          .eq("status", "published")
-          .order("term", { ascending: true });
-
-        if (error) {
+          termsStatus.textContent = `${items.length} terme(s) charge(s).`;
+          for (const item of items) {
+            termsList.appendChild(createTermCard(item));
+          }
+        } catch (error) {
           termsStatus.textContent = `Erreur: ${error.message}`;
-          return;
-        }
-
-        const items = Array.isArray(data) ? data : [];
-        clearChildren(termsList);
-
-        if (!items.length) {
-          termsStatus.textContent = "Aucun terme publie.";
-          return;
-        }
-
-        termsStatus.textContent = `${items.length} terme(s) charge(s).`;
-        for (const item of items) {
-          termsList.appendChild(createTermCard(item));
         }
       }
 

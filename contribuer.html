@@ -51,6 +51,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
+    <script src="supabaseClient.js"></script>
     <script src="menu.js"></script>
     <script src="nav.js"></script>
     <script>
@@ -60,7 +61,8 @@
       const categoryInput = document.getElementById("category");
       const definitionInput = document.getElementById("definition");
       const exampleInput = document.getElementById("example");
-      let supabaseClient = null;
+      const supabaseHelpers = window.DicoArchiSupabase;
+      const dicoApi = window.DicoArchiApi;
 
       function setMessage(text, isError = false) {
         message.textContent = text;
@@ -78,28 +80,23 @@
       }
 
       async function loadCategories() {
-        const { data, error } = await supabaseClient
-          .from("categories")
-          .select("id, name")
-          .order("name", { ascending: true });
-
-        if (error) {
+        try {
+          const data = await dicoApi.fetchCategories();
+          for (const item of data || []) {
+            const option = document.createElement("option");
+            option.value = item.id;
+            option.textContent = item.name;
+            categoryInput.appendChild(option);
+          }
+        } catch (error) {
           setMessage(`Impossible de charger les categories: ${error.message}`, true);
-          return;
-        }
-
-        for (const item of data || []) {
-          const option = document.createElement("option");
-          option.value = item.id;
-          option.textContent = item.name;
-          categoryInput.appendChild(option);
         }
       }
 
       async function submitContribution(event) {
         event.preventDefault();
 
-        if (!window.supabase || !window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
+        if (!supabaseHelpers || !dicoApi) {
           setMessage("Configuration Supabase manquante.", true);
           return;
         }
@@ -114,8 +111,7 @@
           return;
         }
 
-        const { data: authData } = await supabaseClient.auth.getUser();
-        const user = authData?.user || null;
+        const user = await supabaseHelpers.getCurrentUser();
         if (!user) {
           setMessage("Connecte-toi avant d'envoyer une proposition.", true);
           return;
@@ -131,8 +127,9 @@
           submitted_by: user.id
         };
 
-        const { error } = await supabaseClient.from("term_submissions").insert(payload);
-        if (error) {
+        try {
+          await dicoApi.createSubmission(payload);
+        } catch (error) {
           setMessage(error.message, true);
           return;
         }
@@ -141,15 +138,7 @@
         setMessage("Proposition envoyee avec succes.");
       }
 
-      if (window.supabase && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
-        supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
-          auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true,
-            storage: window.localStorage
-          }
-        });
+      if (supabaseHelpers && dicoApi) {
         loadCategories();
       } else {
         setMessage("Configuration Supabase manquante.", true);

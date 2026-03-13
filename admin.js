@@ -38,6 +38,8 @@ const chatFeedbackRating = document.getElementById("chat-feedback-rating");
 const chatFeedbackSource = document.getElementById("chat-feedback-source");
 const chatFeedbackExport = document.getElementById("chat-feedback-export");
 const chatFeedbackRefresh = document.getElementById("chat-feedback-refresh");
+const supabaseHelpers = window.DicoArchiSupabase;
+const dicoApi = window.DicoArchiApi;
 
 let supabaseClient = null;
 let currentUser = null;
@@ -60,27 +62,21 @@ let lastChatFeedbackItems = [];
 
 const ROLE_LABELS = {
   super_admin: "Super admin",
+  formateur: "Formateur",
   maitre_apprentissage: "Formateur",
   apprenti: "Apprenti"
 };
 
 function normalizeProfile(profile) {
-  if (!profile) return null;
-  return {
-    role: profile.role || (profile.is_editor ? "maitre_apprentissage" : "apprenti"),
-    active: profile.active !== false,
-    is_editor: Boolean(profile.is_editor)
-  };
+  return supabaseHelpers?.normalizeProfile(profile) || null;
 }
 
 function canManageFromProfile(profile) {
-  if (!profile || profile.active === false) return false;
-  return profile.role === "super_admin" || profile.role === "maitre_apprentissage";
+  return supabaseHelpers?.isStaffProfile(profile) || false;
 }
 
 function isSuperAdminProfile(profile) {
-  if (!profile || profile.active === false) return false;
-  return profile.role === "super_admin";
+  return supabaseHelpers?.isSuperAdminProfile(profile) || false;
 }
 
 function setMessage(text, isError = false) {
@@ -238,10 +234,6 @@ function serializeMediaUrls(urls) {
   if (!urls.length) return null;
   if (urls.length === 1) return urls[0];
   return JSON.stringify(urls);
-}
-
-function hasSupabaseConfig() {
-  return Boolean(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase);
 }
 
 function setUploadStatus(text) {
@@ -1257,24 +1249,29 @@ async function fetchProfiles() {
   let rows = null;
   let finalError = null;
 
-  const direct = await supabaseClient
-    .from("profiles")
-    .select("id, email, role, active, is_editor, created_at")
-    .order("created_at", { ascending: true });
+  try {
+    if (dicoApi) {
+      rows = await dicoApi.listProfiles();
+    } else {
+      const rpc = await supabaseClient.rpc("admin_list_profiles");
+      if (rpc.error) throw rpc.error;
+      rows = rpc.data || [];
+    }
+  } catch (error) {
+    const direct = await supabaseClient
+      .from("profiles")
+      .select("id, email, role, active, is_editor, created_at")
+      .order("created_at", { ascending: true });
 
-  const directRows = direct.data || [];
-  const directLooksIncomplete = directRows.length === 0 || directRows.some((row) => !row.role && row.is_editor == null);
-  if (!direct.error && !directLooksIncomplete) {
-    rows = directRows;
-  } else {
-    const rpc = await supabaseClient.rpc("admin_list_profiles");
-    if (rpc.error) {
-      finalError = direct.error || rpc.error;
+    const directRows = direct.data || [];
+    const directLooksIncomplete = directRows.length === 0 || directRows.some((row) => !row.role && row.is_editor == null);
+    if (!direct.error && !directLooksIncomplete) {
+      rows = directRows;
+    } else {
+      finalError = direct.error || error;
       if (!direct.error && directLooksIncomplete) {
         finalError = new Error("lecture profiles vide/incomplete");
       }
-    } else {
-      rows = rpc.data || [];
     }
   }
 
@@ -1303,22 +1300,27 @@ async function updateProfile(profileId, role, active, controls) {
 
   const payload = { role, active };
   try {
-    const direct = await supabaseClient
-      .from("profiles")
-      .update(payload)
-      .eq("id", profileId)
-      .select("id");
-    const directUpdated = Array.isArray(direct.data) ? direct.data.length : 0;
-
-    if (direct.error || directUpdated === 0) {
-      const rpc = await supabaseClient.rpc("admin_update_profile", {
-        target_profile_id: profileId,
-        next_role: role,
-        next_active: active
-      });
-      if (rpc.error) {
-        if (await handleAuthError(rpc.error, "Gestion des roles")) return;
-        setMessage(`Gestion des roles: ${getErrorMessage(rpc.error)}`, true);
+    try {
+      if (dicoApi) {
+        await dicoApi.updateProfile(profileId, role, active);
+      } else {
+        const rpc = await supabaseClient.rpc("admin_update_profile", {
+          target_profile_id: profileId,
+          next_role: role,
+          next_active: active
+        });
+        if (rpc.error) throw rpc.error;
+      }
+    } catch (error) {
+      const direct = await supabaseClient
+        .from("profiles")
+        .update(payload)
+        .eq("id", profileId)
+        .select("id");
+      const directUpdated = Array.isArray(direct.data) ? direct.data.length : 0;
+      if (direct.error || directUpdated === 0) {
+        if (await handleAuthError(error, "Gestion des roles")) return;
+        setMessage(`Gestion des roles: ${getErrorMessage(error)}`, true);
         return;
       }
     }
@@ -1345,21 +1347,13 @@ function scheduleAdminFilter() {
 }
 
 async function loadUser() {
-  if (!hasSupabaseConfig()) {
+  if (!supabaseHelpers || !supabaseHelpers.hasConfig()) {
     setMessage("Configuration Supabase manquante.", true);
     return;
   }
 
-  supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-      storage: window.localStorage
-    }
-  });
-  const { data } = await supabaseClient.auth.getUser();
-  currentUser = data?.user || null;
+  supabaseClient = supabaseHelpers.getClient();
+  currentUser = await supabaseHelpers.getCurrentUser();
 
   if (!currentUser) {
     window.location.href = "auth.html";
@@ -1367,30 +1361,7 @@ async function loadUser() {
   }
 
   adminUser.textContent = `Utilisateur: ${currentUser.email}`;
-
-  let profile = null;
-  const withRoles = await supabaseClient
-    .from("profiles")
-    .select("role, active, is_editor")
-    .eq("id", currentUser.id)
-    .single();
-  if (!withRoles.error) {
-    profile = withRoles.data;
-  } else {
-    const fallback = await supabaseClient
-      .from("profiles")
-      .select("is_editor")
-      .eq("id", currentUser.id)
-      .single();
-    if (fallback.error) {
-      if (await handleAuthError(fallback.error, "Session")) return;
-      setMessage(fallback.error.message, true);
-      return;
-    }
-    profile = fallback.data;
-  }
-
-  userProfile = normalizeProfile(profile);
+  userProfile = normalizeProfile(await supabaseHelpers.getProfile(currentUser.id));
   canManageTerms = canManageFromProfile(userProfile);
   isSuperAdmin = isSuperAdminProfile(userProfile);
   const roleLabel = ROLE_LABELS[userProfile?.role] || "Lecture seule";

@@ -10,15 +10,15 @@ const relatedInput = document.getElementById("related");
 const imageUrlInput = document.getElementById("image-url");
 const submitButton = document.getElementById("submit");
 const resetButton = document.getElementById("reset");
+const supabaseHelpers = window.DicoArchiSupabase;
+const dicoApi = window.DicoArchiApi;
 
 let supabaseClient = null;
 let currentUser = null;
 let currentProfile = null;
 
 function getRoleLabel(role) {
-  if (role === "super_admin") return "Super admin";
-  if (role === "maitre_apprentissage") return "Formateur";
-  return "Apprenti";
+  return supabaseHelpers?.getRoleLabel(role) || "Apprenti";
 }
 let isSubmitting = false;
 
@@ -28,7 +28,7 @@ function setMessage(text, isError = false) {
 }
 
 function hasSupabaseConfig() {
-  return Boolean(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase);
+  return Boolean(supabaseHelpers && supabaseHelpers.hasConfig());
 }
 
 function isAuthError(error) {
@@ -187,16 +187,8 @@ async function loadUser() {
     return;
   }
 
-  supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-      storage: window.localStorage
-    }
-  });
-  const { data } = await supabaseClient.auth.getUser();
-  currentUser = data?.user || null;
+  supabaseClient = supabaseHelpers.getClient();
+  currentUser = await supabaseHelpers.getCurrentUser();
   supabaseClient.auth.onAuthStateChange((_event, session) => {
     currentUser = session?.user || null;
     if (!currentUser) {
@@ -213,27 +205,7 @@ async function loadUser() {
     return;
   }
 
-  let profile = null;
-  const withRoles = await supabaseClient
-    .from("profiles")
-    .select("role, active, is_editor")
-    .eq("id", currentUser.id)
-    .single();
-  if (!withRoles.error) {
-    profile = withRoles.data;
-  } else {
-    const fallback = await supabaseClient
-      .from("profiles")
-      .select("is_editor")
-      .eq("id", currentUser.id)
-      .single();
-    profile = fallback.error ? null : fallback.data;
-  }
-
-  currentProfile = {
-    role: profile?.role || (profile?.is_editor ? "maitre_apprentissage" : "apprenti"),
-    active: profile?.active !== false
-  };
+  currentProfile = supabaseHelpers.normalizeProfile(await supabaseHelpers.getProfile(currentUser.id));
 
   if (!currentProfile.active) {
     setMessage("Ton compte est inactif. Contacte un super admin.", true);
@@ -247,19 +219,13 @@ async function loadUser() {
 }
 
 async function fetchMySubmissions() {
-  const { data, error } = await supabaseClient
-    .from("term_submissions")
-    .select("id, term, category, definition, status, reviewer_comment, created_at")
-    .eq("submitted_by", currentUser.id)
-    .order("created_at", { ascending: false });
-
-  if (error) {
+  try {
+    const data = await dicoApi.fetchMySubmissions(currentUser.id);
+    renderList(data || []);
+  } catch (error) {
     if (await handleAuthError(error)) return;
     setMessage(error.message, true);
-    return;
   }
-
-  renderList(data || []);
 }
 
 async function submitProposal() {
@@ -296,8 +262,9 @@ async function submitProposal() {
       submitter_email: currentUser.email
     };
 
-    const { error } = await supabaseClient.from("term_submissions").insert(payload);
-    if (error) {
+    try {
+      await dicoApi.createSubmission(payload);
+    } catch (error) {
       if (await handleAuthError(error)) return;
       setMessage(error.message, true);
       return;

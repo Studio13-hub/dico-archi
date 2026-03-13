@@ -5,34 +5,19 @@ const accountActive = document.getElementById("account-active");
 const accountLoginLink = document.getElementById("account-login-link");
 const accountAdminLink = document.getElementById("account-admin-link");
 const accountLogout = document.getElementById("account-logout");
+const supabaseHelpers = window.DicoArchiSupabase;
 
 function setMessage(text, isError = false) {
   accountMessage.textContent = text;
   accountMessage.style.color = isError ? "#d94e2b" : "#1f7a70";
 }
 
-function hasSupabaseConfig() {
-  return Boolean(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase);
-}
-
 function normalizeProfile(profile) {
-  if (!profile) return { role: "apprenti", active: true, is_editor: false };
-  return {
-    role: profile.role || (profile.is_editor ? "maitre_apprentissage" : "apprenti"),
-    active: profile.active !== false,
-    is_editor: Boolean(profile.is_editor)
-  };
-}
-
-function isStaffProfile(profile) {
-  if (!profile || profile.active === false) return false;
-  return profile.role === "super_admin" || profile.role === "maitre_apprentissage";
+  return supabaseHelpers?.normalizeProfile(profile) || { role: "apprenti", active: true, is_editor: false };
 }
 
 function roleLabel(role) {
-  if (role === "super_admin") return "Super admin";
-  if (role === "maitre_apprentissage") return "Formateur";
-  return "Apprenti";
+  return supabaseHelpers?.getRoleLabel(role) || "Apprenti";
 }
 
 function renderGuestState() {
@@ -48,38 +33,20 @@ function renderGuestState() {
 }
 
 async function loadAccount() {
-  if (!hasSupabaseConfig()) {
+  if (!supabaseHelpers || !supabaseHelpers.hasConfig()) {
     setMessage("Configuration Supabase manquante.", true);
     return;
   }
 
-  const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-      storage: window.localStorage
-    }
-  });
-
-  const { data } = await client.auth.getUser();
-  const user = data?.user || null;
+  const client = supabaseHelpers.getClient();
+  const user = await supabaseHelpers.getCurrentUser();
   if (!user) {
     renderGuestState();
     return;
   }
 
-  let profile = null;
-  const withRoles = await client.from("profiles").select("role, active, is_editor").eq("id", user.id).single();
-  if (!withRoles.error) {
-    profile = withRoles.data;
-  } else {
-    const fallback = await client.from("profiles").select("is_editor").eq("id", user.id).single();
-    if (!fallback.error) profile = fallback.data;
-  }
-
-  const normalized = normalizeProfile(profile);
-  const isStaff = isStaffProfile(normalized);
+  const normalized = normalizeProfile(await supabaseHelpers.getProfile(user.id));
+  const isStaff = supabaseHelpers.isStaffProfile(normalized);
 
   accountEmail.textContent = user.email || "-";
   accountRole.textContent = roleLabel(normalized.role);
@@ -101,11 +68,8 @@ async function loadAccount() {
     window.location.href = "index.html";
   });
 
-  client.auth.onAuthStateChange((_event, session) => {
-    const nextUser = session?.user || null;
-    if (!nextUser) {
-      renderGuestState();
-    }
+  supabaseHelpers.onAuthStateChange((_event, _session, nextUser) => {
+    if (!nextUser) renderGuestState();
   });
 }
 

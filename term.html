@@ -60,6 +60,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
+    <script src="supabaseClient.js"></script>
     <script src="menu.js"></script>
     <script src="nav.js"></script>
     <script>
@@ -154,12 +155,13 @@
         }
 
         try {
-          const response = await fetch(`/api/terms?slug=${encodeURIComponent(slug)}`);
-          const payload = await response.json();
-
-          if (!response.ok) {
-            throw new Error(payload.error || "term_fetch_failed");
-          }
+          const payload = window.DicoArchiApi
+            ? await window.DicoArchiApi.fetchTermBySlug(slug)
+            : await fetch(`/api/terms?slug=${encodeURIComponent(slug)}`).then(async (response) => {
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || "term_fetch_failed");
+                return data;
+              });
 
           const term = payload.term || {};
           titleNode.textContent = term.term || "TERME";

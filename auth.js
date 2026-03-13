@@ -12,29 +12,19 @@ const backToLoginButton = document.getElementById("back-to-login");
 const message = document.getElementById("auth-message");
 
 let mode = "auth";
+const supabaseHelpers = window.DicoArchiSupabase;
 
 function setMessage(text, isError = false) {
   message.textContent = text;
   message.style.color = isError ? "#d94e2b" : "#1f7a70";
 }
 
-function hasSupabaseConfig() {
-  return Boolean(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase);
-}
-
-if (!hasSupabaseConfig()) {
+if (!supabaseHelpers || !supabaseHelpers.hasConfig()) {
   setMessage("Configuration Supabase manquante. Ajoute tes cles dans config.js.", true);
 }
 
-const supabaseClient = hasSupabaseConfig()
-  ? window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        storage: window.localStorage
-      }
-    })
+const supabaseClient = supabaseHelpers && supabaseHelpers.hasConfig()
+  ? supabaseHelpers.getClient()
   : null;
 
 function redirectAfterLogin() {

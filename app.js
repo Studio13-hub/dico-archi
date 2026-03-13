@@ -39,6 +39,9 @@ const dockHomeButton = document.getElementById("dock-home");
 const dockQuizButton = document.getElementById("dock-quiz");
 const dockRandomButton = document.getElementById("dock-random");
 const dockTopButton = document.getElementById("dock-top");
+const supabaseHelpers = window.DicoArchiSupabase;
+const dicoApi = window.DicoArchiApi;
+const searchHelpers = window.DicoArchiSearchEngine;
 
 let allTerms = [];
 let supabaseClient = null;
@@ -47,6 +50,7 @@ let filteredTerms = [];
 let visibleTermsCount = 0;
 let loadMoreButton = null;
 let showAllTermsRequested = false;
+let termSearchIndex = null;
 const TERMS_BATCH_SIZE = 24;
 const QUIZ_STORAGE_KEY = "dico_archi_quiz_scores_v1";
 const QUIZ_MODES = {
@@ -117,7 +121,7 @@ function getLocalTermsRaw() {
 }
 
 function hasSupabaseConfig() {
-  return Boolean(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase);
+  return Boolean(supabaseHelpers && supabaseHelpers.hasConfig());
 }
 
 function setSyncStatus(text) {
@@ -126,10 +130,7 @@ function setSyncStatus(text) {
 }
 
 function isStaffProfile(profile) {
-  if (!profile) return false;
-  if (profile.active === false) return false;
-  const role = profile.role || (profile.is_editor ? "maitre_apprentissage" : "apprenti");
-  return role === "super_admin" || role === "maitre_apprentissage";
+  return supabaseHelpers?.isStaffProfile(profile) || false;
 }
 
 function setAuthUi({ user, profile }) {
@@ -147,24 +148,8 @@ function setAuthUi({ user, profile }) {
 }
 
 async function fetchProfileForUser(userId) {
-  if (!userId || !supabaseClient) return null;
-
-  const withRoles = await supabaseClient
-    .from("profiles")
-    .select("role, active, is_editor")
-    .eq("id", userId)
-    .single();
-
-  if (!withRoles.error) return withRoles.data || null;
-
-  const fallback = await supabaseClient
-    .from("profiles")
-    .select("is_editor")
-    .eq("id", userId)
-    .single();
-
-  if (!fallback.error) return fallback.data || null;
-  return null;
+  if (!userId || !supabaseHelpers) return null;
+  return supabaseHelpers.getProfile(userId);
 }
 
 function normalizeTerm(item) {
@@ -183,6 +168,7 @@ function normalizeTerm(item) {
 
   return {
     term,
+    slug: item.slug || slugifyTerm(term),
     category,
     definition,
     example,
@@ -191,6 +177,16 @@ function normalizeTerm(item) {
     media_urls,
     search_text: searchText
   };
+}
+
+function slugifyTerm(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function normalizeCategoryKey(value) {
@@ -328,6 +324,36 @@ function createCategoryUrl(category) {
   return `category.html?name=${encodeURIComponent(category || "")}`;
 }
 
+function buildSearchIndex(terms) {
+  if (!searchHelpers) {
+    termSearchIndex = null;
+    return;
+  }
+
+  // The index is built once after term loading so input events do not rescan
+  // the whole collection every time the user types.
+  termSearchIndex = searchHelpers.createEngine(terms);
+}
+
+function clearNode(node) {
+  while (node.firstChild) node.removeChild(node.firstChild);
+}
+
+function renderHighlightedText(node, text, ranges) {
+  clearNode(node);
+
+  const segments = searchHelpers
+    ? searchHelpers.highlightText(text, ranges)
+    : [{ text: String(text || ""), match: false }];
+
+  for (const segment of segments) {
+    const part = segment.match ? document.createElement("mark") : document.createElement("span");
+    part.textContent = segment.text;
+    if (segment.match) part.className = "search-highlight";
+    node.appendChild(part);
+  }
+}
+
 function buildCategoryOptions(terms) {
   const categories = Array.from(new Set(terms.map((t) => t.category))).sort();
   clearChildren(categorySelect);
@@ -443,10 +469,10 @@ function render(list, totalCount = list.length) {
     const tag = document.createElement("a");
     tag.className = "tag";
     tag.href = createCategoryUrl(item.category);
-    tag.textContent = item.category;
+    renderHighlightedText(tag, item.category, item._searchHighlights?.category);
 
     const title = document.createElement("h3");
-    title.textContent = item.term;
+    renderHighlightedText(title, item.term, item._searchHighlights?.term);
 
     const image = document.createElement("img");
     image.className = "card__image";
@@ -457,7 +483,7 @@ function render(list, totalCount = list.length) {
     card.appendChild(image);
 
     const definition = document.createElement("div");
-    definition.textContent = item.definition;
+    renderHighlightedText(definition, item.definition, item._searchHighlights?.definition);
 
     const example = document.createElement("div");
     example.className = "example";
@@ -465,7 +491,15 @@ function render(list, totalCount = list.length) {
 
     const related = document.createElement("div");
     related.className = "related";
-    related.textContent = item.related.length ? `Lié à: ${item.related.join(", ")}` : "";
+    if (item.related.length) {
+      renderHighlightedText(
+        related,
+        `Lié à: ${item.related.join(", ")}`,
+        item._searchHighlights?.related
+      );
+    } else {
+      related.textContent = "";
+    }
 
     card.appendChild(tag);
     card.appendChild(title);
@@ -512,20 +546,36 @@ function shouldShowTerms() {
 }
 
 function getFilteredTerms() {
-  const query = searchInput.value.trim().toLowerCase();
+  const query = searchInput.value.trim();
   const category = categorySelect.value;
   const sortMode = sortSelect ? sortSelect.value : "az";
 
   let filtered = allTerms;
   if (query) {
-    filtered = filtered.filter((t) => (t.search_text || "").includes(query));
+    if (termSearchIndex) {
+      filtered = termSearchIndex.search(query).map((result) => ({
+        ...result.item,
+        _searchScore: result.score,
+        _searchHighlights: result.highlights
+      }));
+    } else {
+      const normalizedQuery = query.toLowerCase();
+      filtered = filtered.filter((t) => (t.search_text || "").includes(normalizedQuery));
+    }
   }
 
   if (category !== "all") {
     filtered = filtered.filter((t) => t.category === category);
   }
 
-  if (sortMode === "category") {
+  if (query && sortMode !== "category") {
+    filtered.sort((a, b) => {
+      const scoreA = typeof a._searchScore === "number" ? a._searchScore : Number.POSITIVE_INFINITY;
+      const scoreB = typeof b._searchScore === "number" ? b._searchScore : Number.POSITIVE_INFINITY;
+      if (scoreA !== scoreB) return scoreA - scoreB;
+      return a.term.localeCompare(b.term, "fr");
+    });
+  } else if (sortMode === "category") {
     filtered.sort((a, b) => {
       const byCategory = a.category.localeCompare(b.category, "fr");
       if (byCategory !== 0) return byCategory;
@@ -971,21 +1021,8 @@ async function loadTerms() {
   }
 
   try {
-    supabaseClient = window.supabase.createClient(
-      window.SUPABASE_URL,
-      window.SUPABASE_ANON_KEY,
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-          storage: window.localStorage
-        }
-      }
-    );
-
-    const { data: userData } = await supabaseClient.auth.getUser();
-    const user = userData?.user || null;
+    supabaseClient = supabaseHelpers.getClient();
+    const user = await supabaseHelpers.getCurrentUser();
     let profile = null;
 
     if (user) {
@@ -993,23 +1030,11 @@ async function loadTerms() {
     }
 
     setAuthUi({ user, profile });
-    supabaseClient.auth.onAuthStateChange(async (_event, session) => {
-      const nextUser = session?.user || null;
-      let nextProfile = null;
-      if (nextUser) {
-        nextProfile = await fetchProfileForUser(nextUser.id);
-      }
+    supabaseHelpers.onAuthStateChange(async (_event, _session, nextUser, nextProfile) => {
       setAuthUi({ user: nextUser, profile: nextProfile });
     });
 
-    const { data, error } = await supabaseClient
-      .from("terms")
-      .select("term, category, definition, example, related, image_url")
-      .order("term", { ascending: true });
-
-    if (error) throw error;
-
-    const remoteTerms = (data || []).map(normalizeTerm);
+    const remoteTerms = (await dicoApi.fetchLegacyTerms()).map(normalizeTerm);
     allTerms = mergeTerms(remoteTerms, localTerms).filter(isVisibleTerm);
 
     if (!remoteTerms.length && localTerms.length) {
@@ -1030,6 +1055,7 @@ async function loadTerms() {
     setSyncStatus("Mode secours: affichage d’un contenu intégré.");
   }
 
+  buildSearchIndex(allTerms);
   buildCategoryOptions(allTerms);
   renderCategoryGrid(allTerms);
   filterTerms();
