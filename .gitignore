@@ -5,3 +5,5 @@ __pycache__/
 Projects/RunShadowRun/data/
 2 Classeurs CM/
 Données CEPM/
+Tools/
+*.app
