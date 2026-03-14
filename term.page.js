@@ -31,7 +31,7 @@ function renderMedia(items) {
     const wrapper = document.createElement("div");
     wrapper.className = "meta";
 
-    if (item.media_type === "image") {
+    if (item.media_type === "image" || item.media_type === "schema") {
       const image = document.createElement("img");
       image.src = item.url;
       image.alt = item.alt_text || item.title || "Média du terme";
