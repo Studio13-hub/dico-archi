@@ -15,3 +15,11 @@
 8. Ajouter des tests smoke automatises pour les routes critiques.
 9. Continuer l'assainissement des messages UI et de la documentation active.
 10. Finaliser ensuite la rotation des secrets et la verification Vercel quand ce chantier sera clos.
+
+## Priorite 4 - Produit et engagement
+11. Finir la V1.1 publique : medias reels, categories non vides, home plus demonstrative.
+12. Densifier la V1.2 editoriale : fiches plus riches, sous-categories plus visibles, nouvelles familles.
+13. Sortir une vraie V1.3 `quiz.html` basee sur le corpus publie.
+14. Ajouter ensuite deux jeux educatifs :
+    - Memory Architecture
+    - Match Express

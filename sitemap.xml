@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://dico-archi.vercel.app/</loc></url>
   <url><loc>https://dico-archi.vercel.app/dictionnaire.html</loc></url>
+  <url><loc>https://dico-archi.vercel.app/quiz.html</loc></url>
   <url><loc>https://dico-archi.vercel.app/auth.html</loc></url>
   <url><loc>https://dico-archi.vercel.app/contribuer.html</loc></url>
   <url><loc>https://dico-archi.vercel.app/category.html?name=Normes%20SIA</loc></url>

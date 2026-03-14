@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quiz - DicoArchi</title>
+    <meta
+      name="description"
+      content="Quiz pédagogique de DicoArchi pour apprendre le vocabulaire d'architecture de manière ludique."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Quiz pédagogique</div>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Non connecté</span>
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+            <a class="link-button" href="category.html">Catégories</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
+          </div>
+        </div>
+        <h1>Quiz DicoArchi</h1>
+        <p>Un mode d'apprentissage ludique est en préparation pour réviser les termes d'architecture.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h2>Version prévue</h2>
+        <div class="dashboard">
+          <div class="dashboard__item">
+            <span class="dashboard__label">V1.3</span>
+            <strong>Quiz terme / définition</strong>
+            <p class="meta meta--subtle">
+              Questions courtes à partir du corpus publié, pensées pour mobile et pour les non-francophones.
+            </p>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">V1.4</span>
+            <strong>Deux mini-jeux éducatifs</strong>
+            <p class="meta meta--subtle">
+              Un memory architecture et un jeu d'association rapide viendront compléter le quiz.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Ce qui est prévu</h2>
+        <div class="dashboard">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Mode 1</span>
+            <strong>Terme vers définition</strong>
+            <p class="meta meta--subtle">Choisir la bonne définition à partir d'un terme publié.</p>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Mode 2</span>
+            <strong>Définition vers terme</strong>
+            <p class="meta meta--subtle">Retrouver le bon terme à partir d'une explication courte.</p>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Mode 3</span>
+            <strong>Image vers terme</strong>
+            <p class="meta meta--subtle">Associer un schéma ou une image simple au bon vocabulaire.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>En attendant</h2>
+        <div class="dashboard">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Réviser</span>
+            <strong>Explorer le dictionnaire</strong>
+            <p class="meta meta--subtle">Le corpus actuel est déjà disponible pour préparer le futur quiz.</p>
+            <a class="link-button" href="dictionnaire.html">Ouvrir le dictionnaire</a>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Par domaine</span>
+            <strong>Explorer les catégories</strong>
+            <p class="meta meta--subtle">Révisez par famille de notions : normes, ouvertures, toitures, construction.</p>
+            <a class="link-button" href="category.html">Ouvrir les catégories</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer__inner">
+        <span>Réalisé par RDR Architectes SA.</span>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
+    <script src="chatbot.js"></script>
+  </body>
+</html>

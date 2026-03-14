@@ -135,7 +135,7 @@
     }
 
     if (q.includes("quiz")) {
-      return "Le quiz se trouve sur dictionnaire.html. Clique sur “Mode quiz” pour démarrer.";
+      return "Le quiz arrive bientôt sur quiz.html. En attendant, tu peux réviser depuis le dictionnaire et les catégories.";
     }
 
     return "Je peux t’aider sur le vocabulaire d’architecture et l’usage du site (connexion, quiz, contributions, admin).";
