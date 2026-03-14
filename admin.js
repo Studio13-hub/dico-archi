@@ -335,10 +335,13 @@ function normalizeWorkflowStatus(value) {
 
 function getWorkflowLabel(value) {
   const status = normalizeWorkflowStatus(value);
-  if (status === "validated") return "À RELIRE";
-  if (status === "published") return "PUBLIÉ";
-  if (status === "draft") return "BROUILLON";
-  return status.toUpperCase();
+  if (status === "validated") return "À relire";
+  if (status === "published") return "Publié";
+  if (status === "submitted") return "Envoyée";
+  if (status === "accepted") return "Acceptée";
+  if (status === "rejected") return "Refusée";
+  if (status === "draft") return "Brouillon";
+  return status;
 }
 
 function inferMediaType(url) {
@@ -589,7 +592,7 @@ function renderSubmissions(list) {
     const meta = document.createElement("div");
     meta.className = "admin__row-meta";
     const mediaLabel = mediaCount ? ` · ${mediaCount} média proposé${mediaCount > 1 ? "s" : ""}` : "";
-    meta.textContent = `Par: ${item.submitter_email || "anonyme"}${mediaLabel}`;
+    meta.textContent = `Par : ${item.submitter_email || "anonyme"}${mediaLabel}`;
 
     const status = document.createElement("div");
     status.className = `admin__row-status ${item.status || "pending"}`;
@@ -748,7 +751,7 @@ function renderChatFeedbackSummary(list) {
   const stats = [
     ["Total", total],
     ["Utile", up],
-    ["A ameliorer", down],
+    ["À améliorer", down],
     ["Ratio utile", `${usefulRatio}%`],
     ["IA", aiCount],
     ["Fallback", fallbackCount]
@@ -769,7 +772,7 @@ function renderChatFeedbackSummary(list) {
 
   if (!chatFeedbackTop) return;
   if (!list.length) {
-    chatFeedbackTop.textContent = "Aucune question a analyser.";
+    chatFeedbackTop.textContent = "Aucune question à analyser.";
     return;
   }
 
@@ -799,8 +802,8 @@ function renderChatFeedbackSummary(list) {
     return;
   }
 
-  chatFeedbackTop.textContent = topItems
-    .map((item) => `${item.label.slice(0, 90)} (${item.down} negatif(s) / ${item.total})`)
+    chatFeedbackTop.textContent = topItems
+    .map((item) => `${item.label.slice(0, 90)} (${item.down} négatif(s) / ${item.total})`)
     .join(" | ");
 }
 
@@ -1077,12 +1080,12 @@ async function saveTerm() {
     const related = normalizeRelated(relatedInput.value || "");
     const typedMedia = parseMediaUrls(imageUrlInput.value);
     if (typedMedia.some((url) => !isSupportedMediaUrl(url))) {
-      setMessage("Termes : URL média invalide (http/https + extension image ou .pdf).", true);
+      setMessage("Termes : lien média invalide (http/https + extension image ou .pdf).", true);
       return;
     }
 
     if (!term || !category || !definition) {
-      setMessage("Termes: terme, categorie et definition sont requis.", true);
+      setMessage("Termes : terme, catégorie et définition sont requis.", true);
       return;
     }
 
@@ -1132,7 +1135,7 @@ async function saveTerm() {
     const action = editingId ? "term_updated" : "term_created";
     await logAction(action, "terms", entityId, { term });
 
-    setMessage(editingId ? "Termes: terme mis a jour." : "Termes: terme ajoute.");
+    setMessage(editingId ? "Termes : terme mis à jour." : "Termes : terme ajouté.");
     clearForm();
     await fetchTerms();
     await fetchAudit();

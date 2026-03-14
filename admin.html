@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Admin - Dico Architecture CH</title>
     <meta name="description" content="Gestion des termes du dictionnaire." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -64,7 +65,7 @@
 
       <section class="panel admin__submissions">
         <h2>Propositions en attente</h2>
-        <div id="submissions-empty" class="meta meta--subtle">Aucune proposition.</div>
+        <div id="submissions-empty" class="meta meta--subtle">Aucune proposition en attente.</div>
         <div id="submissions" class="admin__table"></div>
       </section>
 
@@ -83,7 +84,7 @@
           <textarea id="definition" placeholder="Définition"></textarea>
           <textarea id="example" placeholder="Exemple"></textarea>
           <input id="related" type="text" placeholder="Lié à (séparé par |)" />
-          <textarea id="image-url" placeholder="Médias URL (optionnel, une URL par ligne : image ou PDF)"></textarea>
+          <textarea id="image-url" placeholder="Médias proposés (optionnel, un lien public par ligne : image ou PDF)"></textarea>
           <div class="dashboard__item">
             <span class="dashboard__label">Médias à valider</span>
             <strong id="media-review-title">Aucun média proposé</strong>
@@ -123,7 +124,7 @@
       <section class="panel admin__list" id="chat-feedback-panel" hidden>
         <h2>Feedback chatbot</h2>
         <p class="meta meta--subtle">
-          Réservé au super admin: retours Utiles / À améliorer pour améliorer l'assistant.
+          Réservé au super admin : retours Utiles / À améliorer pour affiner l’assistant.
         </p>
         <div id="chat-feedback-summary" class="dashboard"></div>
         <div class="admin__toolbar">
@@ -146,7 +147,7 @@
       </section>
 
       <section class="panel admin__list">
-        <h2>Termes existants</h2>
+        <h2>Corpus publié et brouillons</h2>
         <div class="admin__toolbar">
           <select id="admin-sort">
             <option value="term_asc">Tri: Terme A-Z</option>
