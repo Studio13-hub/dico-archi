@@ -1,0 +1,39 @@
+{
+  "id": "term_ancrage",
+  "term": "Ancrage",
+  "slug": "ancrage",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "assemblages-et-structure",
+  "status": "published",
+  "content": {
+    "definition": "Dispositif qui permet de fixer durablement un élément à son support pour transmettre des efforts et assurer sa stabilité.",
+    "explanation": "L’ancrage peut être mécanique, chimique ou intégré à l’élément constructif selon les charges, le support et l’usage.",
+    "example": "Le garde-corps d’un balcon doit être ancré correctement pour reprendre les efforts horizontaux d’utilisation.",
+    "applications": [
+      "fixations structurelles",
+      "garde-corps",
+      "éléments rapportés"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le type d’ancrage et son support doivent être documentés dans les détails d’exécution."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "assemblage",
+      "fixation"
+    ],
+    "version": 1
+  }
+}

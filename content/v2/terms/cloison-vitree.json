@@ -1,0 +1,39 @@
+{
+  "id": "term_cloison_vitree",
+  "term": "Cloison vitrée",
+  "slug": "cloison-vitree",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "murs-et-parois",
+  "status": "published",
+  "content": {
+    "definition": "Paroi intérieure partiellement ou entièrement vitrée, utilisée pour séparer des espaces tout en laissant passer la lumière.",
+    "explanation": "Elle permet de compartimenter sans fermer visuellement les volumes, ce qui en fait une solution fréquente dans les bureaux et les zones d’accueil.",
+    "example": "Dans un espace administratif, une cloison vitrée sépare une salle de réunion tout en conservant une impression d’ouverture.",
+    "applications": [
+      "bureaux",
+      "salles de réunion",
+      "séparations intérieures"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le degré de transparence, les profils et les joints doivent être précisés dans les détails."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "cloison",
+      "verre"
+    ],
+    "version": 1
+  }
+}

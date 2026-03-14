@@ -1,0 +1,39 @@
+{
+  "id": "term_dalle_beton",
+  "term": "Dalle béton",
+  "slug": "dalle-beton",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "planchers-et-dalles",
+  "status": "published",
+  "content": {
+    "definition": "Élément horizontal en béton servant de plancher ou de toiture, capable de reprendre et redistribuer les charges.",
+    "explanation": "Selon le système retenu, elle peut être coulée en place, préfabriquée ou combinée à d’autres éléments structurels.",
+    "example": "Dans un immeuble courant, une dalle béton assure la séparation entre deux niveaux tout en reprenant les charges d’exploitation.",
+    "applications": [
+      "planchers",
+      "toitures",
+      "structures courantes"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Son épaisseur, ses appuis et ses réservations doivent être coordonnés avec la structure et les techniques."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "dalle",
+      "beton"
+    ],
+    "version": 1
+  }
+}

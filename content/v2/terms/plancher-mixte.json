@@ -1,0 +1,39 @@
+{
+  "id": "term_plancher_mixte",
+  "term": "Plancher mixte",
+  "slug": "plancher-mixte",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "planchers-et-dalles",
+  "status": "published",
+  "content": {
+    "definition": "Plancher associant plusieurs matériaux ou systèmes pour combiner leurs avantages structurels, techniques ou économiques.",
+    "explanation": "Il peut par exemple réunir une tôle collaborante et une dalle en béton, ou d’autres combinaisons selon le système constructif.",
+    "example": "Dans une structure acier, un plancher mixte permet souvent de gagner en rapidité d’exécution et en performance.",
+    "applications": [
+      "structures acier",
+      "bâtiments de bureaux",
+      "systèmes hybrides"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le détail doit montrer le rôle de chaque composant et les points d’assemblage."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "plancher",
+      "mixte"
+    ],
+    "version": 1
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "term_structure_beton",
+  "term": "Structure béton",
+  "slug": "structure-beton",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "assemblages-et-structure",
+  "status": "published",
+  "content": {
+    "definition": "Organisation porteuse d’un bâtiment réalisée majoritairement en béton, avec poteaux, voiles, poutres ou dalles.",
+    "explanation": "La structure béton est choisie pour sa robustesse, sa masse, sa résistance au feu et sa capacité à reprendre des charges importantes.",
+    "example": "Un immeuble collectif peut être conçu avec une structure béton pour reprendre les charges et assurer la stabilité globale.",
+    "applications": [
+      "logements collectifs",
+      "bâtiments lourds",
+      "structures courantes"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Les éléments porteurs principaux doivent être repérés clairement sur les plans structurels."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "structure",
+      "beton"
+    ],
+    "version": 1
+  }
+}

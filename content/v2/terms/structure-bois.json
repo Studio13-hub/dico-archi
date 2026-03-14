@@ -1,0 +1,39 @@
+{
+  "id": "term_structure_bois",
+  "term": "Structure bois",
+  "slug": "structure-bois",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "assemblages-et-structure",
+  "status": "published",
+  "content": {
+    "definition": "Organisation porteuse d’un bâtiment fondée principalement sur des éléments structurels en bois.",
+    "explanation": "Elle peut prendre différentes formes, comme l’ossature légère, le poteau-poutre ou les panneaux porteurs de type CLT.",
+    "example": "Une extension légère peut être réalisée avec une structure bois pour limiter les charges et accélérer le chantier.",
+    "applications": [
+      "extensions",
+      "maisons",
+      "surélévations"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Les sections, assemblages et contreventements doivent être coordonnés avec le système porteur choisi."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "structure",
+      "bois"
+    ],
+    "version": 1
+  }
+}

@@ -96,6 +96,12 @@
     "description": "Éléments horizontaux assurant franchissement, répartition des charges et séparation des niveaux."
   },
   {
+    "category_slug": "elements-constructifs",
+    "name": "Assemblages et structure",
+    "slug": "assemblages-et-structure",
+    "description": "Notions de structure globale, d’ossature et d’assemblage entre les éléments constructifs."
+  },
+  {
     "category_slug": "phases-sia",
     "name": "Cycle du projet",
     "slug": "cycle-du-projet",

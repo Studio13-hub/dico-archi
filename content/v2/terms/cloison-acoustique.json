@@ -1,0 +1,41 @@
+{
+  "id": "term_cloison_acoustique",
+  "term": "Cloison acoustique",
+  "slug": "cloison-acoustique",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "murs-et-parois",
+  "status": "published",
+  "content": {
+    "definition": "Cloison conçue pour améliorer l’isolation au bruit entre deux espaces intérieurs.",
+    "explanation": "Ses performances dépendent notamment de sa composition, de ses parements, de l’isolant intégré et du traitement des raccords périphériques.",
+    "example": "Entre deux bureaux, une cloison acoustique aide à préserver la confidentialité des échanges.",
+    "applications": [
+      "bureaux",
+      "logements",
+      "locaux sensibles au bruit"
+    ],
+    "norms": [
+      "SIA 181"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "La performance annoncée n’est valable que si les jonctions et percements sont traités correctement."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "cloison",
+      "acoustique"
+    ],
+    "version": 1
+  }
+}

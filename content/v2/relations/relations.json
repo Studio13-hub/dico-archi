@@ -263,5 +263,50 @@
     "source_slug": "plancher-bois",
     "target_slug": "dalle",
     "relation_type": "related"
+  },
+  {
+    "source_slug": "cloison-legere",
+    "target_slug": "cloison-vitree",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "cloison-legere",
+    "target_slug": "cloison-acoustique",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "dalle",
+    "target_slug": "dalle-beton",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "plancher-bois",
+    "target_slug": "plancher-mixte",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "structure-beton",
+    "target_slug": "structure-bois",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "structure-beton",
+    "target_slug": "mur-beton",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "structure-bois",
+    "target_slug": "plancher-bois",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "ancrage",
+    "target_slug": "semelle-filante",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "ancrage",
+    "target_slug": "joint-detancheite",
+    "relation_type": "related"
   }
 ]
