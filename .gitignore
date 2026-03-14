@@ -7,3 +7,5 @@ Projects/RunShadowRun/data/
 Données CEPM/
 Tools/
 *.app
+.vercel
+.env*.local
