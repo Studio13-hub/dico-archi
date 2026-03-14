@@ -209,6 +209,13 @@ function endQuiz() {
   saveLeaderboard(leaderboard.slice(0, 5));
   renderLeaderboard();
 
+  window.DicoArchiMetrics?.submitGameScore({
+    gameKey: "quiz",
+    score: quizState.correct,
+    total: quizState.total,
+    modeLabel: getModeLabel()
+  });
+
   setQuizMessage("Manche terminée. Rejoue pour améliorer ton score.", "ok");
   updateQuizMeta();
 }

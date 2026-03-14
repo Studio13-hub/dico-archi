@@ -42,6 +42,11 @@ const chatFeedbackRating = document.getElementById("chat-feedback-rating");
 const chatFeedbackSource = document.getElementById("chat-feedback-source");
 const chatFeedbackExport = document.getElementById("chat-feedback-export");
 const chatFeedbackRefresh = document.getElementById("chat-feedback-refresh");
+const metricsSummary = document.getElementById("metrics-summary");
+const metricsTopPages = document.getElementById("metrics-top-pages");
+const metricsTopGames = document.getElementById("metrics-top-games");
+const metricsRecent = document.getElementById("metrics-recent");
+const metricsRefresh = document.getElementById("metrics-refresh");
 const supabaseHelpers = window.DicoArchiSupabase;
 const dicoApi = window.DicoArchiApi;
 
@@ -64,11 +69,20 @@ let updatingProfileId = null;
 let adminFilterRafId = 0;
 let isLoadingChatFeedback = false;
 let lastChatFeedbackItems = [];
+let isLoadingMetrics = false;
 
 const ROLE_LABELS = {
   super_admin: "Administration",
   formateur: "Relecture",
   apprenti: "Contributeur"
+};
+
+const GAME_LABELS = {
+  quiz: "Quiz",
+  rush: "Rush",
+  swipe: "Swipe",
+  daily: "Défi du jour",
+  duel_beta: "Duel Beta"
 };
 
 const adminSections = Array.from(document.querySelectorAll("[data-admin-section]"));
@@ -257,6 +271,16 @@ function serializeMediaUrls(urls) {
 
 function setUploadStatus(text) {
   uploadStatus.textContent = text;
+}
+
+function getGameLabel(gameKey) {
+  return GAME_LABELS[gameKey] || gameKey || "Jeu";
+}
+
+function formatPathLabel(value) {
+  if (!value) return "/";
+  const label = String(value).replace(/^\/+/, "") || "/";
+  return label;
 }
 
 function clearForm() {
@@ -1334,6 +1358,126 @@ async function fetchAudit() {
   renderAudit(data || []);
 }
 
+function renderAdminMetrics(payload) {
+  if (metricsSummary) metricsSummary.innerHTML = "";
+  if (metricsTopPages) metricsTopPages.innerHTML = "";
+  if (metricsTopGames) metricsTopGames.innerHTML = "";
+  if (metricsRecent) metricsRecent.innerHTML = "";
+
+  const summary = payload?.summary || {};
+  const topPages = Array.isArray(payload?.topPages) ? payload.topPages : [];
+  const topGames = Array.isArray(payload?.topGames) ? payload.topGames : [];
+  const recentScores = Array.isArray(payload?.recentScores) ? payload.recentScores : [];
+
+  if (metricsSummary) {
+    const cards = [
+      ["Vues 24 h", summary.pageViews24h || 0],
+      ["Sessions 24 h", summary.uniqueSessions24h || 0],
+      ["Vues 30 j", summary.totalViews30d || 0],
+      ["Scores jeux 30 j", summary.scoreSubmissions30d || 0],
+      ["Jeux suivis", summary.trackedGames30d || 0],
+      ["Propositions en attente", summary.pendingSubmissions || 0]
+    ];
+
+    for (const [label, value] of cards) {
+      const item = document.createElement("div");
+      item.className = "dashboard__item";
+      item.innerHTML = `<span class="dashboard__label">${label}</span><strong>${value}</strong>`;
+      metricsSummary.appendChild(item);
+    }
+  }
+
+  if (metricsTopPages) {
+    if (!topPages.length) {
+      const empty = document.createElement("div");
+      empty.className = "meta meta--subtle";
+      empty.textContent = "Pas encore assez de navigation enregistrée.";
+      metricsTopPages.appendChild(empty);
+    } else {
+      for (const item of topPages) {
+        const row = document.createElement("div");
+        row.className = "admin__row";
+        row.innerHTML = `
+          <div class="admin__row-title">${item.pageTitle || formatPathLabel(item.pagePath)}</div>
+          <div class="admin__row-meta">${formatPathLabel(item.pagePath)}</div>
+          <div class="admin__row-info">${item.views} vues · ${item.uniqueSessions} sessions</div>
+        `;
+        metricsTopPages.appendChild(row);
+      }
+    }
+  }
+
+  if (metricsTopGames) {
+    if (!topGames.length) {
+      const empty = document.createElement("div");
+      empty.className = "meta meta--subtle";
+      empty.textContent = "Aucun score serveur enregistré pour l’instant.";
+      metricsTopGames.appendChild(empty);
+    } else {
+      for (const item of topGames) {
+        const row = document.createElement("div");
+        row.className = "admin__row";
+        row.innerHTML = `
+          <div class="admin__row-title">${getGameLabel(item.gameKey)}</div>
+          <div class="admin__row-info">${item.plays} parties · meilleur score ${item.bestScore}/${item.bestTotal || 0}</div>
+          <div class="admin__row-meta">${item.bestCombo ? `combo ${item.bestCombo}` : ""}${item.bestStreak ? ` · série ${item.bestStreak}` : ""}${item.bestSeconds ? ` · ${item.bestSeconds}s` : ""}</div>
+        `;
+        metricsTopGames.appendChild(row);
+      }
+    }
+  }
+
+  if (metricsRecent) {
+    const title = document.createElement("h3");
+    title.textContent = "Derniers scores";
+    metricsRecent.appendChild(title);
+
+    if (!recentScores.length) {
+      const empty = document.createElement("div");
+      empty.className = "meta meta--subtle";
+      empty.textContent = "Aucun score récent remonté.";
+      metricsRecent.appendChild(empty);
+    } else {
+      for (const item of recentScores) {
+        const row = document.createElement("div");
+        row.className = "admin__row";
+        const extras = [];
+        if (item.modeLabel) extras.push(item.modeLabel);
+        if (item.categoryLabel) extras.push(item.categoryLabel);
+        if (item.bestCombo) extras.push(`combo ${item.bestCombo}`);
+        if (item.bestStreak) extras.push(`série ${item.bestStreak}`);
+        if (item.seconds) extras.push(`${item.seconds}s`);
+        row.innerHTML = `
+          <div class="admin__row-title">${getGameLabel(item.gameKey)}</div>
+          <div class="admin__row-info">${item.score}/${item.total || 0}</div>
+          <div class="admin__row-meta">${extras.join(" · ") || "Score enregistré"} · ${new Date(item.createdAt).toLocaleString("fr-CH")}</div>
+        `;
+        metricsRecent.appendChild(row);
+      }
+    }
+  }
+}
+
+async function fetchAdminMetrics() {
+  if (!isSuperAdmin || !metricsSummary || isLoadingMetrics) return;
+  isLoadingMetrics = true;
+  if (metricsRefresh) metricsRefresh.disabled = true;
+
+  try {
+    let payload = null;
+    if (dicoApi?.fetchAdminMetrics) {
+      payload = await dicoApi.fetchAdminMetrics();
+    }
+    renderAdminMetrics(payload || {});
+  } catch (error) {
+    if (await handleAuthError(error, "Suivi")) return;
+    setMessage(`Suivi : ${getErrorMessage(error)}`, true);
+  } finally {
+    isLoadingMetrics = false;
+    if (metricsRefresh) metricsRefresh.disabled = false;
+  }
+}
+
 function findTermByName(name) {
   const key = (name || "").trim().toLowerCase();
   if (!key) return null;
@@ -1700,6 +1844,7 @@ async function loadUser() {
   await fetchAudit();
   if (isSuperAdmin) {
     await fetchProfiles();
+    await fetchAdminMetrics();
     await fetchChatFeedback();
   }
 }
@@ -1717,6 +1862,7 @@ if (adminSort) adminSort.addEventListener("change", filterTerms);
 adminLogout.addEventListener("click", logout);
 if (exportPublishedButton) exportPublishedButton.addEventListener("click", exportPublishedCsv);
 if (chatFeedbackRefresh) chatFeedbackRefresh.addEventListener("click", fetchChatFeedback);
+if (metricsRefresh) metricsRefresh.addEventListener("click", fetchAdminMetrics);
 if (chatFeedbackRating) chatFeedbackRating.addEventListener("change", fetchChatFeedback);
 if (chatFeedbackSource) chatFeedbackSource.addEventListener("change", fetchChatFeedback);
 if (chatFeedbackExport) chatFeedbackExport.addEventListener("click", exportChatFeedbackCsv);

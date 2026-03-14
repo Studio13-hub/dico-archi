@@ -158,6 +158,15 @@ function finishSession() {
     createdAt: new Date().toISOString()
   });
   renderSummary();
+
+  window.DicoArchiMetrics?.submitGameScore({
+    gameKey: "swipe",
+    score: flashcardsSession.known,
+    total: flashcardsSession.cards.length,
+    known: flashcardsSession.known,
+    review: flashcardsSession.review,
+    categoryLabel: flashcardsCategorySelect?.value || "Toutes catégories"
+  });
 }
 
 function advanceCard(result) {

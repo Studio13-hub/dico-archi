@@ -436,6 +436,10 @@ button:disabled {
   font-size: 1.1rem;
 }
 
+.dashboard__item .admin__table {
+  margin-top: 8px;
+}
+
 .dashboard__label {
   font-size: 0.78rem;
   color: rgba(18, 18, 18, 0.54);
@@ -1764,6 +1768,10 @@ footer {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+#metrics-recent h3 {
+  margin: 0 0 6px;
 }
 
 .admin__media-card {

@@ -139,6 +139,13 @@ function finishDaily() {
     bestStreak: dailyState.bestStreak
   });
   renderSummary();
+
+  window.DicoArchiMetrics?.submitGameScore({
+    gameKey: "daily",
+    score: dailyState.correct,
+    total: dailyState.total,
+    bestStreak: dailyState.bestStreak
+  });
 }
 
 function renderQuestion() {

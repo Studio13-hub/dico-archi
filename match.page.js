@@ -211,6 +211,16 @@ function finishGame() {
   leaderboard.sort((a, b) => b.score - a.score || b.bestCombo - a.bestCombo || a.seconds - b.seconds);
   saveLeaderboard(leaderboard.slice(0, 5));
   renderLeaderboard();
+
+  window.DicoArchiMetrics?.submitGameScore({
+    gameKey: "rush",
+    score: matchState.correct,
+    total: matchState.total,
+    seconds: matchState.elapsedSeconds,
+    bestCombo: matchState.bestCombo,
+    modeLabel: getModeLabel(),
+    categoryLabel: matchCategorySelect?.value || "Toutes catégories"
+  });
 }
 
 function renderQuestion() {

@@ -336,6 +336,27 @@
 
       if (query.error) throw query.error;
       return query.data || null;
+    },
+
+    async fetchAdminMetrics() {
+      const client = getClient();
+      if (!client) throw new Error("missing_supabase_config");
+
+      const sessionResult = await client.auth.getSession();
+      const accessToken = sessionResult.data?.session?.access_token || "";
+      if (!accessToken) throw new Error("missing_auth_token");
+
+      const response = await fetch("/api/admin-metrics", {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.error || "admin_metrics_request_failed");
+      }
+      return payload;
     }
   };
 

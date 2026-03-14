@@ -134,6 +134,15 @@ function finishGame() {
   leaderboard.sort((a, b) => a.seconds - b.seconds || a.moves - b.moves);
   saveLeaderboard(leaderboard.slice(0, 5));
   renderLeaderboard();
+
+  window.DicoArchiMetrics?.submitGameScore({
+    gameKey: "duel_beta",
+    score: memoryGame.matches,
+    total: memoryGame.totalPairs,
+    seconds: memoryGame.seconds,
+    moves: memoryGame.moves,
+    categoryLabel: memoryCategorySelect?.value || "Toutes catégories"
+  });
 }
 
 function renderBoard() {

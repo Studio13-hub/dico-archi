@@ -119,6 +119,25 @@
       </section>
 
       <section class="panel admin__list" data-admin-section="stats" hidden>
+        <h2>Statistiques d’usage</h2>
+        <div id="metrics-summary" class="dashboard"></div>
+        <div class="dashboard">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Pages les plus vues</span>
+            <div id="metrics-top-pages" class="admin__table"></div>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Jeux les plus actifs</span>
+            <div id="metrics-top-games" class="admin__table"></div>
+          </div>
+        </div>
+        <div class="admin__toolbar">
+          <button id="metrics-refresh" type="button" class="ghost">Rafraîchir les stats</button>
+        </div>
+        <div id="metrics-recent" class="admin__table"></div>
+      </section>
+
+      <section class="panel admin__list" data-admin-section="stats" hidden>
         <h2>Historique des actions</h2>
         <div id="audit-empty" class="meta meta--subtle">Aucune action enregistrée.</div>
         <div id="audit-list" class="admin__table"></div>
@@ -179,6 +198,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script src="supabaseClient.js"></script>
+    <script src="tracker.js"></script>
     <script src="menu.js"></script>
     <script src="admin.js"></script>
     <script src="chatbot.js"></script>
