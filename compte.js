@@ -13,7 +13,7 @@ function setMessage(text, isError = false) {
 }
 
 function normalizeProfile(profile) {
-  return supabaseHelpers?.normalizeProfile(profile) || { role: "apprenti", active: true, is_editor: false };
+  return supabaseHelpers?.normalizeProfile(profile) || { role: "apprenti", active: true };
 }
 
 function roleLabel(role) {

@@ -1414,11 +1414,11 @@ async function fetchProfiles() {
   } catch (error) {
     const direct = await supabaseClient
       .from("profiles")
-      .select("id, email, role, active, is_editor, created_at")
+      .select("id, email, role, active, created_at")
       .order("created_at", { ascending: true });
 
     const directRows = direct.data || [];
-    const directLooksIncomplete = directRows.length === 0 || directRows.some((row) => !row.role && row.is_editor == null);
+    const directLooksIncomplete = directRows.length === 0 || directRows.some((row) => !row.role);
     if (!direct.error && !directLooksIncomplete) {
       rows = directRows;
     } else {

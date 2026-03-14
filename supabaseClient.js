@@ -80,19 +80,19 @@
       return profileCache.get(userId);
     }
 
-    const withRoles = await client
+    const coreQuery = await client
       .from("profiles")
-      .select("role, active, is_editor, display_name")
+      .select("role, active, display_name")
       .eq("id", userId)
       .single();
 
     let profile = null;
-    if (!withRoles.error) {
-      profile = withRoles.data;
+    if (!coreQuery.error) {
+      profile = coreQuery.data;
     } else {
       const fallback = await client
         .from("profiles")
-        .select("role, active, is_editor")
+        .select("role, active, is_editor, display_name")
         .eq("id", userId)
         .single();
 
@@ -191,12 +191,31 @@
 
       const query = await client
         .from("term_submissions")
-        .select("id, term, category, definition, status, reviewer_comment, created_at")
+        .select(`
+          id,
+          term,
+          slug,
+          category_id,
+          definition,
+          status,
+          reviewer_comment,
+          created_at,
+          categories:category_id (
+            id,
+            name,
+            slug
+          )
+        `)
         .eq("submitted_by", userId)
         .order("created_at", { ascending: false });
 
       if (query.error) throw query.error;
-      return Array.isArray(query.data) ? query.data : [];
+      return Array.isArray(query.data)
+        ? query.data.map((item) => ({
+            ...item,
+            category: item.categories?.name || ""
+          }))
+        : [];
     },
 
     async createSubmission(payload) {
