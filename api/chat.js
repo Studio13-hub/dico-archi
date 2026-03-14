@@ -1,9 +1,51 @@
+const RATE_WINDOW_MS = 60 * 1000;
+const RATE_LIMIT = 12;
+const rateBuckets = new Map();
+
+function getClientIp(req) {
+  const forwardedFor = String(req.headers["x-forwarded-for"] || "").trim();
+  if (forwardedFor) {
+    return forwardedFor.split(",")[0].trim();
+  }
+  return String(req.headers["x-real-ip"] || "unknown").trim();
+}
+
+function isRateLimited(key, limit, windowMs) {
+  const now = Date.now();
+  const bucket = rateBuckets.get(key);
+  if (!bucket || now >= bucket.resetAt) {
+    rateBuckets.set(key, { count: 1, resetAt: now + windowMs });
+    return { limited: false, retryAfter: 0 };
+  }
+
+  bucket.count += 1;
+  if (bucket.count > limit) {
+    return {
+      limited: true,
+      retryAfter: Math.max(1, Math.ceil((bucket.resetAt - now) / 1000))
+    };
+  }
+
+  return { limited: false, retryAfter: 0 };
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("X-Content-Type-Options", "nosniff");
 
   if (req.method !== "POST") {
     res.statusCode = 405;
     res.end(JSON.stringify({ error: "method_not_allowed" }));
+    return;
+  }
+
+  const ip = getClientIp(req);
+  const rateState = isRateLimited(`chat:${ip}`, RATE_LIMIT, RATE_WINDOW_MS);
+  if (rateState.limited) {
+    res.setHeader("Retry-After", String(rateState.retryAfter));
+    res.statusCode = 429;
+    res.end(JSON.stringify({ error: "rate_limited" }));
     return;
   }
 
@@ -18,6 +60,11 @@ module.exports = async (req, res) => {
 
   let body = req.body;
   if (typeof body === "string") {
+    if (body.length > 30000) {
+      res.statusCode = 413;
+      res.end(JSON.stringify({ error: "payload_too_large" }));
+      return;
+    }
     try {
       body = JSON.parse(body);
     } catch (_error) {
@@ -39,6 +86,13 @@ module.exports = async (req, res) => {
   if (!messages.length) {
     res.statusCode = 400;
     res.end(JSON.stringify({ error: "missing_messages" }));
+    return;
+  }
+
+  const totalChars = messages.reduce((sum, entry) => sum + entry.content.length, 0);
+  if (totalChars > 12000) {
+    res.statusCode = 413;
+    res.end(JSON.stringify({ error: "messages_too_large" }));
     return;
   }
 
