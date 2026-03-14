@@ -56,9 +56,45 @@
         <div class="auth__actions">
           <a id="account-login-link" class="link-button" href="auth.html">Changer de compte</a>
           <a id="account-contrib-link" class="link-button" href="contribuer.html">Contribuer</a>
+          <a id="account-games-link" class="link-button" href="games.html">Explorer les jeux</a>
           <a id="account-admin-link" class="link-button" href="admin.html" hidden>Espace admin</a>
           <button id="account-logout" type="button" hidden>Se déconnecter</button>
         </div>
+      </section>
+
+      <section class="panel">
+        <h2>Vue rapide</h2>
+        <div class="dashboard">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Accès actuel</span>
+            <strong id="account-access-label">Consultation publique</strong>
+            <p id="account-access-copy" class="meta meta--subtle">
+              Navigation libre dans le dictionnaire, les catégories et les jeux pédagogiques.
+            </p>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Action utile</span>
+            <strong id="account-next-step-title">Se connecter</strong>
+            <p id="account-next-step-copy" class="meta meta--subtle">
+              Connectez-vous pour proposer des termes ou accéder à l’espace d’édition selon votre rôle.
+            </p>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Soumissions</span>
+            <strong id="account-submission-count">0</strong>
+            <p id="account-submission-copy" class="meta meta--subtle">
+              Aucun suivi disponible tant qu’aucune session n’est ouverte.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="account-submissions-panel">
+        <h2>Mes dernières propositions</h2>
+        <div id="account-submissions-empty" class="meta meta--subtle">
+          Connectez-vous pour suivre vos propositions et leur état de validation.
+        </div>
+        <div id="account-submissions-list" class="admin__table"></div>
       </section>
 
       <section class="panel">
