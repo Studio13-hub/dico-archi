@@ -67,9 +67,28 @@
   async function getCurrentUser() {
     const client = getClient();
     if (!client) return null;
-    const { data, error } = await client.auth.getUser();
-    if (error) throw error;
-    return data?.user || null;
+    const sessionResult = await client.auth.getSession();
+    if (sessionResult.error) {
+      const message = String(sessionResult.error.message || "");
+      if (message.toLowerCase().includes("auth session missing")) {
+        return null;
+      }
+      throw sessionResult.error;
+    }
+
+    const sessionUser = sessionResult.data?.session?.user || null;
+    if (!sessionUser) return null;
+
+    const userResult = await client.auth.getUser();
+    if (userResult.error) {
+      const message = String(userResult.error.message || "");
+      if (message.toLowerCase().includes("auth session missing")) {
+        return null;
+      }
+      throw userResult.error;
+    }
+
+    return userResult.data?.user || sessionUser;
   }
 
   async function getProfile(userId, { force = false } = {}) {

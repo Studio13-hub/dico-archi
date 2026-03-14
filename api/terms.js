@@ -1,5 +1,39 @@
 const { createServerSupabaseClient } = require("./_supabase");
 
+function normalizeMediaUrl(supabaseUrl, rawUrl) {
+  const value = String(rawUrl || "").trim();
+  if (!value) return value;
+
+  if (!supabaseUrl) return value;
+
+  const baseUrl = supabaseUrl.replace(/\/$/, "");
+  const publicPrefix = `${baseUrl}/storage/v1/object/public/term-images/`;
+
+  if (value.startsWith("term-images/")) {
+    return `${baseUrl}/storage/v1/object/public/${value}`;
+  }
+
+  try {
+    const parsed = new URL(value);
+    const marker = "/storage/v1/object/";
+    const markerIndex = parsed.pathname.indexOf(marker);
+    if (markerIndex === -1) return value;
+
+    const storagePath = parsed.pathname.slice(markerIndex + marker.length);
+    if (!storagePath.startsWith("sign/term-images/") && !storagePath.startsWith("public/term-images/")) {
+      return value;
+    }
+
+    const objectPath = storagePath
+      .replace(/^sign\/term-images\//, "")
+      .replace(/^public\/term-images\//, "");
+
+    return `${publicPrefix}${objectPath}`;
+  } catch (_error) {
+    return value;
+  }
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
 
@@ -118,12 +152,17 @@ module.exports = async (req, res) => {
         .filter(Boolean);
     }
 
+    const media = (mediaQuery.data || []).map((item) => ({
+      ...item,
+      url: normalizeMediaUrl(supabaseConfig.supabaseUrl, item.url)
+    }));
+
     res.statusCode = 200;
     res.end(
       JSON.stringify({
         term,
         related_terms: relatedTerms,
-        media: mediaQuery.data || []
+        media
       })
     );
   } catch (error) {
