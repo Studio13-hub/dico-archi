@@ -573,6 +573,10 @@ function renderSubmissions(list) {
   for (const item of list) {
     const row = document.createElement("div");
     row.className = "admin__row";
+    const mediaCount = Array.isArray(item.media_urls) ? item.media_urls.length : 0;
+    if (mediaCount) {
+      row.classList.add("admin__row--has-media");
+    }
 
     const title = document.createElement("div");
     title.className = "admin__row-title";
@@ -584,13 +588,19 @@ function renderSubmissions(list) {
 
     const meta = document.createElement("div");
     meta.className = "admin__row-meta";
-    const mediaCount = Array.isArray(item.media_urls) ? item.media_urls.length : 0;
     const mediaLabel = mediaCount ? ` · ${mediaCount} média proposé${mediaCount > 1 ? "s" : ""}` : "";
     meta.textContent = `Par: ${item.submitter_email || "anonyme"}${mediaLabel}`;
 
     const status = document.createElement("div");
     status.className = `admin__row-status ${item.status || "pending"}`;
     status.textContent = getWorkflowLabel(item.status || "submitted");
+
+    if (mediaCount) {
+      const mediaBadge = document.createElement("div");
+      mediaBadge.className = "admin__row-status admin__row-status--media";
+      mediaBadge.textContent = mediaCount > 1 ? `${mediaCount} médias` : "Média";
+      row.appendChild(mediaBadge);
+    }
 
     const actions = document.createElement("div");
     actions.className = "admin__row-actions";

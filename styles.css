@@ -1519,6 +1519,11 @@ footer {
   gap: 8px;
 }
 
+.admin__row--has-media {
+  border-left: 4px solid #1f7a70;
+  background: linear-gradient(180deg, rgba(31, 122, 112, 0.05), rgba(255, 255, 255, 0.98));
+}
+
 .admin__row.highlight {
   border-color: #1f7a70;
   box-shadow: 0 8px 18px rgba(31, 122, 112, 0.12);
@@ -1546,6 +1551,10 @@ footer {
 
 .admin__row-status.rejected {
   color: #b52a2a;
+}
+
+.admin__row-status--media {
+  color: #1f7a70;
 }
 
 .admin__row-title {
