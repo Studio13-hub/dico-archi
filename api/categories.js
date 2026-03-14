@@ -1,4 +1,4 @@
-const { createClient } = require("@supabase/supabase-js");
+const { createServerSupabaseClient } = require("./_supabase");
 
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -9,18 +9,13 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !serviceKey) {
+  const supabaseConfig = createServerSupabaseClient({ publicOnly: true });
+  if (supabaseConfig.error) {
     res.statusCode = 503;
-    res.end(JSON.stringify({ error: "missing_supabase_server_env" }));
+    res.end(JSON.stringify({ error: supabaseConfig.error }));
     return;
   }
-
-  const supabase = createClient(supabaseUrl, serviceKey, {
-    auth: { persistSession: false }
-  });
+  const supabase = supabaseConfig.client;
 
   try {
     const query = await supabase
