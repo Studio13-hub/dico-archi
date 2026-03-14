@@ -14,6 +14,9 @@ const imageUrlInput = document.getElementById("image-url");
 const imageFileInput = document.getElementById("image-file");
 const reviewerCommentInput = document.getElementById("reviewer-comment");
 const submissionBanner = document.getElementById("submission-banner");
+const mediaReviewTitle = document.getElementById("media-review-title");
+const mediaReviewCopy = document.getElementById("media-review-copy");
+const mediaReviewPreview = document.getElementById("media-review-preview");
 const uploadStatus = document.getElementById("upload-status");
 const saveButton = document.getElementById("save");
 const resetButton = document.getElementById("reset");
@@ -254,7 +257,53 @@ function clearForm() {
   imageFileInput.value = "";
   reviewerCommentInput.value = "";
   if (submissionBanner) submissionBanner.textContent = "";
+  renderMediaReviewPreview([]);
   setUploadStatus("");
+}
+
+function renderMediaReviewPreview(rawUrls) {
+  if (!mediaReviewTitle || !mediaReviewCopy || !mediaReviewPreview) return;
+
+  const mediaUrls = parseMediaUrls(rawUrls);
+  mediaReviewPreview.innerHTML = "";
+
+  if (!mediaUrls.length) {
+    mediaReviewTitle.textContent = "Aucun média proposé";
+    mediaReviewCopy.textContent =
+      "Les liens proposés par les apprentis ou l’équipe apparaissent ici avant publication.";
+    return;
+  }
+
+  mediaReviewTitle.textContent = `${mediaUrls.length} média${mediaUrls.length > 1 ? "s" : ""} à relire`;
+  mediaReviewCopy.textContent =
+    "Vérifiez la qualité, la pertinence et le bon format des liens avant d’accepter la proposition.";
+
+  for (const url of mediaUrls) {
+    const row = document.createElement("div");
+    row.className = "admin__row";
+
+    const title = document.createElement("div");
+    title.className = "admin__row-title";
+    title.textContent = getMediaTitle(url);
+
+    const info = document.createElement("div");
+    info.className = "admin__row-info";
+    info.textContent = inferMediaType(url) === "document" ? "Document PDF" : "Image ou schéma";
+
+    const meta = document.createElement("div");
+    meta.className = "admin__row-meta";
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noreferrer noopener";
+    link.textContent = url;
+    meta.appendChild(link);
+
+    row.appendChild(title);
+    row.appendChild(info);
+    row.appendChild(meta);
+    mediaReviewPreview.appendChild(row);
+  }
 }
 
 function normalizeRelated(raw) {
@@ -845,6 +894,7 @@ function loadTerm(item) {
   exampleInput.value = item.example || "";
   relatedInput.value = (item.related || []).join(" | ");
   imageUrlInput.value = formatMediaUrlsForInput(item.media_urls || []);
+  renderMediaReviewPreview(item.media_urls || []);
   reviewerCommentInput.value = item.reviewer_comment || "";
   if (submissionBanner) submissionBanner.textContent = "";
   termInput.focus();
@@ -861,8 +911,13 @@ function loadSubmission(item, row) {
   exampleInput.value = item.example || "";
   relatedInput.value = (item.related || []).join(" | ");
   imageUrlInput.value = formatMediaUrlsForInput(item.media_urls || []);
+  renderMediaReviewPreview(item.media_urls || []);
   reviewerCommentInput.value = item.reviewer_comment || "";
-  if (submissionBanner) submissionBanner.textContent = `Proposition chargée : ${item.term}`;
+  if (submissionBanner) {
+    const mediaCount = Array.isArray(item.media_urls) ? item.media_urls.length : 0;
+    const mediaLabel = mediaCount ? ` · ${mediaCount} média proposé${mediaCount > 1 ? "s" : ""}` : "";
+    submissionBanner.textContent = `Proposition chargée : ${item.term}${mediaLabel}`;
+  }
   if (row) row.classList.add("highlight");
   termInput.focus();
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1575,6 +1630,10 @@ if (chatFeedbackRefresh) chatFeedbackRefresh.addEventListener("click", fetchChat
 if (chatFeedbackRating) chatFeedbackRating.addEventListener("change", fetchChatFeedback);
 if (chatFeedbackSource) chatFeedbackSource.addEventListener("change", fetchChatFeedback);
 if (chatFeedbackExport) chatFeedbackExport.addEventListener("click", exportChatFeedbackCsv);
+if (imageUrlInput) {
+  imageUrlInput.addEventListener("input", () => renderMediaReviewPreview(imageUrlInput.value));
+  imageUrlInput.addEventListener("change", () => renderMediaReviewPreview(imageUrlInput.value));
+}
 for (const btn of workflowButtons) {
   btn.addEventListener("click", () => {
     currentStatusFilter = btn.dataset.termFilter || "all";

@@ -84,6 +84,14 @@
           <textarea id="example" placeholder="Exemple"></textarea>
           <input id="related" type="text" placeholder="Lié à (séparé par |)" />
           <textarea id="image-url" placeholder="Médias URL (optionnel, une URL par ligne : image ou PDF)"></textarea>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Médias à valider</span>
+            <strong id="media-review-title">Aucun média proposé</strong>
+            <p id="media-review-copy" class="meta meta--subtle">
+              Les liens proposés par les apprentis ou l’équipe apparaissent ici avant publication.
+            </p>
+            <div id="media-review-preview" class="admin__table"></div>
+          </div>
           <textarea id="reviewer-comment" placeholder="Commentaire éditeur (visible par le contributeur)"></textarea>
           <div class="admin__upload">
             <label class="link-button" for="image-file">Importer des images / PDF</label>
