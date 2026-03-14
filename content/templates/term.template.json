@@ -1,0 +1,8 @@
+{
+  "term": "Nom du terme",
+  "slug": "nom-du-terme",
+  "definition": "Definition courte, claire, pedagogique et factuelle.",
+  "example": "Exemple d usage concret du terme dans un projet, un plan ou un chantier.",
+  "category_slug": "dessin-technique",
+  "status": "published"
+}

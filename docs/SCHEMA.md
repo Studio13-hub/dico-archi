@@ -16,8 +16,13 @@
 - Seule l'equipe de pilotage peut ecrire.
 - Les apprentis peuvent proposer via `term_submissions`.
 
-## Import CSV (tableau partage)
-1. Feuille Google Sheets avec colonnes:
-   `term, category, definition, example, related, image_url`
-2. Publier en CSV.
-3. Lancer le script d'import localement.
+## Contenu editorial
+La source canonique du contenu ne passe plus par un CSV legacy.
+
+Elle repose maintenant sur :
+- `content/categories.json`
+- `content/terms.json`
+- `content/relations.json`
+- `content/media.json`
+
+Le SQL d'import core est genere depuis ces fichiers.

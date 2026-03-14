@@ -11,6 +11,7 @@ Le contenu editorial versionne vit dans :
 - `content/terms.json`
 - `content/relations.json`
 - `content/media.json`
+- `content/templates/`
 
 Ne pas editer directement la base distante comme source principale.
 
@@ -58,6 +59,19 @@ npm run content:build-sql > /tmp/dico_archi_core_content.sql
    - dictionnaire
    - categorie
    - fiche terme
+
+## Gabarits editoriaux
+
+Pour ajouter du contenu sans ambiguite :
+
+- terme : `content/templates/term.template.json`
+- relation : `content/templates/relation.template.json`
+- media : `content/templates/media.template.json`
+
+Regle pratique :
+- on duplique d'abord un gabarit
+- on remplit ensuite le contenu
+- on valide ensuite avec `npm run content:validate`
 
 ## Ce que le reset supprime
 

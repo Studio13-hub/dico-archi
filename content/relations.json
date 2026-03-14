@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "source_slug": "coupe",
+    "target_slug": "plan-d-etage",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "coupe",
+    "target_slug": "detail-constructif",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "echelle",
+    "target_slug": "cotation",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "dalle",
+    "target_slug": "mur-porteur",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "etancheite",
+    "target_slug": "pare-vapeur",
+    "relation_type": "related"
+  }
+]
