@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Catégorie - DicoArchi</title>
     <meta name="description" content="Parcours des termes par catégorie sur DicoArchi." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -35,6 +36,16 @@
     <main>
       <section class="panel">
         <div id="category-breadcrumb" class="meta"></div>
+        <div class="category-toolbar">
+          <div class="category-toolbar__item">
+            <span class="dashboard__label">Vue</span>
+            <strong id="category-count">-</strong>
+          </div>
+          <div class="category-toolbar__item">
+            <span class="dashboard__label">Parcours</span>
+            <strong id="category-mode">Index des domaines</strong>
+          </div>
+        </div>
         <div id="category-cards" class="cards"></div>
       </section>
     </main>

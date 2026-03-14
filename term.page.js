@@ -6,6 +6,7 @@ const exampleNode = document.getElementById("term-example");
 const mediaNode = document.getElementById("term-media");
 const relatedNode = document.getElementById("term-related");
 const statusNode = document.getElementById("term-status");
+const categoryChipNode = document.getElementById("term-category-chip");
 const explanationBlock = document.getElementById("term-explanation-block");
 const explanationNode = document.getElementById("term-explanation");
 const applicationsBlock = document.getElementById("term-applications-block");
@@ -92,54 +93,66 @@ function applyV2Details(payload) {
 function renderMedia(items) {
   clearTermChildren(mediaNode);
   if (!Array.isArray(items) || !items.length) {
-    mediaNode.textContent = "Aucun média disponible.";
+    const fallback = document.createElement("div");
+    fallback.className = "term-empty";
+    fallback.textContent = "Aucun média disponible pour le moment.";
+    mediaNode.appendChild(fallback);
     return;
   }
 
+  const grid = document.createElement("div");
+  grid.className = "term-media-grid";
+
   for (const item of items) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "meta";
+    const wrapper = document.createElement(item.media_type === "image" || item.media_type === "schema" ? "figure" : "a");
+    wrapper.className = "term-media-card";
 
     if (item.media_type === "image" || item.media_type === "schema") {
       const image = document.createElement("img");
       image.src = item.url;
       image.alt = item.alt_text || item.title || "Média du terme";
-      image.style.maxWidth = "100%";
-      image.style.borderRadius = "12px";
+      image.className = "term-media-card__image";
       image.addEventListener("error", () => {
-        image.remove();
-        if (!wrapper.querySelector(".meta--subtle")) {
-          const fallback = document.createElement("div");
-          fallback.className = "meta meta--subtle";
-          fallback.textContent = "Illustration indisponible pour le moment.";
-          wrapper.appendChild(fallback);
-        }
+        wrapper.replaceChildren();
+        const fallback = document.createElement("div");
+        fallback.className = "term-empty";
+        fallback.textContent = "Illustration indisponible pour le moment.";
+        wrapper.appendChild(fallback);
       });
       wrapper.appendChild(image);
     } else {
-      const link = document.createElement("a");
-      link.href = item.url;
-      link.target = "_blank";
-      link.rel = "noreferrer";
-      link.textContent = item.title || item.url;
-      wrapper.appendChild(link);
+      wrapper.href = item.url;
+      wrapper.target = "_blank";
+      wrapper.rel = "noreferrer";
+      wrapper.classList.add("term-media-card--pdf");
     }
 
-    if (item.title) {
-      const caption = document.createElement("div");
-      caption.className = "meta meta--subtle";
-      caption.textContent = item.title;
-      wrapper.appendChild(caption);
-    }
+    const body = document.createElement("figcaption");
+    body.className = "term-media-card__body";
 
-    mediaNode.appendChild(wrapper);
+    const title = document.createElement("strong");
+    title.textContent = item.title || (item.media_type === "pdf" ? "Document PDF" : "Illustration");
+    body.appendChild(title);
+
+    const caption = document.createElement("div");
+    caption.className = "meta meta--subtle";
+    caption.textContent = item.alt_text || item.title || "";
+    body.appendChild(caption);
+
+    wrapper.appendChild(body);
+    grid.appendChild(wrapper);
   }
+
+  mediaNode.appendChild(grid);
 }
 
 function renderRelated(items) {
   clearTermChildren(relatedNode);
   if (!Array.isArray(items) || !items.length) {
-    relatedNode.textContent = "Aucun terme lié.";
+    const fallback = document.createElement("div");
+    fallback.className = "term-empty";
+    fallback.textContent = "Aucun terme lié pour le moment.";
+    relatedNode.appendChild(fallback);
     return;
   }
 
@@ -174,9 +187,10 @@ async function loadTermPage() {
     titleNode.textContent = term.term || "TERME";
     subtitleNode.textContent = "Fiche détaillée du dictionnaire DicoArchi.";
     setTermText(categoryNode, term.categories?.name);
+    setTermText(categoryChipNode, term.categories?.name);
     setTermText(definitionNode, term.definition, "Définition indisponible.");
     setTermText(exampleNode, term.example, "Aucun exemple disponible.");
-    statusNode.textContent = `Statut: ${term.status || "-"}`;
+    statusNode.textContent = term.status === "published" ? "Publié" : (term.status || "-");
     renderMedia(payload.media || []);
     renderRelated(payload.related_terms || []);
     applyV2Details(v2Payload);
@@ -185,9 +199,10 @@ async function loadTermPage() {
     titleNode.textContent = "TERME";
     subtitleNode.textContent = "Impossible de charger cette fiche pour le moment.";
     categoryNode.textContent = "-";
+    if (categoryChipNode) categoryChipNode.textContent = "-";
     definitionNode.textContent = "La fiche n'a pas pu être chargée.";
     exampleNode.textContent = "-";
-    statusNode.textContent = `Erreur: ${error.message || "internal_error"}`;
+    statusNode.textContent = "Erreur";
     mediaNode.textContent = "Aucun média disponible.";
     relatedNode.textContent = "Aucun terme lié.";
     if (explanationBlock) explanationBlock.hidden = true;

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Fiche terme - DicoArchi</title>
     <meta name="description" content="Fiche détaillée d'un terme du dictionnaire DicoArchi." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -34,17 +35,25 @@
 
     <main>
       <section class="panel term-panel">
-        <div id="term-status" class="meta">-</div>
+        <div class="term-summary">
+          <div class="term-summary__chips">
+            <span id="term-status" class="term-chip">-</span>
+            <span id="term-category-chip" class="term-chip term-chip--soft">-</span>
+          </div>
+          <p class="term-summary__note">
+            Fiche relue pour une lecture claire, progressive et utile aux non-francophones.
+          </p>
+        </div>
         <div class="term-grid">
-          <div class="term-block">
-            <h2>Catégorie</h2>
+          <div class="term-block term-block--lead">
+            <h2>Repère</h2>
             <p id="term-category">-</p>
           </div>
-          <div class="term-block">
+          <div class="term-block term-block--definition">
             <h2>Définition</h2>
             <p id="term-definition"></p>
           </div>
-          <div class="term-block">
+          <div class="term-block term-block--example">
             <h2>Exemple</h2>
             <p id="term-example"></p>
           </div>
@@ -71,11 +80,11 @@
               <p id="term-drawing-note"></p>
             </div>
           </div>
-          <div class="term-block">
+          <div class="term-block term-block--related">
             <h2>Termes liés</h2>
             <div id="term-related"></div>
           </div>
-          <div class="term-block">
+          <div class="term-block term-block--media">
             <h2>Médias</h2>
             <div id="term-media"></div>
           </div>

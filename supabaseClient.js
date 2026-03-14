@@ -5,7 +5,8 @@
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
-    storage: window.localStorage
+    storage: window.localStorage,
+    multiTab: false
   };
 
   let clientInstance = null;
@@ -76,19 +77,7 @@
       throw sessionResult.error;
     }
 
-    const sessionUser = sessionResult.data?.session?.user || null;
-    if (!sessionUser) return null;
-
-    const userResult = await client.auth.getUser();
-    if (userResult.error) {
-      const message = String(userResult.error.message || "");
-      if (message.toLowerCase().includes("auth session missing")) {
-        return null;
-      }
-      throw userResult.error;
-    }
-
-    return userResult.data?.user || sessionUser;
+    return sessionResult.data?.session?.user || null;
   }
 
   async function getProfile(userId, { force = false } = {}) {

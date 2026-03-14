@@ -2,6 +2,8 @@ const titleEl = document.getElementById("category-title");
 const subtitleEl = document.getElementById("category-subtitle");
 const breadcrumbEl = document.getElementById("category-breadcrumb");
 const cardsEl = document.getElementById("category-cards");
+const categoryCountEl = document.getElementById("category-count");
+const categoryModeEl = document.getElementById("category-mode");
 const dicoApi = window.DicoArchiApi;
 
 function normalizeText(value) {
@@ -25,6 +27,7 @@ function renderMessage(title, subtitle) {
   subtitleEl.textContent = subtitle;
   cardsEl.textContent = "";
   breadcrumbEl.textContent = "";
+  if (categoryCountEl) categoryCountEl.textContent = "-";
 }
 
 function renderCategoryIndex(list) {
@@ -168,6 +171,8 @@ async function loadCategoryPage() {
       titleEl.textContent = "Catégories";
       subtitleEl.textContent = `${sortedCategories.length} domaine${sortedCategories.length > 1 ? "s" : ""} disponible${sortedCategories.length > 1 ? "s" : ""}`;
       breadcrumbEl.textContent = "Accueil / Catégories";
+      if (categoryCountEl) categoryCountEl.textContent = `${sortedCategories.length} domaine${sortedCategories.length > 1 ? "s" : ""}`;
+      if (categoryModeEl) categoryModeEl.textContent = "Index des domaines";
       renderCategoryIndex(sortedCategories);
       return;
     }
@@ -183,6 +188,8 @@ async function loadCategoryPage() {
     titleEl.textContent = resolvedLabel;
     subtitleEl.textContent = `${filtered.length} terme${filtered.length > 1 ? "s" : ""}`;
     buildBreadcrumb(resolvedLabel);
+    if (categoryCountEl) categoryCountEl.textContent = `${filtered.length} fiche${filtered.length > 1 ? "s" : ""}`;
+    if (categoryModeEl) categoryModeEl.textContent = "Fiches publiées";
     renderCards(filtered);
   } catch (error) {
     renderMessage("Erreur de chargement", error.message || "Impossible de charger les termes.");
