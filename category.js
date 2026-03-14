@@ -16,9 +16,14 @@ function normalizeText(value) {
 
 function parseQueryParams() {
   const params = new URLSearchParams(window.location.search);
+  const rawCategoryId = params.get("id") || params.get("category_id") || "";
+  const rawCategoryName = params.get("name") || params.get("slug") || "";
   return {
-    categoryId: (params.get("id") || params.get("category_id") || "").trim(),
-    categoryName: (params.get("name") || "").trim()
+    categoryId: String(rawCategoryId).trim(),
+    categoryName: String(rawCategoryName).trim(),
+    hadEmptyCategoryId:
+      (params.has("id") && !String(params.get("id") || "").trim())
+      || (params.has("category_id") && !String(params.get("category_id") || "").trim())
   };
 }
 
@@ -128,10 +133,14 @@ function buildBreadcrumb(label) {
 }
 
 async function loadCategoryPage() {
-  const { categoryId, categoryName } = parseQueryParams();
+  const { categoryId, categoryName, hadEmptyCategoryId } = parseQueryParams();
   if (!dicoApi) {
     renderMessage("Configuration Supabase manquante", "Impossible de charger les catégories.");
     return;
+  }
+
+  if (hadEmptyCategoryId && !categoryName) {
+    window.history.replaceState({}, "", "category.html");
   }
 
   try {

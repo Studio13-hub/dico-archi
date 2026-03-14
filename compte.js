@@ -25,6 +25,13 @@
     accountMessage.style.color = isError ? "#d94e2b" : "#1f7a70";
   }
 
+  function setAccountAdminVisibility(visible) {
+    if (!accountAdminLink) return;
+    accountAdminLink.hidden = !visible;
+    accountAdminLink.style.display = visible ? "" : "none";
+    accountAdminLink.setAttribute("aria-hidden", visible ? "false" : "true");
+  }
+
   function normalizeProfile(profile) {
     return accountSupabaseHelpers?.normalizeProfile(profile) || { role: "apprenti", active: true };
   }
@@ -111,7 +118,7 @@
     }
     if (accountContribLink) accountContribLink.hidden = false;
     if (accountGamesLink) accountGamesLink.hidden = false;
-    if (accountAdminLink) accountAdminLink.hidden = true;
+    setAccountAdminVisibility(false);
     if (accountLogout) accountLogout.hidden = true;
     renderSubmissions([], true);
     setMessage("Tu es en mode Public: consultation libre des définitions.");
@@ -145,7 +152,7 @@
     }
     if (accountContribLink) accountContribLink.hidden = false;
     if (accountGamesLink) accountGamesLink.hidden = false;
-    if (accountAdminLink) accountAdminLink.hidden = !isStaff;
+    setAccountAdminVisibility(isStaff);
     if (accountLogout) accountLogout.hidden = false;
 
     if (normalized.role === "super_admin") {

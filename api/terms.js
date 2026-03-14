@@ -66,6 +66,7 @@ module.exports = async (req, res) => {
         id,
         term,
         slug,
+        status,
         definition,
         example,
         updated_at,

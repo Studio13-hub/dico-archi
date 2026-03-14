@@ -144,6 +144,34 @@ p {
   font-weight: 700;
 }
 
+.contrib-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.contrib-field {
+  display: grid;
+  gap: 8px;
+}
+
+.contrib-field--full {
+  grid-column: 1 / -1;
+}
+
+.contrib-field__label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(18, 18, 18, 0.56);
+}
+
+.contrib-field__hint {
+  font-size: 0.84rem;
+  color: rgba(18, 18, 18, 0.6);
+}
+
 .chatbot__panel {
   width: min(380px, calc(100vw - 24px));
   height: min(520px, calc(100vh - 40px));
@@ -285,6 +313,7 @@ p {
 }
 
 input,
+textarea,
 select,
 button {
   padding: 10px 12px;
@@ -293,6 +322,11 @@ button {
   font-size: 1rem;
   font-family: "IBM Plex Sans", sans-serif;
   background: #fff;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 96px;
 }
 
 button {
@@ -1495,6 +1529,24 @@ footer {
     align-items: center;
     justify-content: center;
     text-decoration: none;
+  }
+
+  .chatbot {
+    right: 12px;
+    bottom: 84px;
+  }
+
+  .chatbot__toggle {
+    padding: 10px 12px;
+    font-size: 0.88rem;
+  }
+
+  .contrib-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contrib-field--full {
+    grid-column: auto;
   }
 }
 

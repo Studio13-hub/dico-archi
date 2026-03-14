@@ -69,26 +69,47 @@
 
       <section class="panel">
         <form id="contrib-form" novalidate>
-          <div class="auth__inputs">
-            <input id="term" name="term" type="text" placeholder="Terme, par exemple : Acrotère" />
-            <select id="category" name="category">
-              <option value="">Choisir une catégorie</option>
-            </select>
-            <textarea
-              id="definition"
-              name="definition"
-              placeholder="Définition claire, par exemple : Petit mur en bord de toiture qui permet de relever l’étanchéité."
-            ></textarea>
-            <textarea
-              id="example"
-              name="example"
-              placeholder="Exemple d’usage, par exemple : L’acrotère sert souvent de support au relevé d’étanchéité."
-            ></textarea>
-            <textarea
-              id="media-urls"
-              name="media-urls"
-              placeholder="Médias proposés, un lien par ligne&#10;https://.../photo-facade.jpg&#10;https://.../detail-acrotere.pdf"
-            ></textarea>
+          <div class="contrib-form-grid">
+            <label class="contrib-field">
+              <span class="contrib-field__label">Terme</span>
+              <input id="term" name="term" type="text" placeholder="Exemple : Acrotère" />
+            </label>
+            <label class="contrib-field">
+              <span class="contrib-field__label">Catégorie</span>
+              <select id="category" name="category">
+                <option value="">Choisir une catégorie</option>
+              </select>
+            </label>
+            <label class="contrib-field contrib-field--full">
+              <span class="contrib-field__label">Définition</span>
+              <textarea
+                id="definition"
+                name="definition"
+                rows="5"
+                placeholder="Définition claire, par exemple : Petit mur en bord de toiture qui permet de relever l’étanchéité."
+              ></textarea>
+            </label>
+            <label class="contrib-field contrib-field--full">
+              <span class="contrib-field__label">Exemple d’usage</span>
+              <textarea
+                id="example"
+                name="example"
+                rows="4"
+                placeholder="Exemple : L’acrotère sert souvent de support au relevé d’étanchéité."
+              ></textarea>
+            </label>
+            <label class="contrib-field contrib-field--full">
+              <span class="contrib-field__label">Médias proposés</span>
+              <textarea
+                id="media-urls"
+                name="media-urls"
+                rows="4"
+                placeholder="Un lien public par ligne&#10;https://.../photo-facade.jpg&#10;https://.../detail-acrotere.pdf"
+              ></textarea>
+              <span class="contrib-field__hint">
+                Pour l’instant, seuls les liens publics `http/https` sont acceptés. Les fichiers locaux `file:///...` ne peuvent pas encore être téléversés directement.
+              </span>
+            </label>
           </div>
           <div class="dashboard">
             <div class="dashboard__item">

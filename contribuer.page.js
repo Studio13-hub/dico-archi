@@ -87,7 +87,7 @@
 
     if (invalidMedia) {
       qualityTitle.textContent = "Média à corriger";
-      qualityCopy.textContent = "Les liens médias doivent être en http/https et finir par une extension image ou .pdf.";
+      qualityCopy.textContent = "Ajoutez un lien public en http/https. Les chemins locaux file:/// et les textes libres ne sont pas encore acceptés.";
       return;
     }
 
@@ -135,7 +135,7 @@
     }
 
     if (mediaUrls.some((url) => !isSupportedMediaUrl(url))) {
-      setContributionMessage("Les médias proposés doivent être en http/https et finir par une extension image ou .pdf.", true);
+      setContributionMessage("Les médias proposés doivent être des liens publics en http/https. Les chemins locaux file:/// ne sont pas encore acceptés.", true);
       return;
     }
 
