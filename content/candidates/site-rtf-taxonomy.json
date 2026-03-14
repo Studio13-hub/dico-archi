@@ -1,0 +1,258 @@
+{
+  "source": "Desktop/Données du site.rtf",
+  "status": "staged",
+  "notes": [
+    "Taxonomie cible extraite du document source du site.",
+    "Ce fichier sert de plan d'expansion V2 et ne doit pas etre publie tel quel dans la taxonomie active.",
+    "Chaque sous-categorie devra etre enrichie ensuite avec de vraies fiches terme dans content/v2/terms/."
+  ],
+  "categories": [
+    {
+      "name": "Materiaux",
+      "slug": "materiaux",
+      "subcategories": [
+        "Beton",
+        "Bois",
+        "Metal",
+        "Verre",
+        "Pierre",
+        "Isolation",
+        "Etancheite",
+        "Platre",
+        "Revetements",
+        "Menuiseries",
+        "Composites",
+        "Ecologiques",
+        "Divers"
+      ]
+    },
+    {
+      "name": "Construction",
+      "slug": "construction",
+      "subcategories": [
+        "Fondations",
+        "Murs",
+        "Cloisons",
+        "Planchers",
+        "Toitures",
+        "Facades",
+        "Escaliers",
+        "Balcons",
+        "Portes",
+        "Fenetres",
+        "Plafonds",
+        "Structures",
+        "Assemblages"
+      ]
+    },
+    {
+      "name": "Finitions",
+      "slug": "finitions",
+      "subcategories": [
+        "Plinthes",
+        "Peintures",
+        "Enduits",
+        "Joints",
+        "Parquets",
+        "Carrelages",
+        "Finitions murs",
+        "Finitions plafonds",
+        "Finitions facades",
+        "Habillages",
+        "Seuils",
+        "Appuis",
+        "Details finition"
+      ]
+    },
+    {
+      "name": "Dessin technique",
+      "slug": "dessin-technique",
+      "subcategories": [
+        "Plans",
+        "Coupes",
+        "Facades",
+        "Details",
+        "Echelles",
+        "Cotations",
+        "Symboles",
+        "Abreviations",
+        "Reperes",
+        "Cartouches",
+        "Annotations",
+        "Calques",
+        "Formats"
+      ]
+    },
+    {
+      "name": "Chantier",
+      "slug": "chantier",
+      "subcategories": [
+        "Organisation chantier",
+        "Securite chantier",
+        "Installation chantier",
+        "Terrassement",
+        "Maconnerie",
+        "Montage",
+        "Controle travaux",
+        "Livraison materiaux",
+        "Protection chantier",
+        "Nettoyage chantier",
+        "Reception travaux",
+        "Maintenance",
+        "Coordination"
+      ]
+    },
+    {
+      "name": "Normes",
+      "slug": "normes",
+      "subcategories": [
+        "Normes SIA",
+        "Protection incendie",
+        "Accessibilite",
+        "Energie",
+        "Structure",
+        "Acoustique",
+        "Ventilation",
+        "Sanitaire",
+        "Electricite",
+        "Securite",
+        "Urbanisme",
+        "Reglementation",
+        "Durabilite"
+      ]
+    },
+    {
+      "name": "Techniques du batiment",
+      "slug": "techniques-du-batiment",
+      "subcategories": [
+        "Chauffage",
+        "Ventilation",
+        "Climatisation",
+        "Sanitaire",
+        "Evacuation eaux",
+        "Distribution eau",
+        "Electricite generale",
+        "Eclairage",
+        "Courant faible",
+        "Domotique",
+        "Securite batiment",
+        "Gestion technique",
+        "Reseaux techniques"
+      ]
+    },
+    {
+      "name": "Structure",
+      "slug": "structure",
+      "subcategories": [
+        "Poteaux",
+        "Poutres",
+        "Dalles",
+        "Ossatures",
+        "Contreventement",
+        "Assemblages structure",
+        "Charges",
+        "Fondations speciales",
+        "Stabilite",
+        "Dimensionnement",
+        "Armatures beton",
+        "Prefabrication",
+        "Structure mixte"
+      ]
+    },
+    {
+      "name": "Facades",
+      "slug": "facades",
+      "subcategories": [
+        "Facade ventilee",
+        "Facade rideau",
+        "Facade enduite",
+        "Facade bois",
+        "Facade metallique",
+        "Facade beton",
+        "Isolation facade",
+        "Etancheite facade",
+        "Ouvertures facade",
+        "Protections solaires",
+        "Balcons facade",
+        "Garde-corps",
+        "Details facade"
+      ]
+    },
+    {
+      "name": "Toitures",
+      "slug": "toitures",
+      "subcategories": [
+        "Toiture plate",
+        "Toiture inclinee",
+        "Couvertures tuiles",
+        "Couvertures metal",
+        "Etancheite toiture",
+        "Isolation toiture",
+        "Toiture vegetalisee",
+        "Evacuation eau",
+        "Elements toiture",
+        "Securite toiture",
+        "Isolation acoustique",
+        "Protection toiture",
+        "Details toiture"
+      ]
+    },
+    {
+      "name": "Ouvertures",
+      "slug": "ouvertures",
+      "subcategories": [
+        "Fenetres battantes",
+        "Fenetres coulissantes",
+        "Chassis fixes",
+        "Portes interieures",
+        "Portes exterieures",
+        "Portes coupe-feu",
+        "Portes coulissantes",
+        "Portes industrielles",
+        "Portes vitrees",
+        "Lucarnes",
+        "Velux",
+        "Grilles ventilation",
+        "Details ouvertures"
+      ]
+    },
+    {
+      "name": "Escaliers",
+      "slug": "escaliers",
+      "subcategories": [
+        "Escaliers droits",
+        "Escaliers tournants",
+        "Escaliers helicoidaux",
+        "Marches",
+        "Contremarches",
+        "Paliers",
+        "Garde-corps escalier",
+        "Rampes",
+        "Nez de marche",
+        "Escaliers secours",
+        "Escaliers techniques",
+        "Escaliers decoratifs",
+        "Details escaliers"
+      ]
+    },
+    {
+      "name": "BIM et numerique",
+      "slug": "bim-et-numerique",
+      "subcategories": [
+        "Logiciels BIM",
+        "Modelisation",
+        "Formats fichiers",
+        "Coordination BIM",
+        "Gestion donnees",
+        "Collaboration",
+        "Scan 3D",
+        "Visualisation",
+        "Simulation",
+        "Documentation",
+        "Gestion projet",
+        "Coordination chantier",
+        "Archivage"
+      ]
+    }
+  ]
+}
