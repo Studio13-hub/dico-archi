@@ -34,16 +34,34 @@
             <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
           </div>
         </div>
-        <h1>Choisir un mode de jeu</h1>
+        <h1>Choisir votre mode de jeu</h1>
         <p>Réviser vite, jouer plus longtemps ou lancer un défi court : tout le pôle ludique DicoArchi est ici.</p>
       </div>
     </header>
 
     <main>
       <section class="panel panel--games">
+        <div class="games-hero-copy">
+          <div class="games-hero-copy__lead">
+            <span class="dashboard__label">Mobile-first</span>
+            <h2>Apprendre sans effet scolaire</h2>
+            <p>
+              Chaque mode est pensé pour être court, clair, rejouable et utile, même pendant une pause de quelques
+              minutes.
+            </p>
+          </div>
+          <div class="games-hero-copy__chips">
+            <span class="tag">Rapide</span>
+            <span class="tag">Visuel</span>
+            <span class="tag">Rythmé</span>
+            <span class="tag">Accessible</span>
+          </div>
+        </div>
+
         <div class="games-grid">
           <article class="game-card game-card--quiz">
             <span class="dashboard__label">Réflexe</span>
+            <div class="game-card__kicker">Base solide</div>
             <h2>Quiz</h2>
             <p>Le mode classique pour revoir les définitions, les termes et les schémas.</p>
             <ul class="game-card__stats">
@@ -56,6 +74,7 @@
 
           <article class="game-card game-card--flash">
             <span class="dashboard__label">Swipe</span>
+            <div class="game-card__kicker">Le plus direct</div>
             <h2>Swipe</h2>
             <p>Retournez les cartes et triez vite entre « Je connais » et « À revoir ».</p>
             <ul class="game-card__stats">
@@ -68,6 +87,7 @@
 
           <article class="game-card game-card--speed">
             <span class="dashboard__label">Nerveux</span>
+            <div class="game-card__kicker">Combo express</div>
             <h2>Rush</h2>
             <p>45 secondes pour enchaîner les bonnes réponses, faire monter le combo et tenir le rythme.</p>
             <ul class="game-card__stats">
@@ -80,6 +100,7 @@
 
           <article class="game-card game-card--daily">
             <span class="dashboard__label">Quotidien</span>
+            <div class="game-card__kicker">Mini habitude</div>
             <h2>Défi du jour</h2>
             <p>Une mini-série quotidienne pour garder le rythme sans y passer trop de temps.</p>
             <ul class="game-card__stats">
@@ -92,14 +113,15 @@
 
           <article class="game-card game-card--memory">
             <span class="dashboard__label">Laboratoire</span>
+            <div class="game-card__kicker">Hors flux</div>
             <h2>Duel</h2>
             <p>Un prototype de mémoire visuelle à retravailler. Gardé hors du flux principal pendant la refonte.</p>
             <ul class="game-card__stats">
-              <li>Version beta</li>
+              <li>Version bêta</li>
               <li>Pas mis en avant</li>
               <li>Refonte prévue</li>
             </ul>
-            <a class="link-button" href="memory.html">Voir la beta</a>
+            <a class="link-button" href="memory.html">Voir la bêta</a>
           </article>
         </div>
       </section>

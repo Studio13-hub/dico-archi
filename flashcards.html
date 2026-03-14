@@ -42,6 +42,19 @@
     <main>
       <section class="panel">
         <div class="flashcards">
+          <div class="flashcards__intro">
+            <div class="flashcards__intro-copy">
+              <span class="dashboard__label">Révision instantanée</span>
+              <h2>Une carte, une décision</h2>
+              <p>Retournez, lisez, tranchez. Swipe est pensé pour les micro-sessions rapides et régulières.</p>
+            </div>
+            <div class="flashcards__intro-badges">
+              <span class="tag">Je connais</span>
+              <span class="tag">À revoir</span>
+              <span class="tag">Exemple</span>
+            </div>
+          </div>
+
           <div class="memory__header">
             <h2>Session en direct</h2>
             <div id="flashcards-progress" class="quiz__score">0 / 0</div>
@@ -61,7 +74,10 @@
 
           <div id="flashcards-status" class="quiz__feedback">Chargement des cartes...</div>
 
-          <div id="flashcards-card" class="flashcards__card" role="button" tabindex="0" aria-live="polite" aria-label="Retourner la carte">
+          <div class="flashcards__deck-shell">
+            <div class="flashcards__deck-shadow flashcards__deck-shadow--back" aria-hidden="true"></div>
+            <div class="flashcards__deck-shadow flashcards__deck-shadow--mid" aria-hidden="true"></div>
+            <div id="flashcards-card" class="flashcards__card" role="button" tabindex="0" aria-live="polite" aria-label="Retourner la carte">
             <div class="flashcards__face flashcards__face--front">
               <span class="memory__kind">Terme</span>
               <strong id="flashcards-front-title">Chargement...</strong>
@@ -73,6 +89,7 @@
               <p id="flashcards-back-definition" class="meta meta--subtle"></p>
               <p id="flashcards-back-example" class="meta"></p>
             </div>
+          </div>
           </div>
 
           <div class="flashcards__hints meta meta--subtle">
