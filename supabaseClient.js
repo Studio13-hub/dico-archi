@@ -30,7 +30,8 @@
   function normalizeProfile(profile) {
     if (!profile) return null;
 
-    const role = profile.role || (profile.is_editor ? "maitre_apprentissage" : "apprenti");
+    const rawRole = profile.role || (profile.is_editor ? "maitre_apprentissage" : "apprenti");
+    const role = rawRole === "maitre_apprentissage" ? "formateur" : rawRole;
     return {
       ...profile,
       role,
@@ -46,7 +47,7 @@
       : normalizeProfile(profileOrRole)?.role;
 
     if (role === "super_admin") return "Super admin";
-    if (role === "formateur" || role === "maitre_apprentissage") return "Formateur";
+    if (role === "formateur") return "Formateur";
     if (role === "apprenti") return "Apprenti";
     return "Public";
   }
@@ -55,8 +56,7 @@
     const normalized = normalizeProfile(profile);
     if (!normalized || normalized.active === false) return false;
     return normalized.role === "super_admin"
-      || normalized.role === "formateur"
-      || normalized.role === "maitre_apprentissage";
+      || normalized.role === "formateur";
   }
 
   function isSuperAdminProfile(profile) {

@@ -63,7 +63,6 @@ let lastChatFeedbackItems = [];
 const ROLE_LABELS = {
   super_admin: "Super admin",
   formateur: "Formateur",
-  maitre_apprentissage: "Formateur",
   apprenti: "Apprenti"
 };
 
@@ -1194,7 +1193,7 @@ function renderProfiles(list) {
     actions.className = "admin__row-actions";
 
     const roleSelect = document.createElement("select");
-    ["super_admin", "maitre_apprentissage", "apprenti"].forEach((role) => {
+    ["super_admin", "formateur", "apprenti"].forEach((role) => {
       const option = document.createElement("option");
       option.value = role;
       option.textContent = ROLE_LABELS[role];
