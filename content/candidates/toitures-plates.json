@@ -1,0 +1,186 @@
+{
+  "source": "docs/TOITURES_PLATES_CATEGORY_DRAFT.md",
+  "confidence": "medium",
+  "proposed_category": {
+    "name": "Toitures plates",
+    "target_category_slug": "toitures"
+  },
+  "terms": [
+    {
+      "term": "Toitures plates",
+      "proposed_slug": "toitures-plates",
+      "definition": "Systeme de toiture a faible pente integrant structure porteuse, couches d'etancheite, isolation et dispositifs d'evacuation.",
+      "example": "En habitat collectif, la toiture plate permet d'integrer des installations techniques et un entretien organise.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Types de toitures plates", "Composition des toitures plates"]
+    },
+    {
+      "term": "Types de toitures plates",
+      "proposed_slug": "types-de-toitures-plates",
+      "definition": "Differentes conceptions de toitures plates selon l'ordre des couches, la ventilation et le role de la membrane d'etancheite.",
+      "example": "Le choix entre toiture chaude et toiture compacte depend du contexte constructif et des exigences techniques.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Toitures chaudes", "Toitures compactes", "Toitures froides", "Toitures Duo"]
+    },
+    {
+      "term": "Toitures chaudes",
+      "proposed_slug": "toitures-chaudes",
+      "definition": "Toiture plate non ventilee ou l'isolation est placee sous la couche d'etancheite.",
+      "example": "Solution courante lorsque la continuite de l'isolation thermique est prioritaire.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Pare-vapeur", "Isolation thermique et phonique"]
+    },
+    {
+      "term": "Toitures compactes",
+      "proposed_slug": "toitures-compactes",
+      "definition": "Variante de toiture plate avec couches assemblees de facon dense et continue, sans lame d'air ventilee.",
+      "example": "Utilisee pour simplifier la composition des couches sur une dalle porteuse.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Toitures chaudes", "Toitures plates - tableau synoptique"]
+    },
+    {
+      "term": "Toitures Duo",
+      "proposed_slug": "toitures-duo",
+      "definition": "Systeme combinant une partie d'isolation sous l'etancheite et une partie au-dessus pour optimiser la performance thermique.",
+      "example": "Employe pour renforcer l'isolation lors de transformations ou de mises a niveau energetiques.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Toitures chaudes", "Isolation thermique et phonique"]
+    },
+    {
+      "term": "Toitures froides",
+      "proposed_slug": "toitures-froides",
+      "definition": "Toiture plate avec lame d'air ventilee entre les couches, afin de gerer l'humidite et la temperature.",
+      "example": "Choix specifique lorsque la conception exige une ventilation interne.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Pare-vapeur", "Exigences"]
+    },
+    {
+      "term": "Toitures nues",
+      "proposed_slug": "toitures-nues",
+      "definition": "Toitures plates sans protection lourde rapportee, avec membrane apparente en surface.",
+      "example": "Variante adoptee quand la toiture n'est pas amenagee en terrasse accessible.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Entretien des toitures plates", "Travaux de ferblanterie"]
+    },
+    {
+      "term": "Toitures plates - tableau synoptique",
+      "proposed_slug": "toitures-plates-tableau-synoptique",
+      "definition": "Outil de comparaison des differents systemes de toitures plates selon leur composition et leurs conditions d'emploi.",
+      "example": "Utilise en phase d'avant-projet pour comparer rapidement les variantes.",
+      "merge_strategy": "needs_review",
+      "related_terms_raw": ["Types de toitures plates", "Exigences"]
+    },
+    {
+      "term": "Composition des toitures plates",
+      "proposed_slug": "composition-des-toitures-plates",
+      "definition": "Organisation des couches fonctionnelles d'une toiture plate: structure, pare-vapeur, isolation, etancheite et protections.",
+      "example": "Le detail de composition est defini selon la destination et les contraintes du projet.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Structure porteuse", "Pare-vapeur", "Isolation thermique et phonique", "Pente"]
+    },
+    {
+      "term": "Structure porteuse",
+      "proposed_slug": "structure-porteuse",
+      "definition": "Element principal supportant les charges de la toiture plate et transmettant les efforts au batiment.",
+      "example": "Dalle beton ou autre support adapte aux charges permanentes et climatiques.",
+      "merge_strategy": "needs_review",
+      "related_terms_raw": ["Exigences", "Composition des toitures plates"]
+    },
+    {
+      "term": "Pente",
+      "proposed_slug": "pente",
+      "definition": "Inclinaison minimale necessaire pour assurer l'ecoulement des eaux et limiter les stagnations.",
+      "example": "Une pente reguliere facilite l'evacuation vers les points de collecte.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Indications pour la construction", "Entretien des toitures plates"]
+    },
+    {
+      "term": "Pare-vapeur",
+      "proposed_slug": "pare-vapeur",
+      "definition": "Couche limitant le passage de vapeur d'eau depuis l'interieur vers les couches froides de la toiture.",
+      "example": "Place sous l'isolation pour prevenir les risques de condensation interne.",
+      "merge_strategy": "enrich_existing",
+      "related_terms_raw": ["Toitures chaudes", "Isolation thermique et phonique"]
+    },
+    {
+      "term": "Isolation thermique et phonique",
+      "proposed_slug": "isolation-thermique-et-phonique",
+      "definition": "Ensemble des solutions d'isolation visant la performance energetique et le confort acoustique de la toiture.",
+      "example": "Le choix du materiau isolant depend des exigences thermiques et de la destination des locaux.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Exigences", "Toitures Duo"]
+    },
+    {
+      "term": "Travaux de ferblanterie",
+      "proposed_slug": "travaux-de-ferblanterie",
+      "definition": "Elements metalliques de finition et de raccordement assurant l'etancheite et la durabilite des points singuliers.",
+      "example": "Habillage d'acrotere et raccords sur relevés.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Terminologie (toitures plates)", "Indications pour la construction"]
+    },
+    {
+      "term": "Exigences",
+      "proposed_slug": "exigences",
+      "definition": "Ensemble des contraintes normatives, techniques et d'usage a respecter pour concevoir une toiture plate conforme.",
+      "example": "Verification simultanee des exigences d'etancheite, de securite et de maintenance.",
+      "merge_strategy": "needs_review",
+      "related_terms_raw": ["Criteres techniques", "Normes et recommandations"]
+    },
+    {
+      "term": "Terminologie (toitures plates)",
+      "proposed_slug": "terminologie-toitures-plates",
+      "definition": "Vocabulaire de base permettant de decrire correctement les composants et les details d'une toiture plate.",
+      "example": "Clarifier des termes de detail avant de produire les plans d'execution.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Glossaire toitures plates", "Travaux de ferblanterie"]
+    },
+    {
+      "term": "Indications pour la construction",
+      "proposed_slug": "indications-pour-la-construction",
+      "definition": "Recommandations de mise en oeuvre pour limiter les pathologies et garantir la qualite d'execution.",
+      "example": "Respect des sequence de pose entre pare-vapeur, isolation et etancheite.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Exigences", "Entretien des toitures plates"]
+    },
+    {
+      "term": "Entretien des toitures plates",
+      "proposed_slug": "entretien-des-toitures-plates",
+      "definition": "Operations periodiques de controle, nettoyage et maintenance pour conserver la performance de la toiture.",
+      "example": "Inspection des evacuations et des relevés pour prevenir les infiltrations.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Dispositifs antichutes", "Toitures nues"]
+    },
+    {
+      "term": "Dispositifs antichutes",
+      "proposed_slug": "dispositifs-antichutes",
+      "definition": "Equipements de securite pour interventions en toiture, destines a prevenir les chutes de hauteur.",
+      "example": "Ligne de vie et points d'ancrage utilises lors des operations d'entretien.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Entretien des toitures plates", "Exigences"]
+    },
+    {
+      "term": "Glossaire toitures plates",
+      "proposed_slug": "glossaire-toitures-plates",
+      "definition": "Referentiel de definitions utiles pour harmoniser la communication entre conception, execution et maintenance.",
+      "example": "Utilise pour aligner le vocabulaire entre bureau, chantier et corps de metier.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Terminologie (toitures plates)", "Publications techniques"]
+    },
+    {
+      "term": "Publications techniques",
+      "proposed_slug": "publications-techniques",
+      "definition": "Documents de reference permettant d'approfondir les regles de conception et de mise en oeuvre des toitures plates.",
+      "example": "Consultation de publications specialisees avant choix definitif d'un systeme.",
+      "merge_strategy": "needs_review",
+      "related_terms_raw": ["Sites Internet techniques", "Exigences"]
+    },
+    {
+      "term": "Sites Internet techniques",
+      "proposed_slug": "sites-internet-techniques",
+      "definition": "Sources numeriques utiles pour verifier des details de mise en oeuvre et les mises a jour de bonnes pratiques.",
+      "example": "Verification d'un detail de raccord selon une fiche technique actualisee.",
+      "merge_strategy": "new_term",
+      "related_terms_raw": ["Publications techniques", "Normes et recommandations"]
+    }
+  ]
+}

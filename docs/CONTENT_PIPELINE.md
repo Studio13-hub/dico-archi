@@ -12,6 +12,7 @@ Le contenu editorial versionne vit dans :
 - `content/relations.json`
 - `content/media.json`
 - `content/templates/`
+- `content/candidates/`
 
 Ne pas editer directement la base distante comme source principale.
 
@@ -72,6 +73,21 @@ Regle pratique :
 - on duplique d'abord un gabarit
 - on remplit ensuite le contenu
 - on valide ensuite avec `npm run content:validate`
+
+## Zone candidates
+
+Les brouillons ou contenus extraits de fascicules doivent d'abord passer par `content/candidates/`.
+
+But :
+- qualifier les vraies nouvelles fiches
+- identifier les doublons
+- marquer les enrichissements de fiches existantes
+
+Exemples actuellement structures :
+- `content/candidates/bases-des-materiaux.json`
+- `content/candidates/toitures-plates.json`
+
+Tant qu'un contenu est dans `candidates/`, il ne fait pas partie du corpus canonique actif.
 
 ## Ce que le reset supprime
 

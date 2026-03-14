@@ -6,6 +6,7 @@ Regles :
 - `relations.json` contient les relations explicites entre slugs.
 - `media.json` contient les medias relies aux termes.
 - `templates/` contient les gabarits a dupliquer pour ajouter du contenu proprement.
+- `candidates/` contient la matiere editoriale extraite des anciens cours, a revoir avant fusion.
 
 Contraintes :
 - plus de `category` libre dans les termes : utiliser `category_slug`
