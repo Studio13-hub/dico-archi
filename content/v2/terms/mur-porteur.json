@@ -1,0 +1,29 @@
+{
+  "id": "term_mur_porteur",
+  "term": "Mur porteur",
+  "slug": "mur-porteur",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "structure-porteuse",
+  "status": "published",
+  "content": {
+    "definition": "Mur qui reprend des charges et les transmet à la structure porteuse ou aux fondations.",
+    "explanation": null,
+    "example": "Le mur porteur ne peut pas être modifié sans vérification structurelle.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

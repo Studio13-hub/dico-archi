@@ -1,0 +1,157 @@
+[
+  {
+    "source_slug": "coupe",
+    "target_slug": "plan-d-etage",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "coupe",
+    "target_slug": "detail-constructif",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "echelle",
+    "target_slug": "cotation",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "dalle",
+    "target_slug": "mur-porteur",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "etancheite",
+    "target_slug": "pare-vapeur",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "introduction-aux-materiaux-de-construction",
+    "target_slug": "objectifs-de-letude-des-materiaux",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "introduction-aux-materiaux-de-construction",
+    "target_slug": "classification-des-materiaux",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "classification-des-materiaux",
+    "target_slug": "classification-par-composition",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "classification-des-materiaux",
+    "target_slug": "classification-en-pratique",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "structure-des-materiaux",
+    "target_slug": "classification-par-composition",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "evaluation-des-materiaux-de-construction",
+    "target_slug": "criteres-architecturaux",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "evaluation-des-materiaux-de-construction",
+    "target_slug": "criteres-techniques",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "evaluation-des-materiaux-de-construction",
+    "target_slug": "ecologie",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "evaluation-des-materiaux-de-construction",
+    "target_slug": "criteres-economiques",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "ecologie",
+    "target_slug": "sante-et-bien-etre",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "bibliographie-technique",
+    "target_slug": "publications-et-adresses",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "toitures-plates",
+    "target_slug": "types-de-toitures-plates",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "toitures-plates",
+    "target_slug": "composition-des-toitures-plates",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "types-de-toitures-plates",
+    "target_slug": "toitures-chaudes",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "types-de-toitures-plates",
+    "target_slug": "toitures-compactes",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "types-de-toitures-plates",
+    "target_slug": "toitures-froides",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "types-de-toitures-plates",
+    "target_slug": "toitures-duo",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "toitures-chaudes",
+    "target_slug": "pare-vapeur",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "pare-vapeur",
+    "target_slug": "isolation-thermique-et-phonique",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "toitures-chaudes",
+    "target_slug": "isolation-thermique-et-phonique",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "composition-des-toitures-plates",
+    "target_slug": "pente",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "toitures-nues",
+    "target_slug": "entretien-des-toitures-plates",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "travaux-de-ferblanterie",
+    "target_slug": "terminologie-toitures-plates",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "indications-pour-la-construction",
+    "target_slug": "entretien-des-toitures-plates",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "entretien-des-toitures-plates",
+    "target_slug": "dispositifs-antichutes",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "glossaire-toitures-plates",
+    "target_slug": "terminologie-toitures-plates",
+    "relation_type": "related"
+  }
+]

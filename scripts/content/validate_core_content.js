@@ -1,15 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-const fs = require("node:fs");
-const path = require("node:path");
-
-const root = process.cwd();
-const contentDir = path.join(root, "content");
-
-function readJson(name) {
-  const filePath = path.join(contentDir, name);
-  return JSON.parse(fs.readFileSync(filePath, "utf8"));
-}
+const { loadCanonicalContent } = require("./content_loader");
 
 function isNonEmptyString(value) {
   return typeof value === "string" && value.trim().length > 0;
@@ -22,10 +13,12 @@ function pushError(errors, message) {
 function validate() {
   const errors = [];
 
-  const categories = readJson("categories.json");
-  const terms = readJson("terms.json");
-  const relations = readJson("relations.json");
-  const media = readJson("media.json");
+  const dataset = loadCanonicalContent();
+  const categories = dataset.categories;
+  const subcategories = dataset.subcategories || [];
+  const terms = dataset.terms;
+  const relations = dataset.relations;
+  const media = dataset.media;
 
   if (!Array.isArray(categories)) pushError(errors, "categories.json must be an array");
   if (!Array.isArray(terms)) pushError(errors, "terms.json must be an array");
@@ -37,6 +30,7 @@ function validate() {
   }
 
   const categorySlugs = new Set();
+  const subcategorySlugs = new Set();
   const termSlugs = new Set();
 
   for (const category of categories) {
@@ -46,6 +40,22 @@ function validate() {
     if (isNonEmptyString(category.slug)) {
       if (categorySlugs.has(category.slug)) pushError(errors, `duplicate category slug: ${category.slug}`);
       categorySlugs.add(category.slug);
+    }
+  }
+
+  for (const subcategory of subcategories) {
+    if (!isNonEmptyString(subcategory.name)) pushError(errors, "subcategory.name is required");
+    if (!isNonEmptyString(subcategory.slug)) pushError(errors, `subcategory.slug missing for ${subcategory.name || "unknown"}`);
+    if (!isNonEmptyString(subcategory.category_slug)) pushError(errors, `subcategory.category_slug missing for ${subcategory.slug || subcategory.name || "unknown"}`);
+    if (!isNonEmptyString(subcategory.description)) pushError(errors, `subcategory.description missing for ${subcategory.slug || subcategory.name || "unknown"}`);
+
+    if (isNonEmptyString(subcategory.slug)) {
+      if (subcategorySlugs.has(subcategory.slug)) pushError(errors, `duplicate subcategory slug: ${subcategory.slug}`);
+      subcategorySlugs.add(subcategory.slug);
+    }
+
+    if (isNonEmptyString(subcategory.category_slug) && !categorySlugs.has(subcategory.category_slug)) {
+      pushError(errors, `unknown subcategory.category_slug "${subcategory.category_slug}" for ${subcategory.slug || subcategory.name || "unknown"}`);
     }
   }
 
@@ -63,6 +73,10 @@ function validate() {
 
     if (isNonEmptyString(term.category_slug) && !categorySlugs.has(term.category_slug)) {
       pushError(errors, `unknown category_slug "${term.category_slug}" for term ${term.slug || term.term || "unknown"}`);
+    }
+
+    if (isNonEmptyString(term.subcategory_slug) && !subcategorySlugs.has(term.subcategory_slug)) {
+      pushError(errors, `unknown subcategory_slug "${term.subcategory_slug}" for term ${term.slug || term.term || "unknown"}`);
     }
 
     if (isNonEmptyString(term.status) && !["draft", "submitted", "validated", "published"].includes(term.status)) {
@@ -100,7 +114,9 @@ function validate() {
   return {
     errors,
     summary: {
+      version: dataset.version,
       categories: categories.length,
+      subcategories: subcategories.length,
       terms: terms.length,
       relations: relations.length,
       media: media.length

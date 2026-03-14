@@ -1,0 +1,29 @@
+{
+  "id": "term_terminologie_toitures_plates",
+  "term": "Terminologie (toitures plates)",
+  "slug": "terminologie-toitures-plates",
+  "category_slug": "toitures",
+  "subcategory_slug": "ressources-toiture",
+  "status": "published",
+  "content": {
+    "definition": "Vocabulaire de base permettant de decrire correctement les composants et les details d'une toiture plate.",
+    "explanation": null,
+    "example": "Clarifier des termes de detail avant de produire les plans d'execution.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

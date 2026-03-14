@@ -1,0 +1,29 @@
+{
+  "id": "term_toitures_duo",
+  "term": "Toitures Duo",
+  "slug": "toitures-duo",
+  "category_slug": "toitures",
+  "subcategory_slug": "typologies-de-toitures",
+  "status": "published",
+  "content": {
+    "definition": "Systeme combinant une partie d'isolation sous l'etancheite et une partie au-dessus pour optimiser la performance thermique.",
+    "explanation": null,
+    "example": "Employé pour renforcer l’isolation lors de transformations ou de mises à niveau énergétiques.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

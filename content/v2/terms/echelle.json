@@ -1,0 +1,29 @@
+{
+  "id": "term_echelle",
+  "term": "Échelle",
+  "slug": "echelle",
+  "category_slug": "dessin-technique",
+  "subcategory_slug": "annotations-et-lecture",
+  "status": "published",
+  "content": {
+    "definition": "Rapport entre les dimensions dessinées et les dimensions réelles d’un objet ou d’un bâtiment.",
+    "explanation": null,
+    "example": "Une échelle 1:100 signifie qu’un centimètre sur le plan correspond à un mètre en réalité.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

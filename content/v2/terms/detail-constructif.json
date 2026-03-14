@@ -1,0 +1,29 @@
+{
+  "id": "term_detail_constructif",
+  "term": "Détail constructif",
+  "slug": "detail-constructif",
+  "category_slug": "dessin-technique",
+  "subcategory_slug": "representations-graphiques",
+  "status": "published",
+  "content": {
+    "definition": "Dessin à grande échelle montrant précisément l’assemblage des éléments de construction.",
+    "explanation": null,
+    "example": "Un détail constructif explique comment la façade rejoint la dalle ou la toiture.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

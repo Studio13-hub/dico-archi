@@ -1,0 +1,29 @@
+{
+  "id": "term_objectifs_de_letude_des_materiaux",
+  "term": "Objectifs de l'etude des materiaux",
+  "slug": "objectifs-de-letude-des-materiaux",
+  "category_slug": "materiaux",
+  "subcategory_slug": "fondamentaux-des-materiaux",
+  "status": "published",
+  "content": {
+    "definition": "Comprendre les propriétés, limites et conditions d’emploi des matériaux pour choisir des solutions fiables, durables et conformes.",
+    "explanation": null,
+    "example": "Selectionner un materiau en tenant compte des contraintes techniques, normatives et economiques.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

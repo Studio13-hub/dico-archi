@@ -1,0 +1,29 @@
+{
+  "id": "term_bibliographie_technique",
+  "term": "Bibliographie technique",
+  "slug": "bibliographie-technique",
+  "category_slug": "materiaux",
+  "subcategory_slug": "ressources-materiaux",
+  "status": "published",
+  "content": {
+    "definition": "Ensemble des références documentaires utiles pour approfondir les propriétés et l’emploi des matériaux.",
+    "explanation": null,
+    "example": "Consultation de references metier avant validation d'un detail.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

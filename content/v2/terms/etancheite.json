@@ -1,0 +1,29 @@
+{
+  "id": "term_etancheite",
+  "term": "Étanchéité",
+  "slug": "etancheite",
+  "category_slug": "toitures",
+  "subcategory_slug": "composition-et-couches",
+  "status": "published",
+  "content": {
+    "definition": "Ensemble des dispositions et matériaux qui empêchent la pénétration de l’eau dans une toiture ou un élément constructif.",
+    "explanation": null,
+    "example": "L’étanchéité de la toiture doit rester continue au droit des relevés et des raccords.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

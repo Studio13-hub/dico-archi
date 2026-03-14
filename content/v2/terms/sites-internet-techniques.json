@@ -1,0 +1,29 @@
+{
+  "id": "term_sites_internet_techniques",
+  "term": "Sites Internet techniques",
+  "slug": "sites-internet-techniques",
+  "category_slug": "toitures",
+  "subcategory_slug": "ressources-toiture",
+  "status": "published",
+  "content": {
+    "definition": "Sources numeriques utiles pour verifier des details de mise en oeuvre et les mises a jour de bonnes pratiques.",
+    "explanation": null,
+    "example": "Verification d'un detail de raccord selon une fiche technique actualisee.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

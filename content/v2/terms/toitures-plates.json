@@ -1,0 +1,29 @@
+{
+  "id": "term_toitures_plates",
+  "term": "Toitures plates",
+  "slug": "toitures-plates",
+  "category_slug": "toitures",
+  "subcategory_slug": "bases-des-toitures-plates",
+  "status": "published",
+  "content": {
+    "definition": "Systeme de toiture a faible pente integrant structure porteuse, couches d'etancheite, isolation et dispositifs d'evacuation.",
+    "explanation": null,
+    "example": "En habitat collectif, la toiture plate permet d'integrer des installations techniques et un entretien organise.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "term_acrotere",
+  "term": "Acrotère",
+  "slug": "acrotere",
+  "category_slug": "toitures",
+  "subcategory_slug": "composition-et-couches",
+  "status": "published",
+  "content": {
+    "definition": "Petit mur en bord de toiture qui permet notamment de relever l’étanchéité et de finir le pourtour du toit.",
+    "explanation": null,
+    "example": "L’acrotère protège le bord de la toiture et sert de support à certains détails de finition.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

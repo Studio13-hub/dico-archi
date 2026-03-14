@@ -1,0 +1,29 @@
+{
+  "id": "term_avant_projet",
+  "term": "Avant-projet",
+  "slug": "avant-projet",
+  "category_slug": "phases-sia",
+  "subcategory_slug": "cycle-du-projet",
+  "status": "published",
+  "content": {
+    "definition": "Phase de conception initiale ou l on developpe les intentions architecturales et les premieres options du projet.",
+    "explanation": null,
+    "example": "L avant-projet permet de tester le volume, l implantation et les grandes orientations.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

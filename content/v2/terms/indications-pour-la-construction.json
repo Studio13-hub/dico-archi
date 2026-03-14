@@ -1,0 +1,29 @@
+{
+  "id": "term_indications_pour_la_construction",
+  "term": "Indications pour la construction",
+  "slug": "indications-pour-la-construction",
+  "category_slug": "toitures",
+  "subcategory_slug": "execution-et-entretien-des-toitures",
+  "status": "published",
+  "content": {
+    "definition": "Recommandations de mise en oeuvre pour limiter les pathologies et garantir la qualite d'execution.",
+    "explanation": null,
+    "example": "Respect des sequences de pose entre pare-vapeur, isolation et etancheite.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

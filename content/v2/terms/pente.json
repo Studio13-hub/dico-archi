@@ -1,0 +1,29 @@
+{
+  "id": "term_pente",
+  "term": "Pente",
+  "slug": "pente",
+  "category_slug": "toitures",
+  "subcategory_slug": "composition-et-couches",
+  "status": "published",
+  "content": {
+    "definition": "Inclinaison minimale necessaire pour assurer l'ecoulement des eaux et limiter les stagnations.",
+    "explanation": null,
+    "example": "Une pente reguliere facilite l'evacuation vers les points de collecte.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

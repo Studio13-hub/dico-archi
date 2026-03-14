@@ -1,0 +1,29 @@
+{
+  "id": "term_entretien_des_toitures_plates",
+  "term": "Entretien des toitures plates",
+  "slug": "entretien-des-toitures-plates",
+  "category_slug": "toitures",
+  "subcategory_slug": "execution-et-entretien-des-toitures",
+  "status": "published",
+  "content": {
+    "definition": "Operations periodiques de controle, nettoyage et maintenance pour conserver la performance de la toiture.",
+    "explanation": null,
+    "example": "Inspection des evacuations et des releves pour prevenir les infiltrations.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

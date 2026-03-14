@@ -1,0 +1,29 @@
+{
+  "id": "term_coupe",
+  "term": "Coupe",
+  "slug": "coupe",
+  "category_slug": "dessin-technique",
+  "subcategory_slug": "representations-graphiques",
+  "status": "published",
+  "content": {
+    "definition": "Représentation d’un bâtiment tranché verticalement pour montrer l’intérieur, les niveaux et les éléments constructifs.",
+    "explanation": null,
+    "example": "La coupe permet de comprendre la hauteur des espaces et la composition des planchers.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

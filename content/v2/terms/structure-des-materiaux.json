@@ -1,0 +1,29 @@
+{
+  "id": "term_structure_des_materiaux",
+  "term": "Structure des materiaux",
+  "slug": "structure-des-materiaux",
+  "category_slug": "materiaux",
+  "subcategory_slug": "fondamentaux-des-materiaux",
+  "status": "published",
+  "content": {
+    "definition": "Organisation interne d'un materiau (composition et arrangement) qui influence ses performances mecaniques, thermiques et hygriques.",
+    "explanation": null,
+    "example": "Une structure poreuse modifie la resistance mecanique et le comportement a l'humidite.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

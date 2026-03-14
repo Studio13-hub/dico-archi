@@ -1,0 +1,29 @@
+{
+  "id": "term_linteau",
+  "term": "Linteau",
+  "slug": "linteau",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "structure-porteuse",
+  "status": "published",
+  "content": {
+    "definition": "Element horizontal place au-dessus d une ouverture pour reprendre les charges du mur situe au-dessus.",
+    "explanation": null,
+    "example": "Le linteau permet de creer une baie sans affaiblir la stabilite du mur.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

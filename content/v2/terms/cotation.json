@@ -1,0 +1,29 @@
+{
+  "id": "term_cotation",
+  "term": "Cotation",
+  "slug": "cotation",
+  "category_slug": "dessin-technique",
+  "subcategory_slug": "annotations-et-lecture",
+  "status": "published",
+  "content": {
+    "definition": "Indication graphique des dimensions et mesures sur un dessin technique.",
+    "explanation": null,
+    "example": "La cotation permet de lire la largeur d une piece ou l epaisseur d un mur.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-const fs = require("node:fs");
-const path = require("node:path");
-
-const root = process.cwd();
-const contentDir = path.join(root, "content");
+const { loadCanonicalContent } = require("./content_loader");
 
 const suspiciousReplacements = [
   ["Etancheite", "Étanchéité"],
@@ -29,11 +25,6 @@ const suspiciousReplacements = [
   ["cote ", "côté "]
 ];
 
-function readJson(name) {
-  const filePath = path.join(contentDir, name);
-  return JSON.parse(fs.readFileSync(filePath, "utf8"));
-}
-
 function hasStrongPunctuation(value) {
   return /[.!?]\s*$/.test(String(value || ""));
 }
@@ -48,8 +39,9 @@ function isNfc(value) {
 
 function collectWarnings() {
   const warnings = [];
-  const terms = readJson("terms.json");
-  const media = readJson("media.json");
+  const dataset = loadCanonicalContent();
+  const terms = dataset.terms;
+  const media = dataset.media;
 
   function pushWarning(message) {
     warnings.push(message);

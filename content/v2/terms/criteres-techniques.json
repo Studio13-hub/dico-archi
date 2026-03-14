@@ -1,0 +1,29 @@
+{
+  "id": "term_criteres_techniques",
+  "term": "Criteres techniques",
+  "slug": "criteres-techniques",
+  "category_slug": "materiaux",
+  "subcategory_slug": "evaluation-des-materiaux",
+  "status": "published",
+  "content": {
+    "definition": "Exigences de performance comme la resistance, la durabilite, le comportement au feu, a l'humidite et la mise en oeuvre.",
+    "explanation": null,
+    "example": "Verification de la resistance a l'usure d'un materiau de sol dans une zone a fort passage.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

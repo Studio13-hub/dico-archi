@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DicoArchi Rich Term V2",
+  "type": "object",
+  "required": ["id", "term", "slug", "category_slug", "status", "content", "meta"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "term": { "type": "string", "minLength": 1 },
+    "slug": { "type": "string", "minLength": 1 },
+    "category_slug": { "type": "string", "minLength": 1 },
+    "subcategory_slug": { "type": ["string", "null"] },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "submitted", "validated", "published"]
+    },
+    "content": {
+      "type": "object",
+      "required": ["definition"],
+      "properties": {
+        "definition": { "type": "string", "minLength": 1 },
+        "explanation": { "type": ["string", "null"] },
+        "example": { "type": ["string", "null"] },
+        "applications": { "type": "array", "items": { "type": "string" } },
+        "norms": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "technical_data": { "type": "object" },
+    "representation": { "type": "object" },
+    "translations": { "type": "object" },
+    "meta": {
+      "type": "object",
+      "required": ["source_refs", "tags", "version"],
+      "properties": {
+        "source_refs": { "type": "array", "items": { "type": "string" } },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "version": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}

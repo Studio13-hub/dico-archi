@@ -1,0 +1,29 @@
+{
+  "id": "term_toitures_nues",
+  "term": "Toitures nues",
+  "slug": "toitures-nues",
+  "category_slug": "toitures",
+  "subcategory_slug": "typologies-de-toitures",
+  "status": "published",
+  "content": {
+    "definition": "Toitures plates sans protection lourde rapportee, avec membrane apparente en surface.",
+    "explanation": null,
+    "example": "Variante adoptee quand la toiture n'est pas amenagee en terrasse accessible.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

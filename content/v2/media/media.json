@@ -1,0 +1,18 @@
+[
+  {
+    "term_slug": "echelle",
+    "media_type": "schema",
+    "url": "term-images/echelle/schema-echelle.png",
+    "title": "Schéma d’échelle",
+    "alt_text": "Exemple visuel d’échelle de dessin.",
+    "position": 0
+  },
+  {
+    "term_slug": "coupe",
+    "media_type": "image",
+    "url": "term-images/coupe/exemple-coupe.png",
+    "title": "Exemple de coupe architecturale",
+    "alt_text": "Coupe montrant les niveaux et les planchers.",
+    "position": 0
+  }
+]

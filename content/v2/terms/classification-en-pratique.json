@@ -1,0 +1,29 @@
+{
+  "id": "term_classification_en_pratique",
+  "term": "Classification en pratique",
+  "slug": "classification-en-pratique",
+  "category_slug": "materiaux",
+  "subcategory_slug": "classification-des-materiaux",
+  "status": "published",
+  "content": {
+    "definition": "Application concrete des systemes de classification pour comparer des variantes et documenter un choix de projet.",
+    "explanation": null,
+    "example": "Comparer deux solutions de facade en utilisant une grille identique de criteres.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "term_pare_vapeur",
+  "term": "Pare-vapeur",
+  "slug": "pare-vapeur",
+  "category_slug": "toitures",
+  "subcategory_slug": "composition-et-couches",
+  "status": "published",
+  "content": {
+    "definition": "Couche limitant le passage de vapeur d’eau depuis l’intérieur vers les couches froides d’une paroi ou d’une toiture, afin de réduire les risques de condensation.",
+    "explanation": null,
+    "example": "Le pare-vapeur est placé sous l’isolation pour prévenir les condensations internes dans la toiture.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

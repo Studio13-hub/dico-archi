@@ -1,0 +1,29 @@
+{
+  "id": "term_fondation",
+  "term": "Fondation",
+  "slug": "fondation",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "structure-porteuse",
+  "status": "published",
+  "content": {
+    "definition": "Partie de l’ouvrage qui transmet les charges du bâtiment au terrain.",
+    "explanation": null,
+    "example": "Les fondations doivent être adaptées à la nature du sol et aux charges du projet.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

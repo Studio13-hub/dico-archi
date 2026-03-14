@@ -1,0 +1,29 @@
+{
+  "id": "term_poteau",
+  "term": "Poteau",
+  "slug": "poteau",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "structure-porteuse",
+  "status": "published",
+  "content": {
+    "definition": "Element vertical porteur qui reprend des charges ponctuelles et les transmet aux niveaux inferieurs.",
+    "explanation": null,
+    "example": "Le poteau travaille avec les poutres pour former une structure stable.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "term_plan_d_etage",
+  "term": "Plan d etage",
+  "slug": "plan-d-etage",
+  "category_slug": "dessin-technique",
+  "subcategory_slug": "representations-graphiques",
+  "status": "published",
+  "content": {
+    "definition": "Dessin horizontal représentant un niveau du bâtiment vu en projection.",
+    "explanation": null,
+    "example": "Le plan d’étage montre les pièces, les cloisons, les cotes et les ouvertures.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

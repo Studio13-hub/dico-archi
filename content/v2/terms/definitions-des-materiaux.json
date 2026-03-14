@@ -1,0 +1,29 @@
+{
+  "id": "term_definitions_des_materiaux",
+  "term": "Definitions des materiaux",
+  "slug": "definitions-des-materiaux",
+  "category_slug": "materiaux",
+  "subcategory_slug": "fondamentaux-des-materiaux",
+  "status": "published",
+  "content": {
+    "definition": "Ensemble de notions de base (termes et vocabulaire) utilisées pour décrire correctement les matériaux et leurs propriétés.",
+    "explanation": null,
+    "example": "Clarifier la difference entre densite, resistance et durabilite avant de specifier un produit.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

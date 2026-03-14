@@ -1,0 +1,29 @@
+{
+  "id": "term_nom_du_terme",
+  "term": "Nom du terme avec l’orthographe correcte",
+  "slug": "nom-du-terme",
+  "category_slug": "dessin-technique",
+  "subcategory_slug": "representations-graphiques",
+  "status": "published",
+  "content": {
+    "definition": "Définition courte, claire, pédagogique et factuelle.",
+    "explanation": null,
+    "example": "Exemple d’usage concret du terme dans un projet, un plan ou un chantier.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

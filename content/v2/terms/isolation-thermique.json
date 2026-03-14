@@ -1,0 +1,29 @@
+{
+  "id": "term_isolation_thermique",
+  "term": "Isolation thermique",
+  "slug": "isolation-thermique",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "structure-porteuse",
+  "status": "published",
+  "content": {
+    "definition": "Ensemble des matériaux ou systèmes qui limitent les pertes de chaleur à travers l’enveloppe du bâtiment.",
+    "explanation": null,
+    "example": "Une bonne isolation thermique améliore le confort et diminue les besoins énergétiques.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

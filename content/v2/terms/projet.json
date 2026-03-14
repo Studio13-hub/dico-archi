@@ -1,0 +1,29 @@
+{
+  "id": "term_projet",
+  "term": "Projet",
+  "slug": "projet",
+  "category_slug": "phases-sia",
+  "subcategory_slug": "cycle-du-projet",
+  "status": "published",
+  "content": {
+    "definition": "Phase où la solution retenue est développée avec plus de précision avant l’autorisation et l’exécution.",
+    "explanation": null,
+    "example": "Le projet précise les plans, les dimensions et les choix techniques principaux.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "term_facade",
+  "term": "Façade",
+  "slug": "facade",
+  "category_slug": "dessin-technique",
+  "subcategory_slug": "representations-graphiques",
+  "status": "published",
+  "content": {
+    "definition": "Représentation extérieure d’un côté du bâtiment montrant son apparence, ses ouvertures et ses proportions.",
+    "explanation": null,
+    "example": "La façade renseigne sur l’aspect architectural et les percements visibles.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

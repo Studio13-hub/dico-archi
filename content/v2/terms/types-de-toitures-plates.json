@@ -1,0 +1,29 @@
+{
+  "id": "term_types_de_toitures_plates",
+  "term": "Types de toitures plates",
+  "slug": "types-de-toitures-plates",
+  "category_slug": "toitures",
+  "subcategory_slug": "typologies-de-toitures",
+  "status": "published",
+  "content": {
+    "definition": "Differentes conceptions de toitures plates selon l'ordre des couches, la ventilation et le role de la membrane d'etancheite.",
+    "explanation": null,
+    "example": "Le choix entre toiture chaude et toiture compacte depend du contexte constructif et des exigences techniques.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

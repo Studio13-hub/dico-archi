@@ -1,0 +1,29 @@
+{
+  "id": "term_classification_par_composition",
+  "term": "Classification par composition",
+  "slug": "classification-par-composition",
+  "category_slug": "materiaux",
+  "subcategory_slug": "classification-des-materiaux",
+  "status": "published",
+  "content": {
+    "definition": "Classement fondé sur les constituants principaux d’un matériau afin d’anticiper ses propriétés et son domaine d’emploi.",
+    "explanation": null,
+    "example": "Distinguer un materiau a base minerale d'un materiau polymere pour choisir la bonne mise en oeuvre.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

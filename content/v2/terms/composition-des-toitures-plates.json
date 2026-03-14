@@ -1,0 +1,29 @@
+{
+  "id": "term_composition_des_toitures_plates",
+  "term": "Composition des toitures plates",
+  "slug": "composition-des-toitures-plates",
+  "category_slug": "toitures",
+  "subcategory_slug": "composition-et-couches",
+  "status": "published",
+  "content": {
+    "definition": "Organisation des couches fonctionnelles d'une toiture plate: structure, pare-vapeur, isolation, etancheite et protections.",
+    "explanation": null,
+    "example": "Le detail de composition est defini selon la destination et les contraintes du projet.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

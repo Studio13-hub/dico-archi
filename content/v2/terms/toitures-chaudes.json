@@ -1,0 +1,29 @@
+{
+  "id": "term_toitures_chaudes",
+  "term": "Toitures chaudes",
+  "slug": "toitures-chaudes",
+  "category_slug": "toitures",
+  "subcategory_slug": "typologies-de-toitures",
+  "status": "published",
+  "content": {
+    "definition": "Toiture plate non ventilee ou l'isolation est placee sous la couche d'etancheite.",
+    "explanation": null,
+    "example": "Solution courante lorsque la continuite de l'isolation thermique est prioritaire.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

@@ -7,12 +7,17 @@ corpus, sans toucher aux tables systeme.
 
 Le contenu editorial versionne vit dans :
 
-- `content/categories.json`
-- `content/terms.json`
-- `content/relations.json`
-- `content/media.json`
+- `content/v2/taxonomy/categories.json`
+- `content/v2/taxonomy/subcategories.json`
+- `content/v2/terms/*.json`
+- `content/v2/relations/relations.json`
+- `content/v2/media/media.json`
 - `content/templates/`
 - `content/candidates/`
+
+Le dossier `content/v2/` est la source editoriale cible a long terme.
+
+Les fichiers plats a la racine de `content/` restent la projection core compatible avec le site actuel.
 
 Ne pas editer directement la base distante comme source principale.
 
@@ -44,7 +49,7 @@ cat scripts/content/reset_editorial_content.sql
 
 ## Procedure de bascule propre
 
-1. Mettre a jour les fichiers `content/*.json`
+1. Mettre a jour les fichiers `content/v2/`
 2. Valider localement :
 
 ```bash
@@ -75,6 +80,7 @@ Pour ajouter du contenu sans ambiguite :
 - terme : `content/templates/term.template.json`
 - relation : `content/templates/relation.template.json`
 - media : `content/templates/media.template.json`
+- terme riche V2 : `content/v2/templates/term.template.json`
 
 Regle pratique :
 - on duplique d'abord un gabarit
@@ -137,7 +143,13 @@ Voir aussi :
 
 ## Prochaine evolution recommandee
 
-Quand le corpus reel commencera a grossir :
+La V2 permet maintenant :
+
+- une taxonomie `categories` / `subcategories`
+- un fichier par terme
+- des metadonnees riches, sans casser la projection core
+
+Quand le corpus reel commencera a grossir davantage :
 
 - ajouter un export SQL versionne dans un dossier `content/build/` ignore par Git
 - ajouter ensuite un import direct via API ou via CLI seulement apres validation du pipeline

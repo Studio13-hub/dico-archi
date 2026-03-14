@@ -1,14 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-const fs = require("node:fs");
-const path = require("node:path");
-
-const root = process.cwd();
-const contentDir = path.join(root, "content");
-
-function readJson(name) {
-  return JSON.parse(fs.readFileSync(path.join(contentDir, name), "utf8"));
-}
+const { loadCanonicalContent } = require("./content_loader");
 
 function sqlString(value) {
   if (value == null) return "null";
@@ -167,13 +159,14 @@ function buildMediaSql(media) {
 }
 
 function buildSql() {
-  const categories = readJson("categories.json");
-  const terms = readJson("terms.json");
-  const relations = readJson("relations.json");
-  const media = readJson("media.json");
+  const dataset = loadCanonicalContent();
+  const categories = dataset.categories;
+  const terms = dataset.terms;
+  const relations = dataset.relations;
+  const media = dataset.media;
 
   return [
-    "-- Generated from content/*.json",
+    `-- Generated from content ${dataset.version.toUpperCase()} canonical source`,
     "-- Do not edit manually; update the canonical content files instead.",
     "begin;",
     "",

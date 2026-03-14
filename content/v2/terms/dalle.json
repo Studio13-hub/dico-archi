@@ -1,0 +1,29 @@
+{
+  "id": "term_dalle",
+  "term": "Dalle",
+  "slug": "dalle",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "structure-porteuse",
+  "status": "published",
+  "content": {
+    "definition": "Element horizontal porteur formant un plancher ou une toiture selon sa position dans l ouvrage.",
+    "explanation": null,
+    "example": "La dalle relie les espaces et transmet les charges aux murs ou aux poteaux.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

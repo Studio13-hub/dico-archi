@@ -1,0 +1,29 @@
+{
+  "id": "term_toitures_compactes",
+  "term": "Toitures compactes",
+  "slug": "toitures-compactes",
+  "category_slug": "toitures",
+  "subcategory_slug": "typologies-de-toitures",
+  "status": "published",
+  "content": {
+    "definition": "Variante de toiture plate avec couches assemblees de facon dense et continue, sans lame d'air ventilee.",
+    "explanation": null,
+    "example": "Utilisee pour simplifier la composition des couches sur une dalle porteuse.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

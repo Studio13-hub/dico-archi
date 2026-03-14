@@ -1,0 +1,86 @@
+[
+  {
+    "category_slug": "toitures",
+    "name": "Bases des toitures plates",
+    "slug": "bases-des-toitures-plates",
+    "description": "Notions d’introduction sur les toitures plates et leur logique constructive."
+  },
+  {
+    "category_slug": "toitures",
+    "name": "Typologies de toitures",
+    "slug": "typologies-de-toitures",
+    "description": "Familles de toitures plates et variantes de composition."
+  },
+  {
+    "category_slug": "toitures",
+    "name": "Composition et couches",
+    "slug": "composition-et-couches",
+    "description": "Couches, pentes et organisation technique des toitures plates."
+  },
+  {
+    "category_slug": "toitures",
+    "name": "Exécution et entretien",
+    "slug": "execution-et-entretien-des-toitures",
+    "description": "Mise en œuvre, entretien et indications pratiques de chantier pour les toitures."
+  },
+  {
+    "category_slug": "toitures",
+    "name": "Sécurité en toiture",
+    "slug": "securite-en-toiture",
+    "description": "Dispositifs de sécurité, accès et mesures de prévention des chutes."
+  },
+  {
+    "category_slug": "toitures",
+    "name": "Ressources toiture",
+    "slug": "ressources-toiture",
+    "description": "Glossaires, terminologie et ressources documentaires liées aux toitures."
+  },
+  {
+    "category_slug": "materiaux",
+    "name": "Fondamentaux des matériaux",
+    "slug": "fondamentaux-des-materiaux",
+    "description": "Principes de base, définitions et structures des matériaux de construction."
+  },
+  {
+    "category_slug": "materiaux",
+    "name": "Classification des matériaux",
+    "slug": "classification-des-materiaux",
+    "description": "Méthodes de classement et usages pratiques des familles de matériaux."
+  },
+  {
+    "category_slug": "materiaux",
+    "name": "Évaluation des matériaux",
+    "slug": "evaluation-des-materiaux",
+    "description": "Critères architecturaux, techniques, sanitaires, écologiques et économiques."
+  },
+  {
+    "category_slug": "materiaux",
+    "name": "Ressources matériaux",
+    "slug": "ressources-materiaux",
+    "description": "Bibliographies, publications et ressources utiles sur les matériaux."
+  },
+  {
+    "category_slug": "dessin-technique",
+    "name": "Représentations graphiques",
+    "slug": "representations-graphiques",
+    "description": "Plans, coupes, façades et détails utilisés pour lire un projet."
+  },
+  {
+    "category_slug": "dessin-technique",
+    "name": "Annotations et lecture",
+    "slug": "annotations-et-lecture",
+    "description": "Cotation, échelles et outils de lecture des documents graphiques."
+  },
+  {
+    "category_slug": "elements-constructifs",
+    "name": "Structure porteuse",
+    "slug": "structure-porteuse",
+    "description": "Éléments porteurs verticaux et horizontaux, fondations et reprises de charges."
+  },
+  {
+    "category_slug": "phases-sia",
+    "name": "Cycle du projet",
+    "slug": "cycle-du-projet",
+    "description": "Phases d’étude, de consultation et de réalisation selon la logique SIA."
+  }
+]

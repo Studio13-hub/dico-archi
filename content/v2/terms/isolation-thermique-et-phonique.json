@@ -1,0 +1,29 @@
+{
+  "id": "term_isolation_thermique_et_phonique",
+  "term": "Isolation thermique et phonique",
+  "slug": "isolation-thermique-et-phonique",
+  "category_slug": "toitures",
+  "subcategory_slug": "composition-et-couches",
+  "status": "published",
+  "content": {
+    "definition": "Ensemble des solutions d'isolation visant la performance energetique et le confort acoustique de la toiture.",
+    "explanation": null,
+    "example": "Le choix du materiau isolant depend des exigences thermiques et de la destination des locaux.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

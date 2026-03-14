@@ -1,0 +1,29 @@
+{
+  "id": "term_glossaire_toitures_plates",
+  "term": "Glossaire toitures plates",
+  "slug": "glossaire-toitures-plates",
+  "category_slug": "toitures",
+  "subcategory_slug": "ressources-toiture",
+  "status": "published",
+  "content": {
+    "definition": "Referentiel de definitions utiles pour harmoniser la communication entre conception, execution et maintenance.",
+    "explanation": null,
+    "example": "Utilise pour aligner le vocabulaire entre bureau, chantier et corps de metier.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

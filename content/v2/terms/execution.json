@@ -1,0 +1,29 @@
+{
+  "id": "term_execution",
+  "term": "Execution",
+  "slug": "execution",
+  "category_slug": "phases-sia",
+  "subcategory_slug": "cycle-du-projet",
+  "status": "published",
+  "content": {
+    "definition": "Phase de production des documents et decisions necessaires pour construire l ouvrage.",
+    "explanation": null,
+    "example": "La phase execution comprend les plans d execution et la coordination technique.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

@@ -1,10 +1,8 @@
 Source canonique du contenu editorial DicoArchi.
 
 Regles :
-- `categories.json` contient la taxonomie canonique.
-- `terms.json` contient les fiches termes canoniques.
-- `relations.json` contient les relations explicites entre slugs.
-- `media.json` contient les medias relies aux termes.
+- `v2/` contient la source canonique riche en cours de generalisation.
+- `categories.json`, `terms.json`, `relations.json`, `media.json` restent la projection core compatible avec le site actuel.
 - `templates/` contient les gabarits a dupliquer pour ajouter du contenu proprement.
 - `candidates/` contient la matiere editoriale extraite des anciens cours, a revoir avant fusion.
 
@@ -31,3 +29,4 @@ Exigence DicoArchi :
 Controle recommande :
 - validation structurelle : `npm run content:validate`
 - controle linguistique : `npm run content:lint:fr`
+- bootstrap V2 initial : `npm run content:v2:bootstrap`

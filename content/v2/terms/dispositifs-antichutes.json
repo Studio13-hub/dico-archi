@@ -1,0 +1,29 @@
+{
+  "id": "term_dispositifs_antichutes",
+  "term": "Dispositifs antichutes",
+  "slug": "dispositifs-antichutes",
+  "category_slug": "toitures",
+  "subcategory_slug": "securite-en-toiture",
+  "status": "published",
+  "content": {
+    "definition": "Equipements de securite pour interventions en toiture, destines a prevenir les chutes de hauteur.",
+    "explanation": null,
+    "example": "Ligne de vie et points d'ancrage utilises lors des operations d'entretien.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}

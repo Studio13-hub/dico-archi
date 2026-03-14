@@ -1,0 +1,29 @@
+{
+  "id": "term_publications_et_adresses",
+  "term": "Publications et adresses",
+  "slug": "publications-et-adresses",
+  "category_slug": "materiaux",
+  "subcategory_slug": "ressources-materiaux",
+  "status": "published",
+  "content": {
+    "definition": "Repertoire de sources, organismes et contacts utiles pour obtenir des informations techniques fiables.",
+    "explanation": null,
+    "example": "Utiliser un organisme de reference pour confirmer un point de conformite.",
+    "applications": [],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [],
+    "tags": [],
+    "version": 1
+  }
+}
