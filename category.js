@@ -145,7 +145,7 @@ async function loadCategoryPage() {
       slug: item.slug || "",
       definition: item.definition || "",
       categoryId: item.category_id || item.categories?.id || "",
-      categoryName: item.categories?.name || "Sans categorie"
+      categoryName: item.categories?.name || "Sans catégorie"
     }));
 
     if (!categoryId && !categoryName) {
