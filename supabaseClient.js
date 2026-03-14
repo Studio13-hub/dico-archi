@@ -268,21 +268,43 @@
       if (file.size > maxSizeBytes) {
         throw new Error("Fichier trop lourd (max 10 MB).");
       }
+      const sessionResult = await client.auth.getSession();
+      const accessToken = sessionResult.data?.session?.access_token || "";
+      if (!accessToken) {
+        throw new Error("Session introuvable. Reconnecte-toi avant le téléversement.");
+      }
 
-      const safeName = sanitizeStorageSegment(file.name.replace(/\.[^.]+$/, "")) || "media";
-      const safeExt = sanitizeStorageSegment(ext) || (isPdf ? "pdf" : "png");
-      const filePath = `submissions/${userId}/${Date.now()}-${Math.random().toString(16).slice(2)}-${safeName}.${safeExt}`;
-
-      const upload = await client.storage.from("term-images").upload(filePath, file, {
-        cacheControl: "3600",
-        contentType: file.type || undefined,
-        upsert: false
+      const prepareResponse = await fetch("/api/submission-media-upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          fileName: file.name,
+          fileType: file.type
+        })
       });
+
+      const preparePayload = await prepareResponse.json().catch(() => ({}));
+      if (!prepareResponse.ok) {
+        throw new Error(preparePayload.error || "signed_upload_prepare_failed");
+      }
+
+      const upload = await client.storage.from("term-images").uploadToSignedUrl(
+        preparePayload.path,
+        preparePayload.token,
+        file,
+        {
+          cacheControl: "3600",
+          contentType: file.type || undefined,
+          upsert: false
+        }
+      );
 
       if (upload.error) throw upload.error;
 
-      const publicUrl = client.storage.from("term-images").getPublicUrl(filePath);
-      return publicUrl.data?.publicUrl || "";
+      return preparePayload.publicUrl || "";
     },
 
     async searchTerms(query) {
