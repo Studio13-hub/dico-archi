@@ -13,6 +13,7 @@ const message = document.getElementById("auth-message");
 
 let mode = "auth";
 let isSubmittingAuth = false;
+let authSubmitAction = "login";
 const supabaseHelpers = window.DicoArchiSupabase;
 
 function setMessage(text, isError = false) {
@@ -174,9 +175,22 @@ async function updatePassword() {
 
 authForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  if (authSubmitAction === "signup") {
+    signUp();
+    return;
+  }
   signIn();
 });
-signupButton.addEventListener("click", signUp);
+if (loginButton) {
+  loginButton.addEventListener("click", () => {
+    authSubmitAction = "login";
+  });
+}
+if (signupButton) {
+  signupButton.addEventListener("click", () => {
+    authSubmitAction = "signup";
+  });
+}
 forgotPasswordButton.addEventListener("click", sendResetEmail);
 
 if (resetForm) {
