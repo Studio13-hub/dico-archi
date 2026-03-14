@@ -796,6 +796,69 @@ main {
   line-height: 1.45;
 }
 
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.panel--games {
+  background:
+    radial-gradient(circle at top left, rgba(31, 122, 112, 0.14), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(15, 23, 32, 0.08), transparent 35%),
+    #fff;
+}
+
+.game-card {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  display: grid;
+  gap: 10px;
+  min-height: 250px;
+  box-shadow: 0 16px 34px rgba(18, 18, 18, 0.08);
+}
+
+.game-card h2 {
+  margin: 0;
+}
+
+.game-card p {
+  margin: 0;
+  max-width: none;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 0.98rem;
+}
+
+.game-card__stats {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(18, 18, 18, 0.7);
+  display: grid;
+  gap: 4px;
+}
+
+.game-card--quiz {
+  background: linear-gradient(180deg, #ffffff, #f4f8f6);
+}
+
+.game-card--flash {
+  background: linear-gradient(180deg, #ffffff, #fff6ea);
+}
+
+.game-card--speed {
+  background: linear-gradient(180deg, #ffffff, #f2f5ff);
+}
+
+.game-card--memory {
+  background: linear-gradient(180deg, #ffffff, #f7f3ff);
+}
+
+.game-card--daily {
+  background: linear-gradient(180deg, #ffffff, #eef9f4);
+}
+
 .flashcards__card {
   position: relative;
   border: 1px solid var(--border);

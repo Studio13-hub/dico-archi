@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jeux - DicoArchi</title>
+    <meta
+      name="description"
+      content="Hub des jeux pédagogiques DicoArchi : quiz, flashcards, memory, speed run et défi du jour."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero games-hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Jeux DicoArchi</div>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Non connecté</span>
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+            <a class="link-button" href="category.html">Catégories</a>
+            <a class="link-button" href="quiz.html">Quiz</a>
+            <a class="link-button" href="flashcards.html">Flashcards</a>
+            <a class="link-button" href="memory.html">Memory</a>
+            <a class="link-button" href="match.html">Speed Run</a>
+            <a class="link-button" href="daily.html">Défi du jour</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
+          </div>
+        </div>
+        <h1>Choisir un mode de jeu</h1>
+        <p>Réviser vite, jouer plus longtemps ou lancer un défi court : tout le pôle ludique DicoArchi est ici.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel panel--games">
+        <div class="games-grid">
+          <article class="game-card game-card--quiz">
+            <span class="dashboard__label">Réflexe</span>
+            <h2>Quiz</h2>
+            <p>Le mode classique pour revoir les définitions, les termes et les schémas.</p>
+            <ul class="game-card__stats">
+              <li>10 questions</li>
+              <li>3 modes</li>
+              <li>Mobile-first</li>
+            </ul>
+            <a class="welcome-cover__cta" href="quiz.html">Jouer maintenant</a>
+          </article>
+
+          <article class="game-card game-card--flash">
+            <span class="dashboard__label">Swipe</span>
+            <h2>Flashcards</h2>
+            <p>Retournez les cartes et triez vite entre « Je connais » et « À revoir ».</p>
+            <ul class="game-card__stats">
+              <li>Très rapide</li>
+              <li>Par catégorie</li>
+              <li>Exemples inclus</li>
+            </ul>
+            <a class="welcome-cover__cta" href="flashcards.html">Ouvrir</a>
+          </article>
+
+          <article class="game-card game-card--speed">
+            <span class="dashboard__label">Nerveux</span>
+            <h2>Speed Run</h2>
+            <p>45 secondes pour enchaîner les bonnes réponses et faire monter le combo.</p>
+            <ul class="game-card__stats">
+              <li>Chrono court</li>
+              <li>Combo visible</li>
+              <li>Rejouable</li>
+            </ul>
+            <a class="welcome-cover__cta" href="match.html">Lancer</a>
+          </article>
+
+          <article class="game-card game-card--memory">
+            <span class="dashboard__label">Mémoire</span>
+            <h2>Memory</h2>
+            <p>Retrouvez les paires terme / définition et améliorez votre temps.</p>
+            <ul class="game-card__stats">
+              <li>4 paires</li>
+              <li>Par thème</li>
+              <li>Temps local</li>
+            </ul>
+            <a class="welcome-cover__cta" href="memory.html">Jouer</a>
+          </article>
+
+          <article class="game-card game-card--daily">
+            <span class="dashboard__label">Quotidien</span>
+            <h2>Défi du jour</h2>
+            <p>Une mini-série quotidienne pour garder le rythme sans y passer trop de temps.</p>
+            <ul class="game-card__stats">
+              <li>5 questions</li>
+              <li>1 seed du jour</li>
+              <li>Idéal débutants</li>
+            </ul>
+            <a class="welcome-cover__cta" href="daily.html">Commencer</a>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer__inner">
+        <span>Réalisé par RDR Architectes SA.</span>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
+    <script src="chatbot.js"></script>
+  </body>
+</html>

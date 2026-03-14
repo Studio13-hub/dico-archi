@@ -2,7 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://dico-archi.vercel.app/</loc></url>
   <url><loc>https://dico-archi.vercel.app/dictionnaire.html</loc></url>
+  <url><loc>https://dico-archi.vercel.app/games.html</loc></url>
   <url><loc>https://dico-archi.vercel.app/quiz.html</loc></url>
+  <url><loc>https://dico-archi.vercel.app/daily.html</loc></url>
   <url><loc>https://dico-archi.vercel.app/flashcards.html</loc></url>
   <url><loc>https://dico-archi.vercel.app/memory.html</loc></url>
   <url><loc>https://dico-archi.vercel.app/match.html</loc></url>

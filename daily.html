@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Speed Run - DicoArchi</title>
+    <title>Défi du jour - DicoArchi</title>
     <meta
       name="description"
-      content="Mode Speed Run de DicoArchi pour réviser vite les termes, catégories et définitions d'architecture."
+      content="Défi du jour DicoArchi : une série courte de questions pour réviser un peu chaque jour."
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -15,7 +15,7 @@
       <div class="hero__bg"></div>
       <div class="hero__content">
         <div class="hero__top">
-          <div class="badge">Jeu pédagogique</div>
+          <div class="badge">Défi quotidien</div>
           <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
             <span></span><span></span><span></span>
           </button>
@@ -25,62 +25,49 @@
             <a class="link-button" href="quiz.html">Quiz</a>
             <a class="link-button" href="flashcards.html">Flashcards</a>
             <a class="link-button" href="memory.html">Memory</a>
+            <a class="link-button" href="match.html">Speed Run</a>
             <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
-            <a class="link-button" href="category.html">Catégories</a>
             <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
             <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
             <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
           </div>
         </div>
-        <h1>Speed Run</h1>
-        <p>Réponds le plus vite possible pendant une manche courte. Plus tu enchaînes, plus le combo monte.</p>
+        <h1>Défi du jour</h1>
+        <p>Une mini-série de 5 questions, identique toute la journée, pour garder le rythme sans surcharge.</p>
       </div>
     </header>
 
     <main>
       <section class="panel">
-        <div class="match">
-          <div class="memory__header">
-            <h2>Run en direct</h2>
-            <div id="match-score" class="quiz__score">0 / 0</div>
+        <div class="quiz">
+          <div class="quiz__header">
+            <h2 id="daily-title">Chargement du défi...</h2>
+            <div id="daily-score" class="quiz__score">0 / 0</div>
           </div>
 
           <div class="quiz__meta">
-            <label class="quiz__mode">
-              Mode
-              <select id="match-mode">
-                <option value="term-to-category">Terme -> catégorie</option>
-                <option value="definition-to-term">Définition -> terme</option>
-              </select>
-            </label>
-            <label class="quiz__mode">
-              Catégorie
-              <select id="match-category">
-                <option value="">Toutes les catégories</option>
-              </select>
-            </label>
-            <div id="match-timer" class="meta">Temps restant : 45 s</div>
-            <div id="match-round" class="meta">Combo : 0</div>
+            <div id="daily-seed" class="meta">Jour : -</div>
+            <div id="daily-round" class="meta">Question 0 / 5</div>
+            <div id="daily-status-line" class="meta">Série : 0</div>
           </div>
 
           <div class="quiz__progress" aria-hidden="true">
-            <div id="match-progress-bar" class="quiz__progress-bar"></div>
+            <div id="daily-progress-bar" class="quiz__progress-bar"></div>
           </div>
 
-          <div id="match-prompt" class="quiz__question">Chargement du jeu...</div>
-          <div id="match-target" class="match__target"></div>
-          <div id="match-options" class="quiz__options"></div>
-          <div id="match-feedback" class="quiz__feedback"></div>
+          <div id="daily-question" class="quiz__question">Préparation du défi...</div>
+          <div id="daily-options" class="quiz__options"></div>
+          <div id="daily-feedback" class="quiz__feedback"></div>
 
           <div class="quiz__actions">
-            <button id="match-start" type="button">Lancer le run</button>
-            <button id="match-next" class="ghost" type="button">Question suivante</button>
-            <button id="match-restart" class="ghost" type="button">Rejouer</button>
+            <button id="daily-start" type="button">Commencer</button>
+            <button id="daily-next" class="ghost" type="button">Question suivante</button>
+            <button id="daily-restart" class="ghost" type="button">Rejouer aujourd'hui</button>
           </div>
 
           <div class="quiz__leaderboard">
-            <h3>Meilleurs scores locaux</h3>
-            <div id="match-leaderboard" class="meta meta--subtle">Aucune partie enregistrée.</div>
+            <h3>Dernier résultat local</h3>
+            <div id="daily-summary" class="meta meta--subtle">Aucune tentative aujourd'hui.</div>
           </div>
         </div>
       </section>
@@ -97,7 +84,7 @@
     <script src="supabaseClient.js"></script>
     <script src="menu.js"></script>
     <script src="nav.js"></script>
-    <script src="match.page.js"></script>
+    <script src="daily.page.js"></script>
     <script src="chatbot.js"></script>
   </body>
 </html>
