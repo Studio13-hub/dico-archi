@@ -1,73 +1,73 @@
 [
   {
-    "term": "Etancheite",
+    "term": "Étanchéité",
     "slug": "etancheite",
-    "definition": "Ensemble des dispositions et materiaux qui empechent la penetration de l eau dans une toiture ou un element constructif.",
-    "example": "L etancheite de la toiture doit rester continue au droit des relevés et des raccords.",
+    "definition": "Ensemble des dispositions et matériaux qui empêchent la pénétration de l’eau dans une toiture ou un élément constructif.",
+    "example": "L’étanchéité de la toiture doit rester continue au droit des relevés et des raccords.",
     "category_slug": "toitures",
     "status": "published"
   },
   {
     "term": "Pare-vapeur",
     "slug": "pare-vapeur",
-    "definition": "Couche limitant le passage de vapeur d'eau depuis l'interieur vers les couches froides d'une paroi ou d'une toiture, afin de reduire les risques de condensation.",
-    "example": "Le pare-vapeur est place sous l'isolation pour prevenir les condensations internes dans la toiture.",
+    "definition": "Couche limitant le passage de vapeur d’eau depuis l’intérieur vers les couches froides d’une paroi ou d’une toiture, afin de réduire les risques de condensation.",
+    "example": "Le pare-vapeur est placé sous l’isolation pour prévenir les condensations internes dans la toiture.",
     "category_slug": "toitures",
     "status": "published"
   },
   {
     "term": "Isolation thermique",
     "slug": "isolation-thermique",
-    "definition": "Ensemble des materiaux ou systemes qui limitent les pertes de chaleur a travers l enveloppe du batiment.",
-    "example": "Une bonne isolation thermique ameliore le confort et diminue les besoins energetiques.",
+    "definition": "Ensemble des matériaux ou systèmes qui limitent les pertes de chaleur à travers l’enveloppe du bâtiment.",
+    "example": "Une bonne isolation thermique améliore le confort et diminue les besoins énergétiques.",
     "category_slug": "elements-constructifs",
     "status": "published"
   },
   {
-    "term": "Acrotere",
+    "term": "Acrotère",
     "slug": "acrotere",
-    "definition": "Petit mur en bord de toiture qui permet notamment de relever l etancheite et de finir le pourtour du toit.",
-    "example": "L acrotere protege le bord de la toiture et sert de support a certains details de finition.",
+    "definition": "Petit mur en bord de toiture qui permet notamment de relever l’étanchéité et de finir le pourtour du toit.",
+    "example": "L’acrotère protège le bord de la toiture et sert de support à certains détails de finition.",
     "category_slug": "toitures",
     "status": "published"
   },
   {
     "term": "Coupe",
     "slug": "coupe",
-    "definition": "Representation d un batiment tranche verticalement pour montrer l interieur, les niveaux et les elements constructifs.",
+    "definition": "Représentation d’un bâtiment tranché verticalement pour montrer l’intérieur, les niveaux et les éléments constructifs.",
     "example": "La coupe permet de comprendre la hauteur des espaces et la composition des planchers.",
     "category_slug": "dessin-technique",
     "status": "published"
   },
   {
-    "term": "Facade",
+    "term": "Façade",
     "slug": "facade",
-    "definition": "Representation exterieure d un cote du batiment montrant son apparence, ses ouvertures et ses proportions.",
-    "example": "La facade renseigne sur l aspect architectural et les percements visibles.",
+    "definition": "Représentation extérieure d’un côté du bâtiment montrant son apparence, ses ouvertures et ses proportions.",
+    "example": "La façade renseigne sur l’aspect architectural et les percements visibles.",
     "category_slug": "dessin-technique",
     "status": "published"
   },
   {
     "term": "Plan d etage",
     "slug": "plan-d-etage",
-    "definition": "Dessin horizontal representant un niveau du batiment vu en projection.",
-    "example": "Le plan d etage montre les pieces, les cloisons, les cotes et les ouvertures.",
+    "definition": "Dessin horizontal représentant un niveau du bâtiment vu en projection.",
+    "example": "Le plan d’étage montre les pièces, les cloisons, les cotes et les ouvertures.",
     "category_slug": "dessin-technique",
     "status": "published"
   },
   {
-    "term": "Detail constructif",
+    "term": "Détail constructif",
     "slug": "detail-constructif",
-    "definition": "Dessin a grande echelle montrant precisement l assemblage des elements de construction.",
-    "example": "Un detail constructif explique comment la facade rejoint la dalle ou la toiture.",
+    "definition": "Dessin à grande échelle montrant précisément l’assemblage des éléments de construction.",
+    "example": "Un détail constructif explique comment la façade rejoint la dalle ou la toiture.",
     "category_slug": "dessin-technique",
     "status": "published"
   },
   {
-    "term": "Echelle",
+    "term": "Échelle",
     "slug": "echelle",
-    "definition": "Rapport entre les dimensions dessinees et les dimensions reelles d un objet ou d un batiment.",
-    "example": "Une echelle 1:100 signifie qu un centimetre sur le plan correspond a un metre en realite.",
+    "definition": "Rapport entre les dimensions dessinées et les dimensions réelles d’un objet ou d’un bâtiment.",
+    "example": "Une échelle 1:100 signifie qu’un centimètre sur le plan correspond à un mètre en réalité.",
     "category_slug": "dessin-technique",
     "status": "published"
   },
@@ -82,8 +82,8 @@
   {
     "term": "Mur porteur",
     "slug": "mur-porteur",
-    "definition": "Mur qui reprend des charges et les transmet a la structure porteuse ou aux fondations.",
-    "example": "Le mur porteur ne peut pas etre modifie sans verification structurelle.",
+    "definition": "Mur qui reprend des charges et les transmet à la structure porteuse ou aux fondations.",
+    "example": "Le mur porteur ne peut pas être modifié sans vérification structurelle.",
     "category_slug": "elements-constructifs",
     "status": "published"
   },
@@ -114,8 +114,8 @@
   {
     "term": "Fondation",
     "slug": "fondation",
-    "definition": "Partie de l ouvrage qui transmet les charges du batiment au terrain.",
-    "example": "Les fondations doivent etre adaptees a la nature du sol et aux charges du projet.",
+    "definition": "Partie de l’ouvrage qui transmet les charges du bâtiment au terrain.",
+    "example": "Les fondations doivent être adaptées à la nature du sol et aux charges du projet.",
     "category_slug": "elements-constructifs",
     "status": "published"
   },
@@ -130,8 +130,8 @@
   {
     "term": "Projet",
     "slug": "projet",
-    "definition": "Phase ou la solution retenue est developpee avec plus de precision avant l autorisation et l execution.",
-    "example": "Le projet precise les plans, les dimensions et les choix techniques principaux.",
+    "definition": "Phase où la solution retenue est développée avec plus de précision avant l’autorisation et l’exécution.",
+    "example": "Le projet précise les plans, les dimensions et les choix techniques principaux.",
     "category_slug": "phases-sia",
     "status": "published"
   },
@@ -170,7 +170,7 @@
   {
     "term": "Objectifs de l'etude des materiaux",
     "slug": "objectifs-de-letude-des-materiaux",
-    "definition": "Comprendre les proprietes, limites et conditions d'emploi des materiaux pour choisir des solutions fiables, durables et conformes.",
+    "definition": "Comprendre les propriétés, limites et conditions d’emploi des matériaux pour choisir des solutions fiables, durables et conformes.",
     "example": "Selectionner un materiau en tenant compte des contraintes techniques, normatives et economiques.",
     "category_slug": "materiaux",
     "status": "published"
@@ -194,7 +194,7 @@
   {
     "term": "Classification par composition",
     "slug": "classification-par-composition",
-    "definition": "Classement fonde sur les constituants principaux d'un materiau afin d'anticiper ses proprietes et son domaine d'emploi.",
+    "definition": "Classement fondé sur les constituants principaux d’un matériau afin d’anticiper ses propriétés et son domaine d’emploi.",
     "example": "Distinguer un materiau a base minerale d'un materiau polymere pour choisir la bonne mise en oeuvre.",
     "category_slug": "materiaux",
     "status": "published"
@@ -210,7 +210,7 @@
   {
     "term": "Definitions des materiaux",
     "slug": "definitions-des-materiaux",
-    "definition": "Ensemble de notions de base (termes et vocabulaire) utilisees pour decrire correctement les materiaux et leurs proprietes.",
+    "definition": "Ensemble de notions de base (termes et vocabulaire) utilisées pour décrire correctement les matériaux et leurs propriétés.",
     "example": "Clarifier la difference entre densite, resistance et durabilite avant de specifier un produit.",
     "category_slug": "materiaux",
     "status": "published"
@@ -226,7 +226,7 @@
   {
     "term": "Criteres architecturaux",
     "slug": "criteres-architecturaux",
-    "definition": "Criteres de choix lies a l'expression architecturale, a l'integration visuelle et a la coherence du projet.",
+    "definition": "Critères de choix liés à l’expression architecturale, à l’intégration visuelle et à la cohérence du projet.",
     "example": "Choix d'un parement en fonction de la texture, de la teinte et du contexte urbain.",
     "category_slug": "materiaux",
     "status": "published"
@@ -242,7 +242,7 @@
   {
     "term": "Sante et bien-etre",
     "slug": "sante-et-bien-etre",
-    "definition": "Impact des materiaux sur la qualite de l'air interieur, le confort et la securite des occupants.",
+    "definition": "Impact des matériaux sur la qualité de l’air intérieur, le confort et la sécurité des occupants.",
     "example": "Preference pour des produits faibles en emissions dans des locaux occupes en continu.",
     "category_slug": "materiaux",
     "status": "published"
@@ -266,7 +266,7 @@
   {
     "term": "Bibliographie technique",
     "slug": "bibliographie-technique",
-    "definition": "Ensemble des references documentaires utiles pour approfondir les proprietes et l'emploi des materiaux.",
+    "definition": "Ensemble des références documentaires utiles pour approfondir les propriétés et l’emploi des matériaux.",
     "example": "Consultation de references metier avant validation d'un detail.",
     "category_slug": "materiaux",
     "status": "published"
@@ -315,7 +315,7 @@
     "term": "Toitures Duo",
     "slug": "toitures-duo",
     "definition": "Systeme combinant une partie d'isolation sous l'etancheite et une partie au-dessus pour optimiser la performance thermique.",
-    "example": "Employe pour renforcer l'isolation lors de transformations ou de mises a niveau energetiques.",
+    "example": "Employé pour renforcer l’isolation lors de transformations ou de mises à niveau énergétiques.",
     "category_slug": "toitures",
     "status": "published"
   },
