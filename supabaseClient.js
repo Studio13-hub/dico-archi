@@ -159,24 +159,13 @@
           term,
           slug,
           definition,
+          category_id,
           categories:category_id (
+            id,
             name
           )
         `)
         .eq("status", "published")
-        .order("term", { ascending: true });
-
-      if (query.error) throw query.error;
-      return Array.isArray(query.data) ? query.data : [];
-    },
-
-    async fetchLegacyTerms() {
-      const client = getClient();
-      if (!client) throw new Error("missing_supabase_config");
-
-      const query = await client
-        .from("terms")
-        .select("term, slug, category, definition, example, related, image_url")
         .order("term", { ascending: true });
 
       if (query.error) throw query.error;

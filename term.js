@@ -500,7 +500,15 @@ async function loadTermPage() {
 
   if (dicoApi) {
     try {
-      const remoteTerms = (await dicoApi.fetchLegacyTerms()).map(normalizeTerm);
+      const remoteTerms = (await dicoApi.fetchPublishedTermsBasic()).map((item) => normalizeTerm({
+        term: item.term,
+        slug: item.slug,
+        category: item.categories?.name || "Sans categorie",
+        definition: item.definition,
+        example: "",
+        related: [],
+        image_url: ""
+      }));
       remoteCount = remoteTerms.length;
       terms = mergeTerms(remoteTerms, localTerms);
     } catch (_err) {

@@ -1034,7 +1034,15 @@ async function loadTerms() {
       setAuthUi({ user: nextUser, profile: nextProfile });
     });
 
-    const remoteTerms = (await dicoApi.fetchLegacyTerms()).map(normalizeTerm);
+    const remoteTerms = (await dicoApi.fetchPublishedTermsBasic()).map((item) => normalizeTerm({
+      term: item.term,
+      slug: item.slug,
+      category: item.categories?.name || "Sans categorie",
+      definition: item.definition,
+      example: "",
+      related: [],
+      image_url: ""
+    }));
     allTerms = mergeTerms(remoteTerms, localTerms).filter(isVisibleTerm);
 
     if (!remoteTerms.length && localTerms.length) {
