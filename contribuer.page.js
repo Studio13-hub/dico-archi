@@ -52,6 +52,14 @@
     uploadMediaStatus.style.color = isError ? "#d94e2b" : "rgba(18, 18, 18, 0.6)";
   }
 
+  function getUploadErrorMessage(error) {
+    const rawMessage = String(error?.message || error || "");
+    if (rawMessage.toLowerCase().includes("row-level security policy")) {
+      return "Téléversement refusé par Supabase. La policy d’upload apprenti n’est pas encore activée dans Storage.";
+    }
+    return rawMessage || "Téléversement impossible.";
+  }
+
   function setUploadButtonBusy(isBusy) {
     if (!uploadMediaButton) return;
     uploadMediaButton.disabled = isBusy;
@@ -223,9 +231,9 @@
 
       renderUploadedMediaList();
       updateContributionHints();
-      setUploadStatus(`${uploadedUrls.length} média${uploadedUrls.length > 1 ? "s" : ""} temporaire${uploadedUrls.length > 1 ? "s" : ""} prêt${uploadedUrls.length > 1 ? "s" : ""}.`);
+      setUploadStatus(`${uploadedUrls.length} média${uploadedUrls.length > 1 ? "s" : ""} chargé${uploadedUrls.length > 1 ? "s" : ""} et ajouté${uploadedUrls.length > 1 ? "s" : ""} à la proposition.`);
     } catch (error) {
-      setUploadStatus(error.message || "Téléversement impossible.", true);
+      setUploadStatus(getUploadErrorMessage(error), true);
     } finally {
       isUploadingMedia = false;
       setUploadButtonBusy(false);
@@ -299,6 +307,14 @@
 
   if (uploadMediaButton) {
     uploadMediaButton.addEventListener("click", uploadContributionMedia);
+  }
+
+  if (mediaFilesInput) {
+    mediaFilesInput.addEventListener("change", () => {
+      if (mediaFilesInput.files?.length) {
+        uploadContributionMedia();
+      }
+    });
   }
 
   [termInput, categoryInput, definitionInput, exampleInput, mediaUrlsInput].forEach((field) => {
