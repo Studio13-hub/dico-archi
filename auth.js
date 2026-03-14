@@ -72,20 +72,26 @@ async function signIn() {
   if (loginButton) loginButton.disabled = true;
   if (signupButton) signupButton.disabled = true;
   if (forgotPasswordButton) forgotPasswordButton.disabled = true;
+  setMessage("Connexion en cours...");
 
   try {
-    const { error } = await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
+    try {
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
 
-    if (error) {
-      setMessage(error.message, true);
+      if (error) {
+        setMessage(error.message, true);
+        return;
+      }
+
+      setMessage("Connecté avec succès. Redirection...");
+      setTimeout(redirectAfterLogin, 800);
+    } catch (error) {
+      setMessage(error?.message || "Connexion impossible pour le moment.", true);
       return;
     }
-
-    setMessage("Connecté avec succès. Redirection...");
-    setTimeout(redirectAfterLogin, 800);
   } finally {
     isSubmittingAuth = false;
     if (loginButton) loginButton.disabled = false;
@@ -104,17 +110,30 @@ async function signUp() {
     return;
   }
 
-  const { error } = await supabaseClient.auth.signUp({
-    email,
-    password
-  });
+  if (signupButton) signupButton.disabled = true;
+  if (loginButton) loginButton.disabled = true;
+  if (forgotPasswordButton) forgotPasswordButton.disabled = true;
+  setMessage("Création du compte en cours...");
 
-  if (error) {
-    setMessage(error.message, true);
-    return;
+  try {
+    const { error } = await supabaseClient.auth.signUp({
+      email,
+      password
+    });
+
+    if (error) {
+      setMessage(error.message, true);
+      return;
+    }
+
+    setMessage("Compte créé. Vérifie ton email pour confirmer.");
+  } catch (error) {
+    setMessage(error?.message || "Création du compte impossible pour le moment.", true);
+  } finally {
+    if (signupButton) signupButton.disabled = false;
+    if (loginButton) loginButton.disabled = false;
+    if (forgotPasswordButton) forgotPasswordButton.disabled = false;
   }
-
-  setMessage("Compte créé. Vérifie ton email pour confirmer.");
 }
 
 async function sendResetEmail() {
@@ -126,13 +145,18 @@ async function sendResetEmail() {
   }
 
   const redirectTo = `${window.location.origin}/auth.html?mode=reset`;
-  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
-  if (error) {
-    setMessage(error.message, true);
-    return;
-  }
+  setMessage("Envoi de l’email de réinitialisation...");
+  try {
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) {
+      setMessage(error.message, true);
+      return;
+    }
 
-  setMessage("Email de réinitialisation envoyé. Vérifie ta boîte mail.");
+    setMessage("Email de réinitialisation envoyé. Vérifie ta boîte mail.");
+  } catch (error) {
+    setMessage(error?.message || "Réinitialisation impossible pour le moment.", true);
+  }
 }
 
 async function updatePassword() {
@@ -157,17 +181,23 @@ async function updatePassword() {
 
   if (saveNewPasswordButton) saveNewPasswordButton.disabled = true;
   try {
-    const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-    if (error) {
-      setMessage(error.message, true);
+    setMessage("Mise à jour du mot de passe...");
+    try {
+      const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+      if (error) {
+        setMessage(error.message, true);
+        return;
+      }
+
+      setMessage("Mot de passe mis à jour. Tu peux te connecter.");
+      if (newPasswordInput) newPasswordInput.value = "";
+      if (confirmPasswordInput) confirmPasswordInput.value = "";
+      setMode("auth");
+      if (emailInput) emailInput.focus();
+    } catch (error) {
+      setMessage(error?.message || "Mise à jour impossible pour le moment.", true);
       return;
     }
-
-    setMessage("Mot de passe mis à jour. Tu peux te connecter.");
-    if (newPasswordInput) newPasswordInput.value = "";
-    if (confirmPasswordInput) confirmPasswordInput.value = "";
-    setMode("auth");
-    if (emailInput) emailInput.focus();
   } finally {
     if (saveNewPasswordButton) saveNewPasswordButton.disabled = false;
   }
