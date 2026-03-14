@@ -787,11 +787,25 @@ async function fetchChatFeedback() {
   setButtonBusy(chatFeedbackRefresh, true, "Chargement...", "Rafraîchir");
 
   try {
+    const sessionResult = await supabaseClient.auth.getSession();
+    const accessToken = sessionResult?.data?.session?.access_token || "";
+    if (!accessToken) {
+      setMessage("Feedback chatbot: session admin introuvable.", true);
+      lastChatFeedbackItems = [];
+      renderChatFeedbackSummary([]);
+      renderChatFeedback([]);
+      return;
+    }
+
     const rating = chatFeedbackRating ? chatFeedbackRating.value : "all";
     const source = chatFeedbackSource ? chatFeedbackSource.value : "all";
     const params = new URLSearchParams({ rating, source, limit: "120" });
 
-    const response = await fetch(`/api/chat-feedback-list?${params.toString()}`);
+    const response = await fetch(`/api/chat-feedback-list?${params.toString()}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
     const payload = await response.json().catch(() => ({}));
 
     if (!response.ok) {

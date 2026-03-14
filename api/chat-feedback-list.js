@@ -1,3 +1,5 @@
+const { createClient } = require("@supabase/supabase-js");
+
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
 
@@ -13,6 +15,42 @@ module.exports = async (req, res) => {
   if (!supabaseUrl || !serviceKey) {
     res.statusCode = 503;
     res.end(JSON.stringify({ error: "missing_supabase_server_env" }));
+    return;
+  }
+
+  const authHeader = String(req.headers.authorization || "");
+  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
+  if (!token) {
+    res.statusCode = 401;
+    res.end(JSON.stringify({ error: "missing_bearer_token" }));
+    return;
+  }
+
+  const supabase = createClient(supabaseUrl, serviceKey, {
+    auth: { persistSession: false }
+  });
+
+  const userResult = await supabase.auth.getUser(token);
+  if (userResult.error || !userResult.data?.user?.id) {
+    res.statusCode = 401;
+    res.end(JSON.stringify({ error: "invalid_token" }));
+    return;
+  }
+
+  const profileResult = await supabase
+    .from("profiles")
+    .select("role, active")
+    .eq("id", userResult.data.user.id)
+    .single();
+
+  if (
+    profileResult.error
+    || !profileResult.data
+    || profileResult.data.active === false
+    || profileResult.data.role !== "super_admin"
+  ) {
+    res.statusCode = 403;
+    res.end(JSON.stringify({ error: "forbidden" }));
     return;
   }
 
