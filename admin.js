@@ -85,7 +85,7 @@ function setMessage(text, isError = false) {
   adminMessage.style.color = isError ? "#d94e2b" : "#1f7a70";
 }
 
-function getErrorMessage(error, fallback = "Operation impossible.") {
+function getErrorMessage(error, fallback = "Opération impossible.") {
   if (!error) return fallback;
   return error.message || String(error);
 }
@@ -104,7 +104,7 @@ function isAuthError(error) {
 async function handleAuthError(error, contextLabel) {
   if (!isAuthError(error)) return false;
   const prefix = contextLabel ? `${contextLabel}: ` : "";
-  setMessage(`${prefix}session expiree. Reconnecte-toi.`, true);
+  setMessage(`${prefix}session expirée. Reconnecte-toi.`, true);
   try {
     if (supabaseClient) await supabaseClient.auth.signOut();
   } catch (_error) {
@@ -286,7 +286,9 @@ function normalizeWorkflowStatus(value) {
 
 function getWorkflowLabel(value) {
   const status = normalizeWorkflowStatus(value);
-  if (status === "validated") return "REVIEW";
+  if (status === "validated") return "À RELIRE";
+  if (status === "published") return "PUBLIÉ";
+  if (status === "draft") return "BROUILLON";
   return status.toUpperCase();
 }
 
@@ -456,7 +458,7 @@ function exportPublishedCsv() {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
-  setMessage(`Export CSV termine (${published.length} termes publies).`);
+  setMessage(`Export CSV terminé (${published.length} termes publiés).`);
 }
 
 function renderTable(list) {
@@ -744,7 +746,7 @@ function renderChatFeedbackSummary(list) {
 function exportChatFeedbackCsv() {
   const items = lastChatFeedbackItems.slice();
   if (!items.length) {
-    setMessage("Feedback chatbot: aucun resultat a exporter.", true);
+    setMessage("Feedback chatbot : aucun résultat à exporter.", true);
     return;
   }
 
@@ -777,7 +779,7 @@ function exportChatFeedbackCsv() {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
-  setMessage(`Feedback chatbot: export CSV termine (${items.length} ligne(s)).`);
+  setMessage(`Feedback chatbot : export CSV terminé (${items.length} ligne(s)).`);
 }
 
 async function fetchChatFeedback() {
@@ -790,7 +792,7 @@ async function fetchChatFeedback() {
     const sessionResult = await supabaseClient.auth.getSession();
     const accessToken = sessionResult?.data?.session?.access_token || "";
     if (!accessToken) {
-      setMessage("Feedback chatbot: session admin introuvable.", true);
+      setMessage("Feedback chatbot : session admin introuvable.", true);
       lastChatFeedbackItems = [];
       renderChatFeedbackSummary([]);
       renderChatFeedback([]);
@@ -810,7 +812,7 @@ async function fetchChatFeedback() {
 
     if (!response.ok) {
       const errorText = payload?.error || "lecture feedback impossible";
-      setMessage(`Feedback chatbot: ${errorText}`, true);
+      setMessage(`Feedback chatbot : ${errorText}`, true);
       lastChatFeedbackItems = [];
       renderChatFeedbackSummary([]);
       renderChatFeedback([]);
@@ -821,7 +823,7 @@ async function fetchChatFeedback() {
     renderChatFeedbackSummary(lastChatFeedbackItems);
     renderChatFeedback(lastChatFeedbackItems);
   } catch (error) {
-    setMessage(`Feedback chatbot: ${getErrorMessage(error)}`, true);
+    setMessage(`Feedback chatbot : ${getErrorMessage(error)}`, true);
     lastChatFeedbackItems = [];
     renderChatFeedbackSummary([]);
     renderChatFeedback([]);
@@ -858,7 +860,7 @@ function loadSubmission(item, row) {
   relatedInput.value = (item.related || []).join(" | ");
   imageUrlInput.value = formatMediaUrlsForInput(item.media_urls || []);
   reviewerCommentInput.value = item.reviewer_comment || "";
-  if (submissionBanner) submissionBanner.textContent = `Proposition chargee: ${item.term}`;
+  if (submissionBanner) submissionBanner.textContent = `Proposition chargée : ${item.term}`;
   if (row) row.classList.add("highlight");
   termInput.focus();
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -881,7 +883,7 @@ async function fetchCategories() {
     categories = await dicoApi.fetchCategories();
     populateCategoryOptions();
   } catch (error) {
-    setMessage(`Categories: ${getErrorMessage(error)}`, true);
+    setMessage(`Catégories : ${getErrorMessage(error)}`, true);
   }
 }
 
@@ -950,7 +952,7 @@ async function removeTerm(item, actionButton) {
     }
 
     await logAction("term_deleted", "terms", item.id, { term: item.term });
-    setMessage("Termes: terme supprime.");
+    setMessage("Termes : terme supprimé.");
     await fetchTerms();
     await fetchAudit();
   } finally {
@@ -969,7 +971,7 @@ async function uploadAsset(file) {
   const isImage = mime.startsWith("image/") || allowedImageExt.includes(ext);
 
   if (!isPdf && !isImage) {
-    throw new Error("Format non supporte. Utilise une image (png/jpg/webp/gif/svg) ou un PDF.");
+    throw new Error("Format non supporté. Utilise une image (png/jpg/webp/gif/svg) ou un PDF.");
   }
   if (file.size > maxSizeBytes) {
     throw new Error("Fichier trop lourd (max 10 MB).");
@@ -985,12 +987,12 @@ async function uploadAsset(file) {
   });
 
   if (error) {
-    setUploadStatus("Erreur upload.");
+    setUploadStatus("Erreur d’import.");
     throw error;
   }
 
   const { data } = supabaseClient.storage.from("term-images").getPublicUrl(filePath);
-  setUploadStatus("Upload termine.");
+  setUploadStatus("Import terminé.");
   return data.publicUrl;
 }
 
@@ -1008,7 +1010,7 @@ async function saveTerm() {
     const related = normalizeRelated(relatedInput.value || "");
     const typedMedia = parseMediaUrls(imageUrlInput.value);
     if (typedMedia.some((url) => !isSupportedMediaUrl(url))) {
-      setMessage("Termes: URL media invalide (http/https + extension image ou .pdf).", true);
+      setMessage("Termes : URL média invalide (http/https + extension image ou .pdf).", true);
       return;
     }
 
@@ -1020,7 +1022,7 @@ async function saveTerm() {
     let mediaUrls = dedupeMediaUrls(typedMedia);
     if (imageFileInput.files && imageFileInput.files.length) {
       try {
-        setUploadStatus(`Upload ${imageFileInput.files.length} fichier(s)...`);
+        setUploadStatus(`Import de ${imageFileInput.files.length} fichier(s)...`);
         for (const file of Array.from(imageFileInput.files)) {
           const uploadedUrl = await uploadAsset(file);
           mediaUrls.push(uploadedUrl);
@@ -1227,7 +1229,7 @@ async function approveSubmission(item, actionButton) {
     };
     const related = normalizeRelated(relatedInput.value || source.related?.join(" | ") || "");
     if (mediaUrls.some((url) => !isSupportedMediaUrl(url))) {
-      setMessage("Propositions: URL media invalide (http/https + extension image ou .pdf).", true);
+      setMessage("Propositions : URL média invalide (http/https + extension image ou .pdf).", true);
       return;
     }
     if (!payload.term || !payload.category_id || !payload.definition) {
@@ -1237,7 +1239,7 @@ async function approveSubmission(item, actionButton) {
 
     const reviewerComment = reviewerCommentInput.value.trim() || null;
     if (findTermByName(payload.term)) {
-      setMessage(`Propositions: le terme "${payload.term}" existe deja. Utilise "Modifier".`, true);
+      setMessage(`Propositions : le terme "${payload.term}" existe déjà. Utilise « Modifier ».`, true);
       return;
     }
 
@@ -1252,7 +1254,7 @@ async function approveSubmission(item, actionButton) {
       return;
     }
     if (existingRows && existingRows.length) {
-      setMessage(`Propositions: le terme "${payload.term}" existe deja.`, true);
+      setMessage(`Propositions : le terme "${payload.term}" existe déjà.`, true);
       return;
     }
 
@@ -1286,7 +1288,7 @@ async function approveSubmission(item, actionButton) {
     }
 
     await logAction("submission_accepted", "term_submissions", item.id, { term: payload.term });
-    setMessage("Propositions: proposition acceptee.");
+    setMessage("Propositions : proposition acceptée.");
     clearForm();
     await fetchTerms();
     await fetchSubmissions();
@@ -1324,7 +1326,7 @@ async function rejectSubmission(item, actionButton) {
 
     await logAction("submission_rejected", "term_submissions", item.id, { term: item.term });
 
-    setMessage("Propositions: proposition refusee.");
+    setMessage("Propositions : proposition refusée.");
     clearForm();
     await fetchSubmissions();
     await fetchAudit();
@@ -1444,14 +1446,14 @@ async function fetchProfiles() {
   }
 
   if (finalError) {
-    if (await handleAuthError(finalError, "Gestion des roles")) return;
-    setMessage(`Gestion des roles: ${getErrorMessage(finalError)}`, true);
+    if (await handleAuthError(finalError, "Gestion des rôles")) return;
+    setMessage(`Gestion des rôles : ${getErrorMessage(finalError)}`, true);
     return;
   }
 
   profiles = (rows || []).map((item) => normalizeProfile(item) ? { ...item, ...normalizeProfile(item) } : item);
   if (!profiles.length) {
-    setMessage("Gestion des roles: aucun profil visible.", true);
+    setMessage("Gestion des rôles : aucun profil visible.", true);
     renderProfiles([]);
     return;
   }
@@ -1487,12 +1489,12 @@ async function updateProfile(profileId, role, active, controls) {
         .select("id");
       const directUpdated = Array.isArray(direct.data) ? direct.data.length : 0;
       if (direct.error || directUpdated === 0) {
-        if (await handleAuthError(error, "Gestion des roles")) return;
-        setMessage(`Gestion des roles: ${getErrorMessage(error)}`, true);
+        if (await handleAuthError(error, "Gestion des rôles")) return;
+        setMessage(`Gestion des rôles : ${getErrorMessage(error)}`, true);
         return;
       }
     }
-    setMessage("Gestion des roles: profil utilisateur mis a jour.");
+    setMessage("Gestion des rôles : profil utilisateur mis à jour.");
     await fetchProfiles();
   } finally {
     updatingProfileId = null;
@@ -1528,13 +1530,13 @@ async function loadUser() {
     return;
   }
 
-  adminUser.textContent = `Utilisateur: ${currentUser.email}`;
+  adminUser.textContent = `Utilisateur : ${currentUser.email}`;
   userProfile = normalizeProfile(await supabaseHelpers.getProfile(currentUser.id));
   canManageTerms = canManageFromProfile(userProfile);
   isSuperAdmin = isSuperAdminProfile(userProfile);
   const roleLabel = ROLE_LABELS[userProfile?.role] || "Lecture seule";
   const activeLabel = userProfile?.active === false ? " (inactif)" : "";
-  adminRole.textContent = `Role: ${roleLabel}${activeLabel}`;
+  adminRole.textContent = `Rôle : ${roleLabel}${activeLabel}`;
 
   if (!canManageTerms) {
     window.location.href = "index.html";
