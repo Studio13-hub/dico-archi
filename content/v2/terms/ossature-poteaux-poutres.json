@@ -1,0 +1,39 @@
+{
+  "id": "term_ossature_poteaux_poutres",
+  "term": "Ossature poteaux-poutres",
+  "slug": "ossature-poteaux-poutres",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "assemblages-et-structure",
+  "status": "published",
+  "content": {
+    "definition": "Système structurel dans lequel les charges sont principalement reprises par des poteaux verticaux et des poutres horizontales.",
+    "explanation": "Ce principe permet souvent de libérer les façades et de rendre les aménagements intérieurs plus flexibles que dans un système à murs porteurs.",
+    "example": "Dans un bâtiment tertiaire, une ossature poteaux-poutres facilite l’organisation libre des plateaux et des façades vitrées.",
+    "applications": [
+      "bureaux",
+      "grands plateaux",
+      "structures flexibles"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Les axes, portées et nœuds structurels doivent être clairement repérés dans les plans."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "structure",
+      "ossature"
+    ],
+    "version": 1
+  }
+}

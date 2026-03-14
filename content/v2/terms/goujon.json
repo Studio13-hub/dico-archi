@@ -1,0 +1,39 @@
+{
+  "id": "term_goujon",
+  "term": "Goujon",
+  "slug": "goujon",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "assemblages-et-structure",
+  "status": "published",
+  "content": {
+    "definition": "Élément de fixation métallique utilisé pour transmettre des efforts entre un support et une pièce rapportée ou assemblée.",
+    "explanation": "Selon le système choisi, le goujon peut être ancré dans le béton ou dans un autre support pour assurer une fixation résistante et durable.",
+    "example": "La platine d’un garde-corps ou d’un poteau peut être reprise dans le béton au moyen de goujons adaptés.",
+    "applications": [
+      "fixations métalliques",
+      "platines",
+      "assemblages structurels"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le diamètre, l’entraxe et la profondeur d’ancrage doivent être précisés dans le détail."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "fixation",
+      "assemblage"
+    ],
+    "version": 1
+  }
+}

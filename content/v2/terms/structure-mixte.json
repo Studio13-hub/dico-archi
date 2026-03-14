@@ -1,0 +1,39 @@
+{
+  "id": "term_structure_mixte",
+  "term": "Structure mixte",
+  "slug": "structure-mixte",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "assemblages-et-structure",
+  "status": "published",
+  "content": {
+    "definition": "Structure qui combine plusieurs matériaux porteurs, par exemple acier et béton ou bois et béton, dans un même système constructif.",
+    "explanation": "Le principe mixte cherche à tirer parti des qualités spécifiques de chaque matériau pour optimiser la résistance, la portée, le poids ou la rapidité d’exécution.",
+    "example": "Un immeuble peut associer des poteaux acier et des dalles béton dans une structure mixte pour combiner légèreté et inertie.",
+    "applications": [
+      "bâtiments de bureaux",
+      "ouvrages hybrides",
+      "grandes portees"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Les interfaces entre matériaux doivent être clairement décrites dans les détails et notes structurelles."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "structure",
+      "mixte"
+    ],
+    "version": 1
+  }
+}

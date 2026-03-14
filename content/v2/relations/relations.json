@@ -338,5 +338,30 @@
     "source_slug": "boulonnage",
     "target_slug": "soudure",
     "relation_type": "related"
+  },
+  {
+    "source_slug": "fixation",
+    "target_slug": "goujon",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "structure-beton",
+    "target_slug": "structure-mixte",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "structure-bois",
+    "target_slug": "structure-mixte",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "structure-beton",
+    "target_slug": "ossature-poteaux-poutres",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "structure-bois",
+    "target_slug": "ossature-poteaux-poutres",
+    "relation_type": "related"
   }
 ]
