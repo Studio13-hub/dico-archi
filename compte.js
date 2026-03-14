@@ -37,7 +37,7 @@
   }
 
   function roleLabel(role) {
-    return accountSupabaseHelpers?.getRoleLabel(role) || "Apprenti";
+    return accountSupabaseHelpers?.getRoleLabel(role) || "Contributeur";
   }
 
   function getSubmissionLabel(status) {
@@ -171,7 +171,7 @@
           "Vos propositions personnelles restent visibles ici, mais votre rôle principal est le pilotage.";
       }
     } else if (normalized.role === "formateur") {
-      if (accountAccessLabel) accountAccessLabel.textContent = "Validation éditoriale";
+      if (accountAccessLabel) accountAccessLabel.textContent = "Relecture éditoriale";
       if (accountAccessCopy) {
         accountAccessCopy.textContent =
           "Correction, validation et relecture des contenus en attente avant publication.";

@@ -1641,6 +1641,12 @@ footer {
   gap: 20px;
 }
 
+.admin__sections-nav .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .admin__status-row {
   display: flex;
   gap: 12px;

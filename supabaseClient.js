@@ -47,9 +47,9 @@
       ? profileOrRole
       : normalizeProfile(profileOrRole)?.role;
 
-    if (role === "super_admin") return "Super admin";
-    if (role === "formateur") return "Formateur";
-    if (role === "apprenti") return "Apprenti";
+    if (role === "super_admin") return "Administration";
+    if (role === "formateur") return "Relecture";
+    if (role === "apprenti") return "Contributeur";
     return "Public";
   }
 

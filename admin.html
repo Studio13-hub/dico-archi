@@ -25,8 +25,8 @@
             <button id="admin-logout" class="link-button" type="button">Se déconnecter</button>
           </div>
         </div>
-        <h1>Espace administration</h1>
-        <p>Ajoutez, modifiez ou supprimez des termes. Accès réservé à l’équipe de pilotage.</p>
+        <h1>Administration éditoriale</h1>
+        <p>Relisez les propositions, gérez le corpus et attribuez les accès sans mélanger toutes les tâches dans un seul écran.</p>
       </div>
     </header>
 
@@ -39,7 +39,16 @@
         <div class="auth__message" id="admin-message"></div>
       </section>
 
-      <section class="panel admin__workflow">
+      <section class="panel admin__sections-nav">
+        <div class="chips">
+          <button type="button" class="chip chip--active" data-admin-section-target="overview">Vue d’ensemble</button>
+          <button type="button" class="chip" data-admin-section-target="corpus">Corpus</button>
+          <button type="button" class="chip" data-admin-section-target="accounts">Comptes</button>
+          <button type="button" class="chip" data-admin-section-target="stats">Suivi</button>
+        </div>
+      </section>
+
+      <section class="panel admin__workflow" data-admin-section="overview">
         <h2>Pilotage éditorial</h2>
         <div class="dashboard">
           <div class="dashboard__item">
@@ -61,16 +70,19 @@
           <button type="button" class="chip" data-term-filter="validated">À relire</button>
           <button type="button" class="chip" data-term-filter="published">Publiés</button>
         </div>
+        <p class="meta meta--subtle">
+          Tous les nouveaux comptes deviennent automatiquement <strong>Contributeur</strong>. Toute proposition passe d’abord par la page <strong>Contribuer</strong>, puis par la relecture.
+        </p>
       </section>
 
-      <section class="panel admin__submissions">
+      <section class="panel admin__submissions" data-admin-section="overview">
         <h2>Propositions en attente</h2>
         <div id="submissions-empty" class="meta meta--subtle">Aucune proposition en attente.</div>
         <div id="submissions" class="admin__table"></div>
       </section>
 
-      <section class="panel admin__form">
-        <h2>Ajouter ou modifier un terme</h2>
+      <section class="panel admin__form" data-admin-section="corpus" hidden>
+        <h2>Relire ou ajuster une fiche</h2>
         <div id="submission-banner" class="meta meta--subtle"></div>
         <div class="admin__inputs">
           <input id="term" name="term" type="text" placeholder="Terme" />
@@ -106,25 +118,25 @@
         </div>
       </section>
 
-      <section class="panel admin__list">
+      <section class="panel admin__list" data-admin-section="stats" hidden>
         <h2>Historique des actions</h2>
         <div id="audit-empty" class="meta meta--subtle">Aucune action enregistrée.</div>
         <div id="audit-list" class="admin__table"></div>
       </section>
 
-      <section class="panel admin__list" id="users-panel" hidden>
-        <h2>Gestion des utilisateurs</h2>
+      <section class="panel admin__list" id="users-panel" data-admin-section="accounts" hidden>
+        <h2>Comptes et rôles</h2>
         <p class="meta meta--subtle">
-          Réservé au super admin : attribution des rôles et activation ou désactivation des comptes.
+          Les rôles visibles dans le site sont : <strong>Contributeur</strong>, <strong>Relecture</strong> et <strong>Administration</strong>.
         </p>
         <div id="users-empty" class="meta meta--subtle">Aucun utilisateur chargé.</div>
         <div id="users-table" class="admin__table"></div>
       </section>
 
-      <section class="panel admin__list" id="chat-feedback-panel" hidden>
-        <h2>Feedback chatbot</h2>
+      <section class="panel admin__list" id="chat-feedback-panel" data-admin-section="stats" hidden>
+        <h2>Feedback assistant</h2>
         <p class="meta meta--subtle">
-          Réservé au super admin : retours Utiles / À améliorer pour affiner l’assistant.
+          Réservé à l’administration : retours Utiles / À améliorer pour affiner l’assistant.
         </p>
         <div id="chat-feedback-summary" class="dashboard"></div>
         <div class="admin__toolbar">
@@ -146,7 +158,7 @@
         <div id="chat-feedback-list" class="admin__table"></div>
       </section>
 
-      <section class="panel admin__list">
+      <section class="panel admin__list" data-admin-section="corpus" hidden>
         <h2>Corpus publié et brouillons</h2>
         <div class="admin__toolbar">
           <select id="admin-sort" name="admin-sort">

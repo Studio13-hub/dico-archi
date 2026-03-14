@@ -66,10 +66,14 @@ let isLoadingChatFeedback = false;
 let lastChatFeedbackItems = [];
 
 const ROLE_LABELS = {
-  super_admin: "Super admin",
-  formateur: "Formateur",
-  apprenti: "Apprenti"
+  super_admin: "Administration",
+  formateur: "Relecture",
+  apprenti: "Contributeur"
 };
+
+const adminSections = Array.from(document.querySelectorAll("[data-admin-section]"));
+const adminSectionButtons = Array.from(document.querySelectorAll("[data-admin-section-target]"));
+let currentAdminSection = "overview";
 
 function normalizeProfile(profile) {
   return supabaseHelpers?.normalizeProfile(profile) || null;
@@ -134,6 +138,17 @@ function setButtonBusy(button, busy, busyLabel, idleLabel) {
   }
   button.textContent = button.dataset.idleLabel || idleLabel;
   button.disabled = false;
+}
+
+function setAdminSection(section) {
+  currentAdminSection = section || "overview";
+  for (const panel of adminSections) {
+    const visible = panel.dataset.adminSection === currentAdminSection;
+    panel.hidden = !visible;
+  }
+  for (const button of adminSectionButtons) {
+    button.classList.toggle("chip--active", button.dataset.adminSectionTarget === currentAdminSection);
+  }
 }
 
 function isSafeImageUrl(value) {
@@ -1476,7 +1491,7 @@ function renderProfiles(list) {
 
     const info = document.createElement("div");
     info.className = "admin__row-info";
-    const roleLabel = ROLE_LABELS[item.role] || item.role || "Apprenti";
+    const roleLabel = ROLE_LABELS[item.role] || item.role || "Contributeur";
     info.textContent = `${roleLabel} · ${item.active === false ? "Inactif" : "Actif"}`;
 
     const actions = document.createElement("div");
@@ -1519,7 +1534,7 @@ function renderProfiles(list) {
       roleSelect.disabled = true;
       activeSelect.disabled = true;
       updateButton.disabled = true;
-      updateButton.title = "Ton propre role se modifie depuis un autre super admin.";
+      updateButton.title = "Ton propre rôle doit être modifié depuis un autre compte d’administration.";
     }
 
     actions.appendChild(roleSelect);
@@ -1662,8 +1677,22 @@ async function loadUser() {
     return;
   }
 
-  if (usersPanel) usersPanel.hidden = !isSuperAdmin;
-  if (chatFeedbackPanel) chatFeedbackPanel.hidden = !isSuperAdmin;
+  if (usersPanel && !isSuperAdmin && currentAdminSection === "accounts") {
+    currentAdminSection = "overview";
+  }
+  if (chatFeedbackPanel && !isSuperAdmin && currentAdminSection === "stats") {
+    currentAdminSection = "overview";
+  }
+
+  for (const button of adminSectionButtons) {
+    const target = button.dataset.adminSectionTarget;
+    const shouldHide = !isSuperAdmin && (target === "accounts" || target === "stats");
+    button.hidden = shouldHide;
+  }
+
+  if (usersPanel) usersPanel.hidden = !isSuperAdmin || currentAdminSection !== "accounts";
+  if (chatFeedbackPanel) chatFeedbackPanel.hidden = !isSuperAdmin || currentAdminSection !== "stats";
+  setAdminSection(currentAdminSection);
 
   await fetchCategories();
   await fetchTerms();
@@ -1694,6 +1723,13 @@ if (chatFeedbackExport) chatFeedbackExport.addEventListener("click", exportChatF
 if (imageUrlInput) {
   imageUrlInput.addEventListener("input", () => renderMediaReviewPreview(imageUrlInput.value));
   imageUrlInput.addEventListener("change", () => renderMediaReviewPreview(imageUrlInput.value));
+}
+for (const button of adminSectionButtons) {
+  button.addEventListener("click", () => {
+    const target = button.dataset.adminSectionTarget || "overview";
+    if (!isSuperAdmin && (target === "accounts" || target === "stats")) return;
+    setAdminSection(target);
+  });
 }
 for (const btn of workflowButtons) {
   btn.addEventListener("click", () => {
