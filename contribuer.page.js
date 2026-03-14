@@ -4,6 +4,7 @@ const termInput = document.getElementById("term");
 const categoryInput = document.getElementById("category");
 const definitionInput = document.getElementById("definition");
 const exampleInput = document.getElementById("example");
+const mediaUrlsInput = document.getElementById("media-urls");
 const qualityTitle = document.getElementById("contrib-quality-title");
 const qualityCopy = document.getElementById("contrib-quality-copy");
 const stats = document.getElementById("contrib-stats");
@@ -25,11 +26,25 @@ function slugify(value) {
     .replace(/^-+|-+$/g, "");
 }
 
+function parseMediaUrls(value) {
+  return String(value || "")
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .filter((item, index, list) => list.indexOf(item) === index);
+}
+
+function isSupportedMediaUrl(url) {
+  return /^https?:\/\/.+\.(png|jpe?g|webp|gif|svg|pdf)(\?.*)?$/i.test(url);
+}
+
 function updateContributionHints() {
   const term = termInput.value.trim();
   const categoryId = categoryInput.value.trim();
   const definition = definitionInput.value.trim();
   const example = exampleInput.value.trim();
+  const mediaUrls = parseMediaUrls(mediaUrlsInput?.value);
+  const invalidMedia = mediaUrls.find((url) => !isSupportedMediaUrl(url));
   const totalLength = definition.length + example.length;
 
   if (stats) {
@@ -68,6 +83,18 @@ function updateContributionHints() {
     return;
   }
 
+  if (invalidMedia) {
+    qualityTitle.textContent = "Média à corriger";
+    qualityCopy.textContent = "Les liens médias doivent être en http/https et finir par une extension image ou .pdf.";
+    return;
+  }
+
+  if (mediaUrls.length) {
+    qualityTitle.textContent = "Proposition enrichie";
+    qualityCopy.textContent = "Le texte est solide et des médias sont prêts pour la relecture formateur.";
+    return;
+  }
+
   qualityTitle.textContent = "Proposition solide";
   qualityCopy.textContent = "La base éditoriale est correcte. Vous pouvez envoyer la proposition.";
 }
@@ -98,9 +125,15 @@ async function submitContribution(event) {
   const categoryId = categoryInput.value.trim();
   const definition = definitionInput.value.trim();
   const example = exampleInput.value.trim();
+  const mediaUrls = parseMediaUrls(mediaUrlsInput?.value);
 
   if (!term || !categoryId || !definition) {
     setContributionMessage("Terme, catégorie et définition sont obligatoires.", true);
+    return;
+  }
+
+  if (mediaUrls.some((url) => !isSupportedMediaUrl(url))) {
+    setContributionMessage("Les médias proposés doivent être en http/https et finir par une extension image ou .pdf.", true);
     return;
   }
 
@@ -116,6 +149,7 @@ async function submitContribution(event) {
     category_id: categoryId,
     definition,
     example: example || null,
+    media_urls: mediaUrls,
     status: "submitted",
     submitted_by: user.id
   };
@@ -142,7 +176,7 @@ if (form) {
   form.addEventListener("submit", submitContribution);
 }
 
-[termInput, categoryInput, definitionInput, exampleInput].forEach((field) => {
+[termInput, categoryInput, definitionInput, exampleInput, mediaUrlsInput].forEach((field) => {
   if (!field) return;
   field.addEventListener("input", updateContributionHints);
   field.addEventListener("change", updateContributionHints);

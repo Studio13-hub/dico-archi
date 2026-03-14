@@ -216,6 +216,8 @@
           slug,
           category_id,
           definition,
+          example,
+          media_urls,
           status,
           reviewer_comment,
           created_at,

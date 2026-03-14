@@ -75,7 +75,9 @@ function renderSubmissions(items, isGuest = false) {
     meta.className = "admin__row-meta";
     const createdAt = item.created_at ? new Date(item.created_at).toLocaleDateString("fr-CH") : "-";
     const reviewerComment = item.reviewer_comment ? ` · Note : ${item.reviewer_comment}` : "";
-    meta.textContent = `Envoyée le ${createdAt}${reviewerComment}`;
+    const mediaCount = Array.isArray(item.media_urls) ? item.media_urls.length : 0;
+    const mediaLabel = mediaCount ? ` · ${mediaCount} média proposé${mediaCount > 1 ? "s" : ""}` : "";
+    meta.textContent = `Envoyée le ${createdAt}${mediaLabel}${reviewerComment}`;
 
     row.appendChild(title);
     row.appendChild(info);

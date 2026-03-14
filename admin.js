@@ -535,7 +535,9 @@ function renderSubmissions(list) {
 
     const meta = document.createElement("div");
     meta.className = "admin__row-meta";
-    meta.textContent = `Par: ${item.submitter_email || "anonyme"}`;
+    const mediaCount = Array.isArray(item.media_urls) ? item.media_urls.length : 0;
+    const mediaLabel = mediaCount ? ` · ${mediaCount} média proposé${mediaCount > 1 ? "s" : ""}` : "";
+    meta.textContent = `Par: ${item.submitter_email || "anonyme"}${mediaLabel}`;
 
     const status = document.createElement("div");
     status.className = `admin__row-status ${item.status || "pending"}`;
@@ -1159,6 +1161,7 @@ async function fetchSubmissions() {
       category_id,
       definition,
       example,
+      media_urls,
       status,
       reviewer_comment,
       submitted_by,
@@ -1177,7 +1180,7 @@ async function fetchSubmissions() {
     ...item,
     category: categories.find((category) => category.id === item.category_id)?.name || "",
     related: [],
-    media_urls: [],
+    media_urls: Array.isArray(item.media_urls) ? item.media_urls : [],
     submitter_email: ""
   }));
 

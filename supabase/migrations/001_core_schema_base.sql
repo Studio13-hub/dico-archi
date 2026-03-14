@@ -78,6 +78,7 @@ create table if not exists public.term_submissions (
   category_id uuid references public.categories(id) on delete set null,
   definition text not null,
   example text,
+  media_urls text[] not null default '{}'::text[],
   status text not null default 'draft',
   reviewer_comment text,
   submitted_by uuid references public.profiles(id) on delete set null,
