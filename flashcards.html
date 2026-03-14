@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flashcards Swipe - DicoArchi</title>
+    <meta
+      name="description"
+      content="Flashcards pédagogiques de DicoArchi pour réviser rapidement le vocabulaire d'architecture."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Étude rapide</div>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Non connecté</span>
+            <a class="link-button" href="quiz.html">Quiz</a>
+            <a class="link-button" href="memory.html">Memory</a>
+            <a class="link-button" href="match.html">Match</a>
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
+          </div>
+        </div>
+        <h1>Flashcards Swipe</h1>
+        <p>Retourne une carte, révise vite, puis glisse mentalement vers « Je connais » ou « À revoir ».</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="flashcards">
+          <div class="memory__header">
+            <h2>Session en direct</h2>
+            <div id="flashcards-progress" class="quiz__score">0 / 0</div>
+          </div>
+
+          <div class="quiz__meta">
+            <label class="quiz__mode">
+              Catégorie
+              <select id="flashcards-category">
+                <option value="">Toutes les catégories</option>
+              </select>
+            </label>
+            <div id="flashcards-known" class="meta">Je connais : 0</div>
+            <div id="flashcards-review" class="meta">À revoir : 0</div>
+            <div id="flashcards-status-line" class="meta">Carte 0</div>
+          </div>
+
+          <div id="flashcards-status" class="quiz__feedback">Chargement des cartes...</div>
+
+          <div id="flashcards-card" class="flashcards__card" role="button" tabindex="0" aria-live="polite" aria-label="Retourner la carte">
+            <div class="flashcards__face flashcards__face--front">
+              <span class="memory__kind">Terme</span>
+              <strong id="flashcards-front-title">Chargement...</strong>
+              <p id="flashcards-front-category" class="meta meta--subtle"></p>
+            </div>
+            <div class="flashcards__face flashcards__face--back hidden">
+              <span class="memory__kind">Définition</span>
+              <strong id="flashcards-back-title">Définition</strong>
+              <p id="flashcards-back-definition" class="meta meta--subtle"></p>
+              <p id="flashcards-back-example" class="meta"></p>
+            </div>
+          </div>
+
+          <div class="flashcards__hints meta meta--subtle">
+            Touchez la carte pour la retourner. Glissez à gauche pour « À revoir » et à droite pour « Je connais ».
+          </div>
+
+          <div class="quiz__actions">
+            <button id="flashcards-flip" type="button">Retourner</button>
+            <button id="flashcards-review-btn" class="ghost" type="button">À revoir</button>
+            <button id="flashcards-known-btn" type="button">Je connais</button>
+            <button id="flashcards-example-btn" class="ghost" type="button">Voir un exemple</button>
+            <button id="flashcards-restart" class="ghost" type="button">Recommencer</button>
+          </div>
+
+          <div class="quiz__leaderboard">
+            <h3>Résumé local</h3>
+            <div id="flashcards-summary" class="meta meta--subtle">Aucune session terminée.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer__inner">
+        <span>Réalisé par RDR Architectes SA.</span>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
+    <script src="flashcards.page.js"></script>
+    <script src="chatbot.js"></script>
+  </body>
+</html>

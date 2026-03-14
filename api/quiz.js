@@ -61,6 +61,7 @@ module.exports = async (req, res) => {
         term,
         slug,
         definition,
+        example,
         categories:category_id (
           name
         )
@@ -111,6 +112,7 @@ module.exports = async (req, res) => {
       slug: item.slug,
       definition: item.definition,
       category: item.categories?.name || "",
+      example: item.example || "",
       ...mediaByTermId.get(item.id)
     }));
 
