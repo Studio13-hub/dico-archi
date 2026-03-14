@@ -74,3 +74,56 @@
   - `Formateur`: validation et correction editoriale
   - `Apprenti`: contribution soumise a validation
   - `Public`: consultation.
+
+## 2026-03-14
+
+### Auth / profils
+- creation de compte, confirmation email et provisioning `profiles` remis en etat
+- pages `auth`, `compte`, `contribuer` et `admin` isolees proprement pour eviter les collisions JS
+
+### UX / roles
+- vocabulaire visible simplifie:
+  - `Contributeur`
+  - `Relecture`
+  - `Administration`
+- admin reorganisee en sections plus lisibles:
+  - `Vue d’ensemble`
+  - `Corpus`
+  - `Comptes`
+  - `Suivi`
+
+### Contribution / medias
+- `contribuer.html` refondue pour etre plus claire
+- upload temporaire de medias implemente via URL signee:
+  - `api/submission-media-upload.js`
+  - `supabaseClient.js`
+  - `contribuer.page.js`
+- apercus medias admin ajoutes dans `admin.js`
+
+### Corpus / contenu
+- premier lot `Façades` ajoute au corpus V2 et publie
+- fiches terme rendues plus editoriales avec sections riches
+
+### Jeux / engagement
+- pile ludique structuree autour de:
+  - `Quiz`
+  - `Swipe`
+  - `Rush`
+  - `Defi du jour`
+  - `Duel Beta`
+
+### Stats / suivi
+- socle de suivi serveur ajoute:
+  - `supabase/migrations/017_metrics_and_game_scores.sql`
+  - `api/track-page.js`
+  - `api/game-score.js`
+  - `api/admin-metrics.js`
+  - `tracker.js`
+- l’admin peut maintenant afficher:
+  - vues 24 h
+  - sessions 24 h
+  - pages les plus vues
+  - jeux les plus actifs
+  - derniers scores
+- point restant:
+  - migration SQL `017_metrics_and_game_scores.sql` a executer en base pour activer les donnees reelles

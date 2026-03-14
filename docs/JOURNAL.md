@@ -80,3 +80,41 @@
   - le slug technique `maitre_apprentissage` est conserve en base pour compatibilite.
 - Serveur local relance:
   - `python3 -m http.server 4173` actif pendant la session de reprise.
+
+## 2026-03-14
+- Session longue de stabilisation produit + UX + workflow editorial.
+- Parcours publics et auth fiabilises:
+  - inscription, confirmation email, creation automatique du profil
+  - correction des collisions JS multi-pages
+  - harmonisation des menus et de l’etat de session
+- Roles visibles simplifiés cote interface:
+  - `Contributeur`
+  - `Relecture`
+  - `Administration`
+- `Mon compte` rendu vraiment utile avec role, etat, actions utiles et dernieres propositions.
+- `Contribuer` renforce:
+  - meilleur guidage
+  - vrais labels
+  - controle qualite en direct
+  - upload temporaire de medias fonctionnel
+- Workflow media:
+  - upload temporaire via URL signee
+  - URLs reinjectees automatiquement dans la proposition
+  - apercu admin des images/PDF a valider
+- Pile ludique consolidee:
+  - `Quiz`
+  - `Swipe`
+  - `Rush`
+  - `Defi du jour`
+  - `Duel Beta`
+- Bloc `Façades` ajoute au corpus V2 puis publie en prod.
+- Premier lot `stats + scores` implemente:
+  - migration `017_metrics_and_game_scores.sql`
+  - endpoint `api/track-page.js`
+  - endpoint `api/game-score.js`
+  - endpoint `api/admin-metrics.js`
+  - `tracker.js` branche sur les pages principales
+  - admin section `Suivi` enrichie
+- Reste a faire au prochain demarrage:
+  - executer la migration `017_metrics_and_game_scores.sql` dans Supabase
+  - verifier les premieres stats et scores remontes dans l’admin

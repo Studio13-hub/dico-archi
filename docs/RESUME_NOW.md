@@ -1,43 +1,71 @@
-# Resume now (2026-03-14)
+# Resume now (2026-03-14 soir)
 
 ## Etat global
 
 - Production active : `https://dico-archi.vercel.app`
-- Frontend et API Vercel alignes sur le projet Supabase `iuvjmctrzgztelrsuquc`
-- Pages publiques remises en service :
-  - home
+- Repo actif de cette session : `/Users/awat/workspace/projects/dico-archi`
+- Frontend, API Vercel, Supabase Auth, Storage et corpus V2 sont de nouveau alignes
+- Le site est maintenant fonctionnel sur les parcours principaux :
+  - accueil
   - dictionnaire
-  - categorie
+  - categories
   - fiche terme
-- Le site utilise maintenant le schema core de bout en bout
-- Le legacy principal a ete sorti du flux actif et archive
+  - connexion / creation de compte / confirmation email
+  - compte
+  - contribuer
+  - admin
+  - jeux
 
-## Architecture active
+## Ce qui est termine
 
-- frontend : pages HTML statiques + `*.page.js`
-- client Supabase partage : `supabaseClient.js`
-- backend Vercel : `api/search.js`, `api/terms.js`, `api/categories.js`, `api/chat.js`
-- source canonique base : `supabase/core/schema.sql`
-- execution base : `supabase/migrations/`
-- seeds actives : `supabase/seeds/`
+- navigation publique unifiee
+- auth / signup / profile provisioning reparés
+- upload temporaire de medias depuis `contribuer.html` en place via URL signee
+- apercus medias cote admin en place
+- roles visibles simplifies :
+  - `Contributeur`
+  - `Relecture`
+  - `Administration`
+- premier bloc `Façades` publie dans le corpus V2
+- suivi serveur ajoute :
+  - pages vues
+  - sessions
+  - scores des jeux
+  - tableau `Suivi` dans l’admin
 
-## Points verifies
+## Derniers commits structurants
 
-- `config.js` pointe sur le bon projet Supabase
-- `SUPABASE_SERVICE_ROLE_KEY` Vercel a ete recalee
-- `package.json` permet a Vercel de charger `@supabase/supabase-js`
-- les scripts inline ont ete extraits pour respecter la CSP
-- les categories et premiers termes core ont ete charges dans la base distante
+- `428cfc5` `add stats tracking and game score dashboard`
+- `960d7ea` `simplify admin sections and role labels`
+- `9faa68b` `add admin media previews`
+- `f26c0b5` `use signed upload flow for submission media`
 
-## Hygiene repo
+## Point exact de reprise
 
-- scripts frontend morts archives dans `archive/frontend/`
-- anciens scripts de contenu archives dans `scripts/archive/`
-- anciens SQL racine archives dans `supabase/archive/root-legacy/`
+Le prochain point utile est maintenant :
 
-## Points encore a faire
+1. executer la migration SQL `supabase/migrations/017_metrics_and_game_scores.sql` dans Supabase
+2. verifier dans `admin.html` -> `Suivi` :
+   - vues 24 h
+   - sessions 24 h
+   - pages les plus vues
+   - jeux les plus actifs
+3. continuer ensuite sur :
+   - simplification plus forte de l’admin
+   - clarification des pouvoirs / roles
+   - attractivite visuelle du site
 
-1. completer les migrations encore vides
-2. construire un pipeline legacy -> core pour enrichir les contenus
-3. nettoyer la documentation historique restante
-4. faire tourner les cles sensibles exposees pendant la session
+## Points verifies ce soir
+
+- `Mon compte` charge bien avec le profil confirme
+- `Contribuer` permet l’upload temporaire d’un media et l’ajoute a la proposition
+- l’admin montre les propositions avec apercu media
+- les jeux enregistrent encore localement et sont maintenant prets a remonter les scores serveur
+
+## Point restant a activer
+
+Le code des stats / scores est pousse, mais il faut encore appliquer en base :
+
+- [017_metrics_and_game_scores.sql](/Users/awat/workspace/projects/dico-archi/supabase/migrations/017_metrics_and_game_scores.sql)
+
+Sans cette migration, le bloc `Suivi` ne pourra pas afficher de vraies donnees.
