@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Match Express - DicoArchi</title>
+    <meta
+      name="description"
+      content="Jeu rapide de DicoArchi pour associer termes, catégories et définitions d'architecture."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Jeu pédagogique</div>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Non connecté</span>
+            <a class="link-button" href="quiz.html">Quiz</a>
+            <a class="link-button" href="memory.html">Memory</a>
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+            <a class="link-button" href="category.html">Catégories</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
+          </div>
+        </div>
+        <h1>Match Express</h1>
+        <p>Associe rapidement un terme, une catégorie ou une définition dans une manche courte, pensée pour réviser en quelques secondes.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="match">
+          <div class="memory__header">
+            <h2>Manche en direct</h2>
+            <div id="match-score" class="quiz__score">0 / 0</div>
+          </div>
+
+          <div class="quiz__meta">
+            <label class="quiz__mode">
+              Mode
+              <select id="match-mode">
+                <option value="term-to-category">Terme -> catégorie</option>
+                <option value="definition-to-term">Définition -> terme</option>
+              </select>
+            </label>
+            <label class="quiz__mode">
+              Catégorie
+              <select id="match-category">
+                <option value="">Toutes les catégories</option>
+              </select>
+            </label>
+            <div id="match-timer" class="meta">Temps : 0 s</div>
+            <div id="match-round" class="meta">Question 0 / 8</div>
+          </div>
+
+          <div class="quiz__progress" aria-hidden="true">
+            <div id="match-progress-bar" class="quiz__progress-bar"></div>
+          </div>
+
+          <div id="match-prompt" class="quiz__question">Chargement du jeu...</div>
+          <div id="match-target" class="match__target"></div>
+          <div id="match-options" class="quiz__options"></div>
+          <div id="match-feedback" class="quiz__feedback"></div>
+
+          <div class="quiz__actions">
+            <button id="match-start" type="button">Commencer</button>
+            <button id="match-next" class="ghost" type="button">Question suivante</button>
+            <button id="match-restart" class="ghost" type="button">Rejouer</button>
+          </div>
+
+          <div class="quiz__leaderboard">
+            <h3>Meilleurs scores locaux</h3>
+            <div id="match-leaderboard" class="meta meta--subtle">Aucune partie enregistrée.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer__inner">
+        <span>Réalisé par RDR Architectes SA.</span>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
+    <script src="match.page.js"></script>
+    <script src="chatbot.js"></script>
+  </body>
+</html>

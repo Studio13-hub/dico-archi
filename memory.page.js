@@ -222,6 +222,7 @@ function handleCardClick(cardId) {
 }
 
 function createGame() {
+  stopTimer();
   const activePool = shuffle(getActivePool());
   const pairCount = Math.min(MEMORY_PAIR_COUNT, activePool.length);
 

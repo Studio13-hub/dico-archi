@@ -786,6 +786,16 @@ main {
   font-weight: 700;
 }
 
+.match__target {
+  min-height: 68px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fff;
+  padding: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 .quiz--celebrate {
   animation: celebrate 280ms ease;
 }
