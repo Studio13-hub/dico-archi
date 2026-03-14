@@ -14,10 +14,10 @@ function createTermCard(item) {
 
   const category = document.createElement("p");
   category.className = "meta meta--subtle";
-  category.textContent = item.categories?.name || "Sans categorie";
+  category.textContent = item.categories?.name || "Sans catégorie";
 
   const definition = document.createElement("p");
-  definition.textContent = item.definition || "Definition indisponible.";
+  definition.textContent = item.definition || "Définition indisponible.";
 
   const link = document.createElement("a");
   link.className = "link-button";
@@ -42,11 +42,11 @@ async function loadDictionaryTerms() {
     clearDictionaryChildren(termsList);
 
     if (!items.length) {
-      termsStatus.textContent = "Aucun terme publie.";
+      termsStatus.textContent = "Aucun terme publié.";
       return;
     }
 
-    termsStatus.textContent = `${items.length} terme(s) charge(s).`;
+    termsStatus.textContent = `${items.length} terme(s) chargé(s).`;
     for (const item of items) {
       termsList.appendChild(createTermCard(item));
     }

@@ -44,7 +44,7 @@ async function initNav() {
     }
 
     const resolvedProfile = profile || await supabaseHelpers.getProfile(user.id);
-    setStatusText(`Connecte: ${user.email} · ${supabaseHelpers.getRoleLabel(resolvedProfile)}`);
+    setStatusText(`Connecté : ${user.email} · ${supabaseHelpers.getRoleLabel(resolvedProfile)}`);
     setAuthLinks({ user });
     setAdminVisibility(supabaseHelpers.isStaffProfile(resolvedProfile));
     setLogoutVisibility(true);

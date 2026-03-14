@@ -31,7 +31,7 @@ function renderCategoryIndex(list) {
   cardsEl.textContent = "";
 
   if (!list.length) {
-    renderMessage("Categories indisponibles", "Aucune categorie n'est disponible pour le moment.");
+    renderMessage("Catégories indisponibles", "Aucune catégorie n'est disponible pour le moment.");
     return;
   }
 
@@ -47,12 +47,12 @@ function renderCategoryIndex(list) {
     title.textContent = item.name;
 
     const description = document.createElement("div");
-    description.textContent = item.description || "Categorie du dictionnaire DicoArchi.";
+    description.textContent = item.description || "Catégorie du dictionnaire DicoArchi.";
 
     const link = document.createElement("a");
     link.className = "card__link";
     link.href = `category.html?category_id=${encodeURIComponent(item.id)}`;
-    link.textContent = "Explorer la categorie";
+    link.textContent = "Explorer la catégorie";
 
     const actions = document.createElement("div");
     actions.className = "card__actions";
@@ -74,10 +74,10 @@ function renderCards(list) {
     empty.className = "card";
 
     const heading = document.createElement("h3");
-    heading.textContent = "Aucun terme publie";
+    heading.textContent = "Aucun terme publié";
 
     const body = document.createElement("div");
-    body.textContent = "Aucune fiche publiee ne correspond a cette categorie.";
+    body.textContent = "Aucune fiche publiée ne correspond à cette catégorie.";
 
     empty.appendChild(heading);
     empty.appendChild(body);
@@ -91,13 +91,13 @@ function renderCards(list) {
 
     const tag = document.createElement("span");
     tag.className = "tag";
-    tag.textContent = item.categoryName || "Sans categorie";
+    tag.textContent = item.categoryName || "Sans catégorie";
 
     const title = document.createElement("h3");
     title.textContent = item.term;
 
     const definition = document.createElement("div");
-    definition.textContent = item.definition || "Definition indisponible.";
+    definition.textContent = item.definition || "Définition indisponible.";
 
     const link = document.createElement("a");
     link.className = "card__link";
@@ -127,7 +127,7 @@ function buildBreadcrumb(label) {
 async function loadCategoryPage() {
   const { categoryId, categoryName } = parseQueryParams();
   if (!dicoApi) {
-    renderMessage("Configuration Supabase manquante", "Impossible de charger les categories.");
+    renderMessage("Configuration Supabase manquante", "Impossible de charger les catégories.");
     return;
   }
 
@@ -165,9 +165,9 @@ async function loadCategoryPage() {
         }))
         .sort((a, b) => a.name.localeCompare(b.name, "fr"));
 
-      titleEl.textContent = "Categories";
+      titleEl.textContent = "Catégories";
       subtitleEl.textContent = `${sortedCategories.length} domaine${sortedCategories.length > 1 ? "s" : ""} disponible${sortedCategories.length > 1 ? "s" : ""}`;
-      breadcrumbEl.textContent = "Accueil / Categories";
+      breadcrumbEl.textContent = "Accueil / Catégories";
       renderCategoryIndex(sortedCategories);
       return;
     }
@@ -179,7 +179,7 @@ async function loadCategoryPage() {
       })
       .sort((a, b) => a.term.localeCompare(b.term, "fr"));
 
-    const resolvedLabel = filtered[0]?.categoryName || categoryName || "Categorie";
+    const resolvedLabel = filtered[0]?.categoryName || categoryName || "Catégorie";
     titleEl.textContent = resolvedLabel;
     subtitleEl.textContent = `${filtered.length} terme${filtered.length > 1 ? "s" : ""}`;
     buildBreadcrumb(resolvedLabel);

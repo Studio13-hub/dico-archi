@@ -7,7 +7,7 @@ const featuredTermLink = document.getElementById("featured-term-link");
 
 function renderSearchResults(items) {
   if (!Array.isArray(items) || !items.length) {
-    homeSearchResults.textContent = "Aucun resultat.";
+    homeSearchResults.textContent = "Aucun résultat.";
     return;
   }
 
@@ -18,13 +18,13 @@ function renderSearchResults(items) {
     return anchor.outerHTML;
   });
 
-  homeSearchResults.innerHTML = `Resultats: ${links.join(" · ")}`;
+  homeSearchResults.innerHTML = `Résultats: ${links.join(" · ")}`;
 }
 
 async function runHomeSearch() {
   const query = homeSearchInput.value.trim();
   if (!query) {
-    homeSearchResults.textContent = "Saisis un terme a rechercher.";
+    homeSearchResults.textContent = "Saisissez un terme à rechercher.";
     return;
   }
 
@@ -46,8 +46,8 @@ async function loadFeaturedTerm() {
   try {
     const items = await window.DicoArchiApi.fetchPublishedTermsBasic();
     if (!Array.isArray(items) || !items.length) {
-      featuredTermTitle.textContent = "Aucun terme publie";
-      featuredTermDefinition.textContent = "Le dictionnaire ne contient pas encore de fiche publiee.";
+      featuredTermTitle.textContent = "Aucun terme publié";
+      featuredTermDefinition.textContent = "Le dictionnaire ne contient pas encore de fiche publiée.";
       featuredTermLink.href = "dictionnaire.html";
       return;
     }
@@ -56,7 +56,7 @@ async function loadFeaturedTerm() {
     const item = items[dayIndex];
 
     featuredTermTitle.textContent = item.term;
-    featuredTermDefinition.textContent = item.definition || "Definition indisponible.";
+    featuredTermDefinition.textContent = item.definition || "Définition indisponible.";
     featuredTermLink.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
   } catch (error) {
     featuredTermTitle.textContent = "Erreur";

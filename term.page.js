@@ -70,7 +70,7 @@ function renderMedia(items) {
 function renderRelated(items) {
   clearTermChildren(relatedNode);
   if (!Array.isArray(items) || !items.length) {
-    relatedNode.textContent = "Aucun terme lie.";
+    relatedNode.textContent = "Aucun terme lié.";
     return;
   }
 
@@ -92,7 +92,7 @@ async function loadTermPage() {
   const slug = getSlug();
   if (!slug) {
     titleNode.textContent = "Terme introuvable";
-    subtitleNode.textContent = "Aucun slug n'a ete fourni.";
+    subtitleNode.textContent = "Aucun slug n'a été fourni.";
     statusNode.textContent = "Erreur: slug manquant";
     return;
   }
@@ -102,9 +102,9 @@ async function loadTermPage() {
     const term = payload.term || {};
 
     titleNode.textContent = term.term || "TERME";
-    subtitleNode.textContent = "Fiche detaillee du dictionnaire DicoArchi.";
+    subtitleNode.textContent = "Fiche détaillée du dictionnaire DicoArchi.";
     setTermText(categoryNode, term.categories?.name);
-    setTermText(definitionNode, term.definition, "Definition indisponible.");
+    setTermText(definitionNode, term.definition, "Définition indisponible.");
     setTermText(exampleNode, term.example, "Aucun exemple disponible.");
     statusNode.textContent = `Statut: ${term.status || "-"}`;
     renderMedia(payload.media || []);
@@ -114,11 +114,11 @@ async function loadTermPage() {
     titleNode.textContent = "TERME";
     subtitleNode.textContent = "Impossible de charger cette fiche pour le moment.";
     categoryNode.textContent = "-";
-    definitionNode.textContent = "La fiche n'a pas pu etre chargee.";
+    definitionNode.textContent = "La fiche n'a pas pu être chargée.";
     exampleNode.textContent = "-";
     statusNode.textContent = `Erreur: ${error.message || "internal_error"}`;
     mediaNode.textContent = "Aucun média disponible.";
-    relatedNode.textContent = "Aucun terme lie.";
+    relatedNode.textContent = "Aucun terme lié.";
   }
 }
 
