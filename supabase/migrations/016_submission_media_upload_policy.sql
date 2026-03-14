@@ -10,9 +10,17 @@ for insert
 with check (
   bucket_id = 'term-images'
   and auth.uid() is not null
-  and split_part(name, '/', 1) = 'submissions'
-  and split_part(name, '/', 2) = auth.uid()::text
-  and public.storage_mimetype_allowed(metadata ->> 'mimetype')
+  and (storage.foldername(name))[1] = 'submissions'
+  and (storage.foldername(name))[2] = auth.uid()::text
+  and lower(regexp_replace(name, '^.*\\.', '')) in (
+    'png',
+    'jpg',
+    'jpeg',
+    'webp',
+    'gif',
+    'svg',
+    'pdf'
+  )
 );
 
 create policy "authenticated_read_submission_media"
@@ -24,9 +32,9 @@ using (
     public.storage_object_is_public_for_published_term(bucket_id, name)
     or (
       auth.uid() is not null
-      and split_part(name, '/', 1) = 'submissions'
+      and (storage.foldername(name))[1] = 'submissions'
       and (
-        split_part(name, '/', 2) = auth.uid()::text
+        (storage.foldername(name))[2] = auth.uid()::text
         or public.is_staff()
       )
     )
@@ -39,9 +47,9 @@ for delete
 using (
   bucket_id = 'term-images'
   and auth.uid() is not null
-  and split_part(name, '/', 1) = 'submissions'
+  and (storage.foldername(name))[1] = 'submissions'
   and (
-    split_part(name, '/', 2) = auth.uid()::text
+    (storage.foldername(name))[2] = auth.uid()::text
     or public.is_staff()
   )
 );
