@@ -47,6 +47,7 @@
               <select id="quiz-mode">
                 <option value="term-to-definition">Terme -> définition</option>
                 <option value="definition-to-term">Définition -> terme</option>
+                <option value="media-to-term">Image / schéma -> terme</option>
               </select>
             </label>
             <label class="quiz__mode">
@@ -64,6 +65,7 @@
           </div>
 
           <div id="quiz-question" class="quiz__question">Chargement du quiz...</div>
+          <div id="quiz-figure" class="quiz__figure hidden" aria-live="polite"></div>
           <div id="quiz-options" class="quiz__options"></div>
           <div id="quiz-feedback" class="quiz__feedback"></div>
           <div id="quiz-badge" class="quiz__badge hidden"></div>

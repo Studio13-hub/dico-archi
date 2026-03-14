@@ -1,6 +1,7 @@
 const quizModeSelect = document.getElementById("quiz-mode");
 const quizCategorySelect = document.getElementById("quiz-category");
 const quizQuestion = document.getElementById("quiz-question");
+const quizFigure = document.getElementById("quiz-figure");
 const quizOptions = document.getElementById("quiz-options");
 const quizFeedback = document.getElementById("quiz-feedback");
 const quizScore = document.getElementById("quiz-score");
@@ -15,6 +16,7 @@ const quizLeaderboard = document.getElementById("quiz-leaderboard");
 const QUIZ_STORAGE_KEY = "dico_archi_quiz_scores_v2";
 const QUIZ_QUESTION_COUNT = 10;
 const QUIZ_OPTION_COUNT = 4;
+const QUIZ_MIN_OPTION_COUNT = 2;
 
 let termPool = [];
 let filteredPool = [];
@@ -35,7 +37,10 @@ function normalizeQuizItems(items) {
       term: String(item.term || "").trim(),
       slug: String(item.slug || "").trim(),
       definition: String(item.definition || "").trim(),
-      category: String(item.categories?.name || "").trim()
+      category: String(item.category || item.categories?.name || "").trim(),
+      media_url: String(item.media_url || "").trim(),
+      media_alt_text: String(item.media_alt_text || "").trim(),
+      media_title: String(item.media_title || "").trim()
     }))
     .filter((item) => item.term && item.definition);
 }
@@ -64,6 +69,12 @@ function getActivePool() {
   const selectedCategory = quizCategorySelect.value;
   if (!selectedCategory) return termPool;
   return termPool.filter((item) => item.category === selectedCategory);
+}
+
+function getPlayablePool() {
+  const pool = filteredPool.length ? filteredPool : termPool;
+  if (quizModeSelect.value !== "media-to-term") return pool;
+  return pool.filter((item) => item.media_url);
 }
 
 function setQuizMessage(text, tone = "") {
@@ -103,9 +114,9 @@ function renderLeaderboard() {
 }
 
 function getModeLabel() {
-  return quizModeSelect.value === "definition-to-term"
-    ? "Définition -> terme"
-    : "Terme -> définition";
+  if (quizModeSelect.value === "definition-to-term") return "Définition -> terme";
+  if (quizModeSelect.value === "media-to-term") return "Image / schéma -> terme";
+  return "Terme -> définition";
 }
 
 function updateBadge() {
@@ -146,10 +157,13 @@ function updateQuizMeta() {
 
 function pickQuestion() {
   const mode = quizModeSelect.value;
-  const pool = filteredPool.length ? filteredPool : termPool;
+  const pool = getPlayablePool();
+  if (pool.length < QUIZ_MIN_OPTION_COUNT) return null;
+
   const remaining = pool.filter((item) => !quizState.usedSlugs.has(item.slug));
   const source = (remaining.length ? remaining : pool);
   const correct = source[Math.floor(Math.random() * source.length)];
+  const optionCount = Math.min(QUIZ_OPTION_COUNT, pool.length);
 
   if (correct.slug) {
     quizState.usedSlugs.add(correct.slug);
@@ -157,17 +171,22 @@ function pickQuestion() {
 
   const distractors = shuffle(
     pool.filter((item) => item.slug !== correct.slug)
-  ).slice(0, QUIZ_OPTION_COUNT - 1);
+  ).slice(0, optionCount - 1);
 
   const options = shuffle([correct, ...distractors]).map((item) => ({
     isCorrect: item.slug === correct.slug,
-    value: mode === "definition-to-term" ? item.term : item.definition
+    value: mode === "term-to-definition" ? item.definition : item.term
   }));
 
+  let prompt = `Quelle définition correspond au terme « ${correct.term} » ?`;
+  if (mode === "definition-to-term") {
+    prompt = `Quel terme correspond à cette définition ?\n${correct.definition}`;
+  } else if (mode === "media-to-term") {
+    prompt = "Quel terme correspond à cette image ou à ce schéma ?";
+  }
+
   return {
-    prompt: mode === "definition-to-term"
-      ? `Quel terme correspond à cette définition ?\n${correct.definition}`
-      : `Quelle définition correspond au terme « ${correct.term} » ?`,
+    prompt,
     answer: correct,
     options
   };
@@ -201,11 +220,32 @@ function renderQuestion() {
   }
 
   const current = pickQuestion();
+  if (!current) {
+    quizQuestion.textContent = "Le quiz n’a pas encore assez de contenu pour ce mode.";
+    quizNext.disabled = true;
+    quizFigure.innerHTML = "";
+    quizFigure.classList.add("hidden");
+    quizOptions.textContent = "";
+    setQuizMessage("");
+    return;
+  }
+
   quizState.current = current;
   quizQuestion.textContent = current.prompt;
+  quizFigure.innerHTML = "";
+  quizFigure.classList.add("hidden");
   quizOptions.textContent = "";
   setQuizMessage("");
   quizNext.disabled = true;
+
+  if (quizModeSelect.value === "media-to-term" && current.answer.media_url) {
+    const image = document.createElement("img");
+    image.src = current.answer.media_url;
+    image.alt = current.answer.media_alt_text || current.answer.media_title || `Schéma pour ${current.answer.term}`;
+    image.loading = "lazy";
+    quizFigure.appendChild(image);
+    quizFigure.classList.remove("hidden");
+  }
 
   for (const option of current.options) {
     const button = document.createElement("button");
@@ -235,7 +275,7 @@ function renderQuestion() {
         button.classList.add("wrong");
         setQuizMessage(
           `Bonne réponse : ${
-            quizModeSelect.value === "definition-to-term"
+            quizModeSelect.value !== "term-to-definition"
               ? current.answer.term
               : current.answer.definition
           }`,
@@ -259,6 +299,9 @@ function renderQuestion() {
 
 function resetQuiz() {
   filteredPool = getActivePool();
+  const playablePool = quizModeSelect.value === "media-to-term"
+    ? filteredPool.filter((item) => item.media_url)
+    : filteredPool;
   quizState = {
     index: 0,
     total: 0,
@@ -273,11 +316,15 @@ function resetQuiz() {
   quizNext.disabled = false;
   quizNext.textContent = "Commencer";
   quizQuestion.textContent = "Clique sur « Commencer » pour lancer une manche de 10 questions.";
+  quizFigure.innerHTML = "";
+  quizFigure.classList.add("hidden");
   quizOptions.textContent = "";
   setQuizMessage("");
 
-  if (filteredPool.length && filteredPool.length < QUIZ_OPTION_COUNT) {
-    quizQuestion.textContent = "Cette catégorie ne contient pas encore assez de termes pour lancer le quiz.";
+  if (playablePool.length < QUIZ_MIN_OPTION_COUNT) {
+    quizQuestion.textContent = quizModeSelect.value === "media-to-term"
+      ? "Cette catégorie ne contient pas encore assez d’images ou de schémas pour lancer ce mode."
+      : "Cette catégorie ne contient pas encore assez de termes pour lancer le quiz.";
     quizNext.disabled = true;
   }
 
@@ -291,10 +338,20 @@ async function loadQuizTerms() {
   }
 
   try {
-    const items = await window.DicoArchiApi.fetchPublishedTermsBasic();
-    termPool = normalizeQuizItems(items);
+    const response = await fetch("/api/quiz", {
+      headers: {
+        Accept: "application/json"
+      }
+    });
+    const payload = await response.json().catch(() => ({}));
 
-    if (termPool.length < QUIZ_OPTION_COUNT) {
+    if (!response.ok) {
+      throw new Error(payload.error || "quiz_fetch_failed");
+    }
+
+    termPool = normalizeQuizItems(payload.items);
+
+    if (termPool.length < QUIZ_MIN_OPTION_COUNT) {
       quizQuestion.textContent = "Le corpus publié est encore trop petit pour lancer le quiz.";
       return;
     }
