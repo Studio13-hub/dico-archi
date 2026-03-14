@@ -42,7 +42,8 @@ Repères de travail :
 - contribution et compte : `auth.html`, `compte.html`, `contribuer.html`
 - administration : `admin.html`
 - scripts serveur : `api/`
-- données front : `data.js`, `data/`
+- client Supabase partagé : `supabaseClient.js`
+- contenu base de données : `supabase/core/`, `supabase/migrations/`, `supabase/seeds/`
 
 ## Lecture recommandée en reprise
 

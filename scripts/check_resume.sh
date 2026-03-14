@@ -25,12 +25,12 @@ required_files=(
   "docs/NEXT_STEPS.md"
   "docs/SETUP.md"
   "docs/RESUME_NOW.md"
-  "supabase/schema.sql"
-  "supabase/storage.sql"
-  "supabase/submissions.sql"
-  "supabase/submissions_update.sql"
-  "supabase/audit.sql"
-  "scripts/import_terms.py"
+  "supabase/core/schema.sql"
+  "supabase/migrations/001_core_schema_base.sql"
+  "supabase/seeds/seed_categories_suisse_romande.sql"
+  "supabase/seeds/seed_terms_core_01.sql"
+  "supabaseClient.js"
+  "package.json"
 )
 
 for path in "${required_files[@]}"; do
@@ -44,11 +44,11 @@ done
 echo
 
 echo "[4/4] Quality and syntax checks"
-python3 -m py_compile scripts/import_terms.py
-echo "OK  scripts/import_terms.py"
-node scripts/term_quality_check.js
-echo "OK  scripts/term_quality_check.js"
-for f in *.js scripts/*.js; do
+for f in *.js; do
+  node --check "$f"
+done
+for f in scripts/*.js; do
+  [[ -f "$f" ]] || continue
   node --check "$f"
 done
 echo "OK  javascript syntax"

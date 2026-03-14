@@ -26,6 +26,15 @@
     return [];
   }
 
+  function slugify(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
   const TERM_INDEX = getLocalTerms()
     .map((item) => ({
       term: String(item?.term || "").trim(),
@@ -47,7 +56,7 @@
   }
 
   function makeTermUrl(term) {
-    return `term.html?term=${encodeURIComponent(term || "")}`;
+    return `term.html?slug=${encodeURIComponent(slugify(term || ""))}`;
   }
 
   function getSessionId() {
@@ -122,7 +131,7 @@
     }
 
     if (q.includes("admin")) {
-      return "L’espace admin est réservé aux rôles autorisés (super_admin/maître_apprentissage).";
+      return "L’espace admin est réservé aux rôles autorisés (super_admin/formateur).";
     }
 
     if (q.includes("quiz")) {

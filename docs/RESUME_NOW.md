@@ -1,69 +1,43 @@
-# Resume now (2026-03-10)
+# Resume now (2026-03-14)
 
 ## Etat global
-- Production active: `https://dico-archi.vercel.app`
-- `main` a ete mis a jour et pousse sur `origin/main`.
-- Structure roles produit clarifiee:
-  - `Public` = consultation libre
-  - `Apprenti` = contribution
-  - `Formateur` = validation/correction (slug technique conserve: `maitre_apprentissage`)
-  - `Super admin` = gestion complete
-- Architecture pages:
-  - `index.html` = page de bienvenue
-  - `dictionnaire.html` = page principale du dictionnaire
-- Chatbot en production:
-  - IA Gemini active (`/api/chat`)
-  - fallback local actif si API indisponible
-  - feedback `Utile` / `A ameliorer` actif (`/api/chat-feedback`)
-  - dashboard feedback visible en super admin (`/api/chat-feedback-list` + section admin)
-  - stats feedback + top questions + export CSV actifs
-  - un vote possible par reponse dans une meme conversation.
-- Base Supabase recalee pendant la session:
-  - scripts roles / submissions / audit / storage / feedback executes avec succes.
 
-## Verifications immediates au redemarrage
-```bash
-cd /Users/awat/Desktop/Studio13/Projects/Dico-archi
-git status --short
-git log --oneline -20
-python3 -m http.server 4173
-```
+- Production active : `https://dico-archi.vercel.app`
+- Frontend et API Vercel alignes sur le projet Supabase `iuvjmctrzgztelrsuquc`
+- Pages publiques remises en service :
+  - home
+  - dictionnaire
+  - categorie
+  - fiche terme
+- Le site utilise maintenant le schema core de bout en bout
+- Le legacy principal a ete sorti du flux actif et archive
 
-## Verifications fonctionnelles prioritaires
-1. `index.html`:
-   - page de bienvenue affichee
-   - bouton `Acceder au site` -> `dictionnaire.html`.
-2. `dictionnaire.html`:
-   - bloc `Qui peut faire quoi ?` visible avec les 4 roles
-   - ligne workflow `Apprenti -> Formateur -> Publication -> Public` visible
-   - chatbot ouvrable/fermeture OK (bouton + ESC + clic exterieur)
-   - contraste saisie + bulles utilisateur lisible
-   - lien `Voir la fiche` present sur reponses pertinentes.
-   - un feedback peut etre envoye sur plusieurs reponses differentes dans la meme conversation.
-3. `admin.html` (super admin):
-   - section `Feedback chatbot` visible
-   - filtres `Utile/A ameliorer`, `IA/Fallback` fonctionnels
-   - stats feedback visibles
-   - bouton `Exporter CSV` visible
-   - bouton `Rafraichir` charge des lignes.
-4. `auth.html`:
-   - login OK
-   - reset mot de passe OK.
+## Architecture active
 
-## Supabase / SQL deja en place
-- `supabase/media_security.sql` applique.
-- `supabase/chatbot_feedback.sql` cree.
-- `supabase/roles_rdr.sql` applique.
-- `supabase/profiles_admin_rpc.sql` applique.
-- `supabase/submissions_accept_atomic.sql` applique.
-- Grants executes pour insertion via service role.
+- frontend : pages HTML statiques + `*.page.js`
+- client Supabase partage : `supabaseClient.js`
+- backend Vercel : `api/search.js`, `api/terms.js`, `api/categories.js`, `api/chat.js`
+- source canonique base : `supabase/core/schema.sql`
+- execution base : `supabase/migrations/`
+- seeds actives : `supabase/seeds/`
 
-## Variables Vercel attendues
-- `GEMINI_API_KEY`
-- `GEMINI_MODEL` (actuel recommande: `gemini-2.5-flash-lite`)
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
+## Points verifies
 
-## Derniers commits utiles
-- `462725d` `Relax chatbot feedback throttle per response`
-- `81641a8` `Harden chatbot feedback and align legacy Supabase roles`
+- `config.js` pointe sur le bon projet Supabase
+- `SUPABASE_SERVICE_ROLE_KEY` Vercel a ete recalee
+- `package.json` permet a Vercel de charger `@supabase/supabase-js`
+- les scripts inline ont ete extraits pour respecter la CSP
+- les categories et premiers termes core ont ete charges dans la base distante
+
+## Hygiene repo
+
+- scripts frontend morts archives dans `archive/frontend/`
+- anciens scripts de contenu archives dans `scripts/archive/`
+- anciens SQL racine archives dans `supabase/archive/root-legacy/`
+
+## Points encore a faire
+
+1. completer les migrations encore vides
+2. construire un pipeline legacy -> core pour enrichir les contenus
+3. nettoyer la documentation historique restante
+4. faire tourner les cles sensibles exposees pendant la session
