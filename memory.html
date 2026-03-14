@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Memory Architecture - DicoArchi</title>
+    <meta
+      name="description"
+      content="Jeu de memory pédagogique de DicoArchi pour associer termes et définitions d'architecture."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Jeu pédagogique</div>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Non connecté</span>
+            <a class="link-button" href="quiz.html">Quiz</a>
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+            <a class="link-button" href="category.html">Catégories</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
+          </div>
+        </div>
+        <h1>Memory Architecture</h1>
+        <p>Retrouve les bonnes paires terme / définition dans un jeu rapide, clair et pensé pour apprendre sans stress.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="memory">
+          <div class="memory__header">
+            <h2>Partie en direct</h2>
+            <div id="memory-score" class="quiz__score">0 / 0</div>
+          </div>
+
+          <div class="quiz__meta">
+            <label class="quiz__mode">
+              Catégorie
+              <select id="memory-category">
+                <option value="">Toutes les catégories</option>
+              </select>
+            </label>
+            <div id="memory-pairs" class="meta">Paires : 0</div>
+            <div id="memory-moves" class="meta">Coups : 0</div>
+            <div id="memory-timer" class="meta">Temps : 0 s</div>
+          </div>
+
+          <div id="memory-status" class="quiz__feedback">Chargement du jeu...</div>
+
+          <div class="quiz__actions">
+            <button id="memory-start" type="button">Commencer</button>
+            <button id="memory-restart" class="ghost" type="button">Rejouer</button>
+          </div>
+
+          <div id="memory-board" class="memory__board" aria-live="polite"></div>
+
+          <div class="quiz__leaderboard">
+            <h3>Meilleurs temps locaux</h3>
+            <div id="memory-leaderboard" class="meta meta--subtle">Aucune partie enregistrée.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="dashboard">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Réviser</span>
+            <strong>Revenir au quiz</strong>
+            <p class="meta meta--subtle">Alternez entre quiz rapide et memory pour mieux retenir les notions.</p>
+            <a class="link-button" href="quiz.html">Ouvrir le quiz</a>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Explorer</span>
+            <strong>Voir les fiches</strong>
+            <p class="meta meta--subtle">Retrouvez chaque notion en détail dans le dictionnaire et par catégorie.</p>
+            <a class="link-button" href="dictionnaire.html">Ouvrir le dictionnaire</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer__inner">
+        <span>Réalisé par RDR Architectes SA.</span>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
+    <script src="memory.page.js"></script>
+    <script src="chatbot.js"></script>
+  </body>
+</html>

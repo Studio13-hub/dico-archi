@@ -740,6 +740,52 @@ main {
   font-size: 0.95rem;
 }
 
+.memory__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.memory__board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.memory__card {
+  min-height: 148px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  text-align: left;
+  padding: 14px;
+}
+
+.memory__card.is-open {
+  border-color: #0f1720;
+  box-shadow: 0 14px 28px rgba(18, 18, 18, 0.1);
+}
+
+.memory__card.is-matched {
+  border-color: #1f7a70;
+  box-shadow: 0 12px 22px rgba(31, 122, 112, 0.18);
+}
+
+.memory__kind {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(31, 122, 112, 0.12);
+  color: var(--accent-2);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .quiz--celebrate {
   animation: celebrate 280ms ease;
 }
