@@ -275,6 +275,7 @@
 
       const upload = await client.storage.from("term-images").upload(filePath, file, {
         cacheControl: "3600",
+        contentType: file.type || undefined,
         upsert: false
       });
 
