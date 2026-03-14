@@ -7,7 +7,8 @@
     "content:validate": "node scripts/content/validate_core_content.js",
     "content:build-sql": "node scripts/content/build_core_sql.js",
     "content:lint:fr": "node scripts/content/lint_editorial_french.js",
-    "content:v2:bootstrap": "node scripts/content/bootstrap_v2_content.js"
+    "content:v2:bootstrap": "node scripts/content/bootstrap_v2_content.js",
+    "content:publish": "node scripts/content/publish_canonical_content.js"
   },
   "engines": {
     "node": "24.x"
