@@ -5,7 +5,8 @@
   "description": "Static DicoArchi frontend with Vercel serverless APIs",
   "scripts": {
     "content:validate": "node scripts/content/validate_core_content.js",
-    "content:build-sql": "node scripts/content/build_core_sql.js"
+    "content:build-sql": "node scripts/content/build_core_sql.js",
+    "content:lint:fr": "node scripts/content/lint_editorial_french.js"
   },
   "engines": {
     "node": "24.x"

@@ -24,6 +24,12 @@ Validation :
 npm run content:validate
 ```
 
+Controle linguistique :
+
+```bash
+npm run content:lint:fr
+```
+
 Generation SQL core :
 
 ```bash
@@ -43,6 +49,7 @@ cat scripts/content/reset_editorial_content.sql
 
 ```bash
 npm run content:validate
+npm run content:lint:fr
 ```
 
 3. Generer le SQL d'import :
@@ -73,6 +80,7 @@ Regle pratique :
 - on duplique d'abord un gabarit
 - on remplit ensuite le contenu
 - on valide ensuite avec `npm run content:validate`
+- on relit ensuite avec `npm run content:lint:fr`
 
 ## Zone candidates
 
@@ -111,6 +119,21 @@ Il ne touche pas :
 - traiter la base distante comme une cible de projection
 - garder les donnees de test tant que le corpus reel n'est pas pret
 - ne lancer le reset editorial qu'au moment de la vraie bascule
+- ne pas publier un lot important sans verification linguistique finale
+
+## Exigence de langue
+
+DicoArchi est destine a des non-francophones.
+
+Le contenu final doit donc :
+
+- respecter l'orthographe francaise correcte
+- conserver les accents utiles
+- garder une ponctuation propre
+- rester clair et pedagogique
+
+Voir aussi :
+- `docs/EDITORIAL_RULES.md`
 
 ## Prochaine evolution recommandee
 

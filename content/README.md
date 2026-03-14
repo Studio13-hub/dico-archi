@@ -21,3 +21,13 @@ Recommandations editoriales :
 - un slug = stable dans le temps, meme si le style du terme evolue
 - une relation = explicite et utile pour la navigation
 - un media = rattache a un terme via `term_slug`, jamais stocke dans le terme lui-meme
+- le contenu final doit respecter l'orthographe francaise complete, avec accents et ponctuation rigoureuse
+
+Exigence DicoArchi :
+- le dictionnaire est pense pour des non-francophones
+- les accents doivent etre conserves dans le contenu editorial final
+- les definitions doivent rester simples, pedagogiques et faciles a comprendre
+
+Controle recommande :
+- validation structurelle : `npm run content:validate`
+- controle linguistique : `npm run content:lint:fr`
