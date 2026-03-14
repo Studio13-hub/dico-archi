@@ -1,0 +1,39 @@
+{
+  "id": "term_joint_detancheite",
+  "term": "Joint d’étanchéité",
+  "slug": "joint-detancheite",
+  "category_slug": "ouvertures",
+  "subcategory_slug": "details-douvertures",
+  "status": "published",
+  "content": {
+    "definition": "Élément souple ou compressible placé entre deux composants pour limiter les passages d’eau, d’air, de poussière ou de bruit.",
+    "explanation": "Dans une ouverture, le joint d’étanchéité participe à la performance globale de la menuiserie et au confort d’usage.",
+    "example": "Un joint d’étanchéité dégradé autour d’une fenêtre peut entraîner des infiltrations d’air et une baisse du confort intérieur.",
+    "applications": [
+      "fenêtres",
+      "portes",
+      "détails de menuiserie"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À coordonner avec les profils de dormant et les mouvements attendus entre les pièces."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "ouvertures",
+      "detail",
+      "etancheite"
+    ],
+    "version": 1
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "term_seuil_de_porte",
+  "term": "Seuil de porte",
+  "slug": "seuil-de-porte",
+  "category_slug": "ouvertures",
+  "subcategory_slug": "details-douvertures",
+  "status": "published",
+  "content": {
+    "definition": "Pièce située à la base d’une porte, assurant la transition entre deux sols et contribuant à l’étanchéité, à l’accessibilité et à la durabilité.",
+    "explanation": "Le seuil doit être pensé en lien avec le revêtement, le drainage, l’usage et les exigences d’accessibilité du projet.",
+    "example": "À une entrée extérieure, le seuil de porte doit limiter les entrées d’eau sans créer un obstacle excessif au passage.",
+    "applications": [
+      "portes extérieures",
+      "accessibilité",
+      "détails de raccord"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le détail du seuil doit être coordonné avec l’étanchéité et la hauteur de franchissement admissible."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "ouvertures",
+      "detail",
+      "porte"
+    ],
+    "version": 1
+  }
+}

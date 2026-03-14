@@ -1,0 +1,39 @@
+{
+  "id": "term_porte_automatique",
+  "term": "Porte automatique",
+  "slug": "porte-automatique",
+  "category_slug": "ouvertures",
+  "subcategory_slug": "portes",
+  "status": "published",
+  "content": {
+    "definition": "Porte équipée d’un système motorisé qui commande l’ouverture et la fermeture sans action manuelle directe.",
+    "explanation": "Elle améliore le confort d’usage, la fluidité des circulations et peut contribuer à l’accessibilité dans les bâtiments recevant du public.",
+    "example": "À l’entrée d’un bâtiment public, une porte automatique facilite le passage des personnes à mobilité réduite et des flux importants.",
+    "applications": [
+      "entrées publiques",
+      "accessibilité",
+      "circulations intensives"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À coordonner avec l’alimentation électrique, la sécurité et les dégagements nécessaires."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "ouvertures",
+      "porte",
+      "accessibilite"
+    ],
+    "version": 1
+  }
+}

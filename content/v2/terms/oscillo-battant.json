@@ -1,0 +1,39 @@
+{
+  "id": "term_oscillo_battant",
+  "term": "Oscillo-battant",
+  "slug": "oscillo-battant",
+  "category_slug": "ouvertures",
+  "subcategory_slug": "fenetres-battantes",
+  "status": "published",
+  "content": {
+    "definition": "Type de fenêtre dont l’ouvrant peut s’ouvrir soit à la française, soit en soufflet pour une ventilation contrôlée.",
+    "explanation": "Ce système permet de combiner confort d’usage, sécurité relative et aération sans ouvrir entièrement la fenêtre.",
+    "example": "Dans une salle de bain, un oscillo-battant facilite l’aération quotidienne sans dégager tout le passage de la fenêtre.",
+    "applications": [
+      "logements",
+      "locaux humides",
+      "ventilation"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le mode d’ouverture doit être bien indiqué dans les détails de menuiserie."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "ouvertures",
+      "fenetre",
+      "ventilation"
+    ],
+    "version": 1
+  }
+}

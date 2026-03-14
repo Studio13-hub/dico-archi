@@ -1,0 +1,39 @@
+{
+  "id": "term_fenetre_simple",
+  "term": "Fenêtre simple",
+  "slug": "fenetre-simple",
+  "category_slug": "ouvertures",
+  "subcategory_slug": "fenetres-battantes",
+  "status": "published",
+  "content": {
+    "definition": "Fenêtre à un seul ouvrant, utilisée pour apporter de la lumière, de la ventilation et une vue vers l’extérieur.",
+    "explanation": "Elle constitue une solution courante pour des pièces standards lorsque l’on cherche une ouverture simple à utiliser et à entretenir.",
+    "example": "Dans une chambre, une fenêtre simple peut suffire si l’ouverture et la ventilation naturelle sont limitées à un seul battant.",
+    "applications": [
+      "logements",
+      "façades",
+      "ventilation naturelle"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À distinguer sur les plans d’ouverture selon le sens de battement."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "ouvertures",
+      "fenetre",
+      "façade"
+    ],
+    "version": 1
+  }
+}

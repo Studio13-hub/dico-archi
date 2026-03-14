@@ -1,0 +1,39 @@
+{
+  "id": "term_chassis_fixe",
+  "term": "Châssis fixe",
+  "slug": "chassis-fixe",
+  "category_slug": "ouvertures",
+  "subcategory_slug": "fenetres-coulissantes",
+  "status": "published",
+  "content": {
+    "definition": "Élément vitré sans ouvrant, utilisé pour apporter de la lumière et cadrer une vue sans fonction de ventilation.",
+    "explanation": "Le châssis fixe permet d’augmenter la surface vitrée et de simplifier la menuiserie lorsqu’aucune ouverture n’est nécessaire.",
+    "example": "Une cage d’escalier peut recevoir un châssis fixe pour gagner en lumière naturelle sans créer d’ouvrant difficile d’accès.",
+    "applications": [
+      "façades",
+      "escaliers",
+      "vitrages fixes"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À distinguer sur les élévations pour éviter toute confusion avec un ouvrant."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "ouvertures",
+      "vitrage",
+      "façade"
+    ],
+    "version": 1
+  }
+}

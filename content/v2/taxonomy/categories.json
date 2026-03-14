@@ -58,5 +58,10 @@
     "name": "Securite incendie",
     "slug": "securite-incendie",
     "description": "Definitions essentielles pour comprendre la prevention, la protection et les exigences incendie."
+  },
+  {
+    "name": "Ouvertures",
+    "slug": "ouvertures",
+    "description": "Vocabulaire des fenetres, portes, chassis, details d'etancheite et elements associes a l enveloppe."
   }
 ]

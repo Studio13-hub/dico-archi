@@ -100,5 +100,29 @@
     "name": "Procédures administratives",
     "slug": "procedures-administratives",
     "description": "Étapes réglementaires pour déposer, suivre et clôturer un dossier de construction."
+  },
+  {
+    "category_slug": "ouvertures",
+    "name": "Fenêtres battantes",
+    "slug": "fenetres-battantes",
+    "description": "Fenêtres à ouvrants battants ou oscillo-battants, utilisées dans les façades et les logements."
+  },
+  {
+    "category_slug": "ouvertures",
+    "name": "Fenêtres coulissantes",
+    "slug": "fenetres-coulissantes",
+    "description": "Baies et menuiseries coulissantes pour grandes ouvertures et accès vers l’extérieur."
+  },
+  {
+    "category_slug": "ouvertures",
+    "name": "Portes",
+    "slug": "portes",
+    "description": "Portes intérieures, extérieures et spécialisées selon l’usage, la sécurité et la performance attendue."
+  },
+  {
+    "category_slug": "ouvertures",
+    "name": "Détails d’ouvertures",
+    "slug": "details-douvertures",
+    "description": "Éléments de seuil, d’appui, de dormant et d’étanchéité qui assurent le bon fonctionnement des ouvertures."
   }
 ]

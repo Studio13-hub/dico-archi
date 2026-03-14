@@ -1,0 +1,41 @@
+{
+  "id": "term_porte_ei90",
+  "term": "Porte EI90",
+  "slug": "porte-ei90",
+  "category_slug": "ouvertures",
+  "subcategory_slug": "portes",
+  "status": "published",
+  "content": {
+    "definition": "Porte coupe-feu conçue pour conserver son étanchéité et son isolation pendant 90 minutes en cas d’incendie.",
+    "explanation": "Elle est utilisée dans des situations où le compartimentage incendie exige une durée de résistance supérieure aux portes EI30 ou EI60.",
+    "example": "Un local à risque particulier peut nécessiter une porte EI90 selon les exigences du concept de sécurité incendie.",
+    "applications": [
+      "portes coupe-feu",
+      "locaux à risque",
+      "compartimentage"
+    ],
+    "norms": [
+      "AEAI"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": "EI90",
+    "drawing_note": "La classe EI90 doit être reprise dans les tableaux de portes et les plans de sécurité."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "ouvertures",
+      "incendie",
+      "porte"
+    ],
+    "version": 1
+  }
+}

@@ -198,5 +198,35 @@
     "source_slug": "enquete-publique",
     "target_slug": "conformite",
     "relation_type": "related"
+  },
+  {
+    "source_slug": "fenetre-simple",
+    "target_slug": "oscillo-battant",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "baie-coulissante",
+    "target_slug": "chassis-fixe",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "porte-pleine",
+    "target_slug": "porte-automatique",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "porte-ei90",
+    "target_slug": "ei60",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "appui-de-fenetre",
+    "target_slug": "seuil-de-porte",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "seuil-de-porte",
+    "target_slug": "joint-detancheite",
+    "relation_type": "related"
   }
 ]

@@ -1,0 +1,39 @@
+{
+  "id": "term_appui_de_fenetre",
+  "term": "Appui de fenêtre",
+  "slug": "appui-de-fenetre",
+  "category_slug": "ouvertures",
+  "subcategory_slug": "details-douvertures",
+  "status": "published",
+  "content": {
+    "definition": "Élément horizontal placé en partie basse d’une fenêtre pour reprendre l’eau, protéger la façade et assurer une finition propre.",
+    "explanation": "L’appui doit favoriser l’écoulement de l’eau vers l’extérieur et limiter les risques de stagnation ou d’infiltration au droit de la menuiserie.",
+    "example": "Un appui de fenêtre mal incliné peut retenir l’eau et provoquer des désordres sur la façade ou l’encadrement.",
+    "applications": [
+      "façades",
+      "détails de menuiserie",
+      "évacuation de l’eau"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À détailler avec pente, rejingot et raccord à l’étanchéité si nécessaire."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "ouvertures",
+      "detail",
+      "façade"
+    ],
+    "version": 1
+  }
+}

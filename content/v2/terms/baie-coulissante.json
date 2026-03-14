@@ -1,0 +1,39 @@
+{
+  "id": "term_baie_coulissante",
+  "term": "Baie coulissante",
+  "slug": "baie-coulissante",
+  "category_slug": "ouvertures",
+  "subcategory_slug": "fenetres-coulissantes",
+  "status": "published",
+  "content": {
+    "definition": "Grande ouverture vitrée dont les vantaux glissent latéralement pour dégager le passage sans empiéter sur l’intérieur.",
+    "explanation": "Elle est souvent choisie pour relier un espace intérieur à une terrasse, un jardin ou un balcon tout en conservant une grande surface vitrée.",
+    "example": "Dans un séjour, une baie coulissante permet d’ouvrir largement sur l’extérieur tout en limitant l’encombrement de l’ouvrant.",
+    "applications": [
+      "séjours",
+      "terrasses",
+      "balcons"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le sens de coulissement et le rail doivent être cohérents avec le détail de seuil."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "ouvertures",
+      "coulissant",
+      "vitrage"
+    ],
+    "version": 1
+  }
+}

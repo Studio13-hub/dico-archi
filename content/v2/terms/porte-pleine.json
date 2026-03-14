@@ -1,0 +1,39 @@
+{
+  "id": "term_porte_pleine",
+  "term": "Porte pleine",
+  "slug": "porte-pleine",
+  "category_slug": "ouvertures",
+  "subcategory_slug": "portes",
+  "status": "published",
+  "content": {
+    "definition": "Porte opaque, sans vitrage, utilisée pour séparer des espaces tout en apportant intimité, acoustique ou robustesse.",
+    "explanation": "Elle est souvent choisie dans les locaux où l’on recherche une fermeture visuelle complète et une bonne résistance à l’usage.",
+    "example": "Une chambre ou un local technique reçoivent souvent une porte pleine plutôt qu’une porte vitrée.",
+    "applications": [
+      "portes intérieures",
+      "locaux techniques",
+      "séparation de pièces"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le sens d’ouverture doit être coordonné avec le mobilier et les circulations."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "ouvertures",
+      "porte",
+      "interieur"
+    ],
+    "version": 1
+  }
+}
