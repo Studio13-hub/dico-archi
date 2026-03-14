@@ -1,0 +1,12 @@
+{
+  "name": "dico-archi",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Static DicoArchi frontend with Vercel serverless APIs",
+  "engines": {
+    "node": "24.x"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.8"
+  }
+}
