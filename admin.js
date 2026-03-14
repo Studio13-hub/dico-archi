@@ -5,6 +5,7 @@ const adminLogout = document.getElementById("admin-logout");
 
 const termInput = document.getElementById("term");
 const categoryInput = document.getElementById("category");
+const categoryOptions = document.getElementById("category-options");
 const statusInput = document.getElementById("term-status");
 const definitionInput = document.getElementById("definition");
 const exampleInput = document.getElementById("example");
@@ -47,6 +48,7 @@ let userProfile = null;
 let canManageTerms = false;
 let isSuperAdmin = false;
 let terms = [];
+let categories = [];
 let editingId = null;
 let editingSubmission = null;
 let supportsTermStatus = true;
@@ -262,8 +264,82 @@ function normalizeRelated(raw) {
     .filter(Boolean);
 }
 
+function slugify(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+}
+
+function getCategoryName(item) {
+  return item.category || item.categories?.name || "";
+}
+
+function normalizeWorkflowStatus(value) {
+  if (!value) return "draft";
+  if (value === "review") return "validated";
+  return value;
+}
+
+function getWorkflowLabel(value) {
+  const status = normalizeWorkflowStatus(value);
+  if (status === "validated") return "REVIEW";
+  return status.toUpperCase();
+}
+
+function inferMediaType(url) {
+  if (isPdfUrl(url)) return "pdf";
+  const lowered = String(url || "").toLowerCase();
+  if (lowered.includes("schema")) return "schema";
+  return "image";
+}
+
+function getMediaTitle(url) {
+  const raw = String(url || "").trim();
+  if (!raw) return null;
+  const filename = raw.split("/").pop() || raw;
+  return filename.replace(/\.[a-z0-9]+$/i, "").replace(/[-_]+/g, " ").trim() || null;
+}
+
+function getEditingTerm() {
+  if (!editingId) return null;
+  return terms.find((item) => item.id === editingId) || null;
+}
+
+function findCategoryByInput(raw) {
+  const value = String(raw || "").trim();
+  if (!value) return null;
+  const key = value.toLowerCase();
+  return categories.find((item) => item.id === value || item.slug === key || item.name.toLowerCase() === key) || null;
+}
+
+function findTermByRelationInput(raw) {
+  const value = String(raw || "").trim();
+  if (!value) return null;
+  const key = value.toLowerCase();
+  return terms.find((item) => {
+    if ((item.term || "").trim().toLowerCase() === key) return true;
+    if ((item.slug || "").trim().toLowerCase() === key) return true;
+    return false;
+  }) || null;
+}
+
+function populateCategoryOptions() {
+  if (!categoryOptions) return;
+  categoryOptions.innerHTML = "";
+  for (const category of categories) {
+    const option = document.createElement("option");
+    option.value = category.name;
+    option.label = category.slug;
+    categoryOptions.appendChild(option);
+  }
+}
+
 function getTermStatus(item) {
-  return item.status || "published";
+  return normalizeWorkflowStatus(item.status || "published");
 }
 
 function parseDateOrZero(value) {
@@ -275,8 +351,8 @@ function parseDateOrZero(value) {
 function compareTerms(a, b, mode) {
   const termA = (a.term || "").toLowerCase();
   const termB = (b.term || "").toLowerCase();
-  const categoryA = (a.category || "").toLowerCase();
-  const categoryB = (b.category || "").toLowerCase();
+  const categoryA = getCategoryName(a).toLowerCase();
+  const categoryB = getCategoryName(b).toLowerCase();
   const statusA = getTermStatus(a);
   const statusB = getTermStatus(b);
   const updatedA = parseDateOrZero(a.updated_at);
@@ -332,7 +408,7 @@ function applyTermsView() {
   }
   if (query) {
     filtered = filtered.filter((item) =>
-      [item.term, item.category, item.definition, item.example, ...(item.related || [])]
+      [item.term, getCategoryName(item), item.definition, item.example, ...(item.related || [])]
         .join(" ")
         .toLowerCase()
         .includes(query)
@@ -355,15 +431,16 @@ function exportPublishedCsv() {
   };
 
   const rows = [
-    ["term", "category", "status", "definition", "example", "related", "image_url", "updated_at"],
+    ["term", "slug", "category", "status", "definition", "example", "related", "media_urls", "updated_at"],
     ...published.map((item) => [
       item.term,
-      item.category,
+      item.slug || "",
+      getCategoryName(item),
       getTermStatus(item),
       item.definition,
       item.example,
       (item.related || []).join(" | "),
-      item.image_url || "",
+      (item.media_urls || []).join(" | "),
       item.updated_at || ""
     ])
   ];
@@ -403,8 +480,8 @@ function renderTable(list) {
 
     const info = document.createElement("div");
     info.className = "admin__row-info";
-    const status = item.status || "published";
-    info.textContent = `${item.category} · ${status.toUpperCase()} · ${item.definition}`;
+    const status = getTermStatus(item);
+    info.textContent = `${getCategoryName(item)} · ${getWorkflowLabel(status)} · ${item.definition}`;
 
     const actions = document.createElement("div");
     actions.className = "admin__row-actions";
@@ -452,7 +529,7 @@ function renderSubmissions(list) {
 
     const info = document.createElement("div");
     info.className = "admin__row-info";
-    info.textContent = `${item.category} · ${item.definition}`;
+    info.textContent = `${getCategoryName(item)} · ${item.definition}`;
 
     const meta = document.createElement("div");
     meta.className = "admin__row-meta";
@@ -460,7 +537,7 @@ function renderSubmissions(list) {
 
     const status = document.createElement("div");
     status.className = `admin__row-status ${item.status || "pending"}`;
-    status.textContent = item.status || "pending";
+    status.textContent = getWorkflowLabel(item.status || "submitted");
 
     const actions = document.createElement("div");
     actions.className = "admin__row-actions";
@@ -522,11 +599,11 @@ function renderAudit(list) {
 
     const title = document.createElement("div");
     title.className = "admin__row-title";
-    title.textContent = `${item.action}`;
+    title.textContent = `${item.action_type}`;
 
     const info = document.createElement("div");
     info.className = "admin__row-info";
-    info.textContent = `${item.entity || "-"} · ${item.actor_email || ""}`;
+    info.textContent = `${item.target_table || "-"}`;
 
     const meta = document.createElement("div");
     meta.className = "admin__row-meta";
@@ -744,13 +821,13 @@ function loadTerm(item) {
   editingId = item.id;
   editingSubmission = null;
   termInput.value = item.term || "";
-  categoryInput.value = item.category || "";
-  if (statusInput) statusInput.value = item.status || "published";
+  categoryInput.value = getCategoryName(item);
+  if (statusInput) statusInput.value = getTermStatus(item);
   definitionInput.value = item.definition || "";
   exampleInput.value = item.example || "";
   relatedInput.value = (item.related || []).join(" | ");
-  imageUrlInput.value = formatMediaUrlsForInput(item.image_url || "");
-  reviewerCommentInput.value = "";
+  imageUrlInput.value = formatMediaUrlsForInput(item.media_urls || []);
+  reviewerCommentInput.value = item.reviewer_comment || "";
   if (submissionBanner) submissionBanner.textContent = "";
   termInput.focus();
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -760,12 +837,12 @@ function loadSubmission(item, row) {
   editingSubmission = item;
   editingId = null;
   termInput.value = item.term || "";
-  categoryInput.value = item.category || "";
-  if (statusInput) statusInput.value = "review";
+  categoryInput.value = getCategoryName(item);
+  if (statusInput) statusInput.value = "validated";
   definitionInput.value = item.definition || "";
   exampleInput.value = item.example || "";
   relatedInput.value = (item.related || []).join(" | ");
-  imageUrlInput.value = formatMediaUrlsForInput(item.image_url || "");
+  imageUrlInput.value = formatMediaUrlsForInput(item.media_urls || []);
   reviewerCommentInput.value = item.reviewer_comment || "";
   if (submissionBanner) submissionBanner.textContent = `Proposition chargee: ${item.term}`;
   if (row) row.classList.add("highlight");
@@ -777,12 +854,69 @@ async function logAction(action, entity, entityId, details = {}) {
   if (!supabaseClient || !currentUser) return;
   await supabaseClient.from("audit_logs").insert({
     actor_id: currentUser.id,
-    actor_email: currentUser.email,
-    action,
-    entity,
-    entity_id: entityId,
+    action_type: action,
+    target_table: entity,
+    target_id: entityId,
     details
   });
+}
+
+async function fetchCategories() {
+  if (!dicoApi) return;
+  try {
+    categories = await dicoApi.fetchCategories();
+    populateCategoryOptions();
+  } catch (error) {
+    setMessage(`Categories: ${getErrorMessage(error)}`, true);
+  }
+}
+
+async function syncTermMedia(termId, mediaUrls) {
+  const { error: deleteError } = await supabaseClient.from("media").delete().eq("term_id", termId);
+  if (deleteError) throw deleteError;
+
+  if (!mediaUrls.length) return;
+
+  const rows = mediaUrls.map((url, index) => ({
+    term_id: termId,
+    media_type: inferMediaType(url),
+    url,
+    title: getMediaTitle(url),
+    alt_text: null,
+    position: index,
+    created_by: currentUser ? currentUser.id : null
+  }));
+
+  const { error: insertError } = await supabaseClient.from("media").insert(rows);
+  if (insertError) throw insertError;
+}
+
+async function syncTermRelations(termId, relatedValues) {
+  const relatedIds = Array.from(
+    new Set(
+      relatedValues
+        .map((value) => findTermByRelationInput(value)?.id)
+        .filter((id) => Boolean(id) && id !== termId)
+    )
+  );
+
+  const { error: deleteError } = await supabaseClient
+    .from("term_relations")
+    .delete()
+    .eq("source_term_id", termId)
+    .eq("relation_type", "related");
+
+  if (deleteError) throw deleteError;
+  if (!relatedIds.length) return;
+
+  const rows = relatedIds.map((targetId) => ({
+    source_term_id: termId,
+    target_term_id: targetId,
+    relation_type: "related"
+  }));
+
+  const { error: insertError } = await supabaseClient.from("term_relations").insert(rows);
+  if (insertError) throw insertError;
 }
 
 async function removeTerm(item, actionButton) {
@@ -854,7 +988,7 @@ async function saveTerm() {
 
   try {
     const term = termInput.value.trim();
-    const category = categoryInput.value.trim();
+    const category = findCategoryByInput(categoryInput.value);
     const definition = definitionInput.value.trim();
     const example = exampleInput.value.trim();
     const related = normalizeRelated(relatedInput.value || "");
@@ -885,62 +1019,34 @@ async function saveTerm() {
       }
     }
 
+    const editingTerm = getEditingTerm();
+    const nextStatus = (statusInput && statusInput.value) ? normalizeWorkflowStatus(statusInput.value) : "published";
     const payload = {
       term,
-      category,
-      status: (statusInput && statusInput.value) ? statusInput.value : "published",
+      slug: editingTerm?.slug || slugify(term),
+      category_id: category.id,
+      status: nextStatus,
       definition,
       example,
-      related,
-      image_url: serializeMediaUrls(mediaUrls),
-      updated_by: currentUser ? currentUser.id : null
+      reviewer_comment: reviewerCommentInput.value.trim() || null
     };
 
-    const effectivePayload = supportsTermStatus
-      ? payload
-      : {
-          term: payload.term,
-          category: payload.category,
-          definition: payload.definition,
-          example: payload.example,
-          related: payload.related,
-          image_url: payload.image_url
-        };
-
     const query = editingId
-      ? supabaseClient.from("terms").update(effectivePayload).eq("id", editingId)
-      : supabaseClient.from("terms").insert(effectivePayload).select("id").single();
+      ? supabaseClient.from("terms").update(payload).eq("id", editingId)
+      : supabaseClient.from("terms").insert(payload).select("id").single();
 
     let { data, error } = await query;
-    if (error && supportsTermStatus && error.message && error.message.includes("status")) {
-      supportsTermStatus = false;
-      const fallbackQuery = editingId
-        ? supabaseClient.from("terms").update({
-            term: payload.term,
-            category: payload.category,
-            definition: payload.definition,
-            example: payload.example,
-            related: payload.related,
-            image_url: payload.image_url
-          }).eq("id", editingId)
-        : supabaseClient.from("terms").insert({
-            term: payload.term,
-            category: payload.category,
-            definition: payload.definition,
-            example: payload.example,
-            related: payload.related,
-            image_url: payload.image_url
-          }).select("id").single();
-      ({ data, error } = await fallbackQuery);
-    }
     if (error) {
       if (await handleAuthError(error, "Termes")) return;
       setMessage(`Termes: ${getErrorMessage(error)}`, true);
       return;
     }
 
-    const action = editingId ? "term_updated" : "term_created";
     const entityId = editingId || data?.id;
+    await syncTermMedia(entityId, mediaUrls);
+    await syncTermRelations(entityId, related);
+
+    const action = editingId ? "term_updated" : "term_created";
     await logAction(action, "terms", entityId, { term });
 
     setMessage(editingId ? "Termes: terme mis a jour." : "Termes: terme ajoute.");
@@ -954,33 +1060,75 @@ async function saveTerm() {
 }
 
 async function fetchTerms() {
-  const { data, error } = await supabaseClient
-    .from("terms")
-    .select("id, term, category, status, definition, example, related, image_url, updated_at")
-    .order("term", { ascending: true });
+  const [termsQuery, mediaQuery, relationsQuery] = await Promise.all([
+    supabaseClient
+      .from("terms")
+      .select(`
+        id,
+        term,
+        slug,
+        category_id,
+        status,
+        definition,
+        example,
+        reviewer_comment,
+        updated_at,
+        categories:category_id (
+          id,
+          name,
+          slug
+        )
+      `)
+      .order("term", { ascending: true }),
+    supabaseClient
+      .from("media")
+      .select("id, term_id, media_type, url, title, alt_text, position, created_at")
+      .order("position", { ascending: true })
+      .order("created_at", { ascending: true }),
+    supabaseClient
+      .from("term_relations")
+      .select("source_term_id, target_term_id, relation_type")
+      .eq("relation_type", "related")
+  ]);
 
-  if (error) {
+  if (termsQuery.error || mediaQuery.error || relationsQuery.error) {
+    const error = termsQuery.error || mediaQuery.error || relationsQuery.error;
     if (await handleAuthError(error, "Termes")) return;
-    if (error.message && error.message.includes("status")) {
-      supportsTermStatus = false;
-      const fallback = await supabaseClient
-        .from("terms")
-        .select("id, term, category, definition, example, related, image_url, updated_at")
-        .order("term", { ascending: true });
-      if (fallback.error) {
-        if (await handleAuthError(fallback.error, "Termes")) return;
-        setMessage(fallback.error.message, true);
-        return;
-      }
-      terms = fallback.data || [];
-      applyTermsView();
-      return;
-    }
-    setMessage(error.message, true);
+    setMessage(getErrorMessage(error), true);
     return;
   }
 
-  terms = data || [];
+  const baseTerms = Array.isArray(termsQuery.data) ? termsQuery.data : [];
+  const mediaRows = Array.isArray(mediaQuery.data) ? mediaQuery.data : [];
+  const relationRows = Array.isArray(relationsQuery.data) ? relationsQuery.data : [];
+
+  const mediaByTermId = new Map();
+  for (const media of mediaRows) {
+    const list = mediaByTermId.get(media.term_id) || [];
+    list.push(media);
+    mediaByTermId.set(media.term_id, list);
+  }
+
+  const termById = new Map(baseTerms.map((item) => [item.id, item]));
+  const relatedNamesByTermId = new Map();
+  for (const relation of relationRows) {
+    const target = termById.get(relation.target_term_id);
+    if (!target) continue;
+    const list = relatedNamesByTermId.get(relation.source_term_id) || [];
+    list.push(target.term);
+    relatedNamesByTermId.set(relation.source_term_id, list);
+  }
+
+  terms = baseTerms.map((item) => {
+    const itemMedia = mediaByTermId.get(item.id) || [];
+    return {
+      ...item,
+      category: item.categories?.name || "",
+      related: relatedNamesByTermId.get(item.id) || [],
+      media: itemMedia,
+      media_urls: itemMedia.map((media) => media.url)
+    };
+  });
   applyTermsView();
 }
 
@@ -988,9 +1136,20 @@ async function fetchSubmissions() {
   const { data, error } = await supabaseClient
     .from("term_submissions")
     .select(
-      "id, term, category, definition, example, related, image_url, submitted_by, submitter_email, status, reviewer_comment, created_at"
+      `
+      id,
+      term,
+      slug,
+      category_id,
+      definition,
+      example,
+      status,
+      reviewer_comment,
+      submitted_by,
+      created_at
+      `
     )
-    .eq("status", "pending")
+    .in("status", ["submitted", "validated"])
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -998,14 +1157,21 @@ async function fetchSubmissions() {
     setMessage(`Propositions: ${getErrorMessage(error)}`, true);
     return;
   }
+  const items = (data || []).map((item) => ({
+    ...item,
+    category: categories.find((category) => category.id === item.category_id)?.name || "",
+    related: [],
+    media_urls: [],
+    submitter_email: ""
+  }));
 
-  renderSubmissions(data || []);
+  renderSubmissions(items);
 }
 
 async function fetchAudit() {
   const { data, error } = await supabaseClient
     .from("audit_logs")
-    .select("id, action, entity, actor_email, created_at")
+    .select("id, action_type, target_table, created_at")
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -1033,87 +1199,76 @@ async function approveSubmission(item, actionButton) {
   try {
     const source = editingSubmission && editingSubmission.id === item.id ? editingSubmission : item;
     const typedMedia = parseMediaUrls(imageUrlInput.value);
-    const sourceMedia = parseMediaUrls(source.image_url);
+    const sourceMedia = parseMediaUrls(source.media_urls || []);
     const mediaUrls = dedupeMediaUrls(typedMedia.length ? typedMedia : sourceMedia);
+    const category = findCategoryByInput(categoryInput.value || source.category || source.categories?.name || "");
     const payload = {
       term: termInput.value.trim() || source.term,
-      category: categoryInput.value.trim() || source.category,
+      slug: source.slug || slugify(termInput.value.trim() || source.term),
+      category_id: category?.id || source.category_id || null,
       definition: definitionInput.value.trim() || source.definition,
       example: exampleInput.value.trim() || source.example,
-      related: normalizeRelated(relatedInput.value || source.related?.join(" | ") || ""),
-      image_url: serializeMediaUrls(mediaUrls)
+      status: "published",
+      reviewer_comment: reviewerCommentInput.value.trim() || null
     };
-    if (parseMediaUrls(payload.image_url).some((url) => !isSupportedMediaUrl(url))) {
+    const related = normalizeRelated(relatedInput.value || source.related?.join(" | ") || "");
+    if (mediaUrls.some((url) => !isSupportedMediaUrl(url))) {
       setMessage("Propositions: URL media invalide (http/https + extension image ou .pdf).", true);
+      return;
+    }
+    if (!payload.term || !payload.category_id || !payload.definition) {
+      setMessage("Propositions: terme, categorie et definition sont requis.", true);
       return;
     }
 
     const reviewerComment = reviewerCommentInput.value.trim() || null;
-
-    const atomic = await supabaseClient.rpc("accept_submission_atomic", {
-      target_submission_id: item.id,
-      next_term: payload.term,
-      next_category: payload.category,
-      next_definition: payload.definition,
-      next_example: payload.example || null,
-      next_related: payload.related,
-      next_image_url: payload.image_url || null,
-      next_reviewer_comment: reviewerComment
-    });
-    if (atomic.error && !isMissingRpc(atomic.error, "accept_submission_atomic")) {
-      if (await handleAuthError(atomic.error, "Propositions")) return;
-      setMessage(`Propositions: ${getErrorMessage(atomic.error)}`, true);
+    if (findTermByName(payload.term)) {
+      setMessage(`Propositions: le terme "${payload.term}" existe deja. Utilise "Modifier".`, true);
       return;
     }
 
-    if (atomic.error && isMissingRpc(atomic.error, "accept_submission_atomic")) {
-      if (findTermByName(payload.term)) {
-        setMessage(`Propositions: le terme "${payload.term}" existe deja. Utilise "Modifier".`, true);
-        return;
-      }
+    const { data: existingRows, error: existingError } = await supabaseClient
+      .from("terms")
+      .select("id, term")
+      .ilike("term", payload.term)
+      .limit(1);
+    if (existingError) {
+      if (await handleAuthError(existingError, "Propositions")) return;
+      setMessage(`Propositions: ${getErrorMessage(existingError)}`, true);
+      return;
+    }
+    if (existingRows && existingRows.length) {
+      setMessage(`Propositions: le terme "${payload.term}" existe deja.`, true);
+      return;
+    }
 
-      const { data: existingRows, error: existingError } = await supabaseClient
-        .from("terms")
-        .select("id, term")
-        .ilike("term", payload.term)
-        .limit(1);
-      if (existingError) {
-        if (await handleAuthError(existingError, "Propositions")) return;
-        setMessage(`Propositions: ${getErrorMessage(existingError)}`, true);
-        return;
-      }
-      if (existingRows && existingRows.length) {
-        setMessage(`Propositions: le terme "${payload.term}" existe deja.`, true);
-        return;
-      }
+    const { data: createdTerm, error: insertError } = await supabaseClient
+      .from("terms")
+      .insert(payload)
+      .select("id")
+      .single();
+    if (insertError) {
+      if (await handleAuthError(insertError, "Propositions")) return;
+      setMessage(`Propositions: ${getErrorMessage(insertError)}`, true);
+      return;
+    }
 
-      const { error: insertError } = await supabaseClient.from("terms").insert(payload).select("id").single();
-      if (insertError) {
-        if (await handleAuthError(insertError, "Propositions")) return;
-        setMessage(`Propositions: ${getErrorMessage(insertError)}`, true);
-        return;
-      }
+    await syncTermMedia(createdTerm.id, mediaUrls);
+    await syncTermRelations(createdTerm.id, related);
 
-      const { error: updateError } = await supabaseClient
-        .from("term_submissions")
-        .update({
-          term: payload.term,
-          category: payload.category,
-          definition: payload.definition,
-          example: payload.example,
-          related: payload.related,
-          image_url: payload.image_url,
-          status: "accepted",
-          reviewer_comment: reviewerComment,
-          reviewed_at: new Date().toISOString()
-        })
-        .eq("id", item.id);
+    const { error: updateError } = await supabaseClient
+      .from("term_submissions")
+      .update({
+        status: "accepted",
+        reviewer_comment: reviewerComment,
+        reviewed_by: currentUser ? currentUser.id : null
+      })
+      .eq("id", item.id);
 
-      if (updateError) {
-        if (await handleAuthError(updateError, "Propositions")) return;
-        setMessage(`Propositions: ${getErrorMessage(updateError)}`, true);
-        return;
-      }
+    if (updateError) {
+      if (await handleAuthError(updateError, "Propositions")) return;
+      setMessage(`Propositions: ${getErrorMessage(updateError)}`, true);
+      return;
     }
 
     await logAction("submission_accepted", "term_submissions", item.id, { term: payload.term });
@@ -1143,7 +1298,7 @@ async function rejectSubmission(item, actionButton) {
       .update({
         status: "rejected",
         reviewer_comment: reviewerCommentInput.value.trim() || null,
-        reviewed_at: new Date().toISOString()
+        reviewed_by: currentUser ? currentUser.id : null
       })
       .eq("id", item.id);
 
@@ -1375,6 +1530,7 @@ async function loadUser() {
   if (usersPanel) usersPanel.hidden = !isSuperAdmin;
   if (chatFeedbackPanel) chatFeedbackPanel.hidden = !isSuperAdmin;
 
+  await fetchCategories();
   await fetchTerms();
   await fetchSubmissions();
   await fetchAudit();

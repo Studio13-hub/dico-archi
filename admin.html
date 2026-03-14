@@ -56,7 +56,7 @@
         <div class="chips">
           <button type="button" class="chip" data-term-filter="all">Tous</button>
           <button type="button" class="chip" data-term-filter="draft">Draft</button>
-          <button type="button" class="chip" data-term-filter="review">Review</button>
+          <button type="button" class="chip" data-term-filter="validated">Review</button>
           <button type="button" class="chip" data-term-filter="published">Published</button>
         </div>
       </section>
@@ -72,10 +72,11 @@
         <div id="submission-banner" class="meta meta--subtle"></div>
         <div class="admin__inputs">
           <input id="term" type="text" placeholder="Terme" />
-          <input id="category" type="text" placeholder="Categorie" />
+          <input id="category" type="text" placeholder="Categorie" list="category-options" />
+          <datalist id="category-options"></datalist>
           <select id="term-status">
             <option value="draft">Draft</option>
-            <option value="review">Review</option>
+            <option value="validated">Review</option>
             <option value="published">Published</option>
           </select>
           <textarea id="definition" placeholder="Definition"></textarea>
