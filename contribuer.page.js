@@ -32,7 +32,7 @@ async function loadContributionCategories() {
       categoryInput.appendChild(option);
     }
   } catch (error) {
-    setContributionMessage(`Impossible de charger les categories: ${error.message}`, true);
+    setContributionMessage(`Impossible de charger les catégories : ${error.message}`, true);
   }
 }
 
@@ -50,7 +50,7 @@ async function submitContribution(event) {
   const example = exampleInput.value.trim();
 
   if (!term || !categoryId || !definition) {
-    setContributionMessage("Terme, categorie et definition sont obligatoires.", true);
+    setContributionMessage("Terme, catégorie et définition sont obligatoires.", true);
     return;
   }
 
@@ -78,7 +78,7 @@ async function submitContribution(event) {
   }
 
   form.reset();
-  setContributionMessage("Proposition envoyee avec succes.");
+  setContributionMessage("Proposition envoyée avec succès.");
 }
 
 if (supabaseHelpers && dicoApi) {

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Connexion - Dico Architecture CH</title>
-    <meta name="description" content="Connexion et creation de compte pour contribuer au dictionnaire." />
+    <meta name="description" content="Connexion et création de compte pour contribuer au dictionnaire." />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -17,16 +17,16 @@
             <span></span><span></span><span></span>
           </button>
           <div class="hero__actions" data-menu-panel>
-            <span class="meta meta--subtle" data-nav-status>Non connecte</span>
+            <span class="meta meta--subtle" data-nav-status>Non connecté</span>
             <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
             <a class="link-button" href="contribuer.html">Contribuer</a>
             <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
             <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
-            <button class="link-button" type="button" data-nav-logout hidden>Se deconnecter</button>
+            <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
           </div>
         </div>
-        <h1>Connexion / Creation de compte</h1>
-        <p>Le contenu reste public. La modification des termes est reservee aux comptes autorises.</p>
+        <h1>Connexion / Création de compte</h1>
+        <p>Le contenu reste public. La modification des termes est réservée aux comptes autorisés.</p>
       </div>
     </header>
 
@@ -39,8 +39,8 @@
           </div>
           <div class="auth__actions">
             <button id="login" type="submit">Se connecter</button>
-            <button id="signup" type="button" class="ghost">Creer un compte</button>
-            <button id="forgot-password" type="button" class="ghost">Mot de passe oublie ?</button>
+            <button id="signup" type="button" class="ghost">Créer un compte</button>
+            <button id="forgot-password" type="button" class="ghost">Mot de passe oublié ?</button>
           </div>
         </form>
         <form id="reset-form" novalidate hidden>
@@ -65,12 +65,12 @@
         </form>
         <div class="auth__message" id="auth-message"></div>
         <div class="meta meta--subtle">
-          Le dictionnaire reste accessible en mode Public. Les comptes internes recoivent ensuite un role de Formateur ou d'Apprenti selon l'usage prevu.
+          Le dictionnaire reste accessible en mode Public. Les comptes internes reçoivent ensuite un rôle de Formateur ou d'Apprenti selon l'usage prévu.
         </div>
       </section>
 
       <section class="panel">
-        <h2>Roles utilisateurs</h2>
+        <h2>Rôles utilisateurs</h2>
         <div class="dashboard">
           <div class="dashboard__item">
             <span class="dashboard__label">Public</span>
@@ -78,15 +78,15 @@
           </div>
           <div class="dashboard__item">
             <span class="dashboard__label">Apprenti</span>
-            <strong>Contribution soumise a validation</strong>
+            <strong>Contribution soumise à validation</strong>
           </div>
           <div class="dashboard__item">
             <span class="dashboard__label">Formateur</span>
-            <strong>Validation et correction editoriale</strong>
+            <strong>Validation et correction éditoriale</strong>
           </div>
           <div class="dashboard__item">
             <span class="dashboard__label">Super admin</span>
-            <strong>Gestion complete du site et des utilisateurs</strong>
+            <strong>Gestion complète du site et des utilisateurs</strong>
           </div>
         </div>
       </section>

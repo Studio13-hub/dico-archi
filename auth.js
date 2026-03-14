@@ -20,7 +20,7 @@ function setMessage(text, isError = false) {
 }
 
 if (!supabaseHelpers || !supabaseHelpers.hasConfig()) {
-  setMessage("Configuration Supabase manquante. Ajoute tes cles dans config.js.", true);
+  setMessage("Configuration Supabase manquante. Ajoute tes clés dans config.js.", true);
 }
 
 const supabaseClient = supabaseHelpers && supabaseHelpers.hasConfig()
@@ -76,7 +76,7 @@ async function signIn() {
     return;
   }
 
-  setMessage("Connecte avec succes. Redirection...");
+  setMessage("Connecté avec succès. Redirection...");
   setTimeout(redirectAfterLogin, 800);
 }
 
@@ -100,14 +100,14 @@ async function signUp() {
     return;
   }
 
-  setMessage("Compte cree. Verifie ton email pour confirmer.");
+  setMessage("Compte créé. Vérifie ton email pour confirmer.");
 }
 
 async function sendResetEmail() {
   if (!supabaseClient) return;
   const email = emailInput.value.trim();
   if (!email) {
-    setMessage("Saisis ton email avant de demander la reinitialisation.", true);
+    setMessage("Saisis ton email avant de demander la réinitialisation.", true);
     return;
   }
 
@@ -118,7 +118,7 @@ async function sendResetEmail() {
     return;
   }
 
-  setMessage("Email de reinitialisation envoye. Verifie ta boite mail.");
+  setMessage("Email de réinitialisation envoyé. Vérifie ta boîte mail.");
 }
 
 async function updatePassword() {
@@ -132,7 +132,7 @@ async function updatePassword() {
   }
 
   if (newPassword.length < 8) {
-    setMessage("Le mot de passe doit contenir au moins 8 caracteres.", true);
+    setMessage("Le mot de passe doit contenir au moins 8 caractères.", true);
     return;
   }
 
@@ -149,7 +149,7 @@ async function updatePassword() {
       return;
     }
 
-    setMessage("Mot de passe mis a jour. Tu peux te connecter.");
+    setMessage("Mot de passe mis à jour. Tu peux te connecter.");
     if (newPasswordInput) newPasswordInput.value = "";
     if (confirmPasswordInput) confirmPasswordInput.value = "";
     setMode("auth");
@@ -183,7 +183,7 @@ if (backToLoginButton) {
 
 if (isRecoveryContext()) {
   setMode("reset");
-  setMessage("Definis ton nouveau mot de passe.");
+  setMessage("Définis ton nouveau mot de passe.");
 } else {
   setMode("auth");
 }

@@ -29,7 +29,7 @@ function renderGuestState() {
   accountLoginLink.href = "auth.html";
   accountAdminLink.hidden = true;
   accountLogout.hidden = true;
-  setMessage("Tu es en mode Public: consultation libre des definitions.");
+  setMessage("Tu es en mode Public: consultation libre des définitions.");
 }
 
 async function loadAccount() {
@@ -58,7 +58,7 @@ async function loadAccount() {
   accountLogout.hidden = false;
 
   if (normalized.active) {
-    setMessage("Compte charge. Utilise les liens selon ton role.");
+    setMessage("Compte chargé. Utilise les liens selon ton rôle.");
   } else {
     setMessage("Compte inactif. Contacte un super admin.", true);
   }
