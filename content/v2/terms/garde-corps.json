@@ -1,0 +1,42 @@
+{
+  "id": "term_garde_corps",
+  "term": "Garde-corps",
+  "slug": "garde-corps",
+  "category_slug": "facades",
+  "subcategory_slug": "protection-solaire-et-securite",
+  "status": "published",
+  "content": {
+    "definition": "Élément de protection placé en bord de vide pour empêcher les chutes depuis un balcon, une coursive ou une fenêtre accessible.",
+    "explanation": "Le garde-corps répond à une fonction de sécurité, mais il participe aussi fortement à l’apparence de la façade et à la lecture des niveaux.",
+    "example": "Sur une façade avec balcons, le garde-corps doit être coordonné avec les nez de dalle et le rythme des ouvertures.",
+    "applications": [
+      "balcons",
+      "terrasses",
+      "coursives"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": [
+      "Vérifier la hauteur réglementaire et la résistance mécanique.",
+      "Coordonner les fixations avec la structure et l’étanchéité."
+    ]
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À détailler en élévation et en coupe avec ses points d’ancrage."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "facades",
+      "securite",
+      "balcon"
+    ],
+    "version": 1
+  }
+}

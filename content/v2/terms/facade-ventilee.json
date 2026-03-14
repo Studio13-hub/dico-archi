@@ -1,0 +1,44 @@
+{
+  "id": "term_facade_ventilee",
+  "term": "Façade ventilée",
+  "slug": "facade-ventilee",
+  "category_slug": "facades",
+  "subcategory_slug": "systemes-de-facade",
+  "status": "published",
+  "content": {
+    "definition": "Système de façade composé d’un parement extérieur, d’une lame d’air ventilée et d’une couche isolante fixée au support.",
+    "explanation": "La lame d’air permet de mieux gérer l’humidité et les échauffements, tout en protégeant la paroi principale derrière le parement.",
+    "example": "Une façade ventilée en bardage métallique peut améliorer la durabilité de l’enveloppe et faciliter certaines opérations d’entretien.",
+    "applications": [
+      "bâtiments d’habitation",
+      "façades rénovées",
+      "enveloppes ventilées"
+    ],
+    "norms": [
+      "sia-180"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": [
+      "Coordonner les fixations, les joints et la ventilation de la lame d’air.",
+      "Vérifier la compatibilité entre support, isolation et parement."
+    ]
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À détailler en coupe avec support, isolation, lame d’air et parement."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "facades",
+      "enveloppe",
+      "ventilation"
+    ],
+    "version": 1
+  }
+}

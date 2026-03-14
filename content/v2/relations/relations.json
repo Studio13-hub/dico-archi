@@ -363,5 +363,60 @@
     "source_slug": "structure-bois",
     "target_slug": "ossature-poteaux-poutres",
     "relation_type": "related"
+  },
+  {
+    "source_slug": "facade-ventilee",
+    "target_slug": "bardage",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "facade-ventilee",
+    "target_slug": "isolation-thermique-par-lexterieur",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "facade-rideau",
+    "target_slug": "chassis-fixe",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "facade-rideau",
+    "target_slug": "baie-coulissante",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "bardage",
+    "target_slug": "parement-de-facade",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "isolation-thermique-par-lexterieur",
+    "target_slug": "isolation-thermique",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "isolation-thermique-par-lexterieur",
+    "target_slug": "sia-380",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "brise-soleil",
+    "target_slug": "facade-rideau",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "garde-corps",
+    "target_slug": "seuil-de-porte",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "allege",
+    "target_slug": "appui-de-fenetre",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "allege",
+    "target_slug": "fenetre-simple",
+    "relation_type": "related"
   }
 ]

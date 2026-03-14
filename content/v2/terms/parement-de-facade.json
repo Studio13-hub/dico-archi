@@ -1,0 +1,42 @@
+{
+  "id": "term_parement_de_facade",
+  "term": "Parement de façade",
+  "slug": "parement-de-facade",
+  "category_slug": "facades",
+  "subcategory_slug": "parements-et-enveloppe",
+  "status": "published",
+  "content": {
+    "definition": "Couche extérieure visible d’une façade, choisie pour protéger la paroi et donner son aspect final au bâtiment.",
+    "explanation": "Le parement peut être maçonné, métallique, minéral ou composite selon les performances attendues et l’expression architecturale recherchée.",
+    "example": "Un parement de façade en pierre reconstituée donne un caractère minéral et durable à l’enveloppe.",
+    "applications": [
+      "façades neuves",
+      "rénovations",
+      "habillages architecturaux"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": [
+      "Coordonner le parement avec le support, les joints et les détails d’angle.",
+      "Vérifier l’entretien et le comportement au vieillissement."
+    ]
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À préciser en élévation et en détail selon le calepinage retenu."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "facades",
+      "parement",
+      "finition"
+    ],
+    "version": 1
+  }
+}

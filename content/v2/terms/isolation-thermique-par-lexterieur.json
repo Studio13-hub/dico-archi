@@ -1,0 +1,45 @@
+{
+  "id": "term_isolation_thermique_par_lexterieur",
+  "term": "Isolation thermique par l’extérieur",
+  "slug": "isolation-thermique-par-lexterieur",
+  "category_slug": "facades",
+  "subcategory_slug": "parements-et-enveloppe",
+  "status": "published",
+  "content": {
+    "definition": "Système d’isolation posé à l’extérieur de la paroi afin d’améliorer la performance thermique de la façade.",
+    "explanation": "Cette solution limite les ponts thermiques et permet de conserver davantage d’inertie du côté intérieur de la construction.",
+    "example": "Dans une rénovation, l’isolation thermique par l’extérieur peut améliorer nettement le confort sans modifier fortement l’usage intérieur.",
+    "applications": [
+      "rénovations de façade",
+      "amélioration énergétique",
+      "enveloppes extérieures"
+    ],
+    "norms": [
+      "sia-180",
+      "sia-380"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": [
+      "Traiter soigneusement les tableaux, les appuis et les raccords aux toitures.",
+      "Vérifier la compatibilité du système avec le support existant."
+    ]
+  },
+  "representation": {
+    "abbreviation_plan": "ITE",
+    "drawing_note": "À montrer avec l’épaisseur isolante, la finition et les points singuliers."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "facades",
+      "isolation",
+      "energie"
+    ],
+    "version": 1
+  }
+}

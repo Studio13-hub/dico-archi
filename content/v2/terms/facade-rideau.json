@@ -1,0 +1,44 @@
+{
+  "id": "term_facade_rideau",
+  "term": "Façade rideau",
+  "slug": "facade-rideau",
+  "category_slug": "facades",
+  "subcategory_slug": "systemes-de-facade",
+  "status": "published",
+  "content": {
+    "definition": "Façade légère non porteuse fixée à la structure du bâtiment, souvent composée de profils et de remplissages vitrés ou opaques.",
+    "explanation": "La façade rideau assure l’enveloppe extérieure sans reprendre les charges principales du bâtiment, qui restent portées par la structure.",
+    "example": "Dans un immeuble de bureaux, la façade rideau permet de créer de grandes surfaces vitrées et une image très légère.",
+    "applications": [
+      "bureaux",
+      "bâtiments tertiaires",
+      "halls vitrés"
+    ],
+    "norms": [
+      "sia-180"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": [
+      "Coordonner les profils, les joints et les points de fixation.",
+      "Vérifier les exigences thermiques, acoustiques et de sécurité."
+    ]
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À représenter avec les trames de montants, traverses et remplissages."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "facades",
+      "vitrage",
+      "enveloppe"
+    ],
+    "version": 1
+  }
+}

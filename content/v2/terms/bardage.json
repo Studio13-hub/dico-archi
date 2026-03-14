@@ -1,0 +1,42 @@
+{
+  "id": "term_bardage",
+  "term": "Bardage",
+  "slug": "bardage",
+  "category_slug": "facades",
+  "subcategory_slug": "parements-et-enveloppe",
+  "status": "published",
+  "content": {
+    "definition": "Parement extérieur rapporté sur une façade pour protéger l’enveloppe et donner une finition visible au bâtiment.",
+    "explanation": "Le bardage peut être en bois, métal, fibres-ciment ou autre matériau adapté aux contraintes climatiques et esthétiques du projet.",
+    "example": "Un bardage bois ajouré peut être posé sur une façade ventilée pour donner un aspect plus chaleureux à l’enveloppe.",
+    "applications": [
+      "façades ventilées",
+      "habillages extérieurs",
+      "rénovations de façade"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": [
+      "Prévoir la ventilation, les fixations et les joints.",
+      "Choisir un matériau compatible avec l’exposition extérieure."
+    ]
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À coordonner avec l’ossature secondaire et les détails de départ et de finition."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "facades",
+      "parement",
+      "revetement"
+    ],
+    "version": 1
+  }
+}

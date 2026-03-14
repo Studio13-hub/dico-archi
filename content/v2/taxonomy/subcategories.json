@@ -102,6 +102,24 @@
     "description": "Notions de structure globale, d’ossature et d’assemblage entre les éléments constructifs."
   },
   {
+    "category_slug": "facades",
+    "name": "Systèmes de façade",
+    "slug": "systemes-de-facade",
+    "description": "Façades ventilées, façades rideaux et autres systèmes complets d’enveloppe verticale."
+  },
+  {
+    "category_slug": "facades",
+    "name": "Parements et enveloppe",
+    "slug": "parements-et-enveloppe",
+    "description": "Bardages, parements et solutions d’isolation extérieure qui composent la peau du bâtiment."
+  },
+  {
+    "category_slug": "facades",
+    "name": "Protection solaire et sécurité",
+    "slug": "protection-solaire-et-securite",
+    "description": "Éléments ajoutés à la façade pour filtrer la lumière, sécuriser les bords et compléter l’usage."
+  },
+  {
     "category_slug": "phases-sia",
     "name": "Cycle du projet",
     "slug": "cycle-du-projet",

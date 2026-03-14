@@ -1,0 +1,42 @@
+{
+  "id": "term_allege",
+  "term": "Allège",
+  "slug": "allege",
+  "category_slug": "facades",
+  "subcategory_slug": "protection-solaire-et-securite",
+  "status": "published",
+  "content": {
+    "definition": "Partie de mur ou de remplissage située sous une fenêtre, entre le plancher et l’appui de l’ouverture.",
+    "explanation": "L’allège participe à la composition de façade, à la sécurité et parfois à la performance thermique selon sa conception.",
+    "example": "En façade rideau, l’allège peut être opaque pour masquer une zone technique ou aligner le dessin extérieur.",
+    "applications": [
+      "fenêtres",
+      "façades vitrées",
+      "ouvrants en élévation"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": [
+      "Coordonner l’allège avec l’appui, la menuiserie et la sécurité en façade.",
+      "Vérifier les performances thermiques si la zone est opaque."
+    ]
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À lire en lien avec la baie, le châssis et la composition d’élévation."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "facades",
+      "ouvertures",
+      "elevation"
+    ],
+    "version": 1
+  }
+}

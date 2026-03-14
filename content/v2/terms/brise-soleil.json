@@ -1,0 +1,42 @@
+{
+  "id": "term_brise_soleil",
+  "term": "Brise-soleil",
+  "slug": "brise-soleil",
+  "category_slug": "facades",
+  "subcategory_slug": "protection-solaire-et-securite",
+  "status": "published",
+  "content": {
+    "definition": "Élément fixe ou mobile placé devant une façade pour limiter l’ensoleillement direct et améliorer le confort intérieur.",
+    "explanation": "Le brise-soleil participe à la maîtrise des surchauffes et à la qualité lumineuse, tout en influençant l’expression de la façade.",
+    "example": "Un brise-soleil horizontal au sud réduit les apports directs du soleil en été tout en gardant de la lumière.",
+    "applications": [
+      "façades exposées au soleil",
+      "bureaux",
+      "logements"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": [
+      "Coordonner l’orientation des lames avec l’ensoleillement.",
+      "Vérifier les fixations et l’entretien des éléments mobiles."
+    ]
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À lire avec la façade, les ouvertures et la course du soleil."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "facades",
+      "protection-solaire",
+      "confort"
+    ],
+    "version": 1
+  }
+}
