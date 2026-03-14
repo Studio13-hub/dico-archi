@@ -4,6 +4,9 @@ const homeSearchResults = document.getElementById("home-search-results");
 const featuredTermTitle = document.getElementById("featured-term-title");
 const featuredTermDefinition = document.getElementById("featured-term-definition");
 const featuredTermLink = document.getElementById("featured-term-link");
+const homeTermCount = document.getElementById("home-term-count");
+const homeCategoryCount = document.getElementById("home-category-count");
+const homeStartTermLink = document.getElementById("home-start-term-link");
 
 function renderSearchResults(items) {
   if (!Array.isArray(items) || !items.length) {
@@ -58,10 +61,44 @@ async function loadFeaturedTerm() {
     featuredTermTitle.textContent = item.term;
     featuredTermDefinition.textContent = item.definition || "Définition indisponible.";
     featuredTermLink.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
+    if (homeStartTermLink) {
+      homeStartTermLink.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
+    }
   } catch (error) {
     featuredTermTitle.textContent = "Erreur";
     featuredTermDefinition.textContent = error.message || "Impossible de charger le terme du jour.";
     featuredTermLink.href = "dictionnaire.html";
+    if (homeStartTermLink) {
+      homeStartTermLink.href = "dictionnaire.html";
+    }
+  }
+}
+
+async function loadHomeProofs() {
+  if (!window.DicoArchiApi) {
+    if (homeTermCount) homeTermCount.textContent = "Indisponible";
+    if (homeCategoryCount) homeCategoryCount.textContent = "Indisponible";
+    return;
+  }
+
+  try {
+    const [terms, categories] = await Promise.all([
+      window.DicoArchiApi.fetchPublishedTermsBasic(),
+      window.DicoArchiApi.fetchCategories()
+    ]);
+
+    if (homeTermCount) {
+      const totalTerms = Array.isArray(terms) ? terms.length : 0;
+      homeTermCount.textContent = `${totalTerms} terme${totalTerms > 1 ? "s" : ""}`;
+    }
+
+    if (homeCategoryCount) {
+      const totalCategories = Array.isArray(categories) ? categories.length : 0;
+      homeCategoryCount.textContent = `${totalCategories} catégorie${totalCategories > 1 ? "s" : ""}`;
+    }
+  } catch (_error) {
+    if (homeTermCount) homeTermCount.textContent = "Indisponible";
+    if (homeCategoryCount) homeCategoryCount.textContent = "Indisponible";
   }
 }
 
@@ -76,3 +113,4 @@ if (homeSearchInput) {
 }
 
 loadFeaturedTerm();
+loadHomeProofs();

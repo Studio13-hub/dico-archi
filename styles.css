@@ -89,8 +89,33 @@ p {
   max-width: 860px;
 }
 
+.welcome-cover__proofs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 18px 0 8px;
+  max-width: 860px;
+}
+
+.welcome-proof {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 14px 16px;
+  display: grid;
+  gap: 6px;
+  box-shadow: 0 14px 30px rgba(18, 18, 18, 0.06);
+}
+
+.welcome-proof strong {
+  font-size: 1.25rem;
+}
+
 .welcome-cover__actions {
   margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .welcome-cover__cta {
