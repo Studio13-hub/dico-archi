@@ -35,42 +35,62 @@
 
     <main>
       <section class="panel">
-        <h2>Version prévue</h2>
-        <div class="dashboard">
-          <div class="dashboard__item">
-            <span class="dashboard__label">V1.3</span>
-            <strong>Quiz terme / définition</strong>
-            <p class="meta meta--subtle">
-              Questions courtes à partir du corpus publié, pensées pour mobile et pour les non-francophones.
-            </p>
+        <div class="quiz">
+          <div class="quiz__header">
+            <h2>Quiz en direct</h2>
+            <div id="quiz-score" class="quiz__score">0 / 0</div>
           </div>
-          <div class="dashboard__item">
-            <span class="dashboard__label">V1.4</span>
-            <strong>Deux mini-jeux éducatifs</strong>
-            <p class="meta meta--subtle">
-              Un memory architecture et un jeu d'association rapide viendront compléter le quiz.
-            </p>
+
+          <div class="quiz__meta">
+            <label class="quiz__mode">
+              Mode
+              <select id="quiz-mode">
+                <option value="term-to-definition">Terme -> définition</option>
+                <option value="definition-to-term">Définition -> terme</option>
+              </select>
+            </label>
+            <div id="quiz-streak" class="meta">Série : 0</div>
+            <div id="quiz-progress-label" class="meta">Question 0 / 10</div>
+          </div>
+
+          <div class="quiz__progress" aria-hidden="true">
+            <div id="quiz-progress-bar" class="quiz__progress-bar"></div>
+          </div>
+
+          <div id="quiz-question" class="quiz__question">Chargement du quiz...</div>
+          <div id="quiz-options" class="quiz__options"></div>
+          <div id="quiz-feedback" class="quiz__feedback"></div>
+          <div id="quiz-badge" class="quiz__badge hidden"></div>
+
+          <div class="quiz__actions">
+            <button id="quiz-next" type="button">Question suivante</button>
+            <button id="quiz-replay" class="ghost" type="button">Rejouer</button>
+          </div>
+
+          <div class="quiz__leaderboard">
+            <h3>Meilleurs scores locaux</h3>
+            <div id="quiz-leaderboard" class="meta meta--subtle">Aucune partie enregistrée.</div>
           </div>
         </div>
       </section>
 
       <section class="panel">
-        <h2>Ce qui est prévu</h2>
+        <h2>Ce qui arrive ensuite</h2>
         <div class="dashboard">
           <div class="dashboard__item">
-            <span class="dashboard__label">Mode 1</span>
-            <strong>Terme vers définition</strong>
-            <p class="meta meta--subtle">Choisir la bonne définition à partir d'un terme publié.</p>
+            <span class="dashboard__label">V1.3</span>
+            <strong>Mode image / schéma</strong>
+            <p class="meta meta--subtle">Associer un schéma ou une image simple au bon vocabulaire d’architecture.</p>
           </div>
           <div class="dashboard__item">
-            <span class="dashboard__label">Mode 2</span>
-            <strong>Définition vers terme</strong>
-            <p class="meta meta--subtle">Retrouver le bon terme à partir d'une explication courte.</p>
+            <span class="dashboard__label">V1.4</span>
+            <strong>Memory Architecture</strong>
+            <p class="meta meta--subtle">Retrouver les bonnes paires terme / définition dans un jeu rapide et visuel.</p>
           </div>
           <div class="dashboard__item">
-            <span class="dashboard__label">Mode 3</span>
-            <strong>Image vers terme</strong>
-            <p class="meta meta--subtle">Associer un schéma ou une image simple au bon vocabulaire.</p>
+            <span class="dashboard__label">V1.4</span>
+            <strong>Match Express</strong>
+            <p class="meta meta--subtle">Associer rapidement termes, catégories et définitions dans un mode dynamique.</p>
           </div>
         </div>
       </section>
@@ -105,6 +125,7 @@
     <script src="supabaseClient.js"></script>
     <script src="menu.js"></script>
     <script src="nav.js"></script>
+    <script src="quiz.page.js"></script>
     <script src="chatbot.js"></script>
   </body>
 </html>
