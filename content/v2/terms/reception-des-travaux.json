@@ -1,14 +1,14 @@
 {
   "id": "term_reception_des_travaux",
-  "term": "Reception des travaux",
+  "term": "Réception des travaux",
   "slug": "reception-des-travaux",
   "category_slug": "phases-sia",
   "subcategory_slug": "cycle-du-projet",
   "status": "published",
   "content": {
-    "definition": "Etape de fin de chantier durant laquelle l ouvrage est controle et remis avec reserves eventuelles.",
+    "definition": "Étape de fin de chantier durant laquelle l’ouvrage est contrôlé et remis avec réserves éventuelles.",
     "explanation": null,
-    "example": "La reception des travaux marque une etape importante dans la cloture du chantier.",
+    "example": "La réception des travaux marque une étape importante dans la clôture du chantier.",
     "applications": [],
     "norms": []
   },

@@ -8,7 +8,7 @@
   "content": {
     "definition": "Indication graphique des dimensions et mesures sur un dessin technique.",
     "explanation": null,
-    "example": "La cotation permet de lire la largeur d une piece ou l epaisseur d un mur.",
+    "example": "La cotation permet de lire la largeur d’une pièce ou l’épaisseur d’un mur.",
     "applications": [],
     "norms": []
   },
