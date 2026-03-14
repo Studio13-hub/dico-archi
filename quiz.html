@@ -29,7 +29,7 @@
           </div>
         </div>
         <h1>Quiz DicoArchi</h1>
-        <p>Un mode d'apprentissage ludique est en préparation pour réviser les termes d'architecture.</p>
+        <p>Révise les termes d'architecture avec un quiz rapide, pensé pour le mobile et les non-francophones.</p>
       </div>
     </header>
 
@@ -49,6 +49,12 @@
                 <option value="definition-to-term">Définition -> terme</option>
               </select>
             </label>
+            <label class="quiz__mode">
+              Catégorie
+              <select id="quiz-category">
+                <option value="">Toutes les catégories</option>
+              </select>
+            </label>
             <div id="quiz-streak" class="meta">Série : 0</div>
             <div id="quiz-progress-label" class="meta">Question 0 / 10</div>
           </div>
@@ -63,7 +69,7 @@
           <div id="quiz-badge" class="quiz__badge hidden"></div>
 
           <div class="quiz__actions">
-            <button id="quiz-next" type="button">Question suivante</button>
+            <button id="quiz-next" type="button">Commencer</button>
             <button id="quiz-replay" class="ghost" type="button">Rejouer</button>
           </div>
 

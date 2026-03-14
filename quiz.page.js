@@ -1,4 +1,5 @@
 const quizModeSelect = document.getElementById("quiz-mode");
+const quizCategorySelect = document.getElementById("quiz-category");
 const quizQuestion = document.getElementById("quiz-question");
 const quizOptions = document.getElementById("quiz-options");
 const quizFeedback = document.getElementById("quiz-feedback");
@@ -16,6 +17,7 @@ const QUIZ_QUESTION_COUNT = 10;
 const QUIZ_OPTION_COUNT = 4;
 
 let termPool = [];
+let filteredPool = [];
 let quizState = null;
 
 function shuffle(items) {
@@ -36,6 +38,32 @@ function normalizeQuizItems(items) {
       category: String(item.categories?.name || "").trim()
     }))
     .filter((item) => item.term && item.definition);
+}
+
+function buildCategoryOptions(items) {
+  const categories = Array.from(
+    new Set(items.map((item) => item.category).filter(Boolean))
+  ).sort((a, b) => a.localeCompare(b, "fr"));
+
+  quizCategorySelect.innerHTML = "";
+
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "";
+  defaultOption.textContent = "Toutes les catégories";
+  quizCategorySelect.appendChild(defaultOption);
+
+  for (const category of categories) {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    quizCategorySelect.appendChild(option);
+  }
+}
+
+function getActivePool() {
+  const selectedCategory = quizCategorySelect.value;
+  if (!selectedCategory) return termPool;
+  return termPool.filter((item) => item.category === selectedCategory);
 }
 
 function setQuizMessage(text, tone = "") {
@@ -118,8 +146,9 @@ function updateQuizMeta() {
 
 function pickQuestion() {
   const mode = quizModeSelect.value;
-  const remaining = termPool.filter((item) => !quizState.usedSlugs.has(item.slug));
-  const source = (remaining.length ? remaining : termPool);
+  const pool = filteredPool.length ? filteredPool : termPool;
+  const remaining = pool.filter((item) => !quizState.usedSlugs.has(item.slug));
+  const source = (remaining.length ? remaining : pool);
   const correct = source[Math.floor(Math.random() * source.length)];
 
   if (correct.slug) {
@@ -127,7 +156,7 @@ function pickQuestion() {
   }
 
   const distractors = shuffle(
-    termPool.filter((item) => item.slug !== correct.slug)
+    pool.filter((item) => item.slug !== correct.slug)
   ).slice(0, QUIZ_OPTION_COUNT - 1);
 
   const options = shuffle([correct, ...distractors]).map((item) => ({
@@ -229,6 +258,7 @@ function renderQuestion() {
 }
 
 function resetQuiz() {
+  filteredPool = getActivePool();
   quizState = {
     index: 0,
     total: 0,
@@ -241,9 +271,16 @@ function resetQuiz() {
 
   quizReplay.hidden = true;
   quizNext.disabled = true;
+  quizNext.textContent = "Commencer";
   quizQuestion.textContent = "Clique sur « Commencer » pour lancer une manche de 10 questions.";
   quizOptions.textContent = "";
   setQuizMessage("");
+
+  if (filteredPool.length && filteredPool.length < QUIZ_OPTION_COUNT) {
+    quizQuestion.textContent = "Cette catégorie ne contient pas encore assez de termes pour lancer le quiz.";
+    quizNext.disabled = true;
+  }
+
   updateQuizMeta();
 }
 
@@ -262,6 +299,7 @@ async function loadQuizTerms() {
       return;
     }
 
+    buildCategoryOptions(termPool);
     resetQuiz();
     renderLeaderboard();
   } catch (error) {
@@ -284,6 +322,10 @@ quizReplay.addEventListener("click", () => {
 });
 
 quizModeSelect.addEventListener("change", () => {
+  resetQuiz();
+});
+
+quizCategorySelect.addEventListener("change", () => {
   resetQuiz();
 });
 
