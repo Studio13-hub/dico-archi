@@ -4,6 +4,9 @@ const termInput = document.getElementById("term");
 const categoryInput = document.getElementById("category");
 const definitionInput = document.getElementById("definition");
 const exampleInput = document.getElementById("example");
+const qualityTitle = document.getElementById("contrib-quality-title");
+const qualityCopy = document.getElementById("contrib-quality-copy");
+const stats = document.getElementById("contrib-stats");
 const supabaseHelpers = window.DicoArchiSupabase;
 const dicoApi = window.DicoArchiApi;
 
@@ -20,6 +23,53 @@ function slugify(value) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function updateContributionHints() {
+  const term = termInput.value.trim();
+  const categoryId = categoryInput.value.trim();
+  const definition = definitionInput.value.trim();
+  const example = exampleInput.value.trim();
+  const totalLength = definition.length + example.length;
+
+  if (stats) {
+    stats.textContent = `${totalLength} caractère${totalLength > 1 ? "s" : ""}`;
+  }
+
+  if (!qualityTitle || !qualityCopy) return;
+
+  if (!term && !categoryId && !definition) {
+    qualityTitle.textContent = "Formulaire en cours";
+    qualityCopy.textContent = "Commencez par un terme, une catégorie et une définition complète.";
+    return;
+  }
+
+  if (!term || !categoryId || !definition) {
+    qualityTitle.textContent = "Base incomplète";
+    qualityCopy.textContent = "Le terme, la catégorie et la définition sont requis avant envoi.";
+    return;
+  }
+
+  if (definition.length < 40) {
+    qualityTitle.textContent = "Définition trop courte";
+    qualityCopy.textContent = "Ajoutez un peu plus de contexte pour rendre la fiche utile aux débutants.";
+    return;
+  }
+
+  if (!/[.?!…]$/.test(definition)) {
+    qualityTitle.textContent = "Ponctuation à vérifier";
+    qualityCopy.textContent = "Terminez la définition par un point ou une ponctuation claire.";
+    return;
+  }
+
+  if (!example) {
+    qualityTitle.textContent = "Exemple conseillé";
+    qualityCopy.textContent = "Le formulaire est valide, mais un exemple concret améliore fortement la compréhension.";
+    return;
+  }
+
+  qualityTitle.textContent = "Proposition solide";
+  qualityCopy.textContent = "La base éditoriale est correcte. Vous pouvez envoyer la proposition.";
 }
 
 async function loadContributionCategories() {
@@ -78,6 +128,7 @@ async function submitContribution(event) {
   }
 
   form.reset();
+  updateContributionHints();
   setContributionMessage("Proposition envoyée avec succès.");
 }
 
@@ -90,3 +141,11 @@ if (supabaseHelpers && dicoApi) {
 if (form) {
   form.addEventListener("submit", submitContribution);
 }
+
+[termInput, categoryInput, definitionInput, exampleInput].forEach((field) => {
+  if (!field) return;
+  field.addEventListener("input", updateContributionHints);
+  field.addEventListener("change", updateContributionHints);
+});
+
+updateContributionHints();
