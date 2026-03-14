@@ -270,7 +270,7 @@ function resetQuiz() {
   };
 
   quizReplay.hidden = true;
-  quizNext.disabled = true;
+  quizNext.disabled = false;
   quizNext.textContent = "Commencer";
   quizQuestion.textContent = "Clique sur « Commencer » pour lancer une manche de 10 questions.";
   quizOptions.textContent = "";
