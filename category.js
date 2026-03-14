@@ -27,6 +27,45 @@ function renderMessage(title, subtitle) {
   breadcrumbEl.textContent = "";
 }
 
+function renderCategoryIndex(list) {
+  cardsEl.textContent = "";
+
+  if (!list.length) {
+    renderMessage("Categories indisponibles", "Aucune categorie n'est disponible pour le moment.");
+    return;
+  }
+
+  for (const item of list) {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = `${item.count} terme${item.count > 1 ? "s" : ""}`;
+
+    const title = document.createElement("h3");
+    title.textContent = item.name;
+
+    const description = document.createElement("div");
+    description.textContent = item.description || "Categorie du dictionnaire DicoArchi.";
+
+    const link = document.createElement("a");
+    link.className = "card__link";
+    link.href = `category.html?category_id=${encodeURIComponent(item.id)}`;
+    link.textContent = "Explorer la categorie";
+
+    const actions = document.createElement("div");
+    actions.className = "card__actions";
+    actions.appendChild(link);
+
+    card.appendChild(tag);
+    card.appendChild(title);
+    card.appendChild(description);
+    card.appendChild(actions);
+    cardsEl.appendChild(card);
+  }
+}
+
 function renderCards(list) {
   cardsEl.textContent = "";
 
@@ -87,18 +126,17 @@ function buildBreadcrumb(label) {
 
 async function loadCategoryPage() {
   const { categoryId, categoryName } = parseQueryParams();
-  if (!categoryId && !categoryName) {
-    renderMessage("Categorie introuvable", "Nom ou identifiant de categorie manquant.");
-    return;
-  }
-
   if (!dicoApi) {
     renderMessage("Configuration Supabase manquante", "Impossible de charger les categories.");
     return;
   }
 
   try {
-    const items = await dicoApi.fetchPublishedTermsBasic();
+    const [items, categories] = await Promise.all([
+      dicoApi.fetchPublishedTermsBasic(),
+      dicoApi.fetchCategories()
+    ]);
+
     const normalizedName = normalizeText(categoryName);
 
     const normalizedTerms = items.map((item) => ({
@@ -109,6 +147,30 @@ async function loadCategoryPage() {
       categoryId: item.category_id || item.categories?.id || "",
       categoryName: item.categories?.name || "Sans categorie"
     }));
+
+    if (!categoryId && !categoryName) {
+      const countByCategoryId = new Map();
+      for (const item of normalizedTerms) {
+        if (!item.categoryId) continue;
+        countByCategoryId.set(item.categoryId, (countByCategoryId.get(item.categoryId) || 0) + 1);
+      }
+
+      const sortedCategories = categories
+        .map((category) => ({
+          id: category.id,
+          name: category.name,
+          slug: category.slug,
+          description: category.description,
+          count: countByCategoryId.get(category.id) || 0
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name, "fr"));
+
+      titleEl.textContent = "Categories";
+      subtitleEl.textContent = `${sortedCategories.length} domaine${sortedCategories.length > 1 ? "s" : ""} disponible${sortedCategories.length > 1 ? "s" : ""}`;
+      breadcrumbEl.textContent = "Accueil / Categories";
+      renderCategoryIndex(sortedCategories);
+      return;
+    }
 
     const filtered = normalizedTerms
       .filter((item) => {
