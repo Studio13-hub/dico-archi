@@ -21,5 +21,5 @@
 12. Densifier la V1.2 editoriale : fiches plus riches, sous-categories plus visibles, nouvelles familles.
 13. Sortir une vraie V1.3 `quiz.html` basee sur le corpus publie.
 14. Ajouter ensuite deux jeux educatifs :
-    - Memory Architecture
-    - Speed Run
+    - Swipe
+    - Rush

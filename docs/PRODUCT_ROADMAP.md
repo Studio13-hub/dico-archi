@@ -79,13 +79,13 @@ Succes attendu :
 Objectif : attirer les jeunes sans casser la credibilite du projet.
 
 Jeu 1 :
-- Memory Architecture
-- cartes terme / definition
-- parties courtes
-- progression rapide
+- Swipe
+- cartes rapides
+- gestes simples
+- tri entre connu et a revoir
 
 Jeu 2 :
-- Speed Run
+- Rush
 - enchainer les bonnes reponses en temps limite :
   - terme -> categorie
   - definition -> terme
