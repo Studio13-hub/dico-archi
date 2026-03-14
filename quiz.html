@@ -8,6 +8,7 @@
       name="description"
       content="Quiz pédagogique de DicoArchi pour apprendre le vocabulaire d'architecture de manière ludique."
     />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -46,7 +47,7 @@
           <div class="quiz__meta">
             <label class="quiz__mode">
               Mode
-              <select id="quiz-mode">
+              <select id="quiz-mode" name="quiz-mode">
                 <option value="term-to-definition">Terme -> définition</option>
                 <option value="definition-to-term">Définition -> terme</option>
                 <option value="media-to-term">Image / schéma -> terme</option>
@@ -54,7 +55,7 @@
             </label>
             <label class="quiz__mode">
               Catégorie
-              <select id="quiz-category">
+              <select id="quiz-category" name="quiz-category">
                 <option value="">Toutes les catégories</option>
               </select>
             </label>

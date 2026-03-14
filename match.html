@@ -8,6 +8,7 @@
       name="description"
       content="Mode Rush de DicoArchi pour réviser vite les termes, catégories et définitions d'architecture."
     />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -46,14 +47,14 @@
           <div class="quiz__meta">
             <label class="quiz__mode">
               Mode
-              <select id="match-mode">
+              <select id="match-mode" name="match-mode">
                 <option value="term-to-category">Terme -> catégorie</option>
                 <option value="definition-to-term">Définition -> terme</option>
               </select>
             </label>
             <label class="quiz__mode">
               Catégorie
-              <select id="match-category">
+              <select id="match-category" name="match-category">
                 <option value="">Toutes les catégories</option>
               </select>
             </label>

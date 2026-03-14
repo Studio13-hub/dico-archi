@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Contribuer - Dico Architecture CH</title>
     <meta name="description" content="Proposer un terme pour le dictionnaire." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -69,20 +70,23 @@
       <section class="panel">
         <form id="contrib-form" novalidate>
           <div class="auth__inputs">
-            <input id="term" type="text" placeholder="Terme, par exemple : Acrotère" />
-            <select id="category">
+            <input id="term" name="term" type="text" placeholder="Terme, par exemple : Acrotère" />
+            <select id="category" name="category">
               <option value="">Choisir une catégorie</option>
             </select>
             <textarea
               id="definition"
+              name="definition"
               placeholder="Définition claire, par exemple : Petit mur en bord de toiture qui permet de relever l’étanchéité."
             ></textarea>
             <textarea
               id="example"
+              name="example"
               placeholder="Exemple d’usage, par exemple : L’acrotère sert souvent de support au relevé d’étanchéité."
             ></textarea>
             <textarea
               id="media-urls"
+              name="media-urls"
               placeholder="Médias proposés, un lien par ligne&#10;https://.../photo-facade.jpg&#10;https://.../detail-acrotere.pdf"
             ></textarea>
           </div>
