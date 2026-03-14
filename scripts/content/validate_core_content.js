@@ -65,7 +65,7 @@ function validate() {
       pushError(errors, `unknown category_slug "${term.category_slug}" for term ${term.slug || term.term || "unknown"}`);
     }
 
-    if (isNonEmptyString(term.status) && !["draft", "submitted", "published", "archived"].includes(term.status)) {
+    if (isNonEmptyString(term.status) && !["draft", "submitted", "validated", "published"].includes(term.status)) {
       pushError(errors, `invalid term.status "${term.status}" for ${term.slug || term.term || "unknown"}`);
     }
   }

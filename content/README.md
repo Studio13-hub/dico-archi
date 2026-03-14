@@ -11,4 +11,4 @@ Contraintes :
 - plus de `related` en texte libre : utiliser `relations.json`
 - plus de `image_url` dans les termes : utiliser `media.json`
 - `slug` doit etre stable et unique
-- `status` doit rester dans le modele core (`draft`, `submitted`, `published`, `archived`)
+- `status` doit rester dans le modele core (`draft`, `submitted`, `validated`, `published`)
