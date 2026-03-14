@@ -6,6 +6,17 @@ const exampleNode = document.getElementById("term-example");
 const mediaNode = document.getElementById("term-media");
 const relatedNode = document.getElementById("term-related");
 const statusNode = document.getElementById("term-status");
+const explanationBlock = document.getElementById("term-explanation-block");
+const explanationNode = document.getElementById("term-explanation");
+const applicationsBlock = document.getElementById("term-applications-block");
+const applicationsNode = document.getElementById("term-applications");
+const normsBlock = document.getElementById("term-norms-block");
+const normsNode = document.getElementById("term-norms");
+const constraintsBlock = document.getElementById("term-constraints-block");
+const constraintsNode = document.getElementById("term-constraints");
+const representationBlock = document.getElementById("term-representation-block");
+const abbreviationNode = document.getElementById("term-abbreviation");
+const drawingNoteNode = document.getElementById("term-drawing-note");
 
 function getSlug() {
   const params = new URLSearchParams(window.location.search);
@@ -18,6 +29,64 @@ function clearTermChildren(node) {
 
 function setTermText(node, value, fallback = "-") {
   node.textContent = value || fallback;
+}
+
+function clearList(node) {
+  while (node.firstChild) node.removeChild(node.firstChild);
+}
+
+function renderList(blockNode, listNode, values, emptyLabel = "") {
+  if (!blockNode || !listNode) return;
+  clearList(listNode);
+  if (!Array.isArray(values) || !values.length) {
+    blockNode.hidden = true;
+    return;
+  }
+
+  for (const value of values) {
+    const item = document.createElement("li");
+    item.textContent = value;
+    listNode.appendChild(item);
+  }
+
+  if (!listNode.childElementCount && emptyLabel) {
+    const item = document.createElement("li");
+    item.textContent = emptyLabel;
+    listNode.appendChild(item);
+  }
+
+  blockNode.hidden = false;
+}
+
+async function fetchV2TermDetails(slug) {
+  try {
+    const response = await fetch(`content/v2/terms/${encodeURIComponent(slug)}.json`, { cache: "no-store" });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (_error) {
+    return null;
+  }
+}
+
+function applyV2Details(payload) {
+  const explanation = payload?.content?.explanation || "";
+  if (explanationBlock && explanationNode) {
+    explanationBlock.hidden = !explanation;
+    explanationNode.textContent = explanation || "";
+  }
+
+  renderList(applicationsBlock, applicationsNode, payload?.content?.applications || []);
+  renderList(normsBlock, normsNode, payload?.content?.norms || []);
+  renderList(constraintsBlock, constraintsNode, payload?.technical_data?.constraints || []);
+
+  const abbreviation = payload?.representation?.abbreviation_plan || "";
+  const drawingNote = payload?.representation?.drawing_note || "";
+  if (representationBlock && abbreviationNode && drawingNoteNode) {
+    const hasRepresentation = Boolean(abbreviation || drawingNote);
+    representationBlock.hidden = !hasRepresentation;
+    abbreviationNode.textContent = abbreviation ? `Abréviation : ${abbreviation}` : "";
+    drawingNoteNode.textContent = drawingNote || "";
+  }
 }
 
 function renderMedia(items) {
@@ -100,6 +169,7 @@ async function loadTermPage() {
   try {
     const payload = await window.DicoArchiApi.fetchTermBySlug(slug);
     const term = payload.term || {};
+    const v2Payload = await fetchV2TermDetails(slug);
 
     titleNode.textContent = term.term || "TERME";
     subtitleNode.textContent = "Fiche détaillée du dictionnaire DicoArchi.";
@@ -109,6 +179,7 @@ async function loadTermPage() {
     statusNode.textContent = `Statut: ${term.status || "-"}`;
     renderMedia(payload.media || []);
     renderRelated(payload.related_terms || []);
+    applyV2Details(v2Payload);
     document.title = `${term.term || "Fiche terme"} - DicoArchi`;
   } catch (error) {
     titleNode.textContent = "TERME";
@@ -119,6 +190,11 @@ async function loadTermPage() {
     statusNode.textContent = `Erreur: ${error.message || "internal_error"}`;
     mediaNode.textContent = "Aucun média disponible.";
     relatedNode.textContent = "Aucun terme lié.";
+    if (explanationBlock) explanationBlock.hidden = true;
+    if (applicationsBlock) applicationsBlock.hidden = true;
+    if (normsBlock) normsBlock.hidden = true;
+    if (constraintsBlock) constraintsBlock.hidden = true;
+    if (representationBlock) representationBlock.hidden = true;
   }
 }
 

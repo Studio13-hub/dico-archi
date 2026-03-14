@@ -1237,6 +1237,19 @@ body.lightbox-open {
   gap: 14px;
 }
 
+.term-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  color: rgba(18, 18, 18, 0.82);
+}
+
+.term-meta-stack {
+  display: grid;
+  gap: 10px;
+}
+
 .term-variants {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
