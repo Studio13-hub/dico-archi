@@ -184,11 +184,13 @@ authForm.addEventListener("submit", (event) => {
 if (loginButton) {
   loginButton.addEventListener("click", () => {
     authSubmitAction = "login";
+    signIn();
   });
 }
 if (signupButton) {
   signupButton.addEventListener("click", () => {
     authSubmitAction = "signup";
+    signUp();
   });
 }
 forgotPasswordButton.addEventListener("click", sendResetEmail);
@@ -198,6 +200,9 @@ if (resetForm) {
     event.preventDefault();
     updatePassword();
   });
+}
+if (saveNewPasswordButton) {
+  saveNewPasswordButton.addEventListener("click", updatePassword);
 }
 
 if (backToLoginButton) {

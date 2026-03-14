@@ -34,18 +34,18 @@
 
     <main class="auth">
       <section class="panel">
-        <form id="auth-form" novalidate>
+        <form id="auth-form" novalidate action="javascript:void(0)">
           <div class="auth__inputs">
             <input id="email" type="email" placeholder="Adresse email" autocomplete="email" />
             <input id="password" type="password" placeholder="Mot de passe" autocomplete="current-password" />
           </div>
           <div class="auth__actions">
-            <button id="login" type="submit" data-auth-action="login">Se connecter</button>
-            <button id="signup" type="submit" class="ghost" data-auth-action="signup">Créer un compte</button>
+            <button id="login" type="button" data-auth-action="login">Se connecter</button>
+            <button id="signup" type="button" class="ghost" data-auth-action="signup">Créer un compte</button>
             <button id="forgot-password" type="button" class="ghost">Mot de passe oublié ?</button>
           </div>
         </form>
-        <form id="reset-form" novalidate hidden>
+        <form id="reset-form" novalidate action="javascript:void(0)" hidden>
           <div class="auth__inputs">
             <input
               id="new-password"
@@ -61,7 +61,7 @@
             />
           </div>
           <div class="auth__actions">
-            <button id="save-new-password" type="submit">Enregistrer le nouveau mot de passe</button>
+            <button id="save-new-password" type="button">Enregistrer le nouveau mot de passe</button>
             <button id="back-to-login" type="button" class="ghost">Retour connexion</button>
           </div>
         </form>
