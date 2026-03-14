@@ -21,7 +21,11 @@ function setAdminVisibility(isStaff) {
 
 function setLogoutVisibility(visible) {
   const nodes = document.querySelectorAll("[data-nav-logout]");
-  for (const node of nodes) node.hidden = !visible;
+  for (const node of nodes) {
+    node.hidden = !visible;
+    node.style.display = visible ? "" : "none";
+    node.setAttribute("aria-hidden", visible ? "false" : "true");
+  }
 }
 
 function applyLoggedOutState() {

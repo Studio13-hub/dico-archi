@@ -12,6 +12,7 @@ const backToLoginButton = document.getElementById("back-to-login");
 const message = document.getElementById("auth-message");
 
 let mode = "auth";
+let isSubmittingAuth = false;
 const supabaseHelpers = window.DicoArchiSupabase;
 
 function setMessage(text, isError = false) {
@@ -57,7 +58,7 @@ function isRecoveryContext() {
 }
 
 async function signIn() {
-  if (!supabaseClient) return;
+  if (!supabaseClient || isSubmittingAuth) return;
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
 
@@ -66,18 +67,30 @@ async function signIn() {
     return;
   }
 
-  const { error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
+  isSubmittingAuth = true;
+  if (loginButton) loginButton.disabled = true;
+  if (signupButton) signupButton.disabled = true;
+  if (forgotPasswordButton) forgotPasswordButton.disabled = true;
 
-  if (error) {
-    setMessage(error.message, true);
-    return;
+  try {
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      setMessage(error.message, true);
+      return;
+    }
+
+    setMessage("Connecté avec succès. Redirection...");
+    setTimeout(redirectAfterLogin, 800);
+  } finally {
+    isSubmittingAuth = false;
+    if (loginButton) loginButton.disabled = false;
+    if (signupButton) signupButton.disabled = false;
+    if (forgotPasswordButton) forgotPasswordButton.disabled = false;
   }
-
-  setMessage("Connecté avec succès. Redirection...");
-  setTimeout(redirectAfterLogin, 800);
 }
 
 async function signUp() {
@@ -163,7 +176,6 @@ authForm.addEventListener("submit", (event) => {
   event.preventDefault();
   signIn();
 });
-loginButton.addEventListener("click", signIn);
 signupButton.addEventListener("click", signUp);
 forgotPasswordButton.addEventListener("click", sendResetEmail);
 
