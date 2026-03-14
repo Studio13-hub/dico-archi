@@ -58,9 +58,9 @@ function getTodayKey() {
 
 function updateMeta() {
   if (!dailyState) return;
-  dailyScore.textContent = `${dailyState.correct} / ${dailyState.total}`;
+  dailyScore.textContent = `${dailyState.correct} bonne${dailyState.correct > 1 ? "s" : ""}`;
   dailyRound.textContent = `Question ${Math.min(dailyState.index + 1, DAILY_QUESTION_COUNT)} / ${DAILY_QUESTION_COUNT}`;
-  dailyStatusLine.textContent = `Série : ${dailyState.streak}`;
+  dailyStatusLine.textContent = `Réponses : ${dailyState.total} · Série : ${dailyState.streak}`;
   dailyProgressBar.style.width = `${Math.min((dailyState.total / DAILY_QUESTION_COUNT) * 100, 100)}%`;
 }
 
@@ -127,6 +127,7 @@ function pickQuestion() {
 
 function finishDaily() {
   dailyState.ended = true;
+  dailyStart.hidden = true;
   dailyStart.disabled = true;
   dailyNext.disabled = true;
   dailyRestart.hidden = false;
@@ -215,6 +216,7 @@ function resetDaily() {
   dailySeed.textContent = `Jour : ${getTodayKey()}`;
   dailyQuestion.textContent = "Clique sur « Commencer » pour lancer la série quotidienne.";
   dailyOptions.textContent = "";
+  dailyStart.hidden = false;
   dailyStart.disabled = false;
   dailyNext.disabled = true;
   dailyRestart.hidden = true;
@@ -235,6 +237,7 @@ async function loadDaily() {
     dailyPool = normalizeItems(payload.items);
     if (dailyPool.length < DAILY_OPTION_COUNT) {
       dailyQuestion.textContent = "Le corpus est encore trop petit pour le défi du jour.";
+      dailyStart.hidden = false;
       dailyStart.disabled = true;
       return;
     }
@@ -250,6 +253,7 @@ async function loadDaily() {
 dailyStart.addEventListener("click", () => {
   if (!dailyState) return;
   dailyStart.disabled = true;
+  dailyStart.hidden = true;
   renderQuestion();
 });
 
