@@ -1,0 +1,39 @@
+{
+  "id": "term_semelle_filante",
+  "term": "Semelle filante",
+  "slug": "semelle-filante",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "fondations",
+  "status": "published",
+  "content": {
+    "definition": "Fondation linéaire en béton qui reprend les charges d’un mur et les transmet au sol sur toute sa longueur.",
+    "explanation": "Elle est souvent utilisée sous les murs porteurs lorsque les charges sont réparties de manière continue et que le terrain est suffisamment homogène.",
+    "example": "Sous un mur de façade porteur, une semelle filante permet de répartir les charges sur le terrain de fondation.",
+    "applications": [
+      "maisons",
+      "murs porteurs",
+      "fondations courantes"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À représenter en plan de fondations et à coter avec sa largeur et son niveau."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "fondation",
+      "beton"
+    ],
+    "version": 1
+  }
+}

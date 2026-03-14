@@ -1,0 +1,39 @@
+{
+  "id": "term_cloison_legere",
+  "term": "Cloison légère",
+  "slug": "cloison-legere",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "murs-et-parois",
+  "status": "published",
+  "content": {
+    "definition": "Paroi intérieure non porteuse, généralement constituée d’une ossature légère et d’un parement en plaques.",
+    "explanation": "Elle sert à organiser les espaces sans reprendre les charges du bâtiment, tout en pouvant assurer un niveau donné d’acoustique ou de résistance au feu.",
+    "example": "Dans un aménagement intérieur, une cloison légère permet de reconfigurer les pièces plus facilement qu’un mur massif.",
+    "applications": [
+      "aménagement intérieur",
+      "séparation de pièces",
+      "rénovation"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "La composition de la cloison doit préciser l’ossature, les parements et l’éventuel isolant."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "cloison",
+      "interieur"
+    ],
+    "version": 1
+  }
+}

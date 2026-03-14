@@ -1,0 +1,39 @@
+{
+  "id": "term_radier",
+  "term": "Radier",
+  "slug": "radier",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "fondations",
+  "status": "published",
+  "content": {
+    "definition": "Fondation générale en forme de dalle épaisse, qui répartit les charges d’un bâtiment sur une grande surface de terrain.",
+    "explanation": "Le radier est choisi lorsque les charges sont importantes ou que le terrain nécessite une répartition plus large que des fondations ponctuelles ou linéaires.",
+    "example": "Sur un terrain de capacité portante limitée, un radier peut remplacer plusieurs semelles isolées.",
+    "applications": [
+      "bâtiments lourds",
+      "sols faibles",
+      "fondations générales"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le radier doit être détaillé avec son épaisseur, ses armatures et ses réservations."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "fondation",
+      "structure"
+    ],
+    "version": 1
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "term_plancher_bois",
+  "term": "Plancher bois",
+  "slug": "plancher-bois",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "planchers-et-dalles",
+  "status": "published",
+  "content": {
+    "definition": "Élément horizontal en bois ou à base de bois, utilisé pour former un niveau de circulation et reprendre les charges d’usage.",
+    "explanation": "Le plancher bois peut être traditionnel, préfabriqué ou mixte, avec des performances variables en portée, acoustique et vibration.",
+    "example": "Dans une surélévation légère, un plancher bois réduit les charges reprises par la structure existante.",
+    "applications": [
+      "maisons",
+      "surélévations",
+      "construction bois"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "La direction de portée et la composition des couches doivent être clairement indiquées."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "plancher",
+      "bois"
+    ],
+    "version": 1
+  }
+}

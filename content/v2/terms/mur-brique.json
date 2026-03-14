@@ -1,0 +1,39 @@
+{
+  "id": "term_mur_brique",
+  "term": "Mur brique",
+  "slug": "mur-brique",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "murs-et-parois",
+  "status": "published",
+  "content": {
+    "definition": "Mur monté en briques, utilisé comme paroi porteuse ou non porteuse selon le système constructif choisi.",
+    "explanation": "Le mur brique peut participer à la structure, à l’inertie thermique et à la séparation des espaces selon son épaisseur et son assemblage.",
+    "example": "Dans une maçonnerie traditionnelle, le mur brique peut porter les planchers ou n’assurer qu’un rôle de remplissage.",
+    "applications": [
+      "maçonnerie",
+      "murs porteurs",
+      "murs de remplissage"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le calepinage et les épaisseurs doivent être repris dans les plans et détails d’exécution."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "mur",
+      "brique"
+    ],
+    "version": 1
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "term_dalle_de_fondation",
+  "term": "Dalle de fondation",
+  "slug": "dalle-de-fondation",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "fondations",
+  "status": "published",
+  "content": {
+    "definition": "Dalle en béton placée au contact du sol pour reprendre les charges du bâtiment et servir de base au niveau inférieur.",
+    "explanation": "Selon le système constructif, elle peut travailler avec des fondations périphériques ou participer elle-même à la reprise des charges.",
+    "example": "Dans un garage ou un sous-sol, la dalle de fondation constitue souvent le support du niveau inférieur.",
+    "applications": [
+      "sous-sols",
+      "garages",
+      "niveaux bas"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À coordonner avec les couches sous dalle, les réseaux et les réservations techniques."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "fondation",
+      "dalle"
+    ],
+    "version": 1
+  }
+}

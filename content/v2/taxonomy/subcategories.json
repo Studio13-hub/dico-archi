@@ -78,6 +78,24 @@
     "description": "Éléments porteurs verticaux et horizontaux, fondations et reprises de charges."
   },
   {
+    "category_slug": "elements-constructifs",
+    "name": "Fondations",
+    "slug": "fondations",
+    "description": "Éléments de base qui transmettent les charges du bâtiment au terrain."
+  },
+  {
+    "category_slug": "elements-constructifs",
+    "name": "Murs et parois",
+    "slug": "murs-et-parois",
+    "description": "Murs porteurs, murs de remplissage et différentes familles de cloisons."
+  },
+  {
+    "category_slug": "elements-constructifs",
+    "name": "Planchers et dalles",
+    "slug": "planchers-et-dalles",
+    "description": "Éléments horizontaux assurant franchissement, répartition des charges et séparation des niveaux."
+  },
+  {
     "category_slug": "phases-sia",
     "name": "Cycle du projet",
     "slug": "cycle-du-projet",

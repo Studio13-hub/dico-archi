@@ -1,0 +1,39 @@
+{
+  "id": "term_mur_beton",
+  "term": "Mur béton",
+  "slug": "mur-beton",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "murs-et-parois",
+  "status": "published",
+  "content": {
+    "definition": "Mur réalisé en béton, utilisé pour porter des charges, fermer un volume ou assurer un rôle de stabilité.",
+    "explanation": "Selon sa conception, il peut être porteur, de soutènement ou simplement séparatif, avec des performances variables en structure, feu et acoustique.",
+    "example": "En sous-sol, un mur béton peut servir à la fois de paroi porteuse et de retenue contre la terre.",
+    "applications": [
+      "sous-sols",
+      "murs porteurs",
+      "voiles structurels"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "L’épaisseur et les réservations doivent être coordonnées avec la structure et les techniques."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "mur",
+      "beton"
+    ],
+    "version": 1
+  }
+}

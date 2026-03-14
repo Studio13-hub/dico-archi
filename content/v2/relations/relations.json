@@ -228,5 +228,40 @@
     "source_slug": "seuil-de-porte",
     "target_slug": "joint-detancheite",
     "relation_type": "related"
+  },
+  {
+    "source_slug": "semelle-filante",
+    "target_slug": "radier",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "radier",
+    "target_slug": "dalle-de-fondation",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "mur-beton",
+    "target_slug": "mur-brique",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "mur-porteur",
+    "target_slug": "mur-beton",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "mur-porteur",
+    "target_slug": "semelle-filante",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "cloison-legere",
+    "target_slug": "mur-brique",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "plancher-bois",
+    "target_slug": "dalle",
+    "relation_type": "related"
   }
 ]
