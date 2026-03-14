@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Match Express - DicoArchi</title>
+    <title>Speed Run - DicoArchi</title>
     <meta
       name="description"
-      content="Jeu rapide de DicoArchi pour associer termes, catégories et définitions d'architecture."
+      content="Mode Speed Run de DicoArchi pour réviser vite les termes, catégories et définitions d'architecture."
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -31,8 +31,8 @@
             <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
           </div>
         </div>
-        <h1>Match Express</h1>
-        <p>Associe rapidement un terme, une catégorie ou une définition dans une manche courte, pensée pour réviser en quelques secondes.</p>
+        <h1>Speed Run</h1>
+        <p>Réponds le plus vite possible pendant une manche courte. Plus tu enchaînes, plus le combo monte.</p>
       </div>
     </header>
 
@@ -40,7 +40,7 @@
       <section class="panel">
         <div class="match">
           <div class="memory__header">
-            <h2>Manche en direct</h2>
+            <h2>Run en direct</h2>
             <div id="match-score" class="quiz__score">0 / 0</div>
           </div>
 
@@ -58,8 +58,8 @@
                 <option value="">Toutes les catégories</option>
               </select>
             </label>
-            <div id="match-timer" class="meta">Temps : 0 s</div>
-            <div id="match-round" class="meta">Question 0 / 8</div>
+            <div id="match-timer" class="meta">Temps restant : 45 s</div>
+            <div id="match-round" class="meta">Combo : 0</div>
           </div>
 
           <div class="quiz__progress" aria-hidden="true">
@@ -72,7 +72,7 @@
           <div id="match-feedback" class="quiz__feedback"></div>
 
           <div class="quiz__actions">
-            <button id="match-start" type="button">Commencer</button>
+            <button id="match-start" type="button">Lancer le run</button>
             <button id="match-next" class="ghost" type="button">Question suivante</button>
             <button id="match-restart" class="ghost" type="button">Rejouer</button>
           </div>

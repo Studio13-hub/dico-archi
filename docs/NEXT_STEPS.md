@@ -22,4 +22,4 @@
 13. Sortir une vraie V1.3 `quiz.html` basee sur le corpus publie.
 14. Ajouter ensuite deux jeux educatifs :
     - Memory Architecture
-    - Match Express
+    - Speed Run

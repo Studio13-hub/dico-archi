@@ -14,7 +14,7 @@ const matchRestart = document.getElementById("match-restart");
 const matchLeaderboard = document.getElementById("match-leaderboard");
 
 const MATCH_STORAGE_KEY = "dico_archi_match_scores_v1";
-const MATCH_QUESTION_COUNT = 8;
+const MATCH_DURATION_SECONDS = 45;
 const MATCH_OPTION_COUNT = 4;
 const MATCH_MIN_OPTION_COUNT = 2;
 
@@ -68,9 +68,10 @@ function getActivePool() {
 function updateMeta() {
   if (!matchState) return;
   matchScore.textContent = `${matchState.correct} / ${matchState.total}`;
-  matchTimer.textContent = `Temps : ${matchState.seconds} s`;
-  matchRound.textContent = `Question ${Math.min(matchState.index + 1, MATCH_QUESTION_COUNT)} / ${MATCH_QUESTION_COUNT}`;
-  matchProgressBar.style.width = `${Math.min((matchState.total / MATCH_QUESTION_COUNT) * 100, 100)}%`;
+  matchTimer.textContent = `Temps restant : ${Math.max(matchState.remainingSeconds, 0)} s`;
+  matchRound.textContent = `Combo : ${matchState.combo}`;
+  const pct = ((MATCH_DURATION_SECONDS - Math.max(matchState.remainingSeconds, 0)) / MATCH_DURATION_SECONDS) * 100;
+  matchProgressBar.style.width = `${Math.min(Math.max(pct, 0), 100)}%`;
 }
 
 function stopTimer() {
@@ -84,8 +85,12 @@ function startTimer() {
   stopTimer();
   matchTimerId = window.setInterval(() => {
     if (!matchState || matchState.ended) return;
-    matchState.seconds += 1;
+    matchState.elapsedSeconds += 1;
+    matchState.remainingSeconds -= 1;
     updateMeta();
+    if (matchState.remainingSeconds <= 0) {
+      finishGame();
+    }
   }, 1000);
 }
 
@@ -115,7 +120,7 @@ function renderLeaderboard() {
   }
 
   matchLeaderboard.textContent = entries
-    .map((item, index) => `${index + 1}. ${item.score}/${item.total} · ${item.seconds}s · ${item.modeLabel}`)
+    .map((item, index) => `${index + 1}. ${item.score}/${item.total} · combo ${item.bestCombo} · ${item.modeLabel}`)
     .join(" · ");
 }
 
@@ -186,22 +191,24 @@ function pickQuestion() {
 }
 
 function finishGame() {
+  if (!matchState || matchState.ended) return;
   matchState.ended = true;
   stopTimer();
   matchStart.disabled = true;
   matchNext.disabled = true;
   matchRestart.hidden = false;
-  setMessage("Manche terminée. Rejoue pour améliorer ton score.", "ok");
+  setMessage("Run terminé. Rejoue pour battre ton score et ton combo.", "ok");
 
   const leaderboard = getLeaderboard();
   leaderboard.push({
     score: matchState.correct,
     total: matchState.total,
-    seconds: matchState.seconds,
+    seconds: matchState.elapsedSeconds,
+    bestCombo: matchState.bestCombo,
     modeLabel: getModeLabel(),
     createdAt: new Date().toISOString()
   });
-  leaderboard.sort((a, b) => b.score - a.score || a.seconds - b.seconds);
+  leaderboard.sort((a, b) => b.score - a.score || b.bestCombo - a.bestCombo || a.seconds - b.seconds);
   saveLeaderboard(leaderboard.slice(0, 5));
   renderLeaderboard();
 }
@@ -247,19 +254,17 @@ function renderQuestion() {
 
       if (option.isCorrect) {
         matchState.correct += 1;
+        matchState.combo += 1;
+        matchState.bestCombo = Math.max(matchState.bestCombo, matchState.combo);
         button.classList.add("correct");
-        setMessage("Bonne réponse.", "ok");
+        setMessage(`Bonne réponse. Combo x${matchState.combo}.`, "ok");
       } else {
+        matchState.combo = 0;
         button.classList.add("wrong");
         setMessage(`Bonne réponse : ${question.correctLabel}`, "ko");
       }
 
       updateMeta();
-      if (matchState.total >= MATCH_QUESTION_COUNT) {
-        finishGame();
-        return;
-      }
-
       matchNext.disabled = false;
     });
     matchOptions.appendChild(button);
@@ -274,13 +279,16 @@ function resetGame() {
     index: 0,
     total: 0,
     correct: 0,
-    seconds: 0,
+    elapsedSeconds: 0,
+    remainingSeconds: MATCH_DURATION_SECONDS,
+    combo: 0,
+    bestCombo: 0,
     usedSlugs: new Set(),
     current: null,
     ended: false
   };
 
-  matchPrompt.textContent = "Clique sur « Commencer » pour lancer une manche de 8 questions.";
+  matchPrompt.textContent = "Clique sur « Lancer le run » pour démarrer une manche de 45 secondes.";
   matchTarget.textContent = "";
   matchOptions.textContent = "";
   matchStart.disabled = false;
@@ -327,6 +335,7 @@ matchStart.addEventListener("click", () => {
 
 matchNext.addEventListener("click", () => {
   if (!matchState || matchState.ended) return;
+  matchNext.disabled = true;
   renderQuestion();
 });
 

@@ -85,11 +85,11 @@ Jeu 1 :
 - progression rapide
 
 Jeu 2 :
-- Match Express
-- associer en temps limite :
-  - terme -> definition
+- Speed Run
+- enchainer les bonnes reponses en temps limite :
   - terme -> categorie
-  - terme -> image
+  - definition -> terme
+  - image -> terme
 
 Principes :
 - parties rapides
