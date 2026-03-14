@@ -1,0 +1,162 @@
+[
+  {
+    "term": "Etancheite",
+    "slug": "etancheite",
+    "definition": "Ensemble des dispositions et materiaux qui empechent la penetration de l eau dans une toiture ou un element constructif.",
+    "example": "L etancheite de la toiture doit rester continue au droit des relevés et des raccords.",
+    "category_slug": "toitures",
+    "status": "published"
+  },
+  {
+    "term": "Pare-vapeur",
+    "slug": "pare-vapeur",
+    "definition": "Couche placee dans une paroi pour limiter le passage de vapeur d eau et reduire les risques de condensation.",
+    "example": "Le pare-vapeur est pose du cote chaud de la construction.",
+    "category_slug": "toitures",
+    "status": "published"
+  },
+  {
+    "term": "Isolation thermique",
+    "slug": "isolation-thermique",
+    "definition": "Ensemble des materiaux ou systemes qui limitent les pertes de chaleur a travers l enveloppe du batiment.",
+    "example": "Une bonne isolation thermique ameliore le confort et diminue les besoins energetiques.",
+    "category_slug": "elements-constructifs",
+    "status": "published"
+  },
+  {
+    "term": "Acrotere",
+    "slug": "acrotere",
+    "definition": "Petit mur en bord de toiture qui permet notamment de relever l etancheite et de finir le pourtour du toit.",
+    "example": "L acrotere protege le bord de la toiture et sert de support a certains details de finition.",
+    "category_slug": "toitures",
+    "status": "published"
+  },
+  {
+    "term": "Coupe",
+    "slug": "coupe",
+    "definition": "Representation d un batiment tranche verticalement pour montrer l interieur, les niveaux et les elements constructifs.",
+    "example": "La coupe permet de comprendre la hauteur des espaces et la composition des planchers.",
+    "category_slug": "dessin-technique",
+    "status": "published"
+  },
+  {
+    "term": "Facade",
+    "slug": "facade",
+    "definition": "Representation exterieure d un cote du batiment montrant son apparence, ses ouvertures et ses proportions.",
+    "example": "La facade renseigne sur l aspect architectural et les percements visibles.",
+    "category_slug": "dessin-technique",
+    "status": "published"
+  },
+  {
+    "term": "Plan d etage",
+    "slug": "plan-d-etage",
+    "definition": "Dessin horizontal representant un niveau du batiment vu en projection.",
+    "example": "Le plan d etage montre les pieces, les cloisons, les cotes et les ouvertures.",
+    "category_slug": "dessin-technique",
+    "status": "published"
+  },
+  {
+    "term": "Detail constructif",
+    "slug": "detail-constructif",
+    "definition": "Dessin a grande echelle montrant precisement l assemblage des elements de construction.",
+    "example": "Un detail constructif explique comment la facade rejoint la dalle ou la toiture.",
+    "category_slug": "dessin-technique",
+    "status": "published"
+  },
+  {
+    "term": "Echelle",
+    "slug": "echelle",
+    "definition": "Rapport entre les dimensions dessinees et les dimensions reelles d un objet ou d un batiment.",
+    "example": "Une echelle 1:100 signifie qu un centimetre sur le plan correspond a un metre en realite.",
+    "category_slug": "dessin-technique",
+    "status": "published"
+  },
+  {
+    "term": "Cotation",
+    "slug": "cotation",
+    "definition": "Indication graphique des dimensions et mesures sur un dessin technique.",
+    "example": "La cotation permet de lire la largeur d une piece ou l epaisseur d un mur.",
+    "category_slug": "dessin-technique",
+    "status": "published"
+  },
+  {
+    "term": "Mur porteur",
+    "slug": "mur-porteur",
+    "definition": "Mur qui reprend des charges et les transmet a la structure porteuse ou aux fondations.",
+    "example": "Le mur porteur ne peut pas etre modifie sans verification structurelle.",
+    "category_slug": "elements-constructifs",
+    "status": "published"
+  },
+  {
+    "term": "Dalle",
+    "slug": "dalle",
+    "definition": "Element horizontal porteur formant un plancher ou une toiture selon sa position dans l ouvrage.",
+    "example": "La dalle relie les espaces et transmet les charges aux murs ou aux poteaux.",
+    "category_slug": "elements-constructifs",
+    "status": "published"
+  },
+  {
+    "term": "Poteau",
+    "slug": "poteau",
+    "definition": "Element vertical porteur qui reprend des charges ponctuelles et les transmet aux niveaux inferieurs.",
+    "example": "Le poteau travaille avec les poutres pour former une structure stable.",
+    "category_slug": "elements-constructifs",
+    "status": "published"
+  },
+  {
+    "term": "Linteau",
+    "slug": "linteau",
+    "definition": "Element horizontal place au-dessus d une ouverture pour reprendre les charges du mur situe au-dessus.",
+    "example": "Le linteau permet de creer une baie sans affaiblir la stabilite du mur.",
+    "category_slug": "elements-constructifs",
+    "status": "published"
+  },
+  {
+    "term": "Fondation",
+    "slug": "fondation",
+    "definition": "Partie de l ouvrage qui transmet les charges du batiment au terrain.",
+    "example": "Les fondations doivent etre adaptees a la nature du sol et aux charges du projet.",
+    "category_slug": "elements-constructifs",
+    "status": "published"
+  },
+  {
+    "term": "Avant-projet",
+    "slug": "avant-projet",
+    "definition": "Phase de conception initiale ou l on developpe les intentions architecturales et les premieres options du projet.",
+    "example": "L avant-projet permet de tester le volume, l implantation et les grandes orientations.",
+    "category_slug": "phases-sia",
+    "status": "published"
+  },
+  {
+    "term": "Projet",
+    "slug": "projet",
+    "definition": "Phase ou la solution retenue est developpee avec plus de precision avant l autorisation et l execution.",
+    "example": "Le projet precise les plans, les dimensions et les choix techniques principaux.",
+    "category_slug": "phases-sia",
+    "status": "published"
+  },
+  {
+    "term": "Execution",
+    "slug": "execution",
+    "definition": "Phase de production des documents et decisions necessaires pour construire l ouvrage.",
+    "example": "La phase execution comprend les plans d execution et la coordination technique.",
+    "category_slug": "phases-sia",
+    "status": "published"
+  },
+  {
+    "term": "Soumission",
+    "slug": "soumission",
+    "definition": "Phase ou les documents sont prepares pour consulter les entreprises et comparer les offres.",
+    "example": "La soumission permet de demander des prix sur une base commune et comparable.",
+    "category_slug": "phases-sia",
+    "status": "published"
+  },
+  {
+    "term": "Reception des travaux",
+    "slug": "reception-des-travaux",
+    "definition": "Etape de fin de chantier durant laquelle l ouvrage est controle et remis avec reserves eventuelles.",
+    "example": "La reception des travaux marque une etape importante dans la cloture du chantier.",
+    "category_slug": "phases-sia",
+    "status": "published"
+  }
+]

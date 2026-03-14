@@ -44,6 +44,7 @@ Repères de travail :
 - scripts serveur : `api/`
 - client Supabase partagé : `supabaseClient.js`
 - contenu base de données : `supabase/core/`, `supabase/migrations/`, `supabase/seeds/`
+- contenu éditorial canonique : `content/`
 
 ## Lecture recommandée en reprise
 

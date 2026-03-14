@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Normes SIA",
+    "slug": "normes-sia",
+    "description": "References essentielles liees aux normes SIA utilisees dans la pratique de l architecture en Suisse."
+  },
+  {
+    "name": "Normes AEAI",
+    "slug": "normes-aeai",
+    "description": "Notions et exigences liees aux directives AEAI et a la securite incendie."
+  },
+  {
+    "name": "Phases SIA",
+    "slug": "phases-sia",
+    "description": "Vocabulaire des differentes phases du projet selon la logique SIA."
+  },
+  {
+    "name": "Dessin technique",
+    "slug": "dessin-technique",
+    "description": "Termes utiles pour comprendre les plans, coupes, elevations, details et conventions graphiques."
+  },
+  {
+    "name": "Elements constructifs",
+    "slug": "elements-constructifs",
+    "description": "Definitions des composants du batiment et de leur role dans la construction."
+  },
+  {
+    "name": "Toitures",
+    "slug": "toitures",
+    "description": "Vocabulaire des systemes de toiture, de leurs couches, de leur execution et de leur entretien."
+  },
+  {
+    "name": "Facades",
+    "slug": "facades",
+    "description": "Termes lies aux enveloppes verticales, parements, isolation et composition des facades."
+  },
+  {
+    "name": "Chantier",
+    "slug": "chantier",
+    "description": "Notions pratiques liees au suivi de chantier, aux entreprises, aux lots et a l execution."
+  },
+  {
+    "name": "Materiaux",
+    "slug": "materiaux",
+    "description": "Bases sur les materiaux de construction, leurs proprietes et leurs usages."
+  },
+  {
+    "name": "Administration et permis",
+    "slug": "administration-et-permis",
+    "description": "Vocabulaire administratif lie aux autorisations, dossiers et procedures de construction."
+  },
+  {
+    "name": "Bureau d architecture",
+    "slug": "bureau-d-architecture",
+    "description": "Termes du quotidien en bureau, organisation du travail, documents et coordination de projet."
+  },
+  {
+    "name": "Securite incendie",
+    "slug": "securite-incendie",
+    "description": "Definitions essentielles pour comprendre la prevention, la protection et les exigences incendie."
+  }
+]
