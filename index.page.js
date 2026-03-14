@@ -14,11 +14,11 @@ function renderSearchResults(items) {
   const links = items.slice(0, 5).map((item) => {
     const anchor = document.createElement("a");
     anchor.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
-    anchor.textContent = item.term;
+    anchor.textContent = item.category ? `${item.term} (${item.category})` : item.term;
     return anchor.outerHTML;
   });
 
-  homeSearchResults.innerHTML = `Résultats: ${links.join(" · ")}`;
+  homeSearchResults.innerHTML = `Résultats utiles : ${links.join(" · ")}`;
 }
 
 async function runHomeSearch() {
