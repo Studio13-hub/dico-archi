@@ -16,6 +16,50 @@ create table if not exists public.chatbot_feedback (
   meta jsonb not null default '{}'::jsonb
 );
 
+alter table public.chatbot_feedback
+  add column if not exists created_at timestamptz not null default now(),
+  add column if not exists rating text,
+  add column if not exists user_message text,
+  add column if not exists assistant_message text,
+  add column if not exists page_path text,
+  add column if not exists page_title text,
+  add column if not exists source text not null default 'fallback',
+  add column if not exists session_id text,
+  add column if not exists meta jsonb not null default '{}'::jsonb;
+
+update public.chatbot_feedback
+set source = 'fallback'
+where source is null;
+
+update public.chatbot_feedback
+set meta = '{}'::jsonb
+where meta is null;
+
+alter table public.chatbot_feedback
+  alter column rating type text
+  using case
+    when rating is null then null
+    when rating::text in ('1', 'up', 'true') then 'up'
+    when rating::text in ('-1', '0', 'down', 'false') then 'down'
+    else lower(rating::text)
+  end;
+
+alter table public.chatbot_feedback
+  alter column source set default 'fallback',
+  alter column meta set default '{}'::jsonb;
+
+alter table public.chatbot_feedback
+  drop constraint if exists chatbot_feedback_rating_check,
+  drop constraint if exists chatbot_feedback_source_check;
+
+alter table public.chatbot_feedback
+  add constraint chatbot_feedback_rating_check
+  check (rating in ('up', 'down'));
+
+alter table public.chatbot_feedback
+  add constraint chatbot_feedback_source_check
+  check (source in ('ai', 'fallback'));
+
 create index if not exists chatbot_feedback_created_at_idx on public.chatbot_feedback (created_at desc);
 create index if not exists chatbot_feedback_rating_idx on public.chatbot_feedback (rating);
 create index if not exists chatbot_feedback_source_idx on public.chatbot_feedback (source);
