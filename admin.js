@@ -280,15 +280,31 @@ function renderMediaReviewPreview(rawUrls) {
 
   for (const url of mediaUrls) {
     const row = document.createElement("div");
-    row.className = "admin__row";
+    row.className = "admin__media-card";
 
     const title = document.createElement("div");
     title.className = "admin__row-title";
-    title.textContent = getMediaTitle(url);
+    title.textContent = getMediaTitle(url) || "Média proposé";
 
     const info = document.createElement("div");
     info.className = "admin__row-info";
-    info.textContent = inferMediaType(url) === "document" ? "Document PDF" : "Image ou schéma";
+    info.textContent = inferMediaType(url) === "pdf" ? "Document PDF" : "Image ou schéma";
+
+    const preview = document.createElement("div");
+    preview.className = "admin__media-preview";
+
+    if (inferMediaType(url) === "pdf") {
+      const pdfCard = document.createElement("div");
+      pdfCard.className = "admin__media-preview admin__media-preview--pdf";
+      pdfCard.textContent = "PDF";
+      preview.appendChild(pdfCard);
+    } else {
+      const image = document.createElement("img");
+      image.src = url;
+      image.alt = getMediaTitle(url) || "Média proposé";
+      image.loading = "lazy";
+      preview.appendChild(image);
+    }
 
     const meta = document.createElement("div");
     meta.className = "admin__row-meta";
@@ -296,9 +312,10 @@ function renderMediaReviewPreview(rawUrls) {
     link.href = url;
     link.target = "_blank";
     link.rel = "noreferrer noopener";
-    link.textContent = url;
+    link.textContent = "Ouvrir le média";
     meta.appendChild(link);
 
+    row.appendChild(preview);
     row.appendChild(title);
     row.appendChild(info);
     row.appendChild(meta);
@@ -356,6 +373,19 @@ function getMediaTitle(url) {
   if (!raw) return null;
   const filename = raw.split("/").pop() || raw;
   return filename.replace(/\.[a-z0-9]+$/i, "").replace(/[-_]+/g, " ").trim() || null;
+}
+
+function formatShortDate(value) {
+  if (!value) return "";
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "";
+  return parsed.toLocaleString("fr-CH", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 }
 
 function getEditingTerm() {
@@ -592,11 +622,29 @@ function renderSubmissions(list) {
     const meta = document.createElement("div");
     meta.className = "admin__row-meta";
     const mediaLabel = mediaCount ? ` · ${mediaCount} média proposé${mediaCount > 1 ? "s" : ""}` : "";
-    meta.textContent = `Par : ${item.submitter_email || "anonyme"}${mediaLabel}`;
+    const when = formatShortDate(item.created_at);
+    meta.textContent = `Par : ${item.submitter_email || "anonyme"}${mediaLabel}${when ? ` · ${when}` : ""}`;
 
     const status = document.createElement("div");
     status.className = `admin__row-status ${item.status || "pending"}`;
     status.textContent = getWorkflowLabel(item.status || "submitted");
+
+    if (mediaCount) {
+      const mediaStrip = document.createElement("div");
+      mediaStrip.className = "admin__media-strip";
+
+      for (const url of item.media_urls.slice(0, 3)) {
+        const mediaLink = document.createElement("a");
+        mediaLink.className = "admin__media-chip";
+        mediaLink.href = url;
+        mediaLink.target = "_blank";
+        mediaLink.rel = "noreferrer noopener";
+        mediaLink.textContent = inferMediaType(url) === "pdf" ? "PDF" : (getMediaTitle(url) || "Image");
+        mediaStrip.appendChild(mediaLink);
+      }
+
+      row.appendChild(mediaStrip);
+    }
 
     if (mediaCount) {
       const mediaBadge = document.createElement("div");
