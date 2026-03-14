@@ -308,5 +308,35 @@
     "source_slug": "ancrage",
     "target_slug": "joint-detancheite",
     "relation_type": "related"
+  },
+  {
+    "source_slug": "plancher-bois",
+    "target_slug": "plancher-collaborant",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "plancher-collaborant",
+    "target_slug": "plancher-mixte",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "dalle-beton",
+    "target_slug": "plancher-nervure",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "fixation",
+    "target_slug": "ancrage",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "fixation",
+    "target_slug": "boulonnage",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "boulonnage",
+    "target_slug": "soudure",
+    "relation_type": "related"
   }
 ]

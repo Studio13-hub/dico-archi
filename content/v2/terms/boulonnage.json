@@ -1,0 +1,39 @@
+{
+  "id": "term_boulonnage",
+  "term": "Boulonnage",
+  "slug": "boulonnage",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "assemblages-et-structure",
+  "status": "published",
+  "content": {
+    "definition": "Assemblage réalisé au moyen de boulons, écrous et rondelles pour relier solidement plusieurs pièces entre elles.",
+    "explanation": "Le boulonnage est fréquent en construction métallique et dans certains assemblages mixtes, car il permet une mise en œuvre contrôlée et souvent démontable.",
+    "example": "Une poutre acier peut être reliée à une platine ou à un poteau par boulonnage.",
+    "applications": [
+      "construction metallique",
+      "assemblages démontables",
+      "structures mixtes"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le diamètre, la classe et le nombre de boulons doivent être précisés dans les plans d’atelier ou de montage."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "assemblage",
+      "acier"
+    ],
+    "version": 1
+  }
+}

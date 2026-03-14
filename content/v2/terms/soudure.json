@@ -1,0 +1,39 @@
+{
+  "id": "term_soudure",
+  "term": "Soudure",
+  "slug": "soudure",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "assemblages-et-structure",
+  "status": "published",
+  "content": {
+    "definition": "Assemblage permanent obtenu en liant deux pièces par fusion locale du matériau ou d’un métal d’apport.",
+    "explanation": "La soudure est courante en construction métallique et demande un niveau de qualité d’exécution adapté aux efforts transmis.",
+    "example": "Sur une structure acier, certaines platines ou cornières peuvent être fixées par soudure en atelier.",
+    "applications": [
+      "construction metallique",
+      "assemblages permanents",
+      "atelier"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le type de cordon et les longueurs soudées doivent être indiqués dans les documents d’exécution."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "assemblage",
+      "acier"
+    ],
+    "version": 1
+  }
+}

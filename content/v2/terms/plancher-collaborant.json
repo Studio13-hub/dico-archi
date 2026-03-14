@@ -1,0 +1,39 @@
+{
+  "id": "term_plancher_collaborant",
+  "term": "Plancher collaborant",
+  "slug": "plancher-collaborant",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "planchers-et-dalles",
+  "status": "published",
+  "content": {
+    "definition": "Plancher dans lequel plusieurs composants travaillent ensemble structurellement, par exemple une tôle profilée et une dalle en béton.",
+    "explanation": "Le principe collaborant permet d’utiliser les qualités de plusieurs matériaux pour améliorer la portance, la rapidité de mise en œuvre ou l’économie du système.",
+    "example": "Dans une structure acier, un plancher collaborant réduit souvent le temps de chantier par rapport à une solution entièrement coulée en place.",
+    "applications": [
+      "structures acier",
+      "bâtiments de bureaux",
+      "chantiers rapides"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le détail doit montrer la liaison entre la tôle, le béton et la structure porteuse."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "plancher",
+      "structure"
+    ],
+    "version": 1
+  }
+}

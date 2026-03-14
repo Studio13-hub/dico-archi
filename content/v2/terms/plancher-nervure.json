@@ -1,0 +1,39 @@
+{
+  "id": "term_plancher_nervure",
+  "term": "Plancher nervuré",
+  "slug": "plancher-nervure",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "planchers-et-dalles",
+  "status": "published",
+  "content": {
+    "definition": "Plancher comportant des nervures porteuses répétées pour optimiser la répartition des charges et la portée.",
+    "explanation": "La présence de nervures permet d’alléger certaines zones du plancher tout en conservant une bonne capacité portante.",
+    "example": "Dans un parking ou un grand plateau, un plancher nervuré peut permettre de franchir des portées plus importantes.",
+    "applications": [
+      "parkings",
+      "plateaux ouverts",
+      "grandes portees"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Les nervures doivent être clairement lisibles dans les coupes et les plans de structure."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "plancher",
+      "beton"
+    ],
+    "version": 1
+  }
+}

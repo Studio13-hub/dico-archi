@@ -1,0 +1,39 @@
+{
+  "id": "term_fixation",
+  "term": "Fixation",
+  "slug": "fixation",
+  "category_slug": "elements-constructifs",
+  "subcategory_slug": "assemblages-et-structure",
+  "status": "published",
+  "content": {
+    "definition": "Dispositif ou procédé utilisé pour assembler un élément à son support ou à une autre pièce de construction.",
+    "explanation": "Une fixation peut être démontable ou permanente, et son choix dépend des efforts à reprendre, du support et des contraintes de pose.",
+    "example": "La fixation d’un habillage ou d’un garde-corps doit être adaptée au support et aux sollicitations prévues.",
+    "applications": [
+      "assemblages",
+      "éléments rapportés",
+      "détails de chantier"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le type de fixation et son entraxe doivent être documentés dans les détails d’exécution."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "construction",
+      "assemblage",
+      "chantier"
+    ],
+    "version": 1
+  }
+}
