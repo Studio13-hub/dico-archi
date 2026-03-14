@@ -1,14 +1,14 @@
 {
   "id": "term_criteres_economiques",
-  "term": "Criteres economiques",
+  "term": "Critères économiques",
   "slug": "criteres-economiques",
   "category_slug": "materiaux",
   "subcategory_slug": "evaluation-des-materiaux",
   "status": "published",
   "content": {
-    "definition": "Analyse des couts directs et indirects d'un materiau, y compris entretien, duree de vie et remplacement.",
+    "definition": "Analyse des coûts directs et indirects d’un matériau, y compris l’entretien, la durée de vie et le remplacement.",
     "explanation": null,
-    "example": "Une solution plus chere a l'achat peut etre plus rentable sur la duree.",
+    "example": "Une solution plus chère à l’achat peut être plus rentable sur la durée.",
     "applications": [],
     "norms": []
   },

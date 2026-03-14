@@ -1,14 +1,14 @@
 {
   "id": "term_evaluation_des_materiaux_de_construction",
-  "term": "Evaluation des materiaux de construction",
+  "term": "Évaluation des matériaux de construction",
   "slug": "evaluation-des-materiaux-de-construction",
   "category_slug": "materiaux",
   "subcategory_slug": "evaluation-des-materiaux",
   "status": "published",
   "content": {
-    "definition": "Analyse multicritere permettant de juger la pertinence d'un materiau pour un usage donne.",
+    "definition": "Analyse multicritère permettant de juger la pertinence d’un matériau pour un usage donné.",
     "explanation": null,
-    "example": "Une solution est retenue apres analyse technique, environnementale et economique.",
+    "example": "Une solution est retenue après analyse technique, environnementale et économique.",
     "applications": [],
     "norms": []
   },

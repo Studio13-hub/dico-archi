@@ -1,6 +1,6 @@
 {
   "id": "term_sante_et_bien_etre",
-  "term": "Sante et bien-etre",
+  "term": "Santé et bien-être",
   "slug": "sante-et-bien-etre",
   "category_slug": "materiaux",
   "subcategory_slug": "evaluation-des-materiaux",
@@ -8,7 +8,7 @@
   "content": {
     "definition": "Impact des matériaux sur la qualité de l’air intérieur, le confort et la sécurité des occupants.",
     "explanation": null,
-    "example": "Preference pour des produits faibles en emissions dans des locaux occupes en continu.",
+    "example": "Préférence pour des produits faibles en émissions dans des locaux occupés en continu.",
     "applications": [],
     "norms": []
   },

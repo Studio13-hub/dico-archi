@@ -6,9 +6,9 @@
   "subcategory_slug": "classification-des-materiaux",
   "status": "published",
   "content": {
-    "definition": "Application concrete des systemes de classification pour comparer des variantes et documenter un choix de projet.",
+    "definition": "Application concrète des systèmes de classification pour comparer des variantes et documenter un choix de projet.",
     "explanation": null,
-    "example": "Comparer deux solutions de facade en utilisant une grille identique de criteres.",
+    "example": "Comparer deux solutions de façade en utilisant une grille identique de critères.",
     "applications": [],
     "norms": []
   },

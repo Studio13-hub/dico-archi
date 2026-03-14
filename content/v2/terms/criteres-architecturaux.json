@@ -1,6 +1,6 @@
 {
   "id": "term_criteres_architecturaux",
-  "term": "Criteres architecturaux",
+  "term": "Critères architecturaux",
   "slug": "criteres-architecturaux",
   "category_slug": "materiaux",
   "subcategory_slug": "evaluation-des-materiaux",
@@ -8,7 +8,7 @@
   "content": {
     "definition": "Critères de choix liés à l’expression architecturale, à l’intégration visuelle et à la cohérence du projet.",
     "explanation": null,
-    "example": "Choix d'un parement en fonction de la texture, de la teinte et du contexte urbain.",
+    "example": "Choix d’un parement en fonction de la texture, de la teinte et du contexte urbain.",
     "applications": [],
     "norms": []
   },

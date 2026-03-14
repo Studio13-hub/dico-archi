@@ -1,14 +1,14 @@
 {
   "id": "term_introduction_aux_materiaux_de_construction",
-  "term": "Introduction aux materiaux de construction",
+  "term": "Introduction aux matériaux de construction",
   "slug": "introduction-aux-materiaux-de-construction",
   "category_slug": "materiaux",
   "subcategory_slug": "fondamentaux-des-materiaux",
   "status": "published",
   "content": {
-    "definition": "Vue d'ensemble des familles de materiaux, de leurs usages et des criteres de choix dans un projet de construction.",
+    "definition": "Vue d’ensemble des familles de matériaux, de leurs usages et des critères de choix dans un projet de construction.",
     "explanation": null,
-    "example": "En phase d'avant-projet, on compare plusieurs familles de materiaux avant de fixer une solution.",
+    "example": "En phase d’avant-projet, on compare plusieurs familles de matériaux avant de fixer une solution.",
     "applications": [],
     "norms": []
   },

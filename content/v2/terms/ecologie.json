@@ -1,14 +1,14 @@
 {
   "id": "term_ecologie",
-  "term": "Ecologie",
+  "term": "Écologie",
   "slug": "ecologie",
   "category_slug": "materiaux",
   "subcategory_slug": "evaluation-des-materiaux",
   "status": "published",
   "content": {
-    "definition": "Evaluation environnementale des materiaux sur leur cycle de vie: extraction, fabrication, transport, usage et fin de vie.",
+    "definition": "Évaluation environnementale des matériaux sur leur cycle de vie : extraction, fabrication, transport, usage et fin de vie.",
     "explanation": null,
-    "example": "Comparer l'empreinte carbone de deux alternatives avant specification.",
+    "example": "Comparer l’empreinte carbone de deux alternatives avant spécification.",
     "applications": [],
     "norms": []
   },

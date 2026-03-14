@@ -1,14 +1,14 @@
 {
   "id": "term_classification_des_materiaux",
-  "term": "Classification des materiaux",
+  "term": "Classification des matériaux",
   "slug": "classification-des-materiaux",
   "category_slug": "materiaux",
   "subcategory_slug": "classification-des-materiaux",
   "status": "published",
   "content": {
-    "definition": "Methode de tri des materiaux selon leur origine, leur composition, leur comportement ou leur usage en construction.",
+    "definition": "Méthode de tri des matériaux selon leur origine, leur composition, leur comportement ou leur usage en construction.",
     "explanation": null,
-    "example": "On classe les materiaux par famille minerale, metallique, organique ou synthetique.",
+    "example": "On classe les matériaux par famille minérale, métallique, organique ou synthétique.",
     "applications": [],
     "norms": []
   },
