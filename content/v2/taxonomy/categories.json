@@ -2,66 +2,66 @@
   {
     "name": "Normes SIA",
     "slug": "normes-sia",
-    "description": "References essentielles liees aux normes SIA utilisees dans la pratique de l architecture en Suisse."
+    "description": "Références essentielles liées aux normes SIA utilisées dans la pratique de l’architecture en Suisse."
   },
   {
     "name": "Normes AEAI",
     "slug": "normes-aeai",
-    "description": "Notions et exigences liees aux directives AEAI et a la securite incendie."
+    "description": "Notions et exigences liées aux directives AEAI et à la sécurité incendie."
   },
   {
     "name": "Phases SIA",
     "slug": "phases-sia",
-    "description": "Vocabulaire des differentes phases du projet selon la logique SIA."
+    "description": "Vocabulaire des différentes phases du projet selon la logique SIA."
   },
   {
     "name": "Dessin technique",
     "slug": "dessin-technique",
-    "description": "Termes utiles pour comprendre les plans, coupes, elevations, details et conventions graphiques."
+    "description": "Termes utiles pour comprendre les plans, coupes, élévations, détails et conventions graphiques."
   },
   {
-    "name": "Elements constructifs",
+    "name": "Éléments constructifs",
     "slug": "elements-constructifs",
-    "description": "Definitions des composants du batiment et de leur role dans la construction."
+    "description": "Définitions des composants du bâtiment et de leur rôle dans la construction."
   },
   {
     "name": "Toitures",
     "slug": "toitures",
-    "description": "Vocabulaire des systemes de toiture, de leurs couches, de leur execution et de leur entretien."
+    "description": "Vocabulaire des systèmes de toiture, de leurs couches, de leur exécution et de leur entretien."
   },
   {
-    "name": "Facades",
+    "name": "Façades",
     "slug": "facades",
-    "description": "Termes lies aux enveloppes verticales, parements, isolation et composition des facades."
+    "description": "Termes liés aux enveloppes verticales, parements, isolation et composition des façades."
   },
   {
     "name": "Chantier",
     "slug": "chantier",
-    "description": "Notions pratiques liees au suivi de chantier, aux entreprises, aux lots et a l execution."
+    "description": "Notions pratiques liées au suivi de chantier, aux entreprises, aux lots et à l’exécution."
   },
   {
-    "name": "Materiaux",
+    "name": "Matériaux",
     "slug": "materiaux",
-    "description": "Bases sur les materiaux de construction, leurs proprietes et leurs usages."
+    "description": "Bases sur les matériaux de construction, leurs propriétés et leurs usages."
   },
   {
     "name": "Administration et permis",
     "slug": "administration-et-permis",
-    "description": "Vocabulaire administratif lie aux autorisations, dossiers et procedures de construction."
+    "description": "Vocabulaire administratif lié aux autorisations, dossiers et procédures de construction."
   },
   {
-    "name": "Bureau d architecture",
+    "name": "Bureau d’architecture",
     "slug": "bureau-d-architecture",
     "description": "Termes du quotidien en bureau, organisation du travail, documents et coordination de projet."
   },
   {
-    "name": "Securite incendie",
+    "name": "Sécurité incendie",
     "slug": "securite-incendie",
-    "description": "Definitions essentielles pour comprendre la prevention, la protection et les exigences incendie."
+    "description": "Définitions essentielles pour comprendre la prévention, la protection et les exigences incendie."
   },
   {
     "name": "Ouvertures",
     "slug": "ouvertures",
-    "description": "Vocabulaire des fenetres, portes, chassis, details d'etancheite et elements associes a l enveloppe."
+    "description": "Vocabulaire des fenêtres, portes, châssis, détails d’étanchéité et éléments associés à l’enveloppe."
   }
 ]

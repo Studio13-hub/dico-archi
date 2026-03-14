@@ -23,7 +23,7 @@ function setTermText(node, value, fallback = "-") {
 function renderMedia(items) {
   clearTermChildren(mediaNode);
   if (!Array.isArray(items) || !items.length) {
-    mediaNode.textContent = "Aucun media disponible.";
+    mediaNode.textContent = "Aucun média disponible.";
     return;
   }
 
@@ -34,9 +34,18 @@ function renderMedia(items) {
     if (item.media_type === "image") {
       const image = document.createElement("img");
       image.src = item.url;
-      image.alt = item.alt_text || item.title || "Media du terme";
+      image.alt = item.alt_text || item.title || "Média du terme";
       image.style.maxWidth = "100%";
       image.style.borderRadius = "12px";
+      image.addEventListener("error", () => {
+        image.remove();
+        if (!wrapper.querySelector(".meta--subtle")) {
+          const fallback = document.createElement("div");
+          fallback.className = "meta meta--subtle";
+          fallback.textContent = "Illustration indisponible pour le moment.";
+          wrapper.appendChild(fallback);
+        }
+      });
       wrapper.appendChild(image);
     } else {
       const link = document.createElement("a");
@@ -108,7 +117,7 @@ async function loadTermPage() {
     definitionNode.textContent = "La fiche n'a pas pu etre chargee.";
     exampleNode.textContent = "-";
     statusNode.textContent = `Erreur: ${error.message || "internal_error"}`;
-    mediaNode.textContent = "Aucun media disponible.";
+    mediaNode.textContent = "Aucun média disponible.";
     relatedNode.textContent = "Aucun terme lie.";
   }
 }
