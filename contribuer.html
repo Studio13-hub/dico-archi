@@ -107,9 +107,22 @@
                 placeholder="Un lien public par ligne&#10;https://.../photo-facade.jpg&#10;https://.../detail-acrotere.pdf"
               ></textarea>
               <span class="contrib-field__hint">
-                Pour l’instant, seuls les liens publics `http/https` sont acceptés. Les fichiers locaux `file:///...` ne peuvent pas encore être téléversés directement.
+                Vous pouvez coller des liens publics `http/https` ou téléverser ci-dessous des images/PDF temporaires pour relecture.
               </span>
             </label>
+            <div class="contrib-field contrib-field--full">
+              <span class="contrib-field__label">Téléversement temporaire</span>
+              <div class="contrib-upload">
+                <label class="link-button" for="media-files">Choisir des fichiers</label>
+                <input id="media-files" name="media-files" type="file" accept=".png,.jpg,.jpeg,.webp,.gif,.svg,.pdf,image/*,application/pdf" multiple />
+                <button id="upload-media" type="button">Téléverser</button>
+                <span id="upload-media-status" class="meta meta--subtle">Images et PDF jusqu’à 10 MB.</span>
+              </div>
+              <div id="upload-media-list" class="contrib-upload-list" aria-live="polite"></div>
+              <span class="contrib-field__hint">
+                Les fichiers déposés ici restent temporaires : ils servent à la relecture formateur avant publication finale.
+              </span>
+            </div>
           </div>
           <div class="dashboard">
             <div class="dashboard__item">

@@ -153,6 +153,15 @@
     return payload;
   }
 
+  function sanitizeStorageSegment(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-zA-Z0-9._-]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .toLowerCase();
+  }
+
   // API helpers are grouped by feature so pages reuse the same queries
   // instead of rebuilding raw Supabase calls inline.
   const api = {
@@ -238,6 +247,41 @@
 
       if (query.error) throw query.error;
       return query.data || null;
+    },
+
+    async uploadSubmissionMedia(file, userId) {
+      const client = getClient();
+      if (!client) throw new Error("missing_supabase_config");
+      if (!file) throw new Error("Aucun fichier fourni.");
+      if (!userId) throw new Error("Utilisateur manquant pour le téléversement.");
+
+      const maxSizeBytes = 10 * 1024 * 1024;
+      const mime = String(file.type || "").toLowerCase();
+      const ext = String(file.name || "").toLowerCase().split(".").pop() || "";
+      const allowedImageExt = ["png", "jpg", "jpeg", "webp", "gif", "svg"];
+      const isPdf = mime === "application/pdf" || ext === "pdf";
+      const isImage = mime.startsWith("image/") || allowedImageExt.includes(ext);
+
+      if (!isPdf && !isImage) {
+        throw new Error("Format non supporté. Utilise une image (png/jpg/webp/gif/svg) ou un PDF.");
+      }
+      if (file.size > maxSizeBytes) {
+        throw new Error("Fichier trop lourd (max 10 MB).");
+      }
+
+      const safeName = sanitizeStorageSegment(file.name.replace(/\.[^.]+$/, "")) || "media";
+      const safeExt = sanitizeStorageSegment(ext) || (isPdf ? "pdf" : "png");
+      const filePath = `submissions/${userId}/${Date.now()}-${Math.random().toString(16).slice(2)}-${safeName}.${safeExt}`;
+
+      const upload = await client.storage.from("term-images").upload(filePath, file, {
+        cacheControl: "3600",
+        upsert: false
+      });
+
+      if (upload.error) throw upload.error;
+
+      const publicUrl = client.storage.from("term-images").getPublicUrl(filePath);
+      return publicUrl.data?.publicUrl || "";
     },
 
     async searchTerms(query) {

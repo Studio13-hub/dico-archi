@@ -6,11 +6,16 @@
   const definitionInput = document.getElementById("definition");
   const exampleInput = document.getElementById("example");
   const mediaUrlsInput = document.getElementById("media-urls");
+  const mediaFilesInput = document.getElementById("media-files");
+  const uploadMediaButton = document.getElementById("upload-media");
+  const uploadMediaStatus = document.getElementById("upload-media-status");
+  const uploadMediaList = document.getElementById("upload-media-list");
   const qualityTitle = document.getElementById("contrib-quality-title");
   const qualityCopy = document.getElementById("contrib-quality-copy");
   const stats = document.getElementById("contrib-stats");
   const contributionSupabaseHelpers = window.DicoArchiSupabase;
   const contributionApi = window.DicoArchiApi;
+  let isUploadingMedia = false;
 
   function setContributionMessage(text, isError = false) {
     if (!message) return;
@@ -34,6 +39,64 @@
       .map((item) => item.trim())
       .filter(Boolean)
       .filter((item, index, list) => list.indexOf(item) === index);
+  }
+
+  function formatUploadName(url) {
+    const lastSegment = String(url || "").split("/").pop() || "";
+    return decodeURIComponent(lastSegment.split("?")[0] || "media-temporaire");
+  }
+
+  function setUploadStatus(text, isError = false) {
+    if (!uploadMediaStatus) return;
+    uploadMediaStatus.textContent = text;
+    uploadMediaStatus.style.color = isError ? "#d94e2b" : "rgba(18, 18, 18, 0.6)";
+  }
+
+  function setUploadButtonBusy(isBusy) {
+    if (!uploadMediaButton) return;
+    uploadMediaButton.disabled = isBusy;
+    uploadMediaButton.textContent = isBusy ? "Téléversement..." : "Téléverser";
+  }
+
+  function renderUploadedMediaList() {
+    if (!uploadMediaList) return;
+    const urls = parseMediaUrls(mediaUrlsInput?.value);
+    uploadMediaList.innerHTML = "";
+
+    if (!urls.length) {
+      const empty = document.createElement("div");
+      empty.className = "contrib-upload-item contrib-upload-item--empty";
+      empty.textContent = "Aucun média temporaire ajouté pour l’instant.";
+      uploadMediaList.appendChild(empty);
+      return;
+    }
+
+    urls.forEach((url) => {
+      const row = document.createElement("div");
+      row.className = "contrib-upload-item";
+
+      const label = document.createElement("a");
+      label.href = url;
+      label.target = "_blank";
+      label.rel = "noreferrer";
+      label.textContent = formatUploadName(url);
+
+      const action = document.createElement("button");
+      action.type = "button";
+      action.className = "link-button";
+      action.textContent = "Retirer";
+      action.addEventListener("click", () => {
+        const remaining = parseMediaUrls(mediaUrlsInput?.value).filter((item) => item !== url);
+        if (mediaUrlsInput) {
+          mediaUrlsInput.value = remaining.join("\n");
+        }
+        renderUploadedMediaList();
+        updateContributionHints();
+      });
+
+      row.append(label, action);
+      uploadMediaList.appendChild(row);
+    });
   }
 
   function isSupportedMediaUrl(url) {
@@ -115,6 +178,60 @@
     }
   }
 
+  async function uploadContributionMedia() {
+    if (!contributionSupabaseHelpers || !contributionApi) {
+      setContributionMessage("Configuration Supabase manquante.", true);
+      return;
+    }
+    if (isUploadingMedia) return;
+
+    const files = Array.from(mediaFilesInput?.files || []);
+    if (!files.length) {
+      setUploadStatus("Choisissez au moins un fichier avant de téléverser.", true);
+      return;
+    }
+
+    const user = await contributionSupabaseHelpers.getCurrentUser();
+    if (!user) {
+      setContributionMessage("Connecte-toi avant de téléverser un média.", true);
+      return;
+    }
+
+    isUploadingMedia = true;
+    setUploadButtonBusy(true);
+    setUploadStatus("Téléversement en cours...");
+    setContributionMessage("");
+
+    try {
+      const uploadedUrls = [];
+      for (const file of files) {
+        const url = await contributionApi.uploadSubmissionMedia(file, user.id);
+        uploadedUrls.push(url);
+      }
+
+      const merged = Array.from(new Set([
+        ...parseMediaUrls(mediaUrlsInput?.value),
+        ...uploadedUrls
+      ]));
+
+      if (mediaUrlsInput) {
+        mediaUrlsInput.value = merged.join("\n");
+      }
+      if (mediaFilesInput) {
+        mediaFilesInput.value = "";
+      }
+
+      renderUploadedMediaList();
+      updateContributionHints();
+      setUploadStatus(`${uploadedUrls.length} média${uploadedUrls.length > 1 ? "s" : ""} temporaire${uploadedUrls.length > 1 ? "s" : ""} prêt${uploadedUrls.length > 1 ? "s" : ""}.`);
+    } catch (error) {
+      setUploadStatus(error.message || "Téléversement impossible.", true);
+    } finally {
+      isUploadingMedia = false;
+      setUploadButtonBusy(false);
+    }
+  }
+
   async function submitContribution(event) {
     event.preventDefault();
 
@@ -164,7 +281,9 @@
     }
 
     form?.reset();
+    renderUploadedMediaList();
     updateContributionHints();
+    setUploadStatus("Images et PDF jusqu’à 10 MB.");
     setContributionMessage("Proposition envoyée avec succès.");
   }
 
@@ -178,11 +297,16 @@
     form.addEventListener("submit", submitContribution);
   }
 
+  if (uploadMediaButton) {
+    uploadMediaButton.addEventListener("click", uploadContributionMedia);
+  }
+
   [termInput, categoryInput, definitionInput, exampleInput, mediaUrlsInput].forEach((field) => {
     if (!field) return;
     field.addEventListener("input", updateContributionHints);
     field.addEventListener("change", updateContributionHints);
   });
 
+  renderUploadedMediaList();
   updateContributionHints();
 })();

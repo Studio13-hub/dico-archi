@@ -172,6 +172,50 @@ p {
   color: rgba(18, 18, 18, 0.6);
 }
 
+.contrib-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.contrib-upload input[type="file"] {
+  display: none;
+}
+
+.contrib-upload-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.contrib-upload-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.contrib-upload-item a {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.contrib-upload-item--empty {
+  justify-content: flex-start;
+  color: rgba(18, 18, 18, 0.58);
+}
+
 .chatbot__panel {
   width: min(380px, calc(100vw - 24px));
   height: min(520px, calc(100vh - 40px));
