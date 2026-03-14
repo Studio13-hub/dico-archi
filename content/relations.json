@@ -115,6 +115,11 @@
     "relation_type": "related"
   },
   {
+    "source_slug": "pare-vapeur",
+    "target_slug": "isolation-thermique-et-phonique",
+    "relation_type": "related"
+  },
+  {
     "source_slug": "toitures-chaudes",
     "target_slug": "isolation-thermique-et-phonique",
     "relation_type": "related"

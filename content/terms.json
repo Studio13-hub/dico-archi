@@ -10,8 +10,8 @@
   {
     "term": "Pare-vapeur",
     "slug": "pare-vapeur",
-    "definition": "Couche placee dans une paroi pour limiter le passage de vapeur d eau et reduire les risques de condensation.",
-    "example": "Le pare-vapeur est pose du cote chaud de la construction.",
+    "definition": "Couche limitant le passage de vapeur d'eau depuis l'interieur vers les couches froides d'une paroi ou d'une toiture, afin de reduire les risques de condensation.",
+    "example": "Le pare-vapeur est place sous l'isolation pour prevenir les condensations internes dans la toiture.",
     "category_slug": "toitures",
     "status": "published"
   },
