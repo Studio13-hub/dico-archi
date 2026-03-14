@@ -25,15 +25,18 @@
             <span></span><span></span><span></span>
           </button>
           <div class="hero__actions" data-menu-panel>
-            <span id="auth-status" class="meta meta--subtle">Non connecté</span>
-            <a class="link-button" href="auth.html" id="auth-link">Connexion</a>
-            <button class="link-button" id="logout" type="button" hidden>Se déconnecter</button>
+            <span class="meta meta--subtle" data-nav-status>Public · consultation</span>
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+            <a class="link-button" href="category.html">Catégories</a>
             <a class="link-button" href="games.html">Jeux</a>
             <a class="link-button" href="quiz.html">Quiz</a>
             <a class="link-button" href="flashcards.html">Swipe</a>
             <a class="link-button" href="match.html">Rush</a>
+            <a class="link-button" href="daily.html">Défi du jour</a>
             <a class="link-button" href="contribuer.html">Contribuer</a>
-            <a class="link-button" href="admin.html" id="admin-link" hidden>Admin</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
           </div>
         </div>
         <h1>Dictionnaire pratique d’architecture</h1>

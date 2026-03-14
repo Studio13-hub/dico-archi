@@ -85,17 +85,6 @@ p {
   align-items: center;
 }
 
-.welcome-cover__links {
-  display: inline-flex;
-  position: static;
-  border: 0;
-  box-shadow: none;
-  width: auto;
-  max-height: none;
-  overflow: visible;
-  padding: 0;
-}
-
 .welcome-cover__lead {
   max-width: 860px;
 }

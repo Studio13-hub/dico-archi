@@ -26,14 +26,22 @@
       <div class="hero__content">
         <div class="hero__top">
           <div class="badge">Dico Architecture CH</div>
-          <div class="hero__actions welcome-cover__links">
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Public · consultation</span>
             <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
             <a class="link-button" href="category.html">Catégories</a>
-            <a class="link-button" href="quiz.html">Quiz</a>
             <a class="link-button" href="games.html">Jeux</a>
+            <a class="link-button" href="quiz.html">Quiz</a>
             <a class="link-button" href="flashcards.html">Swipe</a>
             <a class="link-button" href="match.html">Rush</a>
-            <a class="link-button" href="auth.html">Connexion</a>
+            <a class="link-button" href="daily.html">Défi du jour</a>
+            <a class="link-button" href="contribuer.html">Contribuer</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
           </div>
         </div>
 
@@ -100,6 +108,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script src="supabaseClient.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
     <script src="index.page.js"></script>
     <script src="chatbot.js"></script>
   </body>
