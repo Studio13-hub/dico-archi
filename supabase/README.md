@@ -17,47 +17,54 @@ Socle principal de la base.
 
 Contient notamment :
 - `schema.sql`
-- `storage.sql`
-- `audit.sql`
 
 Rôle :
 - structure générale
 - tables
-- fonctions de base
-- storage
-- audit
+- contraintes et index canoniques
 
 ### `security/`
 
-Sécurité et gouvernance des accès.
+Sécurité et gouvernance des accès de travail.
 
 Contient notamment :
-- rôles
 - policies
-- RPC liées à l’administration
-- règles de sécurité médias
+- helpers
+- variantes de travail encore non fusionnées dans les migrations
 
-### `features/`
+### `migrations/`
 
-Scripts SQL liés aux fonctionnalités métier.
+Chaîne exécutable officielle.
 
-Exemples :
-- workflow éditorial
-- soumissions
-- acceptation atomique
-- feedback chatbot
+Rôle :
+- création du schéma core
+- intégration auth/profiles
+- unification des rôles
+- sécurité RLS
+- storage
+- RPC admin
 
 ### `seeds/`
 
-Scripts de contenu et d’alimentation.
+Sources SQL initiales compatibles avec le modèle core.
 
-### `migrations_manual/`
+### `legacy/`
 
-Historique manuel des migrations à tracer explicitement si nécessaire.
+Scripts historiques conservés pour référence.
 
 ### `archive/`
 
 Scripts retirés du flux actif, mais conservés à titre d’historique.
+
+## Source active
+
+Aujourd’hui, les sources actives sont :
+
+- `core/schema.sql`
+- `migrations/`
+- `seeds/`
+
+Le reste est soit archive, soit matériau de travail secondaire.
 
 ## Règle de classification
 
@@ -68,12 +75,6 @@ Chaque script doit pouvoir être qualifié comme :
 - archivé
 
 Cette qualification doit être documentée avant tout nettoyage.
-
-## Source de vérité
-
-- la logique structurelle doit être cohérente avec `docs/reference/DATA_MODEL.md`
-- la logique de sécurité doit être cohérente avec `docs/reference/SECURITY.md`
-- la logique rôles et workflow doit être cohérente avec `docs/reference/ROLES_WORKFLOW.md`
 
 ## Important
 
