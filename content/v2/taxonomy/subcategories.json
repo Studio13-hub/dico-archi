@@ -82,5 +82,23 @@
     "name": "Cycle du projet",
     "slug": "cycle-du-projet",
     "description": "Phases d’étude, de consultation et de réalisation selon la logique SIA."
+  },
+  {
+    "category_slug": "normes-sia",
+    "name": "Normes fondamentales SIA",
+    "slug": "normes-fondamentales-sia",
+    "description": "Références SIA souvent mobilisées pour les contrats, le confort, l’acoustique et l’énergie."
+  },
+  {
+    "category_slug": "normes-aeai",
+    "name": "Protection incendie",
+    "slug": "protection-incendie",
+    "description": "Notions de base liées aux degrés de résistance au feu et à l’organisation de l’évacuation."
+  },
+  {
+    "category_slug": "administration-et-permis",
+    "name": "Procédures administratives",
+    "slug": "procedures-administratives",
+    "description": "Étapes réglementaires pour déposer, suivre et clôturer un dossier de construction."
   }
 ]

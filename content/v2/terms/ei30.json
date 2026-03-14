@@ -1,0 +1,41 @@
+{
+  "id": "term_ei30",
+  "term": "EI30",
+  "slug": "ei30",
+  "category_slug": "normes-aeai",
+  "subcategory_slug": "protection-incendie",
+  "status": "published",
+  "content": {
+    "definition": "Classement de résistance au feu indiquant qu’un élément conserve son étanchéité et son isolation pendant 30 minutes.",
+    "explanation": "Le E représente l’étanchéité aux flammes et aux gaz chauds, tandis que le I représente l’isolation thermique face à l’incendie.",
+    "example": "Une porte EI30 permet de retarder la propagation du feu entre deux compartiments pendant 30 minutes.",
+    "applications": [
+      "portes coupe-feu",
+      "cloisons",
+      "sécurité incendie"
+    ],
+    "norms": [
+      "AEAI"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": "EI30",
+    "drawing_note": "Classe de résistance au feu à indiquer sur les plans de sécurité."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "incendie",
+      "aeai",
+      "porte"
+    ],
+    "version": 1
+  }
+}

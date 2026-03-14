@@ -1,0 +1,41 @@
+{
+  "id": "term_compartiment_feu",
+  "term": "Compartiment feu",
+  "slug": "compartiment-feu",
+  "category_slug": "normes-aeai",
+  "subcategory_slug": "protection-incendie",
+  "status": "published",
+  "content": {
+    "definition": "Volume délimité par des éléments résistants au feu pour contenir un incendie dans une zone précise du bâtiment.",
+    "explanation": "Le compartimentage limite la propagation du feu et de la fumée, et facilite l’évacuation ainsi que l’intervention des secours.",
+    "example": "Un local technique peut devoir être séparé du reste du bâtiment par un compartiment feu adapté à son risque.",
+    "applications": [
+      "sécurité incendie",
+      "locaux techniques",
+      "distribution intérieure"
+    ],
+    "norms": [
+      "AEAI"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "À signaler sur les plans de sécurité et dans les tableaux de conformité incendie."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "incendie",
+      "compartimentage",
+      "aeai"
+    ],
+    "version": 1
+  }
+}

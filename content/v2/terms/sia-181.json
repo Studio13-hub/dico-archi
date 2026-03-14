@@ -1,0 +1,41 @@
+{
+  "id": "term_sia_181",
+  "term": "SIA 181",
+  "slug": "sia-181",
+  "category_slug": "normes-sia",
+  "subcategory_slug": "normes-fondamentales-sia",
+  "status": "published",
+  "content": {
+    "definition": "Norme suisse de référence pour la protection contre le bruit dans le bâtiment.",
+    "explanation": "Elle fixe des exigences de performance acoustique entre locaux, pour les bruits aériens, les bruits d’impact et les installations techniques.",
+    "example": "Le choix d’un plancher ou d’une cloison est contrôlé avec la SIA 181 pour assurer le confort acoustique des occupants.",
+    "applications": [
+      "logements",
+      "planchers",
+      "cloisons"
+    ],
+    "norms": [
+      "SIA 181"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "normes",
+      "acoustique",
+      "confort"
+    ],
+    "version": 1
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "term_sia_380",
+  "term": "SIA 380",
+  "slug": "sia-380",
+  "category_slug": "normes-sia",
+  "subcategory_slug": "normes-fondamentales-sia",
+  "status": "published",
+  "content": {
+    "definition": "Référence suisse utilisée pour l’évaluation des besoins énergétiques et de la performance thermique des bâtiments.",
+    "explanation": "Elle sert à cadrer le calcul énergétique et à comparer des variantes d’enveloppe, d’isolation et d’exploitation.",
+    "example": "Une variante de façade plus isolante peut être évaluée avec les principes de la SIA 380 pour mesurer son impact énergétique.",
+    "applications": [
+      "performance énergétique",
+      "enveloppe",
+      "comparaison de variantes"
+    ],
+    "norms": [
+      "SIA 380"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "normes",
+      "energie",
+      "performance"
+    ],
+    "version": 1
+  }
+}

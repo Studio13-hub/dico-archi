@@ -1,0 +1,39 @@
+{
+  "id": "term_conformite",
+  "term": "Conformité",
+  "slug": "conformite",
+  "category_slug": "administration-et-permis",
+  "subcategory_slug": "procedures-administratives",
+  "status": "published",
+  "content": {
+    "definition": "Correspondance entre un projet, un ouvrage ou un détail et les exigences réglementaires, normatives ou contractuelles applicables.",
+    "explanation": "La conformité se vérifie à plusieurs étapes : conception, dépôt de dossier, exécution et réception.",
+    "example": "Un détail de garde-corps peut devoir être ajusté pour rester conforme aux exigences de sécurité et d’accessibilité.",
+    "applications": [
+      "contrôle de projet",
+      "autorisation",
+      "réception"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "La vérification de conformité peut être documentée dans les notes techniques et rapports."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "administration",
+      "controle",
+      "reglementation"
+    ],
+    "version": 1
+  }
+}

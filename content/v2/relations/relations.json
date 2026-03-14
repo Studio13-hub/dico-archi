@@ -153,5 +153,50 @@
     "source_slug": "glossaire-toitures-plates",
     "target_slug": "terminologie-toitures-plates",
     "relation_type": "related"
+  },
+  {
+    "source_slug": "sia-118",
+    "target_slug": "soumission",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "sia-180",
+    "target_slug": "pare-vapeur",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "sia-181",
+    "target_slug": "isolation-thermique-et-phonique",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "sia-380",
+    "target_slug": "isolation-thermique",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "ei30",
+    "target_slug": "ei60",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "ei60",
+    "target_slug": "compartiment-feu",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "compartiment-feu",
+    "target_slug": "voie-de-fuite",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "permis-de-construire",
+    "target_slug": "enquete-publique",
+    "relation_type": "related"
+  },
+  {
+    "source_slug": "enquete-publique",
+    "target_slug": "conformite",
+    "relation_type": "related"
   }
 ]

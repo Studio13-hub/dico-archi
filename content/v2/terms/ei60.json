@@ -1,0 +1,41 @@
+{
+  "id": "term_ei60",
+  "term": "EI60",
+  "slug": "ei60",
+  "category_slug": "normes-aeai",
+  "subcategory_slug": "protection-incendie",
+  "status": "published",
+  "content": {
+    "definition": "Classement de résistance au feu indiquant qu’un élément conserve son étanchéité et son isolation pendant 60 minutes.",
+    "explanation": "Le principe est identique à EI30, mais avec une exigence de durée plus élevée pour les zones nécessitant une protection renforcée.",
+    "example": "Une paroi EI60 est souvent exigée pour séparer des espaces présentant des risques incendie différents.",
+    "applications": [
+      "parois coupe-feu",
+      "locaux techniques",
+      "compartimentage"
+    ],
+    "norms": [
+      "AEAI"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": "EI60",
+    "drawing_note": "Classe de résistance au feu à vérifier dans les détails et tableaux de portes."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "incendie",
+      "aeai",
+      "paroi"
+    ],
+    "version": 1
+  }
+}

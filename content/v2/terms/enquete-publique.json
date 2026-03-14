@@ -1,0 +1,39 @@
+{
+  "id": "term_enquete_publique",
+  "term": "Enquête publique",
+  "slug": "enquete-publique",
+  "category_slug": "administration-et-permis",
+  "subcategory_slug": "procedures-administratives",
+  "status": "published",
+  "content": {
+    "definition": "Période officielle durant laquelle un projet est mis à disposition du public pour consultation et éventuelles oppositions.",
+    "explanation": "Elle permet aux tiers concernés de prendre connaissance du projet et, selon le cadre légal, de faire valoir leurs observations.",
+    "example": "Le dossier de mise à l’enquête publique doit être complet et cohérent avant son affichage.",
+    "applications": [
+      "procédure de permis",
+      "communication administrative",
+      "gestion des oppositions"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le jeu de plans mis à l’enquête doit rester lisible et stable pendant la procédure."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "administration",
+      "enquete",
+      "procedure"
+    ],
+    "version": 1
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "term_sia_180",
+  "term": "SIA 180",
+  "slug": "sia-180",
+  "category_slug": "normes-sia",
+  "subcategory_slug": "normes-fondamentales-sia",
+  "status": "published",
+  "content": {
+    "definition": "Norme suisse qui traite de l’isolation thermique, de la protection contre l’humidité et du climat intérieur dans le bâtiment.",
+    "explanation": "Elle aide à concevoir l’enveloppe pour éviter les condensations, limiter les pertes de chaleur et garantir un bon confort intérieur.",
+    "example": "Le détail d’une façade ou d’une toiture est vérifié au regard de la SIA 180 pour limiter les ponts thermiques et l’humidité.",
+    "applications": [
+      "façades",
+      "toitures",
+      "climat intérieur"
+    ],
+    "norms": [
+      "SIA 180"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "normes",
+      "enveloppe",
+      "humidite"
+    ],
+    "version": 1
+  }
+}

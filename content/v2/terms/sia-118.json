@@ -1,0 +1,41 @@
+{
+  "id": "term_sia_118",
+  "term": "SIA 118",
+  "slug": "sia-118",
+  "category_slug": "normes-sia",
+  "subcategory_slug": "normes-fondamentales-sia",
+  "status": "published",
+  "content": {
+    "definition": "Norme contractuelle suisse qui fixe les règles générales applicables à l’exécution des travaux de construction.",
+    "explanation": "Elle sert de base commune entre maître d’ouvrage, architecte et entreprises pour définir les responsabilités, les délais, les paiements et les défauts.",
+    "example": "Lors d’un appel d’offres, la référence à la SIA 118 précise le cadre contractuel qui s’appliquera au chantier.",
+    "applications": [
+      "marchés de travaux",
+      "contrats d’entreprise",
+      "gestion des défauts"
+    ],
+    "norms": [
+      "SIA 118"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": null
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "normes",
+      "contrat",
+      "chantier"
+    ],
+    "version": 1
+  }
+}

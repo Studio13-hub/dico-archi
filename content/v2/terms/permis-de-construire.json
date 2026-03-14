@@ -1,0 +1,39 @@
+{
+  "id": "term_permis_de_construire",
+  "term": "Permis de construire",
+  "slug": "permis-de-construire",
+  "category_slug": "administration-et-permis",
+  "subcategory_slug": "procedures-administratives",
+  "status": "published",
+  "content": {
+    "definition": "Autorisation administrative nécessaire pour réaliser un projet soumis au contrôle des autorités compétentes.",
+    "explanation": "Le dossier de permis rassemble les plans, les formulaires et les pièces justificatives exigés par la commune ou le canton.",
+    "example": "Avant le début du chantier, le maître d’ouvrage doit obtenir le permis de construire si le projet y est soumis.",
+    "applications": [
+      "dépôt de dossier",
+      "procédure administrative",
+      "démarrage de chantier"
+    ],
+    "norms": []
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Le numéro de dossier peut être repris dans les documents administratifs du projet."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "administration",
+      "permis",
+      "procedure"
+    ],
+    "version": 1
+  }
+}

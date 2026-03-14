@@ -1,0 +1,41 @@
+{
+  "id": "term_voie_de_fuite",
+  "term": "Voie de fuite",
+  "slug": "voie-de-fuite",
+  "category_slug": "normes-aeai",
+  "subcategory_slug": "protection-incendie",
+  "status": "published",
+  "content": {
+    "definition": "Chemin d’évacuation protégé permettant aux occupants de quitter un bâtiment en sécurité en cas d’incendie.",
+    "explanation": "La voie de fuite doit rester praticable, lisible et dimensionnée selon l’usage du bâtiment et le nombre d’occupants.",
+    "example": "Un couloir d’évacuation ne doit pas être obstrué s’il fait partie de la voie de fuite réglementaire.",
+    "applications": [
+      "évacuation",
+      "circulation",
+      "sécurité incendie"
+    ],
+    "norms": [
+      "AEAI"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": []
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Souvent repérée sur les plans de sécurité et les schémas d’évacuation."
+  },
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "site-rtf-taxonomy"
+    ],
+    "tags": [
+      "incendie",
+      "evacuation",
+      "aeai"
+    ],
+    "version": 1
+  }
+}
