@@ -73,3 +73,16 @@ Reference centrale:
 - reprendre ensuite:
   - l’amelioration produit de l’assistant Gemini
   - puis les derniers chantiers visuels et de contenu
+
+## Etat de reprise apres sync 2026-03-17
+
+- `main` local = `origin/main` = prod Vercel sur le lot pousse le `2026-03-17`
+- inutile de refaire un menage general immediat
+- reprendre depuis une base propre avec cet ordre:
+  1. verifier un parcours reel en prod:
+     - accueil
+     - dictionnaire
+     - compte
+     - admin
+  2. reprendre la qualite des reponses assistant
+  3. reprendre ensuite la direction visuelle des pages majeures encore perfectibles

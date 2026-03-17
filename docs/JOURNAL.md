@@ -369,3 +369,31 @@
     - `npm run test:ui`
     - resultat maintenu a `19 passed`
   - plusieurs redeploiements production successifs effectues pour ces lots chatbot
+
+## 2026-03-17 - sortie propre du worktree et alignement prod
+
+- tri du worktree effectue pour eviter de pousser un lot monolithique confus
+- nettoyage utile realise:
+  - retrait du bruit `supabase/.temp/cli-latest`
+- trois commits structures poses:
+  - `aed8f9f` `Add monitoring, tests, and storage visitor tracking`
+  - `907a128` `Polish public pages, chatbot, and account flows`
+  - `35fa29c` `Document workflow and content operations`
+- verification locale complete relancee avant push:
+  - `npm run test:ui`
+  - resultat:
+    - `19 passed`
+- push GitHub effectue:
+  - `53f4ef9 -> 35fa29c` sur `main`
+- redeploiement production execute via `vercel --prod`
+- alias production reconfirme:
+  - `https://dico-archi.vercel.app`
+- verification finale prod:
+  - homepage servie avec le titre `Dico-Archi - Bienvenue`
+  - `dictionnaire.html` servi correctement
+  - `api/home-metrics` repond avec donnees reelles
+- etat de fin de session:
+  - `main` local propre
+  - `origin/main` a jour
+  - prod Vercel alignee
+  - reprise future possible depuis une base nette

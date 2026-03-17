@@ -314,3 +314,26 @@ Le prochain point utile est maintenant :
   - smoke tests Playwright
   - test d’interactions mobile/desktop
   - captures visuelles locales
+
+## Session du 2026-03-17 - sync local = prod
+
+- trois commits propres ont ete poses pour sortir le worktree charge et rendre l’etat projet lisible:
+  - `aed8f9f` `Add monitoring, tests, and storage visitor tracking`
+  - `907a128` `Polish public pages, chatbot, and account flows`
+  - `35fa29c` `Document workflow and content operations`
+- `main` local, `origin/main` et la prod Vercel sont maintenant alignes sur ce lot
+- redeploiement production effectue via `vercel --prod`
+- alias production confirme:
+  - `https://dico-archi.vercel.app`
+- verification finale effectuee:
+  - `npm run test:ui`
+  - resultat:
+    - `19 passed`
+  - controle prod direct:
+    - homepage `Dico-Archi - Bienvenue`
+    - `dictionnaire.html` servi correctement
+    - `api/home-metrics` repond avec donnees reelles
+- conclusion utile:
+  - l’etat de travail n’est plus un gros lot flottant
+  - le socle actuel est proprement pousse et deploye
+  - le prochain chantier peut repartir d’une base nette

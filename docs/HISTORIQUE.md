@@ -294,3 +294,30 @@
     - liens de clarification cliquables
     - URLs brutes retirees
     - typographie plus lisible
+
+## 2026-03-17
+
+### Git / prod
+- lot local fragmente en trois commits coherents puis pousse sur `main`
+- HEAD utile actuel:
+  - `35fa29c` `Document workflow and content operations`
+- `origin/main` synchronise
+- redeploiement prod execute via `vercel --prod`
+- alias `https://dico-archi.vercel.app` reconfirme
+
+### Verification
+- smoke tests publics relances:
+  - `npm run test:ui`
+  - resultat:
+    - `19 passed`
+- controles prod directs effectues:
+  - homepage OK
+  - `dictionnaire.html` OK
+  - `api/home-metrics` OK
+
+### Conclusion
+- etat `local = prod` atteint pour le lot actuellement versionne
+- prochain travail recommande:
+  - parcours reel en prod
+  - amelioration qualitative assistant
+  - reprise visuelle des pages majeures restantes
