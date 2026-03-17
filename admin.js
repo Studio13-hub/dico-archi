@@ -1,6 +1,7 @@
 const adminMessage = document.getElementById("admin-message");
 const adminUser = document.getElementById("admin-user");
 const adminRole = document.getElementById("admin-role");
+const adminPermissions = document.getElementById("admin-permissions");
 const adminLogout = document.getElementById("admin-logout");
 
 const termInput = document.getElementById("term");
@@ -47,6 +48,9 @@ const metricsTopPages = document.getElementById("metrics-top-pages");
 const metricsTopGames = document.getElementById("metrics-top-games");
 const metricsRecent = document.getElementById("metrics-recent");
 const metricsRefresh = document.getElementById("metrics-refresh");
+const metricsStatus = document.getElementById("metrics-status");
+const metricsUpdatedAt = document.getElementById("metrics-updated-at");
+const metricsScope = document.getElementById("metrics-scope");
 const supabaseHelpers = window.DicoArchiSupabase;
 const dicoApi = window.DicoArchiApi;
 
@@ -70,6 +74,9 @@ let adminFilterRafId = 0;
 let isLoadingChatFeedback = false;
 let lastChatFeedbackItems = [];
 let isLoadingMetrics = false;
+let adminPermissionsReady = false;
+let canViewStats = false;
+let lastMetricsLoadedAt = "";
 
 const ROLE_LABELS = {
   super_admin: "Administration",
@@ -104,6 +111,12 @@ function isSuperAdminProfile(profile) {
 function setMessage(text, isError = false) {
   adminMessage.textContent = text;
   adminMessage.style.color = isError ? "#d94e2b" : "#1f7a70";
+}
+
+function clearMessage() {
+  if (!adminMessage) return;
+  adminMessage.textContent = "";
+  adminMessage.style.color = "";
 }
 
 function getErrorMessage(error, fallback = "Opération impossible.") {
@@ -157,12 +170,71 @@ function setButtonBusy(button, busy, busyLabel, idleLabel) {
 function setAdminSection(section) {
   currentAdminSection = section || "overview";
   for (const panel of adminSections) {
-    const visible = panel.dataset.adminSection === currentAdminSection;
+    const visible = panel.dataset.adminSection === currentAdminSection && canAccessAdminFeature(panel.dataset.adminAccess || "");
     panel.hidden = !visible;
   }
   for (const button of adminSectionButtons) {
-    button.classList.toggle("chip--active", button.dataset.adminSectionTarget === currentAdminSection);
+    const canAccess = canAccessAdminFeature(button.dataset.adminAccess || "");
+    button.hidden = !canAccess;
+    const isActive = canAccess && button.dataset.adminSectionTarget === currentAdminSection;
+    button.classList.toggle("chip--active", isActive);
+    button.setAttribute("aria-selected", isActive ? "true" : "false");
+    button.tabIndex = isActive ? 0 : -1;
   }
+}
+
+function updateAdminContextCopy() {
+  if (adminPermissions) {
+    const capabilities = ["Vue d’ensemble", "Corpus"];
+    if (canViewStats) capabilities.push("Suivi");
+    if (isSuperAdmin) {
+      capabilities.push("Comptes");
+      capabilities.push("Feedback assistant");
+    }
+    adminPermissions.textContent = adminPermissionsReady
+      ? `Accès : ${capabilities.join(" · ")}`
+      : "Accès : chargement...";
+  }
+
+  if (metricsScope) {
+    if (!adminPermissionsReady) {
+      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage et l’historique éditorial.";
+    } else if (isSuperAdmin) {
+      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage, l’historique éditorial et le panneau Feedback assistant.";
+    } else if (canViewStats) {
+      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage et l’historique éditorial. Le panneau Feedback assistant reste réservé à l’Administration.";
+    } else {
+      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage et l’historique éditorial.";
+    }
+  }
+}
+
+function getVisibleAdminSectionButtons() {
+  return adminSectionButtons.filter((button) => !button.hidden && canAccessAdminFeature(button.dataset.adminAccess || ""));
+}
+
+function focusAdminSectionButton(direction) {
+  const visibleButtons = getVisibleAdminSectionButtons();
+  if (!visibleButtons.length) return;
+
+  const activeElement = document.activeElement;
+  const currentIndex = visibleButtons.indexOf(activeElement);
+  const fallbackIndex = Math.max(0, visibleButtons.findIndex((button) => button.dataset.adminSectionTarget === currentAdminSection));
+  let nextIndex = currentIndex >= 0 ? currentIndex : fallbackIndex;
+
+  if (direction === "first") nextIndex = 0;
+  else if (direction === "last") nextIndex = visibleButtons.length - 1;
+  else nextIndex = (nextIndex + direction + visibleButtons.length) % visibleButtons.length;
+
+  const nextButton = visibleButtons[nextIndex];
+  if (nextButton) nextButton.focus();
+}
+
+function canAccessAdminFeature(requiredAccess) {
+  if (!requiredAccess) return true;
+  if (requiredAccess === "super_admin") return isSuperAdmin;
+  if (requiredAccess === "staff") return canManageTerms;
+  return false;
 }
 
 function isSafeImageUrl(value) {
@@ -508,11 +580,82 @@ function compareTerms(a, b, mode) {
 
 function updateWorkflowStats(list) {
   const draft = list.filter((item) => getTermStatus(item) === "draft").length;
-  const review = list.filter((item) => getTermStatus(item) === "review").length;
+  const review = list.filter((item) => getTermStatus(item) === "validated").length;
   const published = list.filter((item) => getTermStatus(item) === "published").length;
   if (statDraft) statDraft.textContent = String(draft);
   if (statReview) statReview.textContent = String(review);
   if (statPublished) statPublished.textContent = String(published);
+}
+
+function setMetricsStatus(text, isError = false) {
+  if (!metricsStatus) return;
+  metricsStatus.textContent = text;
+  metricsStatus.style.color = isError ? "#d94e2b" : "";
+}
+
+function setMetricsUpdatedAt(value = "") {
+  lastMetricsLoadedAt = value || "";
+  if (!metricsUpdatedAt) return;
+  if (!lastMetricsLoadedAt) {
+    metricsUpdatedAt.textContent = "";
+    return;
+  }
+  metricsUpdatedAt.textContent = `Dernière actualisation : ${lastMetricsLoadedAt}`;
+}
+
+function clearMetricsDisplay() {
+  if (metricsSummary) metricsSummary.innerHTML = "";
+  if (metricsTopPages) metricsTopPages.innerHTML = "";
+  if (metricsTopGames) metricsTopGames.innerHTML = "";
+  if (metricsRecent) metricsRecent.innerHTML = "";
+}
+
+function appendMetricCard(container, label, value) {
+  const item = document.createElement("div");
+  item.className = "dashboard__item";
+
+  const itemLabel = document.createElement("span");
+  itemLabel.className = "dashboard__label";
+  itemLabel.textContent = label;
+
+  const itemValue = document.createElement("strong");
+  itemValue.textContent = String(value);
+
+  item.append(itemLabel, itemValue);
+  container.appendChild(item);
+}
+
+function appendMetricRow(container, title, info, meta) {
+  const row = document.createElement("div");
+  row.className = "admin__row";
+
+  const titleNode = document.createElement("div");
+  titleNode.className = "admin__row-title";
+  titleNode.textContent = title;
+
+  const infoNode = document.createElement("div");
+  infoNode.className = "admin__row-info";
+  infoNode.textContent = info;
+
+  const metaNode = document.createElement("div");
+  metaNode.className = "admin__row-meta";
+  metaNode.textContent = meta;
+
+  row.append(titleNode, infoNode, metaNode);
+  container.appendChild(row);
+}
+
+function isMissingMetricsTableError(error) {
+  const message = String(error?.message || error || "").toLowerCase();
+  return (
+    message.includes("page_views")
+    || message.includes("game_scores")
+  ) && (
+    message.includes("does not exist")
+    || message.includes("not exist")
+    || message.includes("could not find the table")
+    || message.includes("relation")
+  );
 }
 
 function updateFilterButtonsUi() {
@@ -973,6 +1116,7 @@ async function fetchChatFeedback() {
     lastChatFeedbackItems = Array.isArray(payload.items) ? payload.items : [];
     renderChatFeedbackSummary(lastChatFeedbackItems);
     renderChatFeedback(lastChatFeedbackItems);
+    clearMessage();
   } catch (error) {
     setMessage(`Feedback chatbot : ${getErrorMessage(error)}`, true);
     lastChatFeedbackItems = [];
@@ -1359,10 +1503,9 @@ async function fetchAudit() {
 }
 
 function renderAdminMetrics(payload) {
-  if (metricsSummary) metricsSummary.innerHTML = "";
-  if (metricsTopPages) metricsTopPages.innerHTML = "";
-  if (metricsTopGames) metricsTopGames.innerHTML = "";
-  if (metricsRecent) metricsRecent.innerHTML = "";
+  clearMetricsDisplay();
+  setMetricsStatus("Suivi actif. Les métriques affichées couvrent les dernières 24 heures et les 30 derniers jours.");
+  setMetricsUpdatedAt(new Date().toLocaleString("fr-CH"));
 
   const summary = payload?.summary || {};
   const topPages = Array.isArray(payload?.topPages) ? payload.topPages : [];
@@ -1380,10 +1523,7 @@ function renderAdminMetrics(payload) {
     ];
 
     for (const [label, value] of cards) {
-      const item = document.createElement("div");
-      item.className = "dashboard__item";
-      item.innerHTML = `<span class="dashboard__label">${label}</span><strong>${value}</strong>`;
-      metricsSummary.appendChild(item);
+      appendMetricCard(metricsSummary, label, value);
     }
   }
 
@@ -1395,14 +1535,12 @@ function renderAdminMetrics(payload) {
       metricsTopPages.appendChild(empty);
     } else {
       for (const item of topPages) {
-        const row = document.createElement("div");
-        row.className = "admin__row";
-        row.innerHTML = `
-          <div class="admin__row-title">${item.pageTitle || formatPathLabel(item.pagePath)}</div>
-          <div class="admin__row-meta">${formatPathLabel(item.pagePath)}</div>
-          <div class="admin__row-info">${item.views} vues · ${item.uniqueSessions} sessions</div>
-        `;
-        metricsTopPages.appendChild(row);
+        appendMetricRow(
+          metricsTopPages,
+          item.pageTitle || formatPathLabel(item.pagePath),
+          `${item.views} vues · ${item.uniqueSessions} sessions`,
+          formatPathLabel(item.pagePath)
+        );
       }
     }
   }
@@ -1415,14 +1553,16 @@ function renderAdminMetrics(payload) {
       metricsTopGames.appendChild(empty);
     } else {
       for (const item of topGames) {
-        const row = document.createElement("div");
-        row.className = "admin__row";
-        row.innerHTML = `
-          <div class="admin__row-title">${getGameLabel(item.gameKey)}</div>
-          <div class="admin__row-info">${item.plays} parties · meilleur score ${item.bestScore}/${item.bestTotal || 0}</div>
-          <div class="admin__row-meta">${item.bestCombo ? `combo ${item.bestCombo}` : ""}${item.bestStreak ? ` · série ${item.bestStreak}` : ""}${item.bestSeconds ? ` · ${item.bestSeconds}s` : ""}</div>
-        `;
-        metricsTopGames.appendChild(row);
+        const metaParts = [];
+        if (item.bestCombo) metaParts.push(`combo ${item.bestCombo}`);
+        if (item.bestStreak) metaParts.push(`série ${item.bestStreak}`);
+        if (item.bestSeconds) metaParts.push(`${item.bestSeconds}s`);
+        appendMetricRow(
+          metricsTopGames,
+          getGameLabel(item.gameKey),
+          `${item.plays} parties · meilleur score ${item.bestScore}/${item.bestTotal || 0}`,
+          metaParts.join(" · ") || "Score serveur"
+        );
       }
     }
   }
@@ -1439,29 +1579,29 @@ function renderAdminMetrics(payload) {
       metricsRecent.appendChild(empty);
     } else {
       for (const item of recentScores) {
-        const row = document.createElement("div");
-        row.className = "admin__row";
         const extras = [];
         if (item.modeLabel) extras.push(item.modeLabel);
         if (item.categoryLabel) extras.push(item.categoryLabel);
         if (item.bestCombo) extras.push(`combo ${item.bestCombo}`);
         if (item.bestStreak) extras.push(`série ${item.bestStreak}`);
         if (item.seconds) extras.push(`${item.seconds}s`);
-        row.innerHTML = `
-          <div class="admin__row-title">${getGameLabel(item.gameKey)}</div>
-          <div class="admin__row-info">${item.score}/${item.total || 0}</div>
-          <div class="admin__row-meta">${extras.join(" · ") || "Score enregistré"} · ${new Date(item.createdAt).toLocaleString("fr-CH")}</div>
-        `;
-        metricsRecent.appendChild(row);
+        appendMetricRow(
+          metricsRecent,
+          getGameLabel(item.gameKey),
+          `${item.score}/${item.total || 0}`,
+          `${extras.join(" · ") || "Score enregistré"} · ${new Date(item.createdAt).toLocaleString("fr-CH")}`
+        );
       }
     }
   }
 }
 
 async function fetchAdminMetrics() {
-  if (!isSuperAdmin || !metricsSummary || isLoadingMetrics) return;
+  if (!canViewStats || !metricsSummary || isLoadingMetrics) return;
   isLoadingMetrics = true;
   if (metricsRefresh) metricsRefresh.disabled = true;
+  setMetricsStatus("Chargement des métriques en cours...");
+  setMetricsUpdatedAt("");
 
   try {
     let payload = null;
@@ -1471,10 +1611,34 @@ async function fetchAdminMetrics() {
     renderAdminMetrics(payload || {});
   } catch (error) {
     if (await handleAuthError(error, "Suivi")) return;
+    if (isMissingMetricsTableError(error)) {
+      clearMetricsDisplay();
+      setMetricsUpdatedAt("");
+      setMetricsStatus(
+        "Suivi inactif: appliquez d’abord `supabase/migrations/017_metrics_and_game_scores.sql` dans Supabase pour créer `page_views` et `game_scores`.",
+        true
+      );
+      setMessage("Suivi : migration SQL 017 manquante côté Supabase.", true);
+      return;
+    }
     setMessage(`Suivi : ${getErrorMessage(error)}`, true);
+    setMetricsUpdatedAt("");
+    setMetricsStatus("Suivi indisponible pour le moment. Vérifiez l’API métriques et la base Supabase.", true);
   } finally {
     isLoadingMetrics = false;
     if (metricsRefresh) metricsRefresh.disabled = false;
+  }
+}
+
+function refreshAdminSectionData(section) {
+  const target = section || currentAdminSection;
+  if (target === "accounts" && isSuperAdmin) {
+    fetchProfiles();
+    return;
+  }
+  if (target === "stats" && canViewStats) {
+    fetchAdminMetrics();
+    if (isSuperAdmin) fetchChatFeedback();
   }
 }
 
@@ -1736,6 +1900,7 @@ async function fetchProfiles() {
     return;
   }
   renderProfiles(profiles);
+  clearMessage();
 }
 
 async function updateProfile(profileId, role, active, controls) {
@@ -1800,52 +1965,70 @@ async function loadUser() {
     return;
   }
 
-  supabaseClient = supabaseHelpers.getClient();
-  currentUser = await supabaseHelpers.getCurrentUser();
+  adminPermissionsReady = false;
+  adminRole.textContent = "Rôle : chargement...";
+  updateAdminContextCopy();
 
-  if (!currentUser) {
-    window.location.href = "auth.html";
-    return;
-  }
+  try {
+    supabaseClient = supabaseHelpers.getClient();
+    currentUser = await supabaseHelpers.getCurrentUser();
 
-  adminUser.textContent = `Utilisateur : ${currentUser.email}`;
-  userProfile = normalizeProfile(await supabaseHelpers.getProfile(currentUser.id));
-  canManageTerms = canManageFromProfile(userProfile);
-  isSuperAdmin = isSuperAdminProfile(userProfile);
-  const roleLabel = ROLE_LABELS[userProfile?.role] || "Lecture seule";
-  const activeLabel = userProfile?.active === false ? " (inactif)" : "";
-  adminRole.textContent = `Rôle : ${roleLabel}${activeLabel}`;
+    if (!currentUser) {
+      window.location.href = "auth.html";
+      return;
+    }
 
-  if (!canManageTerms) {
-    window.location.href = "index.html";
-    return;
-  }
+    adminUser.textContent = `Utilisateur : ${currentUser.email}`;
+    userProfile = normalizeProfile(await supabaseHelpers.getProfile(currentUser.id));
+    canManageTerms = canManageFromProfile(userProfile);
+    isSuperAdmin = isSuperAdminProfile(userProfile);
+    canViewStats = canManageTerms;
+    const roleLabel = ROLE_LABELS[userProfile?.role] || "Lecture seule";
+    const activeLabel = userProfile?.active === false ? " (inactif)" : "";
+    adminRole.textContent = `Rôle : ${roleLabel}${activeLabel}`;
 
-  if (usersPanel && !isSuperAdmin && currentAdminSection === "accounts") {
-    currentAdminSection = "overview";
-  }
-  if (chatFeedbackPanel && !isSuperAdmin && currentAdminSection === "stats") {
-    currentAdminSection = "overview";
-  }
+    if (!canManageTerms) {
+      window.location.href = "index.html";
+      return;
+    }
 
-  for (const button of adminSectionButtons) {
-    const target = button.dataset.adminSectionTarget;
-    const shouldHide = !isSuperAdmin && (target === "accounts" || target === "stats");
-    button.hidden = shouldHide;
-  }
+    if (usersPanel && !canAccessAdminFeature(usersPanel.dataset.adminAccess || "") && currentAdminSection === "accounts") {
+      currentAdminSection = "overview";
+    }
+    if (chatFeedbackPanel && currentAdminSection === "stats" && !isSuperAdmin) {
+      // Formateurs voient les métriques et l'historique, mais pas le feedback assistant.
+      chatFeedbackPanel.hidden = true;
+    }
+    if (!canViewStats && currentAdminSection === "stats") {
+      currentAdminSection = "overview";
+    }
+    adminPermissionsReady = true;
+    updateAdminContextCopy();
+    setAdminSection(currentAdminSection);
 
-  if (usersPanel) usersPanel.hidden = !isSuperAdmin || currentAdminSection !== "accounts";
-  if (chatFeedbackPanel) chatFeedbackPanel.hidden = !isSuperAdmin || currentAdminSection !== "stats";
-  setAdminSection(currentAdminSection);
-
-  await fetchCategories();
-  await fetchTerms();
-  await fetchSubmissions();
-  await fetchAudit();
-  if (isSuperAdmin) {
-    await fetchProfiles();
-    await fetchAdminMetrics();
-    await fetchChatFeedback();
+    await fetchCategories();
+    await fetchTerms();
+    await fetchSubmissions();
+    await fetchAudit();
+    if (canViewStats) {
+      await fetchAdminMetrics();
+    }
+    if (isSuperAdmin) {
+      await fetchProfiles();
+      await fetchChatFeedback();
+    }
+  } catch (error) {
+    canManageTerms = false;
+    isSuperAdmin = false;
+    canViewStats = false;
+    adminPermissionsReady = false;
+    adminRole.textContent = "Rôle : indisponible";
+    updateAdminContextCopy();
+    for (const button of adminSectionButtons) {
+      button.hidden = Boolean(button.dataset.adminAccess);
+    }
+    setAdminSection("overview");
+    setMessage(`Chargement admin : ${getErrorMessage(error, "profil introuvable ou inaccessible.")}`, true);
   }
 }
 
@@ -1873,8 +2056,40 @@ if (imageUrlInput) {
 for (const button of adminSectionButtons) {
   button.addEventListener("click", () => {
     const target = button.dataset.adminSectionTarget || "overview";
-    if (!isSuperAdmin && (target === "accounts" || target === "stats")) return;
+    if (!adminPermissionsReady) return;
+    if (button.hidden) return;
+    if (!canAccessAdminFeature(button.dataset.adminAccess || "")) return;
     setAdminSection(target);
+    refreshAdminSectionData(target);
+  });
+  button.addEventListener("keydown", (event) => {
+    if (!adminPermissionsReady || button.hidden) return;
+    if (!canAccessAdminFeature(button.dataset.adminAccess || "")) return;
+
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      event.preventDefault();
+      focusAdminSectionButton(1);
+      return;
+    }
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      event.preventDefault();
+      focusAdminSectionButton(-1);
+      return;
+    }
+    if (event.key === "Home") {
+      event.preventDefault();
+      focusAdminSectionButton("first");
+      return;
+    }
+    if (event.key === "End") {
+      event.preventDefault();
+      focusAdminSectionButton("last");
+      return;
+    }
+    if (event.key === " " || event.key === "Spacebar") {
+      event.preventDefault();
+      button.click();
+    }
   });
 }
 for (const btn of workflowButtons) {

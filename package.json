@@ -4,6 +4,10 @@
   "version": "1.0.0",
   "description": "Static DicoArchi frontend with Vercel serverless APIs",
   "scripts": {
+    "test:ui": "playwright test",
+    "test:ui:headed": "playwright test --headed",
+    "content:stats": "node scripts/content/content_stats.js",
+    "content:audit": "node scripts/content/content_audit.js",
     "content:validate": "node scripts/content/validate_core_content.js",
     "content:build-sql": "node scripts/content/build_core_sql.js",
     "content:lint:fr": "node scripts/content/lint_editorial_french.js",
@@ -14,6 +18,11 @@
     "node": "24.x"
   },
   "dependencies": {
+    "@google/genai": "^1.45.0",
     "@supabase/supabase-js": "^2.49.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "playwright": "^1.58.2"
   }
 }

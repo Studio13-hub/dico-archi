@@ -1,5 +1,40 @@
 const { createClient } = require("@supabase/supabase-js");
 
+function normalizeTrackedPagePath(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "/";
+
+  const [pathname, search = ""] = raw.split("?");
+  const cleanPath = pathname.trim();
+
+  if (!cleanPath || cleanPath === "/" || cleanPath === "/index.html" || cleanPath === "index.html") {
+    return search ? `/?${search}` : "/";
+  }
+
+  return search ? `${cleanPath}?${search}` : cleanPath;
+}
+
+function getCanonicalTrackedPageTitle(pagePath, fallbackTitle) {
+  const normalizedPath = normalizeTrackedPagePath(pagePath);
+  const canonicalTitles = {
+    "/": "Dico-Archi - Bienvenue",
+    "/admin.html": "Admin - Dico-Archi",
+    "/auth.html": "Connexion - Dico-Archi",
+    "/compte.html": "Mon compte - Dico-Archi",
+    "/contribuer.html": "Contribuer - Dico-Archi",
+    "/dictionnaire.html": "Dico-Archi - Dictionnaire simple d'architecture",
+    "/category.html": "Catégorie - Dico-Archi",
+    "/games.html": "Jeux - Dico-Archi",
+    "/quiz.html": "Quiz - Dico-Archi",
+    "/flashcards.html": "Flashcards - Dico-Archi",
+    "/match.html": "Match - Dico-Archi",
+    "/daily.html": "Défi du jour - Dico-Archi",
+    "/memory.html": "Mémoire - Dico-Archi"
+  };
+
+  return canonicalTitles[normalizedPath] || String(fallbackTitle || "").trim() || normalizedPath;
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
 
@@ -88,8 +123,16 @@ module.exports = async (req, res) => {
       data = [];
     }
 
+    const items = Array.isArray(data)
+      ? data.map((item) => ({
+        ...item,
+        page_path: normalizeTrackedPagePath(item?.page_path),
+        page_title: getCanonicalTrackedPageTitle(item?.page_path, item?.page_title)
+      }))
+      : [];
+
     res.statusCode = 200;
-    res.end(JSON.stringify({ items: Array.isArray(data) ? data : [] }));
+    res.end(JSON.stringify({ items }));
   } catch (error) {
     res.statusCode = 500;
     res.end(JSON.stringify({ error: error?.message || "internal_error" }));

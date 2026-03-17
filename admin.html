@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Admin - Dico Architecture CH</title>
+    <title>Admin - Dico-Archi</title>
     <meta name="description" content="Gestion des termes du dictionnaire." />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
@@ -13,7 +13,7 @@
       <div class="hero__bg"></div>
       <div class="hero__content">
         <div class="hero__top">
-          <div class="badge">Dico Architecture CH</div>
+          <div class="badge">Dico-Archi</div>
           <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
             <span></span><span></span><span></span>
           </button>
@@ -26,7 +26,7 @@
           </div>
         </div>
         <h1>Administration éditoriale</h1>
-        <p>Relisez les propositions, gérez le corpus et attribuez les accès sans mélanger toutes les tâches dans un seul écran.</p>
+        <p>Relisez les propositions, gérez le corpus et suivez l’usage du site sans mélanger toutes les tâches dans un seul écran.</p>
       </div>
     </header>
 
@@ -36,19 +36,20 @@
           <div id="admin-user">Utilisateur : -</div>
           <div id="admin-role">Rôle : -</div>
         </div>
+        <div id="admin-permissions" class="meta meta--subtle">Accès : chargement...</div>
         <div class="auth__message" id="admin-message"></div>
       </section>
 
       <section class="panel admin__sections-nav">
-        <div class="chips">
-          <button type="button" class="chip chip--active" data-admin-section-target="overview">Vue d’ensemble</button>
-          <button type="button" class="chip" data-admin-section-target="corpus">Corpus</button>
-          <button type="button" class="chip" data-admin-section-target="accounts">Comptes</button>
-          <button type="button" class="chip" data-admin-section-target="stats">Suivi</button>
+        <div class="chips" role="tablist" aria-label="Sections administration">
+          <button type="button" class="chip chip--active" id="admin-tab-overview" role="tab" aria-selected="true" aria-controls="admin-panel-overview" tabindex="0" data-admin-section-target="overview">Vue d’ensemble</button>
+          <button type="button" class="chip" id="admin-tab-corpus" role="tab" aria-selected="false" aria-controls="admin-panel-corpus" tabindex="-1" data-admin-section-target="corpus">Corpus</button>
+          <button type="button" class="chip" id="admin-tab-accounts" role="tab" aria-selected="false" aria-controls="users-panel" tabindex="-1" data-admin-access="super_admin" data-admin-section-target="accounts" hidden>Comptes</button>
+          <button type="button" class="chip" id="admin-tab-stats" role="tab" aria-selected="false" aria-controls="admin-panel-stats-main" tabindex="-1" data-admin-access="staff" data-admin-section-target="stats" hidden>Suivi</button>
         </div>
       </section>
 
-      <section class="panel admin__workflow" data-admin-section="overview">
+      <section class="panel admin__workflow" id="admin-panel-overview" role="tabpanel" aria-labelledby="admin-tab-overview" data-admin-section="overview">
         <h2>Pilotage éditorial</h2>
         <div class="dashboard">
           <div class="dashboard__item">
@@ -75,13 +76,13 @@
         </p>
       </section>
 
-      <section class="panel admin__submissions" data-admin-section="overview">
+      <section class="panel admin__submissions" role="tabpanel" aria-labelledby="admin-tab-overview" data-admin-section="overview">
         <h2>Propositions en attente</h2>
         <div id="submissions-empty" class="meta meta--subtle">Aucune proposition en attente.</div>
         <div id="submissions" class="admin__table"></div>
       </section>
 
-      <section class="panel admin__form" data-admin-section="corpus" hidden>
+      <section class="panel admin__form" id="admin-panel-corpus" role="tabpanel" aria-labelledby="admin-tab-corpus" data-admin-section="corpus" hidden>
         <h2>Relire ou ajuster une fiche</h2>
         <div id="submission-banner" class="meta meta--subtle"></div>
         <div class="admin__inputs">
@@ -118,8 +119,15 @@
         </div>
       </section>
 
-      <section class="panel admin__list" data-admin-section="stats" hidden>
+      <section class="panel admin__list" id="admin-panel-stats-main" role="tabpanel" aria-labelledby="admin-tab-stats" data-admin-section="stats" data-admin-access="staff" hidden>
         <h2>Statistiques d’usage</h2>
+        <p id="metrics-scope" class="meta meta--subtle">
+          Le volet Suivi regroupe les métriques d’usage et l’historique éditorial. Les comptes `Administration` voient aussi le panneau `Feedback assistant`.
+        </p>
+        <div id="metrics-status" class="meta meta--subtle">
+          Le suivi charge les métriques serveur si la migration SQL a bien été appliquée côté Supabase.
+        </div>
+        <div id="metrics-updated-at" class="meta meta--subtle"></div>
         <div id="metrics-summary" class="dashboard"></div>
         <div class="dashboard">
           <div class="dashboard__item">
@@ -137,13 +145,13 @@
         <div id="metrics-recent" class="admin__table"></div>
       </section>
 
-      <section class="panel admin__list" data-admin-section="stats" hidden>
+      <section class="panel admin__list" role="tabpanel" aria-labelledby="admin-tab-stats" data-admin-section="stats" data-admin-access="staff" hidden>
         <h2>Historique des actions</h2>
         <div id="audit-empty" class="meta meta--subtle">Aucune action enregistrée.</div>
         <div id="audit-list" class="admin__table"></div>
       </section>
 
-      <section class="panel admin__list" id="users-panel" data-admin-section="accounts" hidden>
+      <section class="panel admin__list" id="users-panel" role="tabpanel" aria-labelledby="admin-tab-accounts" data-admin-section="accounts" data-admin-access="super_admin" hidden>
         <h2>Comptes et rôles</h2>
         <p class="meta meta--subtle">
           Les rôles visibles dans le site sont : <strong>Contributeur</strong>, <strong>Relecture</strong> et <strong>Administration</strong>.
@@ -152,7 +160,7 @@
         <div id="users-table" class="admin__table"></div>
       </section>
 
-      <section class="panel admin__list" id="chat-feedback-panel" data-admin-section="stats" hidden>
+      <section class="panel admin__list" id="chat-feedback-panel" role="tabpanel" aria-labelledby="admin-tab-stats" data-admin-section="stats" data-admin-access="super_admin" hidden>
         <h2>Feedback assistant</h2>
         <p class="meta meta--subtle">
           Réservé à l’administration : retours Utiles / À améliorer pour affiner l’assistant.
@@ -177,7 +185,7 @@
         <div id="chat-feedback-list" class="admin__table"></div>
       </section>
 
-      <section class="panel admin__list" data-admin-section="corpus" hidden>
+      <section class="panel admin__list" role="tabpanel" aria-labelledby="admin-tab-corpus" data-admin-section="corpus" hidden>
         <h2>Corpus publié et brouillons</h2>
         <div class="admin__toolbar">
           <select id="admin-sort" name="admin-sort">

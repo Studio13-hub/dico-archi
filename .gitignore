@@ -9,3 +9,7 @@ Tools/
 *.app
 .vercel
 .env*.local
+node_modules/
+test-results/
+playwright-report/
+Test/*.PNG

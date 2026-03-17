@@ -1,5 +1,19 @@
 const { createServerSupabaseClient } = require("./_supabase");
 
+function normalizeTrackedPagePath(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+
+  const [pathname, search = ""] = raw.split("?");
+  const cleanPath = pathname.trim();
+
+  if (!cleanPath || cleanPath === "/" || cleanPath === "/index.html" || cleanPath === "index.html") {
+    return search ? `/?${search}` : "/";
+  }
+
+  return search ? `${cleanPath}?${search}` : cleanPath;
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
@@ -26,7 +40,7 @@ module.exports = async (req, res) => {
     }
   }
 
-  const pagePath = String(body?.pagePath || "").trim().slice(0, 300);
+  const pagePath = normalizeTrackedPagePath(body?.pagePath).slice(0, 300);
   const pageTitle = String(body?.pageTitle || "").trim().slice(0, 160);
   const sessionId = String(body?.sessionId || "").trim().slice(0, 120);
   const visitorId = String(body?.visitorId || "").trim().slice(0, 120);
@@ -52,6 +66,26 @@ module.exports = async (req, res) => {
     res.statusCode = 502;
     res.end(JSON.stringify({ error: insert.error.message || "page_view_insert_failed" }));
     return;
+  }
+
+  if (visitorId) {
+    const visitorInsert = await serverSupabase.client
+      .from("site_visitors")
+      .insert({
+        visitor_id: visitorId,
+        first_page_path: pagePath,
+        last_page_path: pagePath
+      });
+
+    if (visitorInsert.error && visitorInsert.error.code === "23505") {
+      await serverSupabase.client
+        .from("site_visitors")
+        .update({
+          last_seen_at: new Date().toISOString(),
+          last_page_path: pagePath
+        })
+        .eq("visitor_id", visitorId);
+    }
   }
 
   res.statusCode = 200;

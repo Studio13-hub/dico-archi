@@ -17,6 +17,53 @@ function bucketBy(list, keyFn) {
   return map;
 }
 
+function normalizeTrackedPagePath(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "/";
+
+  const [pathname, search = ""] = raw.split("?");
+  const cleanPath = pathname.trim();
+
+  if (!cleanPath || cleanPath === "/" || cleanPath === "/index.html" || cleanPath === "index.html") {
+    return search ? `/?${search}` : "/";
+  }
+
+  return search ? `${cleanPath}?${search}` : cleanPath;
+}
+
+function getCanonicalTrackedPageTitle(pagePath, fallbackTitle) {
+  const normalizedPath = normalizeTrackedPagePath(pagePath);
+  const canonicalTitles = {
+    "/": "Dico-Archi - Bienvenue",
+    "/admin.html": "Admin - Dico-Archi",
+    "admin.html": "Admin - Dico-Archi",
+    "/auth.html": "Connexion - Dico-Archi",
+    "auth.html": "Connexion - Dico-Archi",
+    "/compte.html": "Mon compte - Dico-Archi",
+    "compte.html": "Mon compte - Dico-Archi",
+    "/contribuer.html": "Contribuer - Dico-Archi",
+    "contribuer.html": "Contribuer - Dico-Archi",
+    "/dictionnaire.html": "Dico-Archi - Dictionnaire simple d'architecture",
+    "dictionnaire.html": "Dico-Archi - Dictionnaire simple d'architecture",
+    "/category.html": "Catégorie - Dico-Archi",
+    "category.html": "Catégorie - Dico-Archi",
+    "/games.html": "Jeux - Dico-Archi",
+    "games.html": "Jeux - Dico-Archi",
+    "/quiz.html": "Quiz - Dico-Archi",
+    "quiz.html": "Quiz - Dico-Archi",
+    "/flashcards.html": "Flashcards - Dico-Archi",
+    "flashcards.html": "Flashcards - Dico-Archi",
+    "/match.html": "Match - Dico-Archi",
+    "match.html": "Match - Dico-Archi",
+    "/daily.html": "Défi du jour - Dico-Archi",
+    "daily.html": "Défi du jour - Dico-Archi",
+    "/memory.html": "Mémoire - Dico-Archi",
+    "memory.html": "Mémoire - Dico-Archi"
+  };
+
+  return canonicalTitles[normalizedPath] || String(fallbackTitle || "").trim() || normalizedPath;
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
@@ -105,11 +152,16 @@ module.exports = async (req, res) => {
   const pageViews24h = pageViews.filter((item) => item.created_at >= since24h);
   const uniqueSessions24h = new Set(pageViews24h.map((item) => item.session_id).filter(Boolean)).size;
 
-  const pagesByPath = bucketBy(pageViews, (item) => item.page_path || "/");
+  const normalizedPageViews = pageViews.map((item) => ({
+    ...item,
+    page_path: normalizeTrackedPagePath(item.page_path)
+  }));
+
+  const pagesByPath = bucketBy(normalizedPageViews, (item) => item.page_path || "/");
   const topPages = Array.from(pagesByPath.entries())
     .map(([pagePath, items]) => ({
       pagePath,
-      pageTitle: items.find((entry) => entry.page_title)?.page_title || pagePath,
+      pageTitle: getCanonicalTrackedPageTitle(pagePath, items.find((entry) => entry.page_title)?.page_title),
       views: items.length,
       uniqueSessions: new Set(items.map((entry) => entry.session_id).filter(Boolean)).size
     }))
