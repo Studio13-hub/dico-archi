@@ -45,5 +45,7 @@ Variables attendues :
 - `GEMINI_API_KEY`
 - `GEMINI_MODEL`
 
-Le chatbot du site utilise Gemini. Les anciennes variables OpenAI ne font plus partie du flux
-actif.
+Le chatbot du site utilise Gemini via le SDK officiel `@google/genai`. Les anciennes variables
+OpenAI ne font plus partie du flux actif.
+
+Si `GEMINI_MODEL` n’est pas defini, le backend utilise par defaut `gemini-2.5-flash`.

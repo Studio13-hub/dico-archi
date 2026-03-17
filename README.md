@@ -52,9 +52,19 @@ Ordre conseillé :
 1. `PROJECT_RULES.md`
 2. `TREE.md`
 3. `docs/README.md`
-4. `docs/current/REPRISE_DICO_ARCHI.md`
-5. `docs/current/RESUME_NOW.md`
-6. `docs/current/NEXT_STEPS.md`
+4. `docs/PLAN_MAITRE_DICOARCHI.md`
+5. `docs/RESUME_NOW.md`
+6. `docs/NEXT_STEPS.md`
+7. `docs/OPERATIONS_LIGHT.md`
+
+## Verifications utiles
+
+- smoke tests UI:
+  - `npm run test:ui`
+- synthese rapide du corpus:
+  - `npm run content:stats`
+- validation structure contenu:
+  - `npm run content:validate`
 
 ## Important
 

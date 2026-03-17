@@ -118,3 +118,254 @@
 - Reste a faire au prochain demarrage:
   - executer la migration `017_metrics_and_game_scores.sql` dans Supabase
   - verifier les premieres stats et scores remontes dans l’admin
+
+## 2026-03-15
+- Reprise `RepriseDicoPulse` executee en diagnostic lecture seule (git + docs + code).
+- Verification du bloc `admin.html` -> `Suivi`:
+  - migration `017_metrics_and_game_scores.sql` maintenant bien active en base
+  - donnees reelles visibles dans l’admin:
+    - vues 24 h
+    - sessions 24 h
+    - pages les plus vues
+    - jeux les plus actifs
+    - derniers scores
+- Correctifs admin appliques:
+  - compteur `A relire` corrige dans la vue d’ensemble
+  - message explicite ajoute si les tables de suivi sont absentes cote Supabase
+  - rendu du bloc `Suivi` durci sans `innerHTML` pour les donnees serveur
+- Correctif de normalisation tracking applique:
+  - accueil desormais normalise pour eviter le double comptage entre `/` et `index.html`
+  - normalisation faite a l’insertion (`api/track-page.js`) et a l’aggregation (`api/admin-metrics.js`) pour corriger aussi l’historique recent
+- Reprise recommandee apres cette session:
+  - verifier que le top pages fusionne bien l’accueil
+  - continuer sur simplification admin
+  - poursuivre l’attractivite visuelle du produit
+- Nouveau cap produit formalise durant la session:
+  - ordre de travail retenu:
+    - esthetique
+    - fonctionnement
+    - roles
+    - pages
+    - contenus
+    - acces / attribution
+  - inspirations explicites a conserver:
+    - entree plus visuelle / spatiale avec logique batiments ou pseudo-3D
+    - lisibilite editoriale plus forte, proche d’un dictionnaire de reference
+- Chantier esthetique lance pour de vrai:
+  - `index.html`, `dictionnaire.html`, `category.html` reprises visuellement
+  - palette, hero, cartes et hierarchie editoriale renforcees
+  - accueil elargi et dictionnaire rendu plus lisible
+- Outillage de verification ajoute:
+  - `playwright.config.js`
+  - `Test/e2e/public-pages.spec.js`
+  - workflow retenu:
+    - serveur local
+    - smoke tests navigateur
+    - captures visuelles
+    - retour avant validation manuelle
+- Plan directeur projet formalise:
+  - `docs/PLAN_MAITRE_DICOARCHI.md`
+  - structure retenue:
+    - deja fait
+    - a faire maintenant
+    - ensuite
+    - plus tard
+    - a eviter
+- Suite de la session du 2026-03-15:
+  - `term.html` renforcee visuellement
+  - `dictionnaire.html` reprise en index alphabetique editorial
+  - tests Playwright et captures visuelles relances avec succes
+  - hygiene repo / outillage consolidee:
+    - `.gitignore` mis a jour pour les sorties de test
+    - scripts npm `test:ui`, `test:ui:headed`
+  - pilotage contenu prepare pour la suite:
+    - `scripts/content/content_stats.js`
+    - `scripts/content/content_audit.js`
+    - `docs/OPERATIONS_LIGHT.md`
+    - `docs/EDITORIAL_PUBLISH_CHECKLIST.md`
+  - signal utile pour la suite:
+    - la structure du corpus est deja propre
+    - la faiblesse principale devient la couverture media
+  - point exact laisse pour demain matin:
+    - reprendre encore `dictionnaire.html` avant de passer au fonctionnement
+- Suite tardive de la session du 2026-03-15:
+  - focus exclusif sur `index.html`
+  - nombreuses iterations UI/UX sur l’accueil avec tests navigateur apres chaque lot
+  - objectif de la fin de session:
+    - sortir du simple “joli site”
+    - aller vers un accueil plus editorial, plus credible, plus statutaire
+  - structure accueil stabilisee autour de:
+    - hero editorial
+    - `Fiche du jour`
+    - acces principaux
+    - `Cadre éditorial`
+    - footer
+  - navigation desktop visible confirmee
+  - stats publiques retirees du home
+  - jeux retires des acces principaux du home
+  - assistant conserve sur l’accueil mais recadre comme aide sur les termes
+  - marque accueil alignee sur:
+    - `Dico-Archi`
+    - `Le dictionnaire du dessinateur en architecture`
+  - ajout d’une trame technique tres discrete dans le hero pour mieux ressentir le sujet architecture
+  - nouvelle page `methodologie.html` creee et reliee depuis l’accueil
+  - titre/meta de `index.html` alignes sur `Dico-Archi`
+  - Playwright utilise en boucle pour valider:
+    - smoke test accueil
+    - test d’interactions accueil
+    - capture visuelle accueil
+  - statut de fin de session:
+    - l’accueil est nettement plus mature
+    - la question restante n’est plus la structure mais le niveau final de force du hero et du statut global
+
+## 2026-03-16
+- Session de stabilisation detaillee avec verification locale a chaque lot avant continuation.
+- `Mon compte` corrige:
+  - marque alignee sur `Dico-Archi`
+  - bouton `Se déconnecter` harmonise
+  - liens-boutons utilisables aussi au clavier avec la barre d’espace
+- `admin.html` / `admin.js` consolides:
+  - permissions visibles alignees avec les permissions reelles
+    - `Suivi` accessible au staff
+    - `Comptes` et `Feedback assistant` reserves au `super_admin`
+  - chargement `Suivi` clarifie:
+    - message de chargement
+    - date de derniere actualisation
+    - nettoyage plus propre des donnees precedentes
+  - rechargement des donnees a l’ouverture des onglets sensibles
+  - onglets admin rendus accessibles au clavier:
+    - roles ARIA
+    - navigation fleches
+    - `Home` / `End`
+    - activation `Espace`
+- Verification technique repetee apres chaque lot:
+  - `node --check admin.js`
+  - `node --check compte.js`
+  - `npm run test:ui`
+  - premier cycle de runs publics du jour fini en `9 passed`
+- Deploiement production effectue:
+  - `vercel --prod` execute avec succes
+  - alias final confirme:
+    - `https://dico-archi.vercel.app`
+- Passe de coherence de marque etendue ensuite:
+  - titres, badges et meta publiques alignes sur `Dico-Archi`
+  - pages couvertes:
+    - `auth.html`
+    - `contribuer.html`
+    - `dictionnaire.html`
+    - `category.html`
+    - `term.html`
+    - `methodologie.html`
+    - `games.html`
+    - `quiz.html`
+    - `flashcards.html`
+    - `match.html`
+    - `daily.html`
+    - `memory.html`
+    - `concepts.html`
+    - `explorer.html`
+  - correctifs runtime associes:
+    - `term.page.js`
+    - `category.js`
+    - `chatbot.js`
+    - `index.page.js`
+  - tests Playwright mis a jour sur les nouveaux titres attendus
+- Redeploiement production complementaire effectue apres cette passe de marque:
+  - alias `https://dico-archi.vercel.app` reconfirme
+  - verification HTTP `200` et homepage servie correctement
+- Audit de coherence du jour:
+  - plusieurs pages gardent encore l’ancienne marque ou la variante `DicoArchi`
+  - pages a reprendre explicitement:
+    - `auth.html`
+    - `contribuer.html`
+    - `dictionnaire.html`
+    - `methodologie.html`
+- Point bloquant restant cote base:
+  - la migration `supabase/migrations/018_site_visitors.sql` est presente
+  - `supabase db push` n’a pas pu etre lance faute de `SUPABASE_ACCESS_TOKEN`
+  - consequence:
+    - le code prod Vercel est a jour
+    - la base Supabase reste potentiellement en retard sur `site_visitors`
+- Extension de la verification UI dans la meme session:
+  - `Test/e2e/public-pages.spec.js` etendu aux pages secondaires:
+    - `auth.html`
+    - `compte.html`
+    - `contribuer.html`
+    - `methodologie.html`
+    - `games.html`
+  - puis etendu aussi aux pages de jeux:
+    - `quiz.html`
+    - `flashcards.html`
+    - `match.html`
+    - `daily.html`
+    - `memory.html`
+  - mock local de `/api/quiz` ajoute dans Playwright pour eviter les faux `404` sous serveur statique
+  - resultat final de la passe complete:
+    - `19 passed`
+- Runbook Supabase ajoute pour sortir proprement le blocage base:
+  - `docs/SUPABASE_018_RUNBOOK.md`
+- Suite finale de la session:
+  - authentification Supabase CLI realisee avec succes
+  - tentative `supabase db push` refaite avec mot de passe DB, mais encore bloquee par timeout reseau vers le pooler Postgres distant
+  - migration `supabase/migrations/018_site_visitors.sql` appliquee avec succes via SQL Editor Supabase
+  - verification de production relancee apres migration:
+    - homepage `https://dico-archi.vercel.app` en `HTTP 200`
+    - `api/home-metrics` repond sans erreur
+    - `admin.html` -> `Suivi` charge correctement avec metriques reelles
+    - routes jeux verifiees en prod:
+      - `games.html`
+      - `quiz.html`
+      - `flashcards.html`
+      - `match.html`
+      - `daily.html`
+      - `memory.html`
+  - ecart observe dans `Suivi`:
+    - certains titres historiques gardaient encore l’ancienne marque `Dico Architecture CH`
+    - cause: anciennes lignes `page_views` deja stockees avant la correction de marque
+  - correctif applique dans `api/admin-metrics.js`:
+    - titres canoniques `Dico-Archi` forces par `page_path` au moment de l’aggregation admin
+  - redeploiement production final execute via `vercel --prod`
+  - dernier lot assistant / feedback applique ensuite:
+    - `api/chat-feedback-list.js` remappe aussi les titres historiques du panneau `Feedback assistant`
+    - `api/chat.js` migre du fetch REST Gemini vers le SDK officiel `@google/genai`
+    - modele par defaut passe a `gemini-2.5-flash`
+    - `docs/SETUP.md` aligne sur cette integration
+  - verification du lot assistant:
+    - `node --check api/chat.js`
+    - `node --check api/chat-feedback-list.js`
+    - `npm run test:ui` relance hors sandbox macOS
+    - resultat:
+      - `19 passed`
+    - test prod direct du chatbot:
+      - question simple sur `façade`
+      - reponse utile retournee
+      - `model: gemini-2.5-flash`
+  - etat prod confirme en fin de session:
+    - `home-metrics` retourne des visiteurs uniques non nuls
+    - `Feedback assistant` affiche maintenant aussi des titres `Dico-Archi` coherents
+- Suite conversationnelle de la meme session:
+  - `chatbot.js` recharge maintenant les termes publies via `window.DicoArchiApi.fetchPublishedTermsBasic()`
+  - ancienne reponse fallback obsolete sur le quiz supprimee
+  - `api/chat.js` ajoute des reponses deterministes pour:
+    - messages tres courts ambigus
+    - navigation site frequente
+    - termes reconnus depuis le corpus canonique
+  - branchement serveur sur `content/v2` pour servir de vraies reponses de dictionnaire avant Gemini quand le terme est reconnu clairement
+  - tolerance ajoutee sur:
+    - pluriels simples
+    - lettres repetees
+    - fautes mineures de saisie
+  - desambiguïsation ajoutee quand plusieurs termes proches sont plausibles
+  - `chatbot.js` corrige:
+    - usage du vrai slug publie pour les liens de fiche
+    - suppression du faux `Fiche:` unique apres une reponse de clarification
+    - rendu des clarifications avec liens cliquables propres au lieu d’URLs brutes
+  - `styles.css` ajuste:
+    - typo chatbot rendue plus lisible
+    - cartes d’actions plus propres dans les clarifications
+  - verification repetee apres chaque lot:
+    - `node --check api/chat.js`
+    - `node --check chatbot.js`
+    - `npm run test:ui`
+    - resultat maintenu a `19 passed`
+  - plusieurs redeploiements production successifs effectues pour ces lots chatbot
