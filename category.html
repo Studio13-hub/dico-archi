@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Catégorie - DicoArchi</title>
-    <meta name="description" content="Parcours des termes par catégorie sur DicoArchi." />
+    <title>Catégorie - Dico-Archi</title>
+    <meta name="description" content="Parcours des termes par catégorie sur Dico-Archi." />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="hero">
+    <header class="hero hero--category">
       <div class="hero__bg"></div>
       <div class="hero__content">
         <div class="hero__top">
@@ -28,13 +28,19 @@
             <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
           </div>
         </div>
+        <div class="hero-kicker">Parcours par univers</div>
         <h1 id="category-title">Catégorie</h1>
         <p id="category-subtitle">Chargement...</p>
+        <div class="hero-ribbon">
+          <span>Explorer</span>
+          <span>Comparer</span>
+          <span>Approfondir</span>
+        </div>
       </div>
     </header>
 
     <main>
-      <section class="panel">
+      <section class="panel panel--category">
         <div id="category-breadcrumb" class="meta"></div>
         <div class="category-toolbar">
           <div class="category-toolbar__item">

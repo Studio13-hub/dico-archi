@@ -185,7 +185,7 @@ async function loadTermPage() {
     const v2Payload = await fetchV2TermDetails(slug);
 
     titleNode.textContent = term.term || "TERME";
-    subtitleNode.textContent = "Fiche détaillée du dictionnaire DicoArchi.";
+    subtitleNode.textContent = "Fiche détaillée du dictionnaire Dico-Archi.";
     setTermText(categoryNode, term.categories?.name);
     setTermText(categoryChipNode, term.categories?.name);
     setTermText(definitionNode, term.definition, "Définition indisponible.");
@@ -194,7 +194,7 @@ async function loadTermPage() {
     renderMedia(payload.media || []);
     renderRelated(payload.related_terms || []);
     applyV2Details(v2Payload);
-    document.title = `${term.term || "Fiche terme"} - DicoArchi`;
+    document.title = `${term.term || "Fiche terme"} - Dico-Archi`;
   } catch (error) {
     titleNode.textContent = "TERME";
     subtitleNode.textContent = "Impossible de charger cette fiche pour le moment.";

@@ -55,7 +55,7 @@ function renderCategoryIndex(list) {
     title.textContent = item.name;
 
     const description = document.createElement("div");
-    description.textContent = item.description || "Catégorie du dictionnaire DicoArchi.";
+    description.textContent = item.description || "Catégorie du dictionnaire Dico-Archi.";
 
     const link = document.createElement("a");
     link.className = "card__link";

@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Fiche terme - DicoArchi</title>
-    <meta name="description" content="Fiche détaillée d'un terme du dictionnaire DicoArchi." />
+    <title>Fiche terme - Dico-Archi</title>
+    <meta name="description" content="Fiche détaillée d'un terme du dictionnaire Dico-Archi." />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="hero">
+    <header class="hero hero--term">
       <div class="hero__bg"></div>
       <div class="hero__content">
         <div class="hero__top">
@@ -28,13 +28,20 @@
             <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
           </div>
         </div>
+        <div class="hero-kicker">Lecture détaillée</div>
         <h1 id="term-title">TERME</h1>
         <p id="term-subtitle">Chargement de la fiche du terme.</p>
+        <div class="hero-ribbon">
+          <span>Définition</span>
+          <span>Contexte métier</span>
+          <span>Médias</span>
+          <span>Liens utiles</span>
+        </div>
       </div>
     </header>
 
     <main>
-      <section class="panel term-panel">
+      <section class="panel panel--term term-panel">
         <div class="term-summary">
           <div class="term-summary__chips">
             <span id="term-status" class="term-chip">-</span>
@@ -43,6 +50,22 @@
           <p class="term-summary__note">
             Fiche relue pour une lecture claire, progressive et utile aux non-francophones.
           </p>
+        </div>
+        <div class="term-intro-grid">
+          <article class="term-intro-card term-intro-card--primary">
+            <span class="dashboard__label">Usage</span>
+            <strong>Comprendre le terme avant de le réutiliser</strong>
+            <p class="meta meta--subtle">
+              L’objectif de cette fiche est de rendre le vocabulaire immédiatement exploitable dans le bureau, sur un plan ou dans une discussion de chantier.
+            </p>
+          </article>
+          <article class="term-intro-card">
+            <span class="dashboard__label">Lecture conseillée</span>
+            <strong>Définition, exemple, puis termes liés</strong>
+            <p class="meta meta--subtle">
+              Cette structure aide à lire vite, puis à ouvrir un champ lexical plus large sans perdre le sens du mot.
+            </p>
+          </article>
         </div>
         <div class="term-grid">
           <div class="term-block term-block--lead">

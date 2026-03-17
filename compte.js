@@ -19,6 +19,19 @@
   const accountSubmissionsList = document.getElementById("account-submissions-list");
   const accountSupabaseHelpers = window.DicoArchiSupabase;
 
+  function bindButtonLikeLinkKeyboard(root = document) {
+    const links = root.querySelectorAll(".auth__actions a.link-button");
+    for (const link of links) {
+      if (link.dataset.keyboardBound === "true") continue;
+      link.dataset.keyboardBound = "true";
+      link.addEventListener("keydown", (event) => {
+        if (event.key !== " " && event.key !== "Spacebar") return;
+        event.preventDefault();
+        link.click();
+      });
+    }
+  }
+
   function setMessage(text, isError = false) {
     if (!accountMessage) return;
     accountMessage.textContent = text;
@@ -121,6 +134,7 @@
     setAccountAdminVisibility(false);
     if (accountLogout) accountLogout.hidden = true;
     renderSubmissions([], true);
+    bindButtonLikeLinkKeyboard();
     setMessage("Tu es en mode Public: consultation libre des définitions.");
   }
 
@@ -205,6 +219,7 @@
     }
 
     renderSubmissions(submissions);
+    bindButtonLikeLinkKeyboard();
 
     if (normalized.active) {
       setMessage("Compte chargé. Utilisez les actions adaptées à votre rôle.");

@@ -3,30 +3,36 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DicoArchi - Bienvenue</title>
+    <title>Dico-Archi - Bienvenue</title>
     <meta
       name="description"
-      content="Bienvenue sur DicoArchi, dictionnaire d'architecture pensé pour l'inclusion, la formation et l'intégration professionnelle."
+      content="Bienvenue sur Dico-Archi, le dictionnaire du dessinateur en architecture pour comprendre le vocabulaire du bureau, du chantier et des normes."
     />
-    <meta property="og:title" content="DicoArchi - Bienvenue" />
+    <meta property="og:title" content="Dico-Archi - Bienvenue" />
     <meta
       property="og:description"
-      content="Un dictionnaire d'architecture inclusif pour comprendre le vocabulaire technique du métier."
+      content="Le dictionnaire du dessinateur en architecture pour comprendre le vocabulaire technique du métier."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://dico-archi.vercel.app" />
-    <meta property="og:site_name" content="DicoArchi" />
+    <meta property="og:site_name" content="Dico-Archi" />
     <meta name="twitter:card" content="summary" />
     <meta name="google-site-verification" content="4NuT9EaeXCrPx51yMmVDvtsuzVJwoauzwHQ5JRzBSjc" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <header class="hero welcome-cover">
+  <body class="page-home">
+    <header class="hero welcome-cover welcome-cover--studio">
       <div class="hero__bg"></div>
       <div class="hero__content">
         <div class="hero__top">
-          <div class="badge">Dico Architecture CH</div>
+          <div class="badge">Dico-Archi</div>
+          <nav class="site-nav" aria-label="Navigation principale">
+            <a class="site-nav__link" href="dictionnaire.html">Dictionnaire</a>
+            <a class="site-nav__link" href="category.html">Catégories</a>
+            <a class="site-nav__link" href="methodologie.html">Méthodologie</a>
+            <a class="site-nav__link" href="contribuer.html">Contribuer</a>
+          </nav>
           <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
             <span></span><span></span><span></span>
           </button>
@@ -35,130 +41,133 @@
             <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
             <a class="link-button" href="category.html">Catégories</a>
             <a class="link-button" href="games.html">Jeux</a>
-            <a class="link-button" href="contribuer.html">Contribuer</a>
+            <a class="link-button" href="#site-reperes">Repères du site</a>
+            <a class="link-button" href="#contact-admin" data-contact-link>Contacter l’administration</a>
             <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
             <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
             <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
           </div>
         </div>
 
-        <h1>DicoArchi</h1>
-        <p class="welcome-cover__lead">
-          Le dictionnaire d'architecture pour comprendre rapidement les termes du bureau, du chantier et des normes.
-        </p>
-        <div class="welcome-cover__proofs">
-          <div class="welcome-proof">
-            <span class="dashboard__label">Corpus</span>
-            <strong id="home-term-count">Chargement…</strong>
-          </div>
-          <div class="welcome-proof">
-            <span class="dashboard__label">Domaines</span>
-            <strong id="home-category-count">Chargement…</strong>
-          </div>
-          <div class="welcome-proof">
-            <span class="dashboard__label">Modes</span>
-            <strong>Quiz, Swipe, Rush</strong>
-          </div>
-        </div>
-        <div class="controls">
-          <input id="home-search" name="home-search" type="search" placeholder="Rechercher un terme..." autocomplete="off" />
-          <button id="home-search-button" type="button">Rechercher</button>
-        </div>
-        <div id="home-search-results" class="meta"></div>
+        <div class="home-hero-layout">
+          <div class="home-hero-copy">
+            <div class="hero-kicker">Pour apprendre le métier</div>
+            <h1>Dico-Archi <span>Le dictionnaire du dessinateur en architecture</span></h1>
+            <div class="home-hero-tagline">Comprendre le vocabulaire du bureau, du chantier et des normes.</div>
+            <p class="welcome-cover__lead">
+              Un point d’entrée clair pour lire les plans, comprendre les détails constructifs et progresser dans le métier.
+            </p>
+            <div class="controls">
+              <input id="home-search" name="home-search" type="search" placeholder="Rechercher un terme..." autocomplete="off" />
+              <button id="home-search-button" type="button">Chercher un terme</button>
+            </div>
+            <div id="home-search-results" class="meta"></div>
+            <div class="home-search-hint">
+              <span>ou</span>
+              <a href="dictionnaire.html">parcourir le dictionnaire</a>
+            </div>
 
-        <div class="welcome-cover__actions">
-          <a class="welcome-cover__cta" href="dictionnaire.html">Accéder au dictionnaire</a>
-          <a class="link-button" href="games.html">Découvrir les jeux</a>
+            <div class="home-quick-links">
+              <a class="home-quick-link" href="dictionnaire.html">
+                <span class="dashboard__label">Lire</span>
+                <strong>Parcourir le dictionnaire</strong>
+              </a>
+              <button
+                class="home-quick-link home-quick-link--button"
+                type="button"
+                aria-expanded="false"
+                aria-controls="home-hero-categories"
+                data-home-categories-toggle
+              >
+                <span class="dashboard__label">Explorer</span>
+                <strong>Explorer les catégories</strong>
+              </button>
+              <a class="home-quick-link" href="methodologie.html">
+                <span class="dashboard__label">Comprendre</span>
+                <strong>Voir la méthodologie</strong>
+              </a>
+            </div>
+            <div class="home-hero-proof">
+              <span id="home-term-count">Chargement…</span>
+              <span id="home-category-count">Chargement…</span>
+              <span>Repères SIA et AEAI</span>
+            </div>
+            <div id="home-hero-categories" class="home-hero-categories" hidden>
+              <div id="home-hero-categories-list" class="home-hero-categories__list">
+                <span class="meta meta--subtle">Chargement des catégories…</span>
+              </div>
+            </div>
+          </div>
+          <div class="home-hero-side">
+            <section class="home-featured-card">
+              <div class="home-section-head home-section-head--compact">
+                <div>
+                  <span class="section-eyebrow">Repère du jour</span>
+                  <h2>Fiche du jour</h2>
+                </div>
+              </div>
+              <div class="home-featured-card__body">
+                <span class="dashboard__label">Terme mis en avant</span>
+                <strong id="featured-term-title">Chargement...</strong>
+                <div id="featured-term-meta" class="home-featured-meta" hidden></div>
+                <p id="featured-term-definition" class="meta meta--subtle">Récupération de la fiche en cours.</p>
+                <a id="featured-term-link" class="link-button" href="dictionnaire.html">Voir la fiche</a>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
     </header>
 
-    <main class="auth">
-      <section class="panel">
-        <h2>Terme du jour</h2>
-        <div class="dashboard">
-          <div class="dashboard__item">
-            <span class="dashboard__label">Terme</span>
-            <strong id="featured-term-title">Chargement...</strong>
-            <p id="featured-term-definition" class="meta meta--subtle">Récupération de la fiche en cours.</p>
-            <a id="featured-term-link" class="link-button" href="dictionnaire.html">Voir la fiche</a>
+    <main class="home-main">
+      <section class="panel home-bottom-panel" id="site-reperes">
+        <div class="home-section-head">
+          <div>
+            <span class="section-eyebrow">Cadre éditorial</span>
+            <h2>Un corpus structuré et documenté</h2>
           </div>
         </div>
-      </section>
-
-      <section class="panel">
-        <h2>Pour qui</h2>
-        <div class="dashboard">
-          <div class="dashboard__item">
-            <span class="dashboard__label">Débutants</span>
-            <strong>Comprendre les bases vite</strong>
-            <p class="meta meta--subtle">Définitions claires, exemples simples et navigation par domaine.</p>
+        <div class="home-bottom-copy">
+          <div class="home-bottom-links">
+            <a class="home-bottom-link" href="category.html">
+              <span class="dashboard__label">Corpus</span>
+              <strong>Corpus organisé par thèmes</strong>
+              <p>Façades, matériaux, chantier, normes.</p>
+            </a>
+            <a class="home-bottom-link" href="methodologie.html">
+              <span class="dashboard__label">Méthodologie éditoriale</span>
+              <strong>Méthodologie claire</strong>
+              <p>Sources, validation, principes de rédaction.</p>
+            </a>
+            <a class="home-bottom-link" href="contribuer.html">
+              <span class="dashboard__label">Contribution</span>
+              <strong>Contribution encadrée</strong>
+              <p>Proposer une notion ou compléter une fiche.</p>
+            </a>
           </div>
-          <div class="dashboard__item">
-            <span class="dashboard__label">Non-francophones</span>
-            <strong>Réviser en bon français</strong>
-            <p class="meta meta--subtle">Orthographe soignée, accents corrects et vocabulaire technique relu.</p>
-          </div>
-          <div class="dashboard__item">
-            <span class="dashboard__label">Bureau & chantier</span>
-            <strong>Retrouver le bon mot</strong>
-            <p class="meta meta--subtle">Termes de dessin, construction, normes et pratique quotidienne.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel">
-        <h2>Accès rapides</h2>
-        <div class="dashboard">
-          <div class="dashboard__item">
-            <span class="dashboard__label">Dictionnaire</span>
-            <strong>Parcourir tous les termes</strong>
-            <p class="meta meta--subtle">Consulte les définitions par ordre alphabétique.</p>
-            <a class="link-button" href="dictionnaire.html">Ouvrir</a>
-          </div>
-          <div class="dashboard__item">
-            <span class="dashboard__label">Catégories</span>
-            <strong>Explorer par domaine</strong>
-            <p class="meta meta--subtle">Accède aux notions classées par thèmes.</p>
-            <a class="link-button" href="category.html">Explorer</a>
-          </div>
-          <div class="dashboard__item">
-            <span class="dashboard__label">Quiz</span>
-            <strong>Réviser en mode ludique</strong>
-            <p class="meta meta--subtle">Quiz rapide, mode image et premier jeu de memory déjà disponibles sur mobile.</p>
-            <a class="link-button" href="games.html">Découvrir</a>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel">
-        <h2>Commencer sans hésiter</h2>
-        <div class="dashboard">
-          <div class="dashboard__item">
-            <span class="dashboard__label">1 minute</span>
-            <strong>Lire une fiche</strong>
-            <p class="meta meta--subtle">Entrez par un terme du jour ou une recherche rapide.</p>
-            <a id="home-start-term-link" class="link-button" href="dictionnaire.html">Voir une fiche</a>
-          </div>
-          <div class="dashboard__item">
-            <span class="dashboard__label">5 minutes</span>
-            <strong>Réviser par domaine</strong>
-            <p class="meta meta--subtle">Passez par les catégories pour garder un contexte métier.</p>
-            <a class="link-button" href="category.html">Explorer les catégories</a>
-          </div>
-          <div class="dashboard__item">
-            <span class="dashboard__label">Pause rapide</span>
-            <strong>Jouer et mémoriser</strong>
-            <p class="meta meta--subtle">Lancez un mode court pour retenir un terme, une définition ou un schéma.</p>
-            <a class="link-button" href="games.html">Ouvrir les jeux</a>
-          </div>
+          <p class="section-copy home-bottom-proof">
+            Sources identifiées, validation progressive, repères SIA et AEAI.
+          </p>
         </div>
       </section>
     </main>
 
     <footer>
-      <div class="footer__inner">
-        <span>Réalisé par RDR Architectes SA.</span>
+        <div class="footer__inner footer__inner--site">
+        <div class="footer__brand">
+          <strong>Dico-Archi</strong>
+          <span>Le dictionnaire du dessinateur en architecture.</span>
+        </div>
+        <div class="footer__links">
+          <a href="dictionnaire.html">Dictionnaire</a>
+          <a href="category.html">Catégories</a>
+          <a href="methodologie.html">Méthodologie</a>
+          <a href="contribuer.html">Contribuer</a>
+        </div>
+        <div class="footer__credit">
+          <span>Réalisation</span>
+          <strong>RDR Architectes SA</strong>
+        </div>
       </div>
     </footer>
 

@@ -315,6 +315,10 @@
       return fetchJson(`/api/terms?slug=${encodeURIComponent(slug)}`);
     },
 
+    async fetchHomeMetrics() {
+      return fetchJson("/api/home-metrics");
+    },
+
     async listProfiles() {
       const client = getClient();
       if (!client) throw new Error("missing_supabase_config");

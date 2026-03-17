@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Méthodologie - Dico-Archi</title>
+    <meta
+      name="description"
+      content="Méthodologie éditoriale de Dico-Archi : sources, validation, principes d’écriture et cadre du dictionnaire."
+    />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__bg"></div>
+      <div class="hero__content">
+        <div class="hero__top">
+          <div class="badge">Dico-Archi</div>
+          <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span>
+          </button>
+          <div class="hero__actions" data-menu-panel>
+            <span class="meta meta--subtle" data-nav-status>Public · consultation</span>
+            <a class="link-button" href="index.html">Accueil</a>
+            <a class="link-button" href="dictionnaire.html">Dictionnaire</a>
+            <a class="link-button" href="category.html">Catégories</a>
+            <a class="link-button" href="games.html">Jeux</a>
+            <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
+            <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
+            <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
+          </div>
+        </div>
+        <span class="section-eyebrow">Méthodologie</span>
+        <h1>Comment Dico-Archi est construit</h1>
+        <p class="welcome-cover__lead">
+          Principes d’écriture, cadre éditorial, sources et validation des fiches.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="dashboard">
+          <article class="dashboard__item">
+            <span class="dashboard__label">Objectif</span>
+            <strong>Expliquer clairement</strong>
+            <p class="meta meta--subtle">Chaque fiche doit aider à comprendre un mot, son usage et son contexte.</p>
+          </article>
+          <article class="dashboard__item">
+            <span class="dashboard__label">Public</span>
+            <strong>Apprentis, étudiants, allophones</strong>
+            <p class="meta meta--subtle">Le niveau de langue reste simple sans perdre la précision technique.</p>
+          </article>
+          <article class="dashboard__item">
+            <span class="dashboard__label">Référence</span>
+            <strong>Pratique du métier et normes</strong>
+            <p class="meta meta--subtle">Les repères s’appuient sur le bureau, le chantier, les normes SIA et AEAI.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-split">
+          <div class="section-split__lead">
+            <span class="section-eyebrow">Écriture</span>
+            <h2>Règles de rédaction</h2>
+            <p class="section-copy">Les définitions sont réécrites pour être lisibles, brèves et compréhensibles sans jargon inutile.</p>
+          </div>
+          <div class="section-split__cards">
+            <article class="vision-tile vision-tile--paper">
+              <span class="dashboard__label">1</span>
+              <strong>Définir</strong>
+              <p class="meta meta--subtle">Dire ce qu’est le terme avec des mots clairs.</p>
+            </article>
+            <article class="vision-tile vision-tile--paper">
+              <span class="dashboard__label">2</span>
+              <strong>Contextualiser</strong>
+              <p class="meta meta--subtle">Montrer où le terme apparaît dans le métier.</p>
+            </article>
+            <article class="vision-tile vision-tile--paper">
+              <span class="dashboard__label">3</span>
+              <strong>Relire</strong>
+              <p class="meta meta--subtle">Vérifier la cohérence éditoriale avant publication.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Sources et validation</h2>
+        <div class="dashboard">
+          <article class="dashboard__item">
+            <span class="dashboard__label">Sources</span>
+            <strong>Normes, pratique, documentation métier</strong>
+            <p class="meta meta--subtle">Les fiches s’appuient sur des documents de référence et sur l’usage professionnel.</p>
+          </article>
+          <article class="dashboard__item">
+            <span class="dashboard__label">Validation</span>
+            <strong>Contribution puis relecture</strong>
+            <p class="meta meta--subtle">Une fiche peut être proposée, relue, corrigée puis publiée.</p>
+          </article>
+          <article class="dashboard__item">
+            <span class="dashboard__label">Copyright</span>
+            <strong>Réécriture systématique</strong>
+            <p class="meta meta--subtle">Les contenus sont reformulés pour éviter le copié-collé de sources externes.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer__inner">
+        <span>Réalisé par RDR Architectes SA.</span>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="tracker.js"></script>
+    <script src="menu.js"></script>
+    <script src="nav.js"></script>
+  </body>
+</html>

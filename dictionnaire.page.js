@@ -1,5 +1,6 @@
 const termsStatus = document.getElementById("terms-status");
 const termsList = document.getElementById("terms-list");
+const dictionaryLetterNav = document.getElementById("dictionary-letter-nav");
 
 function clearDictionaryChildren(node) {
   while (node.firstChild) node.removeChild(node.firstChild);
@@ -7,14 +8,14 @@ function clearDictionaryChildren(node) {
 
 function createTermCard(item) {
   const card = document.createElement("article");
-  card.className = "card";
+  card.className = "card dictionary-card";
+
+  const eyebrow = document.createElement("span");
+  eyebrow.className = "tag";
+  eyebrow.textContent = item.categories?.name || "Sans catégorie";
 
   const title = document.createElement("h3");
   title.textContent = item.term;
-
-  const category = document.createElement("p");
-  category.className = "meta meta--subtle";
-  category.textContent = item.categories?.name || "Sans catégorie";
 
   const definition = document.createElement("p");
   definition.textContent = item.definition || "Définition indisponible.";
@@ -24,11 +25,77 @@ function createTermCard(item) {
   link.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
   link.textContent = "Ouvrir la fiche";
 
-  card.appendChild(title);
-  card.appendChild(category);
-  card.appendChild(definition);
-  card.appendChild(link);
+  card.append(eyebrow, title, definition, link);
   return card;
+}
+
+function getLetterKey(value) {
+  const letter = String(value || "")
+    .trim()
+    .charAt(0)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase();
+
+  return /[A-Z]/.test(letter) ? letter : "#";
+}
+
+function renderLetterNav(letterKeys) {
+  if (!dictionaryLetterNav) return;
+  clearDictionaryChildren(dictionaryLetterNav);
+
+  for (const letter of letterKeys) {
+    const link = document.createElement("a");
+    link.className = "chip";
+    link.href = `#dictionary-letter-${letter}`;
+    link.textContent = letter;
+    dictionaryLetterNav.appendChild(link);
+  }
+}
+
+function renderDictionaryIndex(items) {
+  clearDictionaryChildren(termsList);
+
+  const grouped = new Map();
+  for (const item of items) {
+    const key = getLetterKey(item.term);
+    const list = grouped.get(key) || [];
+    list.push(item);
+    grouped.set(key, list);
+  }
+
+  const letterKeys = [...grouped.keys()].sort((a, b) => a.localeCompare(b, "fr"));
+  renderLetterNav(letterKeys);
+
+  for (const letter of letterKeys) {
+    const section = document.createElement("section");
+    section.className = "dictionary-letter-section";
+    section.id = `dictionary-letter-${letter}`;
+
+    const header = document.createElement("div");
+    header.className = "dictionary-letter-header";
+
+    const title = document.createElement("h3");
+    title.className = "dictionary-letter-title";
+    title.textContent = letter;
+
+    const meta = document.createElement("div");
+    meta.className = "dictionary-letter-meta";
+    const count = grouped.get(letter)?.length || 0;
+    meta.textContent = `${count} terme${count > 1 ? "s" : ""}`;
+
+    header.append(title, meta);
+
+    const grid = document.createElement("div");
+    grid.className = "cards cards--dictionary";
+
+    for (const item of grouped.get(letter) || []) {
+      grid.appendChild(createTermCard(item));
+    }
+
+    section.append(header, grid);
+    termsList.appendChild(section);
+  }
 }
 
 async function loadDictionaryTerms() {
@@ -46,10 +113,8 @@ async function loadDictionaryTerms() {
       return;
     }
 
-    termsStatus.textContent = `${items.length} terme(s) chargé(s).`;
-    for (const item of items) {
-      termsList.appendChild(createTermCard(item));
-    }
+    termsStatus.textContent = `${items.length} termes publiés, classés par initiale pour une lecture plus stable.`;
+    renderDictionaryIndex(items);
   } catch (error) {
     termsStatus.textContent = `Erreur: ${error.message}`;
   }

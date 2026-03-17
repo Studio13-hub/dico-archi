@@ -2,8 +2,9 @@
   const STORAGE_KEY = "dico_archi_chatbot_open_v1";
   const SESSION_KEY = "dico_archi_chatbot_session_v1";
   const FEEDBACK_KEY = "dico_archi_chatbot_feedback_v1";
-  const pageTitle = document.title || "DicoArchi";
+  const pageTitle = document.title || "Dico-Archi";
   const pagePath = window.location.pathname || "/";
+  const isHomePage = document.body?.classList.contains("page-home");
   const feedbackState = new Set();
 
   function normalize(value) {
@@ -14,6 +15,14 @@
       .trim();
   }
 
+  function normalizeForTermMatch(value) {
+    return normalize(value)
+      .replace(/[^a-z0-9\s-]+/g, " ")
+      .replace(/\b([a-z0-9-]{4,})s\b/g, "$1")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
   function createElement(tag, className, text) {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -21,10 +30,16 @@
     return node;
   }
 
-  function getLocalTerms() {
-    if (Array.isArray(window.TERMS)) return window.TERMS;
-    return [];
+  function parseAssistantLinkLine(line) {
+    const match = String(line || "").match(/^-\s+(.+?)\s*:\s*(term\.html\?slug=[^\s]+)\s*$/i);
+    if (!match) return null;
+    return {
+      label: match[1].trim(),
+      href: match[2].trim()
+    };
   }
+
+  let publishedTermsCache = Array.isArray(window.TERMS) ? window.TERMS.slice() : [];
 
   function slugify(value) {
     return String(value || "")
@@ -35,28 +50,58 @@
       .replace(/^-+|-+$/g, "");
   }
 
-  const TERM_INDEX = getLocalTerms()
-    .map((item) => ({
+  function buildTermIndex(items) {
+    return (Array.isArray(items) ? items : [])
+      .map((item) => ({
       term: String(item?.term || "").trim(),
+      slug: String(item?.slug || slugify(item?.term || "")).trim(),
       key: normalize(item?.term || ""),
+      matchKey: normalizeForTermMatch(item?.term || ""),
       definition: String(item?.definition || "").trim(),
       example: String(item?.example || "").trim(),
-      category: String(item?.category || "").trim()
+      category: String(item?.category || item?.categories?.name || "").trim()
     }))
     .filter((item) => item.term && item.key)
     .sort((a, b) => b.key.length - a.key.length);
+  }
+
+  let TERM_INDEX = buildTermIndex(publishedTermsCache);
 
   function findBestTermInText(text) {
     const q = normalize(text);
+    const qMatch = normalizeForTermMatch(text);
     if (!q) return null;
     for (const entry of TERM_INDEX) {
-      if (q === entry.key || q.includes(entry.key)) return entry;
+      if (
+        q === entry.key
+        || q.includes(entry.key)
+        || (entry.matchKey && (qMatch === entry.matchKey || qMatch.includes(entry.matchKey)))
+      ) {
+        return entry;
+      }
     }
     return null;
   }
 
-  function makeTermUrl(term) {
-    return `term.html?slug=${encodeURIComponent(slugify(term || ""))}`;
+  function makeTermUrl(termOrEntry) {
+    if (termOrEntry && typeof termOrEntry === "object") {
+      const slug = String(termOrEntry.slug || "").trim() || slugify(termOrEntry.term || "");
+      return `term.html?slug=${encodeURIComponent(slug)}`;
+    }
+    return `term.html?slug=${encodeURIComponent(slugify(termOrEntry || ""))}`;
+  }
+
+  async function refreshPublishedTerms() {
+    if (!window.DicoArchiApi?.fetchPublishedTermsBasic) return;
+
+    try {
+      const items = await window.DicoArchiApi.fetchPublishedTermsBasic();
+      if (!Array.isArray(items) || !items.length) return;
+      publishedTermsCache = items;
+      TERM_INDEX = buildTermIndex(publishedTermsCache);
+    } catch (_error) {
+      // Keep the current fallback index if network/API loading fails.
+    }
   }
 
   function getSessionId() {
@@ -80,7 +125,7 @@
     if (best.definition) parts.push(`Définition: ${best.definition}`);
     if (best.example) parts.push(`Exemple: ${best.example}`);
     if (best.category) parts.push(`Catégorie: ${best.category}`);
-    parts.push(`Fiche: ${makeTermUrl(best.term)}`);
+    parts.push(`Fiche: ${makeTermUrl(best)}`);
     return parts.join("\n");
   }
 
@@ -131,11 +176,15 @@
     }
 
     if (q.includes("admin")) {
-      return "L’espace admin est réservé aux rôles autorisés (super_admin/formateur).";
+      return "L’espace admin est réservé aux rôles autorisés. Ouvre admin.html si ton compte a un rôle Relecture ou Administration.";
     }
 
     if (q.includes("quiz")) {
-      return "Le quiz arrive bientôt sur quiz.html. En attendant, tu peux réviser depuis le dictionnaire et les catégories.";
+      return "Tu peux ouvrir quiz.html depuis la page Jeux. Si tu veux réviser avant, passe aussi par le dictionnaire et les catégories.";
+    }
+
+    if (q.includes("jeu") || q.includes("flashcards") || q.includes("match") || q.includes("defi")) {
+      return "Les jeux sont regroupés sur games.html. Tu y trouveras le quiz, les flashcards, le match et le défi du jour.";
     }
 
     return "Je peux t’aider sur le vocabulaire d’architecture et l’usage du site (connexion, quiz, contributions, admin).";
@@ -145,15 +194,22 @@
     const clean = String(answer || "").trim();
     if (!clean) return { text: "", relatedTerm: null };
 
+    const normalizedAnswer = normalize(clean);
+    const explicitLinks = (clean.match(/term\.html\?slug=/g) || []).length;
+    const isDisambiguation = normalizedAnswer.includes("tu veux parler de");
+    if (isDisambiguation || explicitLinks > 1) {
+      return { text: clean, relatedTerm: null };
+    }
+
     const currentBest = findBestTermInText(clean) || findBestTermInText(question);
     if (!currentBest) return { text: clean, relatedTerm: null };
 
-    if (normalize(clean).includes(normalize("fiche:"))) {
-      return { text: clean, relatedTerm: currentBest.term };
+    if (normalizedAnswer.includes(normalize("fiche:")) || explicitLinks === 1) {
+      return { text: clean, relatedTerm: currentBest };
     }
 
-    const withLink = `${clean}\nFiche: ${makeTermUrl(currentBest.term)}`;
-    return { text: withLink, relatedTerm: currentBest.term };
+    const withLink = `${clean}\nFiche: ${makeTermUrl(currentBest)}`;
+    return { text: withLink, relatedTerm: currentBest };
   }
 
   function getStoredFeedbackMap() {
@@ -230,6 +286,7 @@
   }
 
   const root = createElement("div", "chatbot");
+  const hint = createElement("div", "chatbot__hint", "Poser une question sur un terme");
   const toggle = createElement("button", "chatbot__toggle", "Assistant");
   toggle.type = "button";
   toggle.setAttribute("aria-label", "Ouvrir le chatbot");
@@ -238,7 +295,7 @@
   panel.hidden = true;
 
   const header = createElement("div", "chatbot__header");
-  const title = createElement("strong", "", "Assistant DicoArchi");
+  const title = createElement("strong", "", "Assistant Dico-Archi");
   const closeButton = createElement("button", "chatbot__close", "Fermer");
   closeButton.type = "button";
   header.appendChild(title);
@@ -267,6 +324,9 @@
   panel.appendChild(messagesNode);
   panel.appendChild(form);
   panel.appendChild(note);
+  if (isHomePage) {
+    root.appendChild(hint);
+  }
   root.appendChild(toggle);
   root.appendChild(panel);
   document.body.appendChild(root);
@@ -361,7 +421,14 @@
     const bubble = createElement("div", `chatbot__msg chatbot__msg--${role}`);
     const lines = cleanText.split("\n");
     for (const line of lines) {
-      bubble.appendChild(createElement("p", "", line));
+      const parsedLink = role === "assistant" ? parseAssistantLinkLine(line) : null;
+      if (parsedLink) {
+        const link = createElement("a", "chatbot__inline-link", parsedLink.label);
+        link.href = parsedLink.href;
+        bubble.appendChild(link);
+      } else {
+        bubble.appendChild(createElement("p", "", line));
+      }
     }
 
     if (role === "assistant" && !options.noActions) {
@@ -385,6 +452,9 @@
     panel.style.display = open ? "grid" : "none";
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
     toggle.textContent = open ? "Fermer assistant" : "Assistant";
+    if (hint) {
+      hint.hidden = open;
+    }
     try {
       window.localStorage.setItem(STORAGE_KEY, open ? "1" : "0");
     } catch (_error) {
@@ -477,4 +547,5 @@
     shouldOpen = false;
   }
   setOpen(shouldOpen);
+  refreshPublishedTerms();
 })();

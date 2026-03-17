@@ -3,24 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DicoArchi - Dictionnaire simple d'architecture</title>
-    <meta name="description" content="DicoArchi: dictionnaire simple d'architecture en Suisse romande. Définitions claires pour débutants, normes SIA, chantier, dessin." />
-    <meta name="keywords" content="DicoArchi, dictionnaire architecture, SIA, dessinateur, chantier, dessin, Suisse romande" />
-    <meta property="og:title" content="DicoArchi - Dictionnaire simple d'architecture" />
+    <title>Dico-Archi - Dictionnaire simple d'architecture</title>
+    <meta name="description" content="Dico-Archi: dictionnaire simple d'architecture en Suisse romande. Définitions claires pour débutants, normes SIA, chantier, dessin." />
+    <meta name="keywords" content="Dico-Archi, dictionnaire architecture, SIA, dessinateur, chantier, dessin, Suisse romande" />
+    <meta property="og:title" content="Dico-Archi - Dictionnaire simple d'architecture" />
     <meta property="og:description" content="Définitions claires pour débutants, normes SIA, chantier, dessin." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://dico-archi.vercel.app" />
-    <meta property="og:site_name" content="DicoArchi" />
+    <meta property="og:site_name" content="Dico-Archi" />
     <meta name="twitter:card" content="summary" />
     <meta name="google-site-verification" content="4NuT9EaeXCrPx51yMmVDvtsuzVJwoauzwHQ5JRzBSjc" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="hero">
+    <header class="hero hero--dictionary">
       <div class="hero__bg"></div>
       <div class="hero__content">
         <div class="hero__top">
-          <div class="badge">Dico Architecture CH</div>
+          <div class="badge">Dico-Archi</div>
           <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
             <span></span><span></span><span></span>
           </button>
@@ -35,16 +35,56 @@
             <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
           </div>
         </div>
+        <div class="hero-kicker">Lecture éditoriale</div>
         <h1>Dictionnaire pratique d’architecture</h1>
-        <p>Consultez les termes du dictionnaire par ordre alphabétique.</p>
+        <p>Consultez les termes comme un corpus: clairs, classés, reliés au travail du bureau et du chantier.</p>
+        <div class="hero-ribbon">
+          <span>Définitions fiables</span>
+          <span>Lecture rapide</span>
+          <span>Repères métier</span>
+        </div>
       </div>
     </header>
 
     <main>
-      <section class="panel">
-        <h2>Liste des termes</h2>
-        <div id="terms-status" class="meta">Chargement...</div>
-        <div id="terms-list" class="cards"></div>
+      <section class="panel panel--dictionary">
+        <div class="section-split">
+          <div class="section-split__lead">
+            <span class="section-eyebrow">Corpus</span>
+            <h2>Liste des termes</h2>
+            <p class="section-copy">
+              Le dictionnaire doit devenir plus qu’une simple grille: un index lisible, stable, agréable à parcourir et crédible comme outil de référence.
+            </p>
+          </div>
+          <div class="section-split__cards">
+            <article class="vision-tile vision-tile--paper">
+              <span class="dashboard__label">Mode</span>
+              <strong>Index vivant</strong>
+              <p class="meta meta--subtle">Une lecture dense mais respirante, avec un vrai ton éditorial.</p>
+            </article>
+          </div>
+        </div>
+        <div class="dictionary-overview">
+          <article class="dictionary-overview__panel">
+            <span class="dashboard__label">Promesse</span>
+            <strong>Un index clair, fiable et agréable à feuilleter</strong>
+            <p class="meta meta--subtle">
+              Le dictionnaire doit donner une impression de référence stable, pas seulement une accumulation de cartes.
+            </p>
+          </article>
+          <article class="dictionary-overview__panel">
+            <span class="dashboard__label">Lecture conseillée</span>
+            <strong>Entrer par un terme, puis dériver par catégorie</strong>
+            <p class="meta meta--subtle">
+              L’objectif est de pouvoir lire vite, puis approfondir par domaine sans perdre le fil.
+            </p>
+          </article>
+        </div>
+        <div class="dictionary-toolbar">
+          <div id="terms-status" class="meta dictionary-status">Chargement...</div>
+          <div id="dictionary-letter-nav" class="chips dictionary-letter-nav" aria-label="Navigation alphabétique"></div>
+        </div>
+        <div id="terms-list" class="dictionary-index"></div>
       </section>
     </main>
 
