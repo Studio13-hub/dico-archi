@@ -3182,12 +3182,14 @@ async function loadUser() {
     return;
   }
 
+  setMessage("Chargement de la session staff...");
   adminPermissionsReady = false;
   adminRole.textContent = "Rôle : chargement...";
   updateAdminContextCopy();
 
   try {
     supabaseClient = supabaseHelpers.getClient();
+    await supabaseHelpers.waitForInitialSession?.();
     currentUser = await supabaseHelpers.getCurrentUser();
 
     if (!currentUser) {

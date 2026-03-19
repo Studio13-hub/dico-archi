@@ -208,6 +208,11 @@ test("homepage interactions stay wired", async ({ page }) => {
   const categoriesToggle = page.locator("[data-home-categories-toggle]");
   await categoriesToggle.click();
   await expect(page.locator("#home-hero-categories")).toBeVisible();
+  await expect
+    .poll(async () => page.locator("#home-hero-categories .home-category-pill").count(), {
+      timeout: 10000
+    })
+    .toBeGreaterThan(0);
   await expect(page.locator("#home-hero-categories .home-category-pill").first()).toBeVisible();
 
   await expect(page.locator(".home-bottom-link[href='contribuer.html']")).toBeVisible();

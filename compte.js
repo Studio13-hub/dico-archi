@@ -526,7 +526,9 @@
       return;
     }
 
+    setMessage("Chargement du compte...");
     const client = accountSupabaseHelpers.getClient();
+    await accountSupabaseHelpers.waitForInitialSession?.();
     const user = await accountSupabaseHelpers.getCurrentUser();
     if (!user) {
       renderGuestState();

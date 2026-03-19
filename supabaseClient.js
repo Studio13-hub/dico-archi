@@ -11,6 +11,43 @@
 
   let clientInstance = null;
   const profileCache = new Map();
+  let authBootstrapPromise = null;
+  let authBootstrapComplete = false;
+
+  function createTimeoutPromise(delay, value = null) {
+    return new Promise((resolve) => {
+      window.setTimeout(() => resolve(value), delay);
+    });
+  }
+
+  function waitForInitialSession() {
+    const client = getClient();
+    if (!client) return Promise.resolve(null);
+    if (authBootstrapComplete) return Promise.resolve(null);
+    if (authBootstrapPromise) return authBootstrapPromise;
+
+    authBootstrapPromise = new Promise((resolve) => {
+      let settled = false;
+
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        authBootstrapComplete = true;
+        resolve(null);
+      };
+
+      const subscriptionResult = client.auth.onAuthStateChange((event) => {
+        if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "TOKEN_REFRESHED" || event === "USER_UPDATED") {
+          subscriptionResult?.data?.subscription?.unsubscribe?.();
+          finish();
+        }
+      });
+
+      createTimeoutPromise(900).then(finish);
+    });
+
+    return authBootstrapPromise;
+  }
 
   function hasConfig() {
     return Boolean(window.SUPABASE_URL && window.SUPABASE_ANON_KEY && window.supabase);
@@ -68,6 +105,7 @@
   async function getCurrentUser() {
     const client = getClient();
     if (!client) return null;
+    await waitForInitialSession();
     const sessionResult = await client.auth.getSession();
     if (sessionResult.error) {
       const message = String(sessionResult.error.message || "");
@@ -126,6 +164,7 @@
     const client = getClient();
     if (!client) return { data: { subscription: { unsubscribe() {} } } };
     return client.auth.onAuthStateChange(async (event, session) => {
+      authBootstrapComplete = true;
       const user = session?.user || null;
       if (!user) {
         clearProfileCache();
@@ -642,6 +681,7 @@
     hasConfig,
     getClient,
     getCurrentUser,
+    waitForInitialSession,
     getProfile,
     normalizeProfile,
     getRoleLabel,
