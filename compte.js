@@ -12,6 +12,13 @@
   const accountAccessCopy = document.getElementById("account-access-copy");
   const accountNextStepTitle = document.getElementById("account-next-step-title");
   const accountNextStepCopy = document.getElementById("account-next-step-copy");
+  const accountFocusTitle = document.getElementById("account-focus-title");
+  const accountFocusAction = document.getElementById("account-focus-action");
+  const accountFocusCopy = document.getElementById("account-focus-copy");
+  const accountFocusDestination = document.getElementById("account-focus-destination");
+  const accountFocusDestinationCopy = document.getElementById("account-focus-destination-copy");
+  const accountFocusNote = document.getElementById("account-focus-note");
+  const accountFocusNoteCopy = document.getElementById("account-focus-note-copy");
   const accountSubmissionCount = document.getElementById("account-submission-count");
   const accountSubmissionCopy = document.getElementById("account-submission-copy");
   const accountSubmissionsPanel = document.getElementById("account-submissions-panel");
@@ -119,6 +126,16 @@
       hour: "2-digit",
       minute: "2-digit"
     });
+  }
+
+  function setFocusPanel({ title, action, copy, destination, destinationCopy, note, noteCopy }) {
+    if (accountFocusTitle) accountFocusTitle.textContent = title;
+    if (accountFocusAction) accountFocusAction.textContent = action;
+    if (accountFocusCopy) accountFocusCopy.textContent = copy;
+    if (accountFocusDestination) accountFocusDestination.textContent = destination;
+    if (accountFocusDestinationCopy) accountFocusDestinationCopy.textContent = destinationCopy;
+    if (accountFocusNote) accountFocusNote.textContent = note;
+    if (accountFocusNoteCopy) accountFocusNoteCopy.textContent = noteCopy;
   }
 
   function renderSubmissions(items, isGuest = false) {
@@ -477,6 +494,15 @@
       }
     if (accountSubmissionCount) accountSubmissionCount.textContent = "0";
     if (accountSubmissionCopy) accountSubmissionCopy.textContent = "Aucun suivi disponible sans session ouverte.";
+    setFocusPanel({
+      title: "Commencer par se connecter",
+      action: "Ouvrir la connexion",
+      copy: "Sans session, cette page reste un point d’orientation public.",
+      destination: "Authentification",
+      destinationCopy: "Connecte-toi pour voir ton niveau d’accès réel.",
+      note: "Mon compte oriente",
+      noteCopy: "Le dépôt reste dans Contribuer, la validation reste dans Administration."
+    });
     if (accountLoginLink) {
       accountLoginLink.hidden = false;
       accountLoginLink.textContent = "Se connecter";
@@ -530,6 +556,15 @@
     if (accountLogout) accountLogout.hidden = false;
 
     if (normalized.role === "super_admin") {
+      setFocusPanel({
+        title: "Piloter la plateforme",
+        action: "Ouvrir l’administration",
+        copy: "Le rôle Administration doit aller directement au pilotage du corpus, des comptes et du suivi.",
+        destination: "Administration",
+        destinationCopy: "Validation, rôles, structure du corpus et supervision globale.",
+        note: "Mon compte sert de synthèse",
+        noteCopy: "Tes dépôts personnels restent visibles ici, mais ce n’est pas ton espace principal d’action."
+      });
       if (accountAccessLabel) accountAccessLabel.textContent = "Pilotage complet";
       if (accountAccessCopy) {
         accountAccessCopy.textContent =
@@ -547,6 +582,15 @@
       if (accountInboxCount && !notifications.length) accountInboxCount.textContent = "Pilotage";
       if (accountContribLink) accountContribLink.textContent = "Ouvrir Contribuer";
     } else if (normalized.role === "formateur") {
+      setFocusPanel({
+        title: "Relire puis guider",
+        action: "Passer en relecture",
+        copy: "Le rôle Formateur doit surtout revenir aux propositions à corriger ou à valider.",
+        destination: "Administration",
+        destinationCopy: "Relecture, commentaires éditoriaux et validation sans repasser par le dépôt.",
+        note: "Mon compte reste le tableau de bord",
+        noteCopy: "Ici tu lis la synthèse; l’action métier se fait ensuite dans Administration."
+      });
       if (accountAccessLabel) accountAccessLabel.textContent = "Relecture éditoriale";
       if (accountAccessCopy) {
         accountAccessCopy.textContent =
@@ -565,6 +609,19 @@
       if (accountInboxCount && !notifications.length) accountInboxCount.textContent = "Retour éditorial";
       if (accountContribLink) accountContribLink.textContent = "Déposer si besoin";
     } else {
+      setFocusPanel({
+        title: submissions.length ? "Suivre ou corriger une proposition" : "Déposer une première proposition",
+        action: submissions.some((item) => item.status === "rejected") ? "Reprendre une correction" : "Ouvrir Contribuer",
+        copy: submissions.some((item) => item.status === "rejected")
+          ? "Au moins une proposition attend une correction avant nouvelle relecture."
+          : "Le rôle Apprenti dépose dans Contribuer puis revient ici pour suivre les retours.",
+        destination: submissions.some((item) => item.status === "rejected") ? "Contribuer" : "Contribuer",
+        destinationCopy: submissions.some((item) => item.status === "rejected")
+          ? "Rouvre la proposition refusée, corrige puis remets-la en relecture."
+          : "Crée la proposition dans la page de dépôt, pas dans Mon compte.",
+        note: "Mon compte sert au suivi",
+        noteCopy: "Le dépôt et la correction détaillée se font ailleurs; ici tu vérifies l’état et les retours."
+      });
       if (accountAccessLabel) accountAccessLabel.textContent = "Contribution encadrée";
       if (accountAccessCopy) {
         accountAccessCopy.textContent =

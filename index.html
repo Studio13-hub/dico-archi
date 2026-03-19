@@ -42,7 +42,7 @@
             <a class="link-button" href="category.html">Catégories</a>
             <a class="link-button" href="games.html">Jeux</a>
             <a class="link-button" href="#site-reperes">Repères du site</a>
-            <a class="link-button" href="#contact-admin" data-contact-link>Contacter l’administration</a>
+            <a class="link-button" href="contribuer.html" data-contact-link>Contacter l’administration</a>
             <a class="link-button" href="auth.html" data-nav-auth>Connexion</a>
             <a class="link-button" href="admin.html" data-nav-admin hidden>Admin</a>
             <button class="link-button" type="button" data-nav-logout hidden>Se déconnecter</button>
@@ -119,6 +119,17 @@
                 <a id="featured-term-link" class="link-button" href="dictionnaire.html">Voir la fiche</a>
               </div>
             </section>
+            <section class="home-featured-card home-featured-card--paths">
+              <div class="home-section-head home-section-head--compact">
+                <div>
+                  <span class="section-eyebrow">Parcours concrets</span>
+                  <h2>Commencer par un vrai cas</h2>
+                </div>
+              </div>
+              <div id="home-hero-paths" class="home-path-list">
+                <span class="meta meta--subtle">Préparation des parcours…</span>
+              </div>
+            </section>
           </div>
         </div>
       </div>
@@ -127,20 +138,59 @@
     <main class="home-main">
       <section class="home-launchpad" aria-label="Entrées rapides">
         <a class="home-launchpad__card" href="dictionnaire.html">
-          <span class="dashboard__label">Entrée 1</span>
-          <strong>Ouvrir l’index complet</strong>
-          <p class="meta meta--subtle">Le meilleur point d’entrée pour retrouver vite un terme précis.</p>
+          <span class="dashboard__label">Retrouver</span>
+          <strong>Trouver vite un terme précis</strong>
+          <p class="meta meta--subtle">Recherche directe, lecture alphabétique et accès immédiat aux fiches publiées.</p>
         </a>
         <a class="home-launchpad__card" href="category.html">
-          <span class="dashboard__label">Entrée 2</span>
-          <strong>Lire par domaine</strong>
-          <p class="meta meta--subtle">Façades, matériaux, chantier ou normes selon le sujet à explorer.</p>
+          <span class="dashboard__label">Explorer</span>
+          <strong>Lire par domaine métier</strong>
+          <p class="meta meta--subtle">Façades, matériaux, chantier, normes et familles utiles à ouvrir selon le sujet.</p>
         </a>
         <a class="home-launchpad__card" href="compte.html">
-          <span class="dashboard__label">Entrée 3</span>
-          <strong>Voir son espace de travail</strong>
-          <p class="meta meta--subtle">Suivi du compte, dépôt encadré et accès selon le rôle.</p>
+          <span class="dashboard__label">Suivre</span>
+          <strong>Retrouver son espace de travail</strong>
+          <p class="meta meta--subtle">Compte, dépôt encadré, retours éditoriaux et accès utiles selon le rôle.</p>
         </a>
+      </section>
+
+      <section class="panel home-evidence-panel">
+        <div class="home-section-head">
+          <div>
+            <span class="section-eyebrow">Preuves immédiates</span>
+            <h2>Voir tout de suite ce que le site permet vraiment</h2>
+          </div>
+        </div>
+        <div class="home-evidence-grid">
+          <article class="home-evidence-card">
+            <span class="dashboard__label">Lecture guidée</span>
+            <strong>Trois fiches à ouvrir en premier</strong>
+            <p class="meta meta--subtle">Des entrées utiles pour comprendre détail, matériau, norme ou dessin.</p>
+            <div id="home-reading-samples" class="home-evidence-links">
+              <span class="meta meta--subtle">Chargement des fiches…</span>
+            </div>
+          </article>
+          <article class="home-evidence-card">
+            <span class="dashboard__label">Domaines</span>
+            <strong>Catégories à ouvrir sans hésiter</strong>
+            <p class="meta meta--subtle">Le corpus est pensé pour retrouver un sujet, pas seulement un mot isolé.</p>
+            <div id="home-category-focus" class="home-category-pill-list">
+              <span class="meta meta--subtle">Chargement des catégories…</span>
+            </div>
+          </article>
+          <article class="home-evidence-card home-evidence-card--workflow">
+            <span class="dashboard__label">Contribution encadrée</span>
+            <strong>Un vrai circuit éditorial</strong>
+            <p class="meta meta--subtle">Proposition apprenti, relecture formateur, correction, validation puis publication.</p>
+            <div class="home-workflow-proof">
+              <span>Déposer</span>
+              <span>Corriger</span>
+              <span>Valider</span>
+              <span>Publier</span>
+            </div>
+            <a class="link-button" href="contribuer.html">Ouvrir Contribuer</a>
+          </article>
+        </div>
       </section>
 
       <section class="panel">

@@ -2,6 +2,37 @@
 
 ## 2026-03-19
 
+### Base produit durcie + reprise des pages majeures
+- environnement local de test corrige durablement:
+  - `playwright.config.js` utilise maintenant `vercel dev --listen 4173`
+  - la reference `python3 -m http.server` n’est plus la base pour tester les routes `POST /api/...`
+  - `term.page.js` expose un etat de readiness explicite
+  - `Test/e2e/public-pages.spec.js` attend le rendu reel de la fiche
+  - suite publique revalidee:
+    - `25 passed`
+- progression produit page par page:
+  - `index.html`:
+    - accueil plus demonstratif
+    - suppression du lien mort d’accueil
+  - `dictionnaire.html`:
+    - repères de lecture
+    - termes utiles a ouvrir en premier
+  - `category.html`:
+    - categories plus orientees parcours
+  - `term.html`:
+    - bloc orientation metier
+    - suite utile contextuelle
+  - `contribuer.html`:
+    - decoupage `Essentiel / Medias / Approfondir`
+    - resume de progression
+  - `compte.html`:
+    - bloc `Priorite du moment`
+  - `admin.html`:
+    - bloc `Priorite staff`
+    - resume contextuel dans `Corpus`
+- etat de sortie:
+  - lot garde local pour validation humaine avant commit / redeploiement
+
 ### Contribution simplifiee + aide allophone clarifiee
 - `contribuer.html` simplifiee une deuxieme fois, de maniere plus radicale:
   - suppression des blocs `Workflow`

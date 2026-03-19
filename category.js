@@ -5,6 +5,10 @@ const cardsEl = document.getElementById("category-cards");
 const categoryCountEl = document.getElementById("category-count");
 const categoryModeEl = document.getElementById("category-mode");
 const categorySearchEl = document.getElementById("category-search");
+const categoryEvidenceTitleEl = document.getElementById("category-evidence-title");
+const categoryEvidenceCopyEl = document.getElementById("category-evidence-copy");
+const categoryFeaturedLinksEl = document.getElementById("category-featured-links");
+const categoryReadingNoteEl = document.getElementById("category-reading-note");
 const dicoApi = window.DicoArchiApi;
 let currentCategoryTerms = [];
 
@@ -138,6 +142,31 @@ function renderCards(list) {
   }
 }
 
+function renderCategoryFeaturedLinks(list) {
+  if (!categoryFeaturedLinksEl) return;
+  categoryFeaturedLinksEl.textContent = "";
+
+  if (!Array.isArray(list) || !list.length) {
+    categoryFeaturedLinksEl.textContent = "Aucune fiche repère pour le moment.";
+    return;
+  }
+
+  for (const item of list.slice(0, 3)) {
+    const anchor = document.createElement("a");
+    anchor.className = "dictionary-evidence-link";
+    anchor.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
+
+    const title = document.createElement("strong");
+    title.textContent = item.term;
+
+    const meta = document.createElement("span");
+    meta.textContent = "Ouvrir la fiche détaillée";
+
+    anchor.append(title, meta);
+    categoryFeaturedLinksEl.appendChild(anchor);
+  }
+}
+
 function applyCategoryTermsView() {
   const query = String(categorySearchEl?.value || "").trim().toLowerCase();
   const filtered = query
@@ -157,6 +186,12 @@ function applyCategoryTermsView() {
     subtitleEl.textContent = query
       ? `${filtered.length} terme${filtered.length > 1 ? "s" : ""} trouvé${filtered.length > 1 ? "s" : ""}`
       : `${currentCategoryTerms.length} terme${currentCategoryTerms.length > 1 ? "s" : ""}`;
+  }
+
+  if (categoryReadingNoteEl) {
+    categoryReadingNoteEl.textContent = query
+      ? "Le filtre garde la catégorie active, mais resserre la lecture sur les fiches utiles."
+      : "Ouvrez d’abord les trois premières fiches utiles, puis élargissez la comparaison si nécessaire.";
   }
 
   renderCards(filtered);
@@ -247,7 +282,10 @@ async function loadCategoryPage() {
       breadcrumbEl.appendChild(current);
       if (categoryCountEl) categoryCountEl.textContent = `${sortedCategories.length} domaine${sortedCategories.length > 1 ? "s" : ""}`;
       if (categoryModeEl) categoryModeEl.textContent = "Index des domaines";
+      if (categoryEvidenceTitleEl) categoryEvidenceTitleEl.textContent = "Explorer les domaines";
+      if (categoryEvidenceCopyEl) categoryEvidenceCopyEl.textContent = "Commencez par une famille métier, puis ouvrez les fiches les plus utiles dans ce domaine.";
       if (categorySearchEl) categorySearchEl.disabled = true;
+      renderCategoryFeaturedLinks([]);
       renderCategoryIndex(sortedCategories);
       return;
     }
@@ -266,7 +304,14 @@ async function loadCategoryPage() {
     buildBreadcrumb(resolvedLabel);
     if (categoryCountEl) categoryCountEl.textContent = `${filtered.length} fiche${filtered.length > 1 ? "s" : ""}`;
     if (categoryModeEl) categoryModeEl.textContent = "Fiches publiées";
+    if (categoryEvidenceTitleEl) categoryEvidenceTitleEl.textContent = `${resolvedLabel}: par où commencer`;
+    if (categoryEvidenceCopyEl) {
+      categoryEvidenceCopyEl.textContent = filtered.length
+        ? "Les premières fiches ci-dessous servent de point d’entrée rapide avant une lecture plus large."
+        : "Cette catégorie n’a pas encore assez de fiches publiées pour proposer un vrai parcours.";
+    }
     if (categorySearchEl) categorySearchEl.disabled = false;
+    renderCategoryFeaturedLinks(filtered);
     applyCategoryTermsView();
   } catch (error) {
     renderMessage("Erreur de chargement", error.message || "Impossible de charger les termes.");

@@ -46,10 +46,32 @@ const translationDefinitionNode = document.getElementById("term-translation-defi
 const translationExampleCardNode = document.getElementById("term-translation-example-card");
 const translationExampleNode = document.getElementById("term-translation-example");
 const pronunciationGuideNode = document.getElementById("term-pronunciation-guide");
+const summaryBlockNode = document.getElementById("term-summary-block");
+const summaryChipsNode = document.getElementById("term-summary-chips");
+const summaryNoteNode = document.getElementById("term-summary-note");
+const orientationBlockNode = document.getElementById("term-orientation-block");
+const orientationIdentityTitleNode = document.getElementById("term-orientation-identity-title");
+const orientationIdentityTextNode = document.getElementById("term-orientation-identity-text");
+const orientationUsesNode = document.getElementById("term-orientation-uses");
+const orientationContrastNode = document.getElementById("term-orientation-contrast");
+const orientationWatchNode = document.getElementById("term-orientation-watch");
+const nextCategoryTitleNode = document.getElementById("term-next-category-title");
+const nextCategoryNoteNode = document.getElementById("term-next-category-note");
+const nextCategoryLinkNode = document.getElementById("term-next-category-link");
+const nextRelatedCardNode = document.getElementById("term-next-related-card");
+const nextRelatedTitleNode = document.getElementById("term-next-related-title");
+const nextRelatedNoteNode = document.getElementById("term-next-related-note");
+const nextRelatedLinkNode = document.getElementById("term-next-related-link");
 let activeDetailSectionIndex = 0;
 let currentTermAssistPayload = null;
 let currentRenderedTranslation = null;
 const translationCache = new Map();
+
+function setTermPageReadyState(state) {
+  const safeState = normalizeText(state) || "idle";
+  document.body?.setAttribute("data-term-ready", safeState);
+  document.documentElement?.setAttribute("data-term-ready", safeState);
+}
 
 const ASSIST_LANGUAGE_CONFIG = {
   fr: { label: "Français", speechLang: "fr-FR" },
@@ -100,6 +122,18 @@ function renderList(blockNode, listNode, values, emptyLabel = "") {
   }
 
   blockNode.hidden = false;
+}
+
+function replaceListItems(node, values) {
+  if (!node) return 0;
+  clearList(node);
+  const items = toStringList(values).slice(0, 4);
+  for (const value of items) {
+    const item = document.createElement("li");
+    item.textContent = value;
+    node.appendChild(item);
+  }
+  return node.childElementCount;
 }
 
 function normalizeText(value) {
@@ -295,6 +329,19 @@ function titleCase(value) {
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function findDetailSection(payload, titles) {
+  const expectedTitles = Array.isArray(titles)
+    ? titles.map((title) => normalizeText(title).toLowerCase()).filter(Boolean)
+    : [];
+  const sections = Array.isArray(payload?.detail_sections) ? payload.detail_sections : [];
+  return sections.find((section) => expectedTitles.includes(normalizeText(section?.title).toLowerCase())) || null;
+}
+
+function getDetailSectionItems(payload, titles) {
+  const section = findDetailSection(payload, titles);
+  return toStringList(section?.items);
 }
 
 function toParagraphs(value) {
@@ -603,6 +650,116 @@ function renderQuickLinks(term, payload) {
   quicklinksNode.hidden = !quicklinksNode.childElementCount;
 }
 
+function renderTermSummary(term, payload, richPayload) {
+  if (!summaryBlockNode || !summaryChipsNode || !summaryNoteNode) return;
+
+  clearTermChildren(summaryChipsNode);
+
+  const chips = [];
+  const categoryName = normalizeText(term?.categories?.name);
+  const mediaCount = Array.isArray(payload?.media) ? payload.media.length : 0;
+  const relatedCount = Array.isArray(payload?.related_terms) ? payload.related_terms.length : 0;
+  const normsCount = Array.isArray(richPayload?.content?.norms) ? richPayload.content.norms.length : 0;
+  const applicationsCount = Array.isArray(richPayload?.content?.applications) ? richPayload.content.applications.length : 0;
+
+  if (categoryName) chips.push({ label: categoryName, soft: false });
+  if (mediaCount) chips.push({ label: `${mediaCount} média${mediaCount > 1 ? "s" : ""}`, soft: true });
+  if (relatedCount) chips.push({ label: `${relatedCount} terme${relatedCount > 1 ? "s" : ""} lié${relatedCount > 1 ? "s" : ""}`, soft: true });
+  if (normsCount) chips.push({ label: `${normsCount} norme${normsCount > 1 ? "s" : ""}`, soft: true });
+  if (applicationsCount) chips.push({ label: `${applicationsCount} application${applicationsCount > 1 ? "s" : ""}`, soft: true });
+
+  for (const chip of chips) {
+    const node = document.createElement("span");
+    node.className = `term-chip${chip.soft ? " term-chip--soft" : ""}`;
+    node.textContent = chip.label;
+    summaryChipsNode.appendChild(node);
+  }
+
+  const noteParts = [];
+  if (normalizeText(term?.definition)) noteParts.push("commencer par la définition");
+  if (normalizeText(term?.example)) noteParts.push("vérifier l’exemple");
+  if (relatedCount) noteParts.push("ouvrir ensuite les termes liés");
+  else if (categoryName) noteParts.push("revenir ensuite à la catégorie");
+
+  summaryNoteNode.textContent = noteParts.length
+    ? `À retenir : ${noteParts.join(", ")}.`
+    : "À retenir : ouvrir la fiche, lire le repère, puis élargir la lecture depuis le dictionnaire.";
+
+  summaryBlockNode.hidden = !summaryChipsNode.childElementCount && !normalizeText(summaryNoteNode.textContent);
+}
+
+function renderTermOrientation(term, payload, richPayload) {
+  if (
+    !orientationBlockNode
+    || !orientationIdentityTitleNode
+    || !orientationIdentityTextNode
+    || !orientationUsesNode
+    || !orientationContrastNode
+    || !orientationWatchNode
+  ) {
+    return;
+  }
+
+  const categoryName = normalizeText(term?.categories?.name) || "Repère métier";
+  const uses = [
+    ...toStringList(richPayload?.content?.applications),
+    ...getDetailSectionItems(richPayload, ["Usages courants", "Applications"])
+  ];
+  const watchpoints = [
+    ...toStringList(richPayload?.technical_data?.constraints),
+    ...getDetailSectionItems(richPayload, ["Vigilance", "Points de vigilance", "Inconvénients"])
+  ];
+  const contrasts = getDetailSectionItems(richPayload, ["À ne pas confondre", "A ne pas confondre"]);
+  const identityText = normalizeText(richPayload?.content?.explanation)
+    || normalizeText(term?.definition)
+    || "Cette fiche aide à comprendre la notion avant de la réemployer sur plan, en réunion ou sur chantier.";
+
+  orientationIdentityTitleNode.textContent = categoryName || "Repère essentiel";
+  orientationIdentityTextNode.textContent = identityText;
+
+  const usesCount = replaceListItems(orientationUsesNode, [...new Set(uses)]);
+  const contrastCount = replaceListItems(orientationContrastNode, [...new Set(contrasts)]);
+  const watchCount = replaceListItems(orientationWatchNode, [...new Set(watchpoints)]);
+
+  orientationBlockNode.hidden = !normalizeText(identityText) && !usesCount && !contrastCount && !watchCount;
+}
+
+function renderTermNextSteps(term, payload, richPayload) {
+  const categorySlug = normalizeText(richPayload?.category_slug || payload?.term?.categories?.slug);
+  const categoryName = normalizeText(term?.categories?.name) || titleCase(humanizeSlug(categorySlug)) || "la catégorie";
+  const related = Array.isArray(payload?.related_terms) ? payload.related_terms : [];
+  const firstRelated = related.find((item) => normalizeText(item?.slug) && normalizeText(item?.term));
+
+  if (nextCategoryTitleNode) nextCategoryTitleNode.textContent = `Revenir à ${categoryName}`;
+  if (nextCategoryNoteNode) {
+    nextCategoryNoteNode.textContent = `Comparer ${term?.term || "ce terme"} avec d’autres notions proches du même domaine.`;
+  }
+  if (nextCategoryLinkNode && categorySlug) {
+    nextCategoryLinkNode.href = `category.html?slug=${encodeURIComponent(categorySlug)}`;
+    nextCategoryLinkNode.textContent = `Ouvrir ${categoryName}`;
+  } else if (nextCategoryLinkNode) {
+    nextCategoryLinkNode.href = "category.html";
+    nextCategoryLinkNode.textContent = "Ouvrir les catégories";
+  }
+
+  if (!nextRelatedCardNode || !nextRelatedTitleNode || !nextRelatedNoteNode || !nextRelatedLinkNode) return;
+
+  if (firstRelated) {
+    nextRelatedCardNode.hidden = false;
+    nextRelatedTitleNode.textContent = `Ouvrir ${firstRelated.term}`;
+    nextRelatedNoteNode.textContent = "Continuer la lecture avec une notion voisine déjà liée à cette fiche.";
+    nextRelatedLinkNode.href = `term.html?slug=${encodeURIComponent(firstRelated.slug)}`;
+    nextRelatedLinkNode.textContent = "Lire le terme lié";
+    return;
+  }
+
+  nextRelatedCardNode.hidden = false;
+  nextRelatedTitleNode.textContent = "Revenir au dictionnaire";
+  nextRelatedNoteNode.textContent = "Retrouver rapidement un autre terme ou un autre point d’entrée.";
+  nextRelatedLinkNode.href = "dictionnaire.html";
+  nextRelatedLinkNode.textContent = "Ouvrir l’index";
+}
+
 function renderInlineExample(value, richMode = false) {
   if (!exampleInlineNode || !exampleInlineTextNode) return;
   const text = normalizeText(value);
@@ -611,6 +768,15 @@ function renderInlineExample(value, richMode = false) {
 }
 
 function resetTermPageState() {
+  if (summaryBlockNode) summaryBlockNode.hidden = true;
+  if (summaryChipsNode) clearTermChildren(summaryChipsNode);
+  if (summaryNoteNode) summaryNoteNode.textContent = "";
+  if (orientationBlockNode) orientationBlockNode.hidden = true;
+  replaceListItems(orientationUsesNode, []);
+  replaceListItems(orientationContrastNode, []);
+  replaceListItems(orientationWatchNode, []);
+  if (orientationIdentityTitleNode) orientationIdentityTitleNode.textContent = "Repère essentiel";
+  if (orientationIdentityTextNode) orientationIdentityTextNode.textContent = "";
   renderInlineExample("", false);
   if (quicklinksNode) quicklinksNode.hidden = true;
   if (detailsBlock) detailsBlock.hidden = true;
@@ -629,6 +795,19 @@ function resetTermPageState() {
   currentTermAssistPayload = null;
   renderTranslationResult(null);
   setTranslationStatus("");
+  if (nextCategoryTitleNode) nextCategoryTitleNode.textContent = "Revenir à la catégorie";
+  if (nextCategoryNoteNode) nextCategoryNoteNode.textContent = "Comparer ce terme avec d’autres notions proches du même domaine.";
+  if (nextCategoryLinkNode) {
+    nextCategoryLinkNode.href = "category.html";
+    nextCategoryLinkNode.textContent = "Ouvrir les catégories";
+  }
+  if (nextRelatedCardNode) nextRelatedCardNode.hidden = false;
+  if (nextRelatedTitleNode) nextRelatedTitleNode.textContent = "Revenir au dictionnaire";
+  if (nextRelatedNoteNode) nextRelatedNoteNode.textContent = "Retrouver rapidement un autre terme ou un autre point d’entrée.";
+  if (nextRelatedLinkNode) {
+    nextRelatedLinkNode.href = "dictionnaire.html";
+    nextRelatedLinkNode.textContent = "Ouvrir l’index";
+  }
 }
 
 function renderMedia(items) {
@@ -768,6 +947,7 @@ function setupTermAssist(payload) {
 }
 
 async function loadTermPage() {
+  setTermPageReadyState("loading");
   const slug = getSlug();
   if (!slug) {
     titleNode.textContent = "TERME";
@@ -777,6 +957,7 @@ async function loadTermPage() {
     exampleNode.textContent = "Exemple affiché ici une fois un terme sélectionné.";
     resetTermPageState();
     document.title = "Fiche terme - Dico-Archi";
+    setTermPageReadyState("idle");
     return;
   }
 
@@ -815,17 +996,21 @@ async function loadTermPage() {
     setTermText(definitionNode, term.definition, "Définition indisponible.");
     setTermText(exampleNode, term.example, "Aucun exemple disponible.");
     renderInlineExample(term.example, Boolean(richPayload?.detail_sections?.length));
+    renderTermSummary(term, payload || {}, richPayload || {});
+    renderTermOrientation(term, payload || {}, richPayload || {});
     renderMedia(payload?.media || []);
     renderVisuals(payload?.media || []);
     renderRelated(payload?.related_terms || []);
     applyV2Details(richPayload);
     renderQuickLinks(term, v2Payload || { category_slug: payload?.term?.categories?.slug || "" });
+    renderTermNextSteps(term, payload || {}, richPayload || {});
     setupTermAssist({
       slug,
       term,
       richPayload
     });
     document.title = `${term.term || "Fiche terme"} - Dico-Archi`;
+    setTermPageReadyState("ready");
   } catch (error) {
     titleNode.textContent = "TERME";
     subtitleNode.textContent = error?.message === "term_not_found"
@@ -838,6 +1023,7 @@ async function loadTermPage() {
     clearTermChildren(mediaNode);
     clearTermChildren(relatedNode);
     document.title = "Fiche terme - Dico-Archi";
+    setTermPageReadyState(error?.message === "term_not_found" ? "empty" : "error");
   }
 }
 

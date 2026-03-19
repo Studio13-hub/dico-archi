@@ -3,24 +3,24 @@
 Reference centrale:
 - [PLAN_MAITRE_DICOARCHI.md](/Users/awat/workspace/projects/dico-archi/docs/PLAN_MAITRE_DICOARCHI.md)
 
-## Priorite immediate - Validation utilisateur des derniers correctifs
+## Priorite immediate - Validation staff du lot produit 2026-03-19
 
-1. faire la recette manuelle sur la prod:
+1. faire la recette manuelle sur la prod ou sur un vrai runtime Vercel authentifie:
+   - `https://dico-archi.vercel.app/compte.html`
    - `https://dico-archi.vercel.app/contribuer.html`
-   - `https://dico-archi.vercel.app/term.html?slug=bois-lamelle-colle`
+   - `https://dico-archi.vercel.app/admin.html`
+   - `https://dico-archi.vercel.app/admin.html?section=stats`
 2. confirmer:
-   - que `Contribuer` est enfin percue comme un seul formulaire
-   - que `Traduction et prononciation` est assez claire et assez pro
-   - que `Francais` est bien compris et utile
-3. garder comme preuves de recette technique:
-   - commit `5e7d541`
-   - `6 passed` sur `--grep "contribuer|term"`
-   - workflow editorial reel deja valide:
-     - terme `Workflow réel 2026-03-19-10-37`
-     - submission id `b62302b5-6b9b-44dd-be2f-92e63f69937a`
-4. point d’attention a rappeler:
-   - les uploads media ne se testent pas correctement via `python3 -m http.server`
-   - pour les routes `POST /api/...`, utiliser la prod ou un vrai environnement Vercel
+   - que `Contribuer` est plus lisible avec `Essentiel / Medias / Approfondir`
+   - que `Mon compte` oriente vraiment mieux selon le role reel
+   - que `Administration` aide a reprendre le travail sans chercher ou cliquer d’abord
+3. garder comme preuves techniques de cette passe:
+   - `npm run test:ui:public`
+   - resultat: `25 passed`
+   - runtime local E2E durable maintenant base sur `vercel dev`
+4. point d’attention a conserver:
+   - ne plus utiliser `python3 -m http.server` comme reference pour les routes `POST /api/...`
+   - pour les checks integrationels locaux, repartir de `vercel dev`
 
 ## Priorite immediate - Structure durable
 
@@ -39,15 +39,18 @@ Reference centrale:
 4. conserver le corpus public canonique aligne entre machines, navigateurs et prod
 5. reprendre ensuite les nouveaux besoins fonctionnels demandes par l’utilisateur
 
-## Priorite 1 - Esthetique
-1. Reprendre `index.html` en priorite jusqu’a validation nette de l’accueil `Dico-Archi`.
-2. Ajuster finement:
-   - rythme vertical
-   - poids de `Fiche du jour`
-   - place de l’assistant
-   - footer
-3. Une fois l’accueil valide, reprendre `dictionnaire.html` puis `category.html` et `term.html`.
-4. Garder une direction sobre: lisibilite avant effet.
+## Priorite 1 - Finalisation produit
+1. une fois la recette staff confirmee:
+   - commit propre du lot local
+   - redeploiement prod
+2. reprendre ensuite la densification du contenu:
+   - categories fortes
+   - fiches de reference
+   - termes lies
+3. garder la direction actuelle:
+   - preuve avant discours
+   - orientation avant densite
+   - lisibilite avant effet
 
 ## Priorite 2 - Fonctionnement
 5. Revalider les parcours critiques apres la refonte visuelle.
@@ -95,14 +98,14 @@ Reference centrale:
 
 - ouvrir `https://dico-archi.vercel.app`
 - verifier d’abord:
-  - `contribuer.html`
-  - `term.html?slug=bois-lamelle-colle`
   - `compte.html`
+  - `contribuer.html`
   - `admin.html`
-- confirmer la perception utilisateur des derniers changements
-- reprendre ensuite:
-  - le prochain lot produit demande par l’utilisateur
-  - puis les derniers chantiers visuels et de contenu
+  - `admin.html?section=stats`
+- confirmer la perception staff et apprenti des nouveaux blocs de priorite
+- ensuite:
+  - commit / deploy du lot
+  - puis reprise contenu / corpus
 
 ## Etat de reprise apres sync 2026-03-17
 

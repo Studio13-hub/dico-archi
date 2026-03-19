@@ -50,6 +50,32 @@
         </div>
       </section>
 
+      <section class="panel panel--spotlight admin__focus">
+        <div class="home-section-head">
+          <div>
+            <span class="section-eyebrow">Priorité staff</span>
+            <h2 id="admin-focus-title">Chargement des priorités</h2>
+          </div>
+        </div>
+        <div class="dashboard">
+          <div class="dashboard__item">
+            <span class="dashboard__label">Action immédiate</span>
+            <strong id="admin-focus-action">Analyser la file</strong>
+            <p id="admin-focus-copy" class="meta meta--subtle">Le premier écran doit indiquer quoi traiter avant d’ouvrir le corpus.</p>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Section à ouvrir</span>
+            <strong id="admin-focus-destination">Vue d’ensemble</strong>
+            <p id="admin-focus-destination-copy" class="meta meta--subtle">Le bon panneau dépend du rôle et de la situation de la file éditoriale.</p>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Rappel</span>
+            <strong id="admin-focus-note">Ne pas tout faire au même endroit</strong>
+            <p id="admin-focus-note-copy" class="meta meta--subtle">Vue d’ensemble trie, Corpus corrige, Suivi lit les signaux, Comptes administre.</p>
+          </div>
+        </div>
+      </section>
+
       <section class="panel admin__workflow" id="admin-panel-overview" role="tabpanel" aria-labelledby="admin-tab-overview" data-admin-section="overview">
         <h2>Pilotage éditorial</h2>
         <div class="admin__quickmap">
@@ -240,6 +266,23 @@
         <p class="meta meta--subtle">
           Chargez d’abord une proposition ou un terme, puis utilisez ce panneau pour corriger, compléter et publier sans mélanger cette étape avec la file d’attente.
         </p>
+        <div class="admin__quickmap">
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">Objet chargé</span>
+            <strong id="admin-corpus-focus-title">Aucune fiche chargée</strong>
+            <p id="admin-corpus-focus-copy" class="meta meta--subtle">Ouvre un terme ou une proposition pour commencer l’édition.</p>
+          </div>
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">Source</span>
+            <strong id="admin-corpus-source-title">Corpus publié</strong>
+            <p id="admin-corpus-source-copy" class="meta meta--subtle">Les propositions staff et apprenti ne suivent pas exactement le même flux.</p>
+          </div>
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">Point d’attention</span>
+            <strong id="admin-corpus-note-title">Corriger avant de décider</strong>
+            <p id="admin-corpus-note-copy" class="meta meta--subtle">Valider seulement quand définition, catégorie, médias et repères riches sont cohérents.</p>
+          </div>
+        </div>
         <div class="admin__inputs">
           <div class="admin__input-group">
             <input id="term" name="term" type="text" placeholder="Terme" />

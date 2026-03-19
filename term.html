@@ -43,6 +43,10 @@
 
     <main>
       <section class="panel panel--term term-panel">
+        <div class="term-summary" id="term-summary-block" hidden>
+          <div id="term-summary-chips" class="term-summary__chips"></div>
+          <p id="term-summary-note" class="term-summary__note"></p>
+        </div>
         <div class="term-intro-grid">
           <article class="term-intro-card term-intro-card--primary">
             <span id="term-profile-label" class="dashboard__label">Usage</span>
@@ -57,6 +61,28 @@
             <p class="meta meta--subtle">
               Cette structure aide à lire vite, puis à ouvrir un champ lexical plus large sans perdre le sens du mot.
             </p>
+          </article>
+        </div>
+        <div class="term-orientation-grid" id="term-orientation-block" hidden>
+          <article class="term-orientation-card">
+            <span class="dashboard__label">Ce que c'est</span>
+            <strong id="term-orientation-identity-title">Repère essentiel</strong>
+            <p id="term-orientation-identity-text" class="meta meta--subtle"></p>
+          </article>
+          <article class="term-orientation-card">
+            <span class="dashboard__label">Où l'employer</span>
+            <strong id="term-orientation-uses-title">Usages courants</strong>
+            <ul id="term-orientation-uses" class="term-list term-list--compact"></ul>
+          </article>
+          <article class="term-orientation-card">
+            <span class="dashboard__label">À distinguer</span>
+            <strong id="term-orientation-contrast-title">À ne pas confondre</strong>
+            <ul id="term-orientation-contrast" class="term-list term-list--compact"></ul>
+          </article>
+          <article class="term-orientation-card">
+            <span class="dashboard__label">Vigilance</span>
+            <strong id="term-orientation-watch-title">Point d'attention</strong>
+            <ul id="term-orientation-watch" class="term-list term-list--compact"></ul>
           </article>
         </div>
         <div class="term-grid">
@@ -177,15 +203,15 @@
         <div class="role-grid">
           <article class="role-card">
             <span class="dashboard__label">Lire plus large</span>
-            <strong>Revenir à la catégorie</strong>
-            <p class="meta meta--subtle">Comparer ce terme avec d’autres notions proches du même domaine.</p>
-            <a class="link-button" href="category.html">Ouvrir les catégories</a>
+            <strong id="term-next-category-title">Revenir à la catégorie</strong>
+            <p id="term-next-category-note" class="meta meta--subtle">Comparer ce terme avec d’autres notions proches du même domaine.</p>
+            <a class="link-button" id="term-next-category-link" href="category.html">Ouvrir les catégories</a>
           </article>
-          <article class="role-card">
+          <article class="role-card" id="term-next-related-card">
             <span class="dashboard__label">Approfondir</span>
-            <strong>Revenir au dictionnaire</strong>
-            <p class="meta meta--subtle">Retrouver rapidement un autre terme ou un autre point d’entrée.</p>
-            <a class="link-button" href="dictionnaire.html">Ouvrir l’index</a>
+            <strong id="term-next-related-title">Revenir au dictionnaire</strong>
+            <p id="term-next-related-note" class="meta meta--subtle">Retrouver rapidement un autre terme ou un autre point d’entrée.</p>
+            <a class="link-button" id="term-next-related-link" href="dictionnaire.html">Ouvrir l’index</a>
           </article>
           <article class="role-card">
             <span class="dashboard__label">Enrichir</span>

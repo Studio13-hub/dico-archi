@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "description": "Static DicoArchi frontend with Vercel serverless APIs",
   "scripts": {
+    "dev:vercel": "vercel dev --listen 4173",
     "test:ui": "playwright test",
+    "test:ui:public": "playwright test Test/e2e/public-pages.spec.js",
     "test:ui:headed": "playwright test --headed",
     "content:stats": "node scripts/content/content_stats.js",
     "content:audit": "node scripts/content/content_audit.js",

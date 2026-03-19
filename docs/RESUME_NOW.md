@@ -1,5 +1,67 @@
 # Resume now (2026-03-19)
 
+## Cloture session 2026-03-19 - base produit durcie + pages majeures reprises
+
+- pas de commit ni redeploiement final effectues pendant cette passe:
+  - travail reste local dans le workspace
+  - `git status --short` contient les fichiers modifies de la session
+- la base locale de test a ete corrigee durablement:
+  - `playwright.config.js` utilise maintenant `vercel dev --listen 4173`
+  - abandon du faux setup `python3 -m http.server` pour les routes `POST /api/...`
+  - parallélisme Playwright calme pour stabiliser `vercel dev`
+  - `term.page.js` expose un vrai etat de readiness (`data-term-ready`)
+  - les tests Playwright attendent maintenant le rendu metier reel au lieu de `load` seul
+- verification locale finale confirmee:
+  - `npm run test:ui:public`
+  - resultat: `25 passed`
+- lot produit realise page par page:
+  - `index.html` / `index.page.js`:
+    - accueil plus demonstratif
+    - preuves immediates
+    - parcours concrets
+    - lien mort `#contact-admin` supprime
+  - `dictionnaire.html` / `dictionnaire.page.js`:
+    - repères de lecture
+    - fiches utiles a ouvrir en premier
+  - `category.html` / `category.js`:
+    - categories plus orientees parcours
+    - trois fiches repères
+  - `term.html` / `term.page.js`:
+    - bloc orientation metier
+    - suite utile contextuelle
+    - readiness explicite pour les tests
+  - `contribuer.html` / `contribuer.page.js`:
+    - formulaire re-decoupe en `Essentiel / Medias / Approfondir`
+    - resume vivant d’avancement
+  - `compte.html` / `compte.js`:
+    - bloc `Priorite du moment`
+    - lecture plus nette selon `Public / Apprenti / Formateur / Administration`
+  - `admin.html` / `admin.js`:
+    - bloc `Priorite staff`
+    - resume vivant dans `Corpus`
+    - separation plus nette entre `Vue d’ensemble`, `Corpus`, `Suivi`, `Comptes`
+- fichiers de test / socle modifies:
+  - `Test/e2e/public-pages.spec.js`
+  - `package.json`
+  - `playwright.config.js`
+  - `styles.css`
+
+## Point exact de reprise 2026-03-19
+
+1. faire la vraie validation staff connectee sur la prod ou un environnement Vercel local authentifie:
+   - `compte.html`
+   - `contribuer.html`
+   - `admin.html`
+   - `admin.html?section=stats`
+2. verifier surtout:
+   - que `Priorite du moment` sur `Mon compte` est claire selon le role reel
+   - que `Priorite staff` sur `Administration` aide vraiment a reprendre la file
+   - que le decoupage `Essentiel / Medias / Approfondir` de `Contribuer` reduit bien la charge cognitive
+3. ensuite seulement:
+   - commit propre du lot
+   - redeploiement prod
+   - eventuelle nouvelle passe de densification contenu
+
 ## Cloture session 2026-03-19 - contribution simplifiee + aide allophone clarifiee
 
 - lot final de la session pousse en prod:

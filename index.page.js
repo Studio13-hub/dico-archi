@@ -11,7 +11,66 @@ const homeCategoriesToggle = document.querySelector("[data-home-categories-toggl
 const homeHeroCategories = document.getElementById("home-hero-categories");
 const homeHeroCategoriesList = document.getElementById("home-hero-categories-list");
 const homeCategoryCloudList = document.getElementById("home-category-cloud-list");
+const homeHeroPaths = document.getElementById("home-hero-paths");
+const homeReadingSamples = document.getElementById("home-reading-samples");
+const homeCategoryFocus = document.getElementById("home-category-focus");
 let homeTermsCache = [];
+
+const HOME_PREFERRED_TERM_SLUGS = [
+  "bois-lamelle-colle",
+  "acrotere",
+  "coupe",
+  "sia-181",
+  "facade-ventilee",
+  "dalle",
+  "bardage"
+];
+
+function pickPreferredTerms(terms, limit = 3) {
+  const items = Array.isArray(terms) ? terms : [];
+  const bySlug = new Map(items.map((item) => [String(item.slug || "").trim(), item]));
+  const selected = [];
+
+  for (const slug of HOME_PREFERRED_TERM_SLUGS) {
+    const item = bySlug.get(slug);
+    if (item && !selected.includes(item)) selected.push(item);
+    if (selected.length >= limit) return selected;
+  }
+
+  for (const item of items) {
+    if (!item || selected.includes(item)) continue;
+    selected.push(item);
+    if (selected.length >= limit) break;
+  }
+
+  return selected;
+}
+
+function renderLinkList(container, items, buildHref, buildMetaText) {
+  if (!container) return;
+
+  if (!Array.isArray(items) || !items.length) {
+    container.innerHTML = '<span class="meta meta--subtle">Aucun repère disponible pour le moment.</span>';
+    return;
+  }
+
+  container.innerHTML = "";
+
+  for (const item of items) {
+    const anchor = document.createElement("a");
+    anchor.className = "home-evidence-link";
+    anchor.href = buildHref(item);
+
+    const title = document.createElement("strong");
+    title.textContent = item.term || item.name || "Repère";
+
+    const meta = document.createElement("span");
+    meta.textContent = buildMetaText(item);
+
+    anchor.append(title, meta);
+    container.appendChild(anchor);
+  }
+}
 
 function escapeHtml(value) {
   return String(value || "")
@@ -176,6 +235,68 @@ function renderCategoryCloud(categories) {
   });
 }
 
+function renderHeroPaths(terms, categories) {
+  if (!homeHeroPaths) return;
+
+  const chosenTerms = pickPreferredTerms(terms, 2);
+  const chosenCategories = Array.isArray(categories) ? categories.slice(0, 1) : [];
+  const cards = [];
+
+  if (chosenTerms[0]) {
+    cards.push({
+      label: "Lire un détail",
+      title: chosenTerms[0].term,
+      href: `term.html?slug=${encodeURIComponent(chosenTerms[0].slug)}`,
+      meta: chosenTerms[0].categories?.name || chosenTerms[0].category || "Fiche terme"
+    });
+  }
+
+  if (chosenCategories[0]) {
+    cards.push({
+      label: "Explorer un domaine",
+      title: chosenCategories[0].name,
+      href: `category.html?slug=${encodeURIComponent(chosenCategories[0].slug)}`,
+      meta: "Accéder à une famille de fiches liées"
+    });
+  }
+
+  if (chosenTerms[1]) {
+    cards.push({
+      label: "Réviser un repère",
+      title: chosenTerms[1].term,
+      href: `term.html?slug=${encodeURIComponent(chosenTerms[1].slug)}`,
+      meta: "Ouvrir une autre fiche modèle"
+    });
+  }
+
+  if (!cards.length) {
+    homeHeroPaths.innerHTML = '<span class="meta meta--subtle">Aucun parcours disponible pour le moment.</span>';
+    return;
+  }
+
+  homeHeroPaths.innerHTML = "";
+
+  for (const item of cards) {
+    const anchor = document.createElement("a");
+    anchor.className = "home-path-card";
+    anchor.href = item.href;
+
+    const label = document.createElement("span");
+    label.className = "dashboard__label";
+    label.textContent = item.label;
+
+    const title = document.createElement("strong");
+    title.textContent = item.title;
+
+    const meta = document.createElement("span");
+    meta.className = "meta meta--subtle";
+    meta.textContent = item.meta;
+
+    anchor.append(label, title, meta);
+    homeHeroPaths.appendChild(anchor);
+  }
+}
+
 function toggleHeroCategories(forceExpanded) {
   if (!homeCategoriesToggle || !homeHeroCategories) return;
 
@@ -212,12 +333,28 @@ async function loadHomeProofs() {
     homeTermsCache = Array.isArray(terms) ? terms : [];
     renderHeroCategories(categories);
     renderCategoryCloud(categories);
+    renderHeroPaths(terms, categories);
+    renderLinkList(
+      homeReadingSamples,
+      pickPreferredTerms(terms, 3),
+      (item) => `term.html?slug=${encodeURIComponent(item.slug)}`,
+      (item) => item.categories?.name || item.category || "Fiche du corpus"
+    );
+    renderLinkList(
+      homeCategoryFocus,
+      Array.isArray(categories) ? categories.slice(0, 4) : [],
+      (item) => `category.html?slug=${encodeURIComponent(item.slug)}`,
+      (item) => "Ouvrir la catégorie"
+    );
   } catch (_error) {
     if (homeTermCount) homeTermCount.textContent = "Indisponible";
     if (homeCategoryCount) homeCategoryCount.textContent = "Indisponible";
     homeTermsCache = [];
     renderHeroCategories([]);
     renderCategoryCloud([]);
+    renderHeroPaths([], []);
+    renderLinkList(homeReadingSamples, [], () => "dictionnaire.html", () => "");
+    renderLinkList(homeCategoryFocus, [], () => "category.html", () => "");
   }
 }
 

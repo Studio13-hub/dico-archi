@@ -27,6 +27,12 @@
   const slugPreview = document.getElementById("contrib-slug-preview");
   const contribResumeBox = document.getElementById("contrib-resume-box");
   const contribResumeCopy = document.getElementById("contrib-resume-copy");
+  const contribCoreStatus = document.getElementById("contrib-core-status");
+  const contribCoreCopy = document.getElementById("contrib-core-copy");
+  const contribMediaStatus = document.getElementById("contrib-media-status");
+  const contribMediaCopy = document.getElementById("contrib-media-copy");
+  const contribRichStatus = document.getElementById("contrib-rich-status");
+  const contribRichCopy = document.getElementById("contrib-rich-copy");
   const contributionSupabaseHelpers = window.DicoArchiSupabase;
   const contributionApi = window.DicoArchiApi;
   let isUploadingMedia = false;
@@ -318,9 +324,55 @@
   function updateContributionHints() {
     const term = termInput?.value.trim() || "";
     const slug = slugify(term);
+    const hasCategory = Boolean(categoryInput?.value.trim());
+    const definition = definitionInput?.value.trim() || "";
+    const mediaCount = parseMediaUrls(mediaUrlsInput?.value).length;
+    const richFieldValues = [
+      richExplanationInput?.value,
+      richApplicationsInput?.value,
+      richNormsInput?.value,
+      richConstraintsInput?.value,
+      richDrawingNoteInput?.value,
+      richIdentificationInput?.value,
+      richPropertiesInput?.value,
+      richUsesInput?.value,
+      richImplementationInput?.value,
+      richVigilanceInput?.value,
+      richAdvantagesInput?.value,
+      richDrawbacksInput?.value,
+      richReferencesInput?.value,
+      richConfusionsInput?.value
+    ];
+    const richFieldCount = richFieldValues.filter((value) => String(value || "").trim()).length;
+    const coreDoneCount = [Boolean(term), hasCategory, Boolean(definition)].filter(Boolean).length;
 
     if (slugPreview) {
       slugPreview.textContent = slug ? `${term || "terme"} -> ${slug}` : "Le slug sera généré automatiquement à partir du terme.";
+    }
+
+    if (contribCoreStatus) {
+      contribCoreStatus.textContent = coreDoneCount === 3 ? "Essentiel prêt" : `${3 - coreDoneCount} champ${3 - coreDoneCount > 1 ? "s" : ""} à remplir`;
+    }
+    if (contribCoreCopy) {
+      contribCoreCopy.textContent = coreDoneCount === 3
+        ? "Terme, catégorie et définition sont prêts pour l’envoi."
+        : "Terme, catégorie et définition posent la base minimale de la fiche.";
+    }
+    if (contribMediaStatus) {
+      contribMediaStatus.textContent = mediaCount ? `${mediaCount} média${mediaCount > 1 ? "s" : ""} ajouté${mediaCount > 1 ? "s" : ""}` : "Aucun média";
+    }
+    if (contribMediaCopy) {
+      contribMediaCopy.textContent = mediaCount
+        ? "Le dossier contient déjà des preuves visuelles ou documentaires."
+        : "Ajoute un média seulement s’il aide vraiment à comprendre le terme.";
+    }
+    if (contribRichStatus) {
+      contribRichStatus.textContent = richFieldCount ? `${richFieldCount} bloc${richFieldCount > 1 ? "s" : ""} enrichi${richFieldCount > 1 ? "s" : ""}` : "Optionnel";
+    }
+    if (contribRichCopy) {
+      contribRichCopy.textContent = richFieldCount
+        ? "La fiche contient déjà de la matière éditoriale complémentaire."
+        : "Ajoute seulement les blocs qui rendent la lecture plus claire pour quelqu’un d’autre.";
     }
   }
 
@@ -488,6 +540,27 @@
   }
 
   [termInput, categoryInput, definitionInput, exampleInput, mediaUrlsInput].forEach((field) => {
+    if (!field) return;
+    field.addEventListener("input", updateContributionHints);
+    field.addEventListener("change", updateContributionHints);
+  });
+
+  [
+    richExplanationInput,
+    richApplicationsInput,
+    richNormsInput,
+    richConstraintsInput,
+    richDrawingNoteInput,
+    richIdentificationInput,
+    richPropertiesInput,
+    richUsesInput,
+    richImplementationInput,
+    richVigilanceInput,
+    richAdvantagesInput,
+    richDrawbacksInput,
+    richReferencesInput,
+    richConfusionsInput
+  ].forEach((field) => {
     if (!field) return;
     field.addEventListener("input", updateContributionHints);
     field.addEventListener("change", updateContributionHints);

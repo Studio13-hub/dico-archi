@@ -2,7 +2,18 @@ const termsStatus = document.getElementById("terms-status");
 const termsList = document.getElementById("terms-list");
 const dictionaryLetterNav = document.getElementById("dictionary-letter-nav");
 const dictionarySearch = document.getElementById("dictionary-search");
+const dictionaryFeaturedLinks = document.getElementById("dictionary-featured-links");
+const dictionaryReadingNote = document.getElementById("dictionary-reading-note");
 let dictionaryTerms = [];
+
+const DICTIONARY_FEATURED_SLUGS = [
+  "bois-lamelle-colle",
+  "acrotere",
+  "coupe",
+  "facade-ventilee",
+  "sia-181",
+  "dalle"
+];
 
 function clearDictionaryChildren(node) {
   while (node.firstChild) node.removeChild(node.firstChild);
@@ -29,6 +40,53 @@ function createTermCard(item) {
 
   card.append(eyebrow, title, definition, link);
   return card;
+}
+
+function pickDictionaryFeaturedTerms(items, limit = 3) {
+  const list = Array.isArray(items) ? items : [];
+  const bySlug = new Map(list.map((item) => [String(item.slug || "").trim(), item]));
+  const selected = [];
+
+  for (const slug of DICTIONARY_FEATURED_SLUGS) {
+    const item = bySlug.get(slug);
+    if (item && !selected.includes(item)) selected.push(item);
+    if (selected.length >= limit) return selected;
+  }
+
+  for (const item of list) {
+    if (!item || selected.includes(item)) continue;
+    selected.push(item);
+    if (selected.length >= limit) break;
+  }
+
+  return selected;
+}
+
+function renderDictionaryFeaturedTerms(items) {
+  if (!dictionaryFeaturedLinks) return;
+
+  const featured = pickDictionaryFeaturedTerms(items, 3);
+  dictionaryFeaturedLinks.textContent = "";
+
+  if (!featured.length) {
+    dictionaryFeaturedLinks.textContent = "Aucun repère disponible pour le moment.";
+    return;
+  }
+
+  for (const item of featured) {
+    const anchor = document.createElement("a");
+    anchor.className = "dictionary-evidence-link";
+    anchor.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
+
+    const title = document.createElement("strong");
+    title.textContent = item.term;
+
+    const meta = document.createElement("span");
+    meta.textContent = item.categories?.name || "Fiche du corpus";
+
+    anchor.append(title, meta);
+    dictionaryFeaturedLinks.appendChild(anchor);
+  }
 }
 
 function getLetterKey(value) {
@@ -125,6 +183,12 @@ function applyDictionaryView() {
     ? `${filtered.length} terme${filtered.length > 1 ? "s" : ""} trouvé${filtered.length > 1 ? "s" : ""} pour cette recherche.`
     : `${filtered.length} termes publiés, classés par initiale pour une lecture plus stable.`;
 
+  if (dictionaryReadingNote) {
+    dictionaryReadingNote.textContent = query
+      ? "La recherche réduit l’index sans casser le parcours alphabétique."
+      : "Commence par un terme repère, puis ouvre la catégorie liée pour élargir la lecture.";
+  }
+
   renderDictionaryIndex(filtered);
 }
 
@@ -144,9 +208,13 @@ async function loadDictionaryTerms() {
       return;
     }
 
+    renderDictionaryFeaturedTerms(dictionaryTerms);
     applyDictionaryView();
   } catch (error) {
     termsStatus.textContent = `Erreur: ${error.message}`;
+    if (dictionaryReadingNote) {
+      dictionaryReadingNote.textContent = "Impossible de charger les repères de lecture pour le moment.";
+    }
   }
 }
 

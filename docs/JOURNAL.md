@@ -3,6 +3,51 @@
 ## 2026-03-19
 - reprise orientee verification reelle + cloture git propre.
 
+### Base produit durcie + reprise page par page
+- lot important garde local dans `/Users/awat/workspace/projects/dico-archi`
+- base locale E2E rendue durable:
+  - `playwright.config.js` recale sur `vercel dev --listen 4173`
+  - abandon du faux serveur `python3 -m http.server` pour les parcours avec `/api`
+  - `term.page.js` expose maintenant un etat explicite de readiness pour les tests
+  - `public-pages.spec.js` attend le rendu metier reel plutot qu’un simple `load`
+  - parallélisme Playwright reduit pour stabiliser `vercel dev`
+- corrections produit successives:
+  - `index.html` / `index.page.js`:
+    - accueil plus demonstratif
+    - parcours concrets
+    - preuve immediate du corpus
+    - suppression du lien mort `#contact-admin`
+  - `dictionnaire.html` / `dictionnaire.page.js`:
+    - fiches a ouvrir en premier
+    - meilleure lecture de la page
+  - `category.html` / `category.js`:
+    - categories plus orientees parcours
+    - trois fiches repères
+  - `term.html` / `term.page.js`:
+    - bloc orientation metier
+    - suite utile contextuelle
+    - readiness explicite
+  - `contribuer.html` / `contribuer.page.js`:
+    - decoupage `Essentiel / Medias / Approfondir`
+    - resume vivant d’avancement
+  - `compte.html` / `compte.js`:
+    - bloc `Priorite du moment`
+    - orientation plus nette selon le role
+  - `admin.html` / `admin.js`:
+    - bloc `Priorite staff`
+    - resume vivant dans `Corpus`
+    - reprise plus claire des sections
+- verification finale:
+  - `node --check admin.js`
+  - `node --check compte.js`
+  - `node --check contribuer.page.js`
+  - `node --check term.page.js`
+  - `npm run test:ui:public`
+  - resultat: `25 passed`
+- point de reprise:
+  - faire la vraie recette staff connectee sur `compte`, `contribuer`, `admin`, `admin?section=stats`
+  - commit et redeployer seulement apres validation humaine
+
 ### Simplification finale contribution + clarification allophone
 - `contribuer.html` simplifiee plus franchement:
   - suppression des gros panneaux d’explication au-dessus du formulaire

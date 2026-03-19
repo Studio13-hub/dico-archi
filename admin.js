@@ -3,6 +3,13 @@ const adminUser = document.getElementById("admin-user");
 const adminRole = document.getElementById("admin-role");
 const adminPermissions = document.getElementById("admin-permissions");
 const adminLogout = document.getElementById("admin-logout");
+const adminFocusTitle = document.getElementById("admin-focus-title");
+const adminFocusAction = document.getElementById("admin-focus-action");
+const adminFocusCopy = document.getElementById("admin-focus-copy");
+const adminFocusDestination = document.getElementById("admin-focus-destination");
+const adminFocusDestinationCopy = document.getElementById("admin-focus-destination-copy");
+const adminFocusNote = document.getElementById("admin-focus-note");
+const adminFocusNoteCopy = document.getElementById("admin-focus-note-copy");
 
 const termInput = document.getElementById("term");
 const categoryInput = document.getElementById("category");
@@ -59,6 +66,12 @@ const termsTable = document.getElementById("terms-table");
 const adminSearch = document.getElementById("admin-search");
 const adminSort = document.getElementById("admin-sort");
 const exportPublishedButton = document.getElementById("export-published");
+const adminCorpusFocusTitle = document.getElementById("admin-corpus-focus-title");
+const adminCorpusFocusCopy = document.getElementById("admin-corpus-focus-copy");
+const adminCorpusSourceTitle = document.getElementById("admin-corpus-source-title");
+const adminCorpusSourceCopy = document.getElementById("admin-corpus-source-copy");
+const adminCorpusNoteTitle = document.getElementById("admin-corpus-note-title");
+const adminCorpusNoteCopy = document.getElementById("admin-corpus-note-copy");
 const auditList = document.getElementById("audit-list");
 const auditEmpty = document.getElementById("audit-empty");
 const workflowButtons = document.querySelectorAll("[data-term-filter]");
@@ -235,6 +248,146 @@ function updateSubmissionMessageAvailability() {
   }
 }
 
+function setAdminFocusPanel({ title, action, copy, destination, destinationCopy, note, noteCopy }) {
+  if (adminFocusTitle) adminFocusTitle.textContent = title;
+  if (adminFocusAction) adminFocusAction.textContent = action;
+  if (adminFocusCopy) adminFocusCopy.textContent = copy;
+  if (adminFocusDestination) adminFocusDestination.textContent = destination;
+  if (adminFocusDestinationCopy) adminFocusDestinationCopy.textContent = destinationCopy;
+  if (adminFocusNote) adminFocusNote.textContent = note;
+  if (adminFocusNoteCopy) adminFocusNoteCopy.textContent = noteCopy;
+}
+
+function updateAdminFocusPanel() {
+  const pendingSubmissions = submissions.filter((item) => ["submitted", "validated", "resubmitted"].includes(String(item?.status || "")));
+  const correctionQueue = submissions.filter((item) => String(item?.status || "") === "resubmitted").length;
+
+  if (!adminPermissionsReady) {
+    setAdminFocusPanel({
+      title: "Chargement des priorités",
+      action: "Lire les accès",
+      copy: "Le premier écran se met à jour dès que le rôle staff est confirmé.",
+      destination: "Vue d’ensemble",
+      destinationCopy: "L’orientation dépend du niveau d’accès réel.",
+      note: "Séparer les espaces",
+      noteCopy: "Vue d’ensemble trie, Corpus corrige, Suivi mesure, Comptes administre."
+    });
+    return;
+  }
+
+  if (!canManageTerms) {
+    setAdminFocusPanel({
+      title: "Accès restreint",
+      action: "Revenir à un espace autorisé",
+      copy: "Ce compte ne dispose pas des droits staff nécessaires pour piloter l’admin.",
+      destination: "Mon compte",
+      destinationCopy: "Vérifier le rôle et l’état du compte avant de continuer.",
+      note: "Administration réservée au staff",
+      noteCopy: "Les workflows éditoriaux complets restent limités à Formateur et Administration."
+    });
+    return;
+  }
+
+  if (correctionQueue > 0) {
+    setAdminFocusPanel({
+      title: `${correctionQueue} correction${correctionQueue > 1 ? "s" : ""} apprenti à reprendre`,
+      action: "Ouvrir les propositions renvoyées",
+      copy: "Les retours apprenti traités en premier évitent d’allonger la boucle de relecture.",
+      destination: "Vue d’ensemble",
+      destinationCopy: "La file met déjà en avant les propositions resoumises et leur dossier.",
+      note: "Corriger avant de publier",
+      noteCopy: "Passe ensuite dans Corpus pour harmoniser la fiche avant validation finale."
+    });
+    return;
+  }
+
+  if (pendingSubmissions.length > 0) {
+    setAdminFocusPanel({
+      title: `${pendingSubmissions.length} proposition${pendingSubmissions.length > 1 ? "s" : ""} en file`,
+      action: "Trier la file de validation",
+      copy: "La priorité actuelle est de qualifier les propositions avant de retoucher le corpus publié.",
+      destination: "Vue d’ensemble",
+      destinationCopy: "Charge une proposition depuis la file puis ouvre son dossier ou le Corpus.",
+      note: "Décider clairement",
+      noteCopy: "Valider, demander une correction ou refuser avec une raison explicite."
+    });
+    return;
+  }
+
+  if (canViewStats && currentAdminSection === "stats") {
+    setAdminFocusPanel({
+      title: "Lire les signaux d’usage",
+      action: "Analyser le suivi",
+      copy: "La file est calme; le bon usage de ce temps est la lecture des métriques et de l’historique.",
+      destination: "Suivi",
+      destinationCopy: "Vérifier les pages les plus vues, les jeux actifs et les retours assistant si autorisé.",
+      note: "Ne pas confondre pilotage et édition",
+      noteCopy: "Le suivi éclaire les priorités éditoriales, mais les corrections restent dans Corpus."
+    });
+    return;
+  }
+
+  setAdminFocusPanel({
+    title: isSuperAdmin ? "Pilotage de la plateforme" : "Maintenance du corpus",
+    action: isSuperAdmin ? "Balancer comptes, corpus et suivi" : "Reprendre une fiche publiée",
+    copy: isSuperAdmin
+      ? "La file est stable; tu peux arbitrer entre structure du corpus, rôles et suivi global."
+      : "La file est stable; tu peux consacrer le temps disponible à l’harmonisation éditoriale.",
+    destination: isSuperAdmin ? "Comptes ou Suivi" : "Corpus",
+    destinationCopy: isSuperAdmin
+      ? "Choisis la section selon le besoin: accès, métriques ou maintenance éditoriale."
+      : "Charge un terme publié ou un brouillon pour améliorer la qualité du corpus.",
+    note: "Garder les sections nettes",
+    noteCopy: "Éviter de traiter la file, corriger une fiche et auditer les métriques dans le même mouvement."
+  });
+}
+
+function updateAdminCorpusSummary() {
+  if (adminCorpusFocusTitle) adminCorpusFocusTitle.textContent = "Aucune fiche chargée";
+  if (adminCorpusFocusCopy) adminCorpusFocusCopy.textContent = "Ouvre un terme ou une proposition pour commencer l’édition.";
+  if (adminCorpusSourceTitle) adminCorpusSourceTitle.textContent = "Corpus publié";
+  if (adminCorpusSourceCopy) adminCorpusSourceCopy.textContent = "Les propositions staff et apprenti ne suivent pas exactement le même flux.";
+  if (adminCorpusNoteTitle) adminCorpusNoteTitle.textContent = "Corriger avant de décider";
+  if (adminCorpusNoteCopy) {
+    adminCorpusNoteCopy.textContent = "Valider seulement quand définition, catégorie, médias et repères riches sont cohérents.";
+  }
+
+  if (editingSubmission) {
+    const mediaCount = Array.isArray(editingSubmission.media_urls) ? editingSubmission.media_urls.length : 0;
+    if (adminCorpusFocusTitle) adminCorpusFocusTitle.textContent = editingSubmission.term || "Proposition chargée";
+    if (adminCorpusFocusCopy) {
+      adminCorpusFocusCopy.textContent = `Proposition en cours de relecture${mediaCount ? ` avec ${mediaCount} média${mediaCount > 1 ? "s" : ""}` : ""}.`;
+    }
+    if (adminCorpusSourceTitle) adminCorpusSourceTitle.textContent = "File de validation";
+    if (adminCorpusSourceCopy) {
+      adminCorpusSourceCopy.textContent = `Statut actuel: ${getWorkflowLabel(editingSubmission.status || "submitted")}.`;
+    }
+    if (adminCorpusNoteTitle) adminCorpusNoteTitle.textContent = "Réponse attendue au contributeur";
+    if (adminCorpusNoteCopy) {
+      adminCorpusNoteCopy.textContent = editingSubmission.reviewer_comment
+        ? `Dernier commentaire staff: ${editingSubmission.reviewer_comment}`
+        : "Ajoute un commentaire clair si la proposition doit repartir en correction.";
+    }
+    return;
+  }
+
+  const editingTerm = getEditingTerm();
+  if (editingTerm) {
+    if (adminCorpusFocusTitle) adminCorpusFocusTitle.textContent = editingTerm.term || "Fiche chargée";
+    if (adminCorpusFocusCopy) {
+      adminCorpusFocusCopy.textContent = `Fiche du corpus en édition dans ${getCategoryName(editingTerm) || "une catégorie non renseignée"}.`;
+    }
+    if (adminCorpusSourceTitle) adminCorpusSourceTitle.textContent = "Corpus existant";
+    if (adminCorpusSourceCopy) {
+      adminCorpusSourceCopy.textContent = `Statut éditorial: ${getWorkflowLabel(getTermStatus(editingTerm))}.`;
+    }
+    if (adminCorpusNoteTitle) adminCorpusNoteTitle.textContent = "Harmonisation";
+    if (adminCorpusNoteCopy) {
+      adminCorpusNoteCopy.textContent = "Profite de cette passe pour vérifier définition, exemples, termes liés et structure riche.";
+    }
+  }
+}
+
 function setAdminSection(section) {
   currentAdminSection = section || "overview";
   updateSubmissionTabVisibility();
@@ -250,6 +403,7 @@ function setAdminSection(section) {
     button.setAttribute("aria-selected", isActive ? "true" : "false");
     button.tabIndex = isActive ? 0 : -1;
   }
+  updateAdminFocusPanel();
 }
 
 function updateSubmissionTabVisibility() {
@@ -293,6 +447,7 @@ function updateAdminContextCopy() {
       metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage et l’historique éditorial.";
     }
   }
+  updateAdminFocusPanel();
 }
 
 function getVisibleAdminSectionButtons() {
@@ -474,6 +629,7 @@ function clearForm() {
   renderMediaReviewPreview([]);
   setUploadStatus("");
   updateSubmissionMessageAvailability();
+  updateAdminCorpusSummary();
   syncAdminUrl({ section: currentAdminSection });
 }
 
@@ -854,6 +1010,7 @@ function updateWorkflowStats(list) {
   if (statDraft) statDraft.textContent = String(draft);
   if (statReview) statReview.textContent = String(review);
   if (statPublished) statPublished.textContent = String(published);
+  updateAdminFocusPanel();
 }
 
 function setMetricsStatus(text, isError = false) {
@@ -1054,6 +1211,7 @@ function renderSubmissions(list) {
 
   if (!orderedList.length) {
     empty.style.display = "block";
+    updateAdminFocusPanel();
     return;
   }
 
@@ -1180,6 +1338,7 @@ function renderSubmissions(list) {
 
     container.appendChild(row);
   }
+  updateAdminFocusPanel();
 }
 
 function setSubmissionActionsDisabled(disabled) {
@@ -1705,6 +1864,7 @@ function loadTerm(item) {
   renderMediaReviewPreview(item.media_urls || []);
   reviewerCommentInput.value = item.reviewer_comment || "";
   if (submissionBanner) submissionBanner.textContent = "";
+  updateAdminCorpusSummary();
   setMessage(`Corpus : fiche chargée pour modification (${item.term || "terme"}).`);
   syncAdminUrl({ section: "corpus", termId: item.id || "" });
   termInput.focus();
@@ -1736,6 +1896,7 @@ function loadSubmission(item, row) {
     const idLabel = item.id ? ` · id ${item.id}` : "";
     submissionBanner.textContent = `Proposition chargée : ${item.term}${mediaLabel}${richLabel}${idLabel}`;
   }
+  updateAdminCorpusSummary();
   setMessage(`Propositions : la proposition « ${item.term || "sans titre"} » est ouverte dans le panneau Corpus.`);
   syncAdminUrl({ section: "corpus", submissionId: item.id || "" });
   if (row) row.classList.add("highlight");
