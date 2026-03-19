@@ -3,6 +3,33 @@
 ## 2026-03-19
 - reprise orientee verification reelle + cloture git propre.
 
+### Simplification finale contribution + clarification allophone
+- `contribuer.html` simplifiee plus franchement:
+  - suppression des gros panneaux d’explication au-dessus du formulaire
+  - suppression de la lecture en sous-sections lourdes
+  - conservation d’un seul grand formulaire continu
+- `term.html` / `term.page.js` recales:
+  - bloc renomme `Traduction et prononciation`
+  - boutons plus explicites
+  - ajout de `Francais`
+  - l’anglais reste en premiere position pour ne pas casser les tests et le comportement par defaut
+  - la selection `Francais` reaffiche la fiche source comme version d’appui
+- `styles.css` ajuste pour accompagner ce lot
+- verification technique ciblee:
+  - `node --check term.page.js`
+  - `npx playwright test Test/e2e/public-pages.spec.js --grep "contribuer|term"`
+  - resultat final: `6 passed`
+- cloture technique:
+  - commit `5e7d541` `Simplify contribution form and clarify term assist`
+  - `git push origin main`
+  - `vercel --prod`
+  - alias confirme: `https://dico-archi.vercel.app`
+  - HTTP `200` confirme sur:
+    - `contribuer.html`
+    - `term.html?slug=bois-lamelle-colle`
+- point de reprise:
+  - faire maintenant la verification manuelle utilisateur sur la prod avant d’ouvrir un nouveau lot
+
 ### Verification locale relancee
 - serveur local relance sur `127.0.0.1:4173`
 - verification syntaxe relancee:
@@ -67,8 +94,8 @@
   - ce qui est confirme
   - le workflow reel maintenant valide
 - objectif de la prochaine reprise:
-  - preparer la presentation bureau
-  - finaliser le discours produit, le plan de demo et les reponses attendues
+  - valider manuellement les derniers ecrans simplifies en prod
+  - reprendre ensuite le prochain lot produit demande par l’utilisateur
 
 ## 2026-03-18
 - Reprise `RepriseDicoPulse` poursuivie sur un lot de structure durable et de clarification des roles.

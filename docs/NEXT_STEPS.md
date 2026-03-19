@@ -3,53 +3,41 @@
 Reference centrale:
 - [PLAN_MAITRE_DICOARCHI.md](/Users/awat/workspace/projects/dico-archi/docs/PLAN_MAITRE_DICOARCHI.md)
 
-## Priorite immediate - Verification live restante
+## Priorite immediate - Validation utilisateur des derniers correctifs
 
-1. le workflow editorial complet est maintenant valide en prod
-2. garder comme preuve de recette:
-   - terme `Workflow réel 2026-03-19-10-37`
-   - submission id `b62302b5-6b9b-44dd-be2f-92e63f69937a`
-3. prochain vrai chantier:
-   - preparation de la presentation formateurs / apprentis
+1. faire la recette manuelle sur la prod:
+   - `https://dico-archi.vercel.app/contribuer.html`
+   - `https://dico-archi.vercel.app/term.html?slug=bois-lamelle-colle`
+2. confirmer:
+   - que `Contribuer` est enfin percue comme un seul formulaire
+   - que `Traduction et prononciation` est assez claire et assez pro
+   - que `Francais` est bien compris et utile
+3. garder comme preuves de recette technique:
+   - commit `5e7d541`
+   - `6 passed` sur `--grep "contribuer|term"`
+   - workflow editorial reel deja valide:
+     - terme `Workflow réel 2026-03-19-10-37`
+     - submission id `b62302b5-6b9b-44dd-be2f-92e63f69937a`
 4. point d’attention a rappeler:
    - les uploads media ne se testent pas correctement via `python3 -m http.server`
    - pour les routes `POST /api/...`, utiliser la prod ou un vrai environnement Vercel
 
 ## Priorite immediate - Structure durable
 
-0. verifier le nouveau workflow editorial maintenant actif:
-   - `020_notifications_inbox.sql` appliquee
-   - `021_submission_messages.sql` appliquee
-   - `022_submission_resubmission_flow.sql` appliquee
-   - prod redeployee
-   - verifier le parcours complet:
-     - refus
-     - message editorial
-     - reponse apprenti
-     - correction dans `Contribuer`
-     - statut `resubmitted`
-     - reprise admin priorisee
-1. verifier dans `admin.html` la proposition test riche:
-   - `Terme test contribution image`
-   - submission id `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
-2. verrouiller l’architecture des pages pour eviter les doublons
-3. garder partout les memes roles visibles:
+1. verrouiller l’architecture des pages pour eviter les doublons
+2. garder partout les memes roles visibles:
    - `Public`
    - `Apprenti`
    - `Formateur`
    - `Administration`
-4. separer clairement:
+3. separer clairement:
    - consultation
    - contribution
    - espace personnel
    - validation formateur
    - administration
-5. traiter la securite et la clarte du workflow avant les grandes finitions visuelles
-6. conserver le corpus public canonique aligne entre machines, navigateurs et prod
-7. simplifier encore `contribuer.html` sans casser le flux unique:
-   - moins de micro-textes
-   - meilleure lisibilite de `Fiche complete`
-   - aucune fenetre separee pour un seul terme
+4. conserver le corpus public canonique aligne entre machines, navigateurs et prod
+5. reprendre ensuite les nouveaux besoins fonctionnels demandes par l’utilisateur
 
 ## Priorite 1 - Esthetique
 1. Reprendre `index.html` en priorite jusqu’a validation nette de l’accueil `Dico-Archi`.
@@ -107,19 +95,13 @@ Reference centrale:
 
 - ouvrir `https://dico-archi.vercel.app`
 - verifier d’abord:
-  - accueil
-  - `Mon compte`
-  - `Admin`
-  - jeux:
-    - `games.html`
-    - `quiz.html`
-    - `flashcards.html`
-    - `match.html`
-    - `daily.html`
-    - `memory.html`
-- le socle `site_visitors` est maintenant en place
+  - `contribuer.html`
+  - `term.html?slug=bois-lamelle-colle`
+  - `compte.html`
+  - `admin.html`
+- confirmer la perception utilisateur des derniers changements
 - reprendre ensuite:
-  - l’amelioration produit de l’assistant Gemini
+  - le prochain lot produit demande par l’utilisateur
   - puis les derniers chantiers visuels et de contenu
 
 ## Etat de reprise apres sync 2026-03-17

@@ -2,6 +2,27 @@
 
 ## 2026-03-19
 
+### Contribution simplifiee + aide allophone clarifiee
+- `contribuer.html` simplifiee une deuxieme fois, de maniere plus radicale:
+  - suppression des blocs `Workflow`
+  - suppression des cartes de consigne au-dessus du formulaire
+  - maintien d’un seul flux de saisie continu
+- `term.html` / `term.page.js` clarifies pour les allophones:
+  - bloc renomme `Traduction et prononciation`
+  - boutons plus explicites
+  - ajout de `Francais`
+  - comportement direct pour reafficher la fiche source en francais
+- `styles.css` ajuste pour soutenir ce lot
+- verification ciblee:
+  - `node --check term.page.js`
+  - `npx playwright test Test/e2e/public-pages.spec.js --grep "contribuer|term"`
+  - resultat: `6 passed`
+- cloture:
+  - commit `5e7d541`
+  - push `main`
+  - redeploiement prod Vercel
+  - alias final confirme: `https://dico-archi.vercel.app`
+
 ### Verification reelle + cloture git
 - verification locale large relancee sur le lot courant
 - checks confirmes:

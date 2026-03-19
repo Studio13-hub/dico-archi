@@ -1,5 +1,36 @@
 # Resume now (2026-03-19)
 
+## Cloture session 2026-03-19 - contribution simplifiee + aide allophone clarifiee
+
+- lot final de la session pousse en prod:
+  - commit `5e7d541`
+  - message: `Simplify contribution form and clarify term assist`
+- `contribuer.html` a ete simplifiee plus radicalement:
+  - suppression des gros blocs `Workflow`
+  - suppression des cartes `A viser / Pas obligatoire / A eviter`
+  - suppression de la decoupe visuelle lourde en sous-sections
+  - conservation d’un seul vrai formulaire continu
+- `term.html` / `term.page.js` ont ete clarifies pour les allophones:
+  - bloc renomme `Traduction et prononciation`
+  - boutons plus explicites
+  - `Francais` ajoute dans la liste des langues
+  - l’anglais reste la langue par defaut pour ne pas casser les tests et la recette actuelle
+  - si `Francais` est choisi, la fiche d’origine est reaffichee proprement
+- `styles.css` ajuste pour accompagner cette simplification:
+  - actions traduction plus stables
+  - rendu du formulaire plus direct
+- verification locale ciblee effectuee:
+  - `node --check term.page.js`
+  - `npx playwright test Test/e2e/public-pages.spec.js --grep "contribuer|term"`
+  - resultat: `6 passed`
+- cloture technique:
+  - `git push origin main`
+  - `vercel --prod`
+  - alias confirme: `https://dico-archi.vercel.app`
+  - controle HTTP `200` confirme sur:
+    - `contribuer.html`
+    - `term.html?slug=bois-lamelle-colle`
+
 ## Verification reelle 2026-03-19 - workflow editorial et cloture git
 
 - verification locale large relancee sur le lot courant:
@@ -99,16 +130,16 @@
 
 ## Point exact de reprise 2026-03-19
 
-1. ne plus reprendre le workflow comme chantier critique:
-   - il est maintenant valide en prod sur un vrai cycle complet
-2. reprendre a present sur la preparation de presentation:
-   - narration produit
-   - ordre de demo
-   - priorites corpus / roles / governance
-3. verifier encore avant demo:
-   - pages majeures
-   - role `Formateur`
-   - message clair sur limites local vs prod pour les uploads media
+1. reprendre maintenant les tests utilisateur manuels sur la prod:
+   - `contribuer.html`
+   - `term.html?slug=bois-lamelle-colle`
+   - verification reelle des boutons `Afficher l’aide` / `Ecouter`
+2. si la validation manuelle est bonne, enchainer sur le prochain lot produit:
+   - nouveaux besoins fonctionnels
+   - finitions de coherence page par page
+   - enrichissement du corpus
+3. ne plus traiter le workflow editorial comme blocage principal:
+   - il est deja valide en prod sur un cycle reel complet
 
 ## Cloture session 2026-03-18 - contribution riche
 
@@ -205,19 +236,15 @@
 
 Le prochain point utile est maintenant :
 
-1. ouvrir `admin.html` et verifier la proposition test:
-   - `Terme test contribution image`
-   - submission id `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
-2. reprendre ensuite la simplification finale de `contribuer.html`:
-   - raccourcir encore les micro-textes
-   - mieux organiser la longue zone `Fiche complete`
-   - garder un seul flux sans sous-fenetres
-3. nettoyer les derniers doublons entre:
-   - `compte.html`
+1. faire tester en manuel la nouvelle version prod de:
    - `contribuer.html`
-4. seulement apres cela, reprendre la structuration globale des pages majeures:
-   - `dictionnaire.html`
-   - `category.html`
+   - `term.html?slug=bois-lamelle-colle`
+2. confirmer cote utilisateur que:
+   - le formulaire de contribution est enfin percu comme un seul bloc
+   - la traduction / prononciation est plus claire
+   - `Francais` est bien compris comme langue d’appui possible
+3. ensuite seulement:
+   - reprendre le prochain lot produit demande par l’utilisateur
    - `index.html`
    - `methodologie.html`
 5. garder [PLAN_MAITRE_DICOARCHI.md](/Users/awat/workspace/projects/dico-archi/docs/PLAN_MAITRE_DICOARCHI.md) comme reference centrale
