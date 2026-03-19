@@ -318,7 +318,7 @@ test("term page exposes allophone assist and renders translation", async ({ page
     });
   });
 
-  await page.route("**/api/term-assist", async (route) => {
+  await page.route("**/api/chat", async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json; charset=utf-8",

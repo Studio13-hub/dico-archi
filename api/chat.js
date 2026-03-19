@@ -88,6 +88,15 @@ function buildServerTermIndex() {
 
 const SERVER_TERM_INDEX = buildServerTermIndex();
 const TERM_STOPWORDS = new Set(["de", "d", "du", "des", "la", "le", "les", "l", "un", "une", "et", "ou"]);
+const ASSIST_LANGUAGE_LABELS = {
+  en: "Anglais",
+  de: "Allemand",
+  it: "Italien",
+  es: "Espagnol",
+  pt: "Portugais",
+  sq: "Albanais",
+  ar: "Arabe"
+};
 
 function makeTermUrl(slug) {
   return `term.html?slug=${encodeURIComponent(String(slug || "").trim())}`;
@@ -262,6 +271,77 @@ function buildDeterministicAnswer(question) {
   return null;
 }
 
+function asText(value, maxLength = 1200) {
+  return String(value || "").trim().slice(0, maxLength);
+}
+
+async function buildTermAssistTranslation({ apiKey, model, language, term, definition, example }) {
+  const languageLabel = ASSIST_LANGUAGE_LABELS[language];
+  if (!languageLabel) {
+    const error = new Error("unsupported_language");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!term || !definition) {
+    const error = new Error("missing_term_payload");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const prompt = [
+    `Traduis ce contenu du français vers ${languageLabel}.`,
+    "Le public est allophone dans un bureau d'architecture.",
+    "Garde un vocabulaire simple, précis et professionnel.",
+    "Ne rajoute aucune information nouvelle.",
+    "Reponds uniquement avec un JSON valide.",
+    'Format exact: {"translatedTerm":"...","translatedDefinition":"...","translatedExample":"...","pronunciationGuide":"..."}',
+    "Le champ pronunciationGuide doit rester en alphabet latin simple, pensé pour aider un débutant à prononcer le terme français original.",
+    `Terme français: ${JSON.stringify(term)}`,
+    `Définition française: ${JSON.stringify(definition)}`,
+    `Exemple français: ${JSON.stringify(example)}`
+  ].join("\n");
+
+  const ai = new GoogleGenAI({ apiKey });
+  const response = await ai.models.generateContent({
+    model,
+    config: {
+      temperature: 0.2,
+      maxOutputTokens: 350,
+      responseMimeType: "application/json"
+    },
+    contents: [{
+      role: "user",
+      parts: [{ text: prompt }]
+    }]
+  });
+
+  const rawText = String(response?.text || "").trim();
+  if (!rawText) {
+    const error = new Error("empty_model_response");
+    error.statusCode = 502;
+    throw error;
+  }
+
+  let parsed = {};
+  try {
+    parsed = JSON.parse(rawText);
+  } catch (_error) {
+    const error = new Error("invalid_model_json");
+    error.statusCode = 502;
+    throw error;
+  }
+
+  return {
+    language,
+    languageLabel,
+    translatedTerm: asText(parsed.translatedTerm, 240),
+    translatedDefinition: asText(parsed.translatedDefinition, 1600),
+    translatedExample: asText(parsed.translatedExample, 1200),
+    pronunciationGuide: asText(parsed.pronunciationGuide, 240)
+  };
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
@@ -302,6 +382,29 @@ module.exports = async (req, res) => {
       body = JSON.parse(body);
     } catch (_error) {
       body = {};
+    }
+  }
+
+  const mode = String(body?.mode || "").trim();
+  if (mode === "term_assist") {
+    try {
+      const translation = await buildTermAssistTranslation({
+        apiKey,
+        model,
+        language: asText(body?.language, 8).toLowerCase(),
+        term: asText(body?.term, 160),
+        definition: asText(body?.definition, 1400),
+        example: asText(body?.example, 1000)
+      });
+
+      res.statusCode = 200;
+      res.end(JSON.stringify({ translation, model }));
+      return;
+    } catch (error) {
+      const message = String(error?.message || "internal_error");
+      res.statusCode = Number(error?.statusCode) || 500;
+      res.end(JSON.stringify({ error: message }));
+      return;
     }
   }
 

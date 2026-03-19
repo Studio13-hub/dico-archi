@@ -231,12 +231,13 @@ async function requestTranslation() {
   setTranslationStatus(`Traduction ${languageConfig.label.toLowerCase()} en cours...`);
 
   try {
-    const response = await fetch("/api/term-assist", {
+    const response = await fetch("/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
+        mode: "term_assist",
         language,
         term: currentTermAssistPayload.term.term,
         definition: currentTermAssistPayload.term.definition,
