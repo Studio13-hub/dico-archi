@@ -36,15 +36,39 @@
     - pas encore de `reviewer_comment`
 - conclusion:
   - le socle workflow est bien en ligne
-  - mais le cycle complet `rejected -> message -> correction -> resubmitted` n’a pas encore ete rejoue pour de vrai en prod sur cette proposition test
+  - puis le cycle complet `rejected -> message -> correction -> resubmitted` a finalement ete rejoue pour de vrai en prod avec comptes dedies
+
+### Workflow editorial complet valide en prod
+- comptes de recette dedies crees:
+  - `dico.apprenti.workflow.20260319@proton.me`
+  - `dico.formateur.workflow.20260319@proton.me`
+- proposition reelle creee en prod:
+  - terme: `Workflow réel 2026-03-19-10-37`
+  - id: `b62302b5-6b9b-44dd-be2f-92e63f69937a`
+- recette effectuee:
+  - login apprenti reel
+  - soumission reelle
+  - login formateur reel
+  - refus avec commentaire
+  - notification apprenti reelle
+  - message editorial reel
+  - correction apprenti
+  - update reel en `resubmitted`
+  - verification admin: badge `Retour apprenti` + statut `Resoumise`
+- precision importante:
+  - le test upload media local peut echouer avec `signed_upload_prepare_failed` si la page est servie par `python3 -m http.server`
+  - cause:
+    - les routes `POST /api/...` ne sont pas executees dans ce mode
+  - conclusion:
+    - les tests uploads reels doivent se faire sur la prod ou via un environnement Vercel adapte
 
 ### Cloture de session
 - docs de reprise remises a jour pour refleter:
   - ce qui est confirme
-  - ce qui reste a verifier en reel
+  - le workflow reel maintenant valide
 - objectif de la prochaine reprise:
-  - rejouer le workflow connecte complet
-  - seulement ensuite reprendre les finitions UX et la cloture produit plus large
+  - preparer la presentation bureau
+  - finaliser le discours produit, le plan de demo et les reponses attendues
 
 ## 2026-03-18
 - Reprise `RepriseDicoPulse` poursuivie sur un lot de structure durable et de clarification des roles.

@@ -164,7 +164,24 @@ function applyCategoryTermsView() {
 
 function buildBreadcrumb(label) {
   breadcrumbEl.textContent = "";
-  breadcrumbEl.append("Accueil / ");
+  const homeLink = document.createElement("a");
+  homeLink.href = "index.html";
+  homeLink.textContent = "Accueil";
+  breadcrumbEl.appendChild(homeLink);
+
+  const firstSeparator = document.createElement("span");
+  firstSeparator.textContent = " / ";
+  breadcrumbEl.appendChild(firstSeparator);
+
+  const categoriesLink = document.createElement("a");
+  categoriesLink.href = "category.html";
+  categoriesLink.textContent = "Catégories";
+  breadcrumbEl.appendChild(categoriesLink);
+
+  const secondSeparator = document.createElement("span");
+  secondSeparator.textContent = " / ";
+  breadcrumbEl.appendChild(secondSeparator);
+
   const current = document.createElement("strong");
   current.textContent = label;
   breadcrumbEl.appendChild(current);
@@ -217,7 +234,17 @@ async function loadCategoryPage() {
 
       titleEl.textContent = "Catégories";
       subtitleEl.textContent = `${sortedCategories.length} domaine${sortedCategories.length > 1 ? "s" : ""} disponible${sortedCategories.length > 1 ? "s" : ""}`;
-      breadcrumbEl.textContent = "Accueil / Catégories";
+      breadcrumbEl.textContent = "";
+      const homeLink = document.createElement("a");
+      homeLink.href = "index.html";
+      homeLink.textContent = "Accueil";
+      breadcrumbEl.appendChild(homeLink);
+      const separator = document.createElement("span");
+      separator.textContent = " / ";
+      breadcrumbEl.appendChild(separator);
+      const current = document.createElement("strong");
+      current.textContent = "Catégories";
+      breadcrumbEl.appendChild(current);
       if (categoryCountEl) categoryCountEl.textContent = `${sortedCategories.length} domaine${sortedCategories.length > 1 ? "s" : ""}`;
       if (categoryModeEl) categoryModeEl.textContent = "Index des domaines";
       if (categorySearchEl) categorySearchEl.disabled = true;

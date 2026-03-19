@@ -2586,6 +2586,13 @@ footer {
   font-weight: 600;
 }
 
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin: 1.1rem 0 1.4rem;
+}
+
 .page-home .chatbot {
   display: grid;
   justify-items: end;
@@ -2672,6 +2679,11 @@ footer {
   .footer__inner--site {
     grid-template-columns: 1fr;
   }
+
+  .role-grid,
+  .flow-strip {
+    grid-template-columns: 1fr;
+  }
 }
 
 .panel--spotlight .dashboard__item {
@@ -2707,6 +2719,38 @@ footer {
   font-family: "Fraunces", serif;
   font-size: 1.32rem;
   line-height: 1.08;
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.role-card,
+.flow-step {
+  border: 1px solid rgba(18, 18, 18, 0.08);
+  border-radius: 22px;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(249, 246, 239, 0.88));
+  box-shadow: 0 14px 28px rgba(47, 38, 24, 0.06);
+}
+
+.role-card strong,
+.flow-step strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 1.02rem;
+}
+
+.role-card .link-button {
+  margin-top: 0.8rem;
+}
+
+.flow-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
 }
 
 .home-category-cloud {

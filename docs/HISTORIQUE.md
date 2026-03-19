@@ -19,9 +19,21 @@
   - `Terme test contribution image`
   - id `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
   - statut reel: `submitted`
-- point important:
-  - le workflow editorial complet n’est pas encore rejoue jusqu’a `resubmitted` en conditions reelles
-  - la prochaine session doit donc verifier ce cycle avant d’annoncer la boucle workflow totalement validee
+- ensuite, verification complete reellement bouclee le meme jour avec comptes dedies:
+  - `dico.apprenti.workflow.20260319@proton.me`
+  - `dico.formateur.workflow.20260319@proton.me`
+  - proposition: `Workflow réel 2026-03-19-10-37`
+  - id: `b62302b5-6b9b-44dd-be2f-92e63f69937a`
+  - cycle confirme:
+    - soumission
+    - refus commente
+    - message editorial
+    - correction
+    - resoumission
+    - verification admin `Retour apprenti`
+- point pratique confirme:
+  - `signed_upload_prepare_failed` en local n’est pas un verdict produit si la page tourne sous `python3 -m http.server`
+  - il faut la prod ou un vrai environnement Vercel pour tester `POST /api/...`
 
 ## 2026-03-18
 

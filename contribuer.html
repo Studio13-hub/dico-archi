@@ -35,6 +35,57 @@
 
     <main class="auth auth--wide">
       <section class="panel">
+        <div class="home-section-head">
+          <div>
+            <span class="section-eyebrow">Workflow de contribution</span>
+            <h2>Le dépôt n’est que la première étape</h2>
+          </div>
+        </div>
+        <div class="flow-strip">
+          <article class="flow-step">
+            <span class="dashboard__label">1. Dépôt</span>
+            <strong>L’apprenti propose</strong>
+            <p class="meta meta--subtle">Terme, définition, exemple, média utile et compléments si nécessaire.</p>
+          </article>
+          <article class="flow-step">
+            <span class="dashboard__label">2. Relecture</span>
+            <strong>Le formateur commente</strong>
+            <p class="meta meta--subtle">Retour éditorial, demande de correction, précision pédagogique ou validation.</p>
+          </article>
+          <article class="flow-step">
+            <span class="dashboard__label">3. Correction</span>
+            <strong>L’auteur améliore</strong>
+            <p class="meta meta--subtle">La proposition peut être reprise, complétée et renvoyée en relecture.</p>
+          </article>
+          <article class="flow-step">
+            <span class="dashboard__label">4. Publication</span>
+            <strong>Le corpus est validé</strong>
+            <p class="meta meta--subtle">Seules les fiches relues et jugées utiles entrent dans le dictionnaire public.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="role-grid">
+          <article class="role-card">
+            <span class="dashboard__label">À viser</span>
+            <strong>Une fiche claire et exploitable</strong>
+            <p class="meta meta--subtle">Une bonne proposition est simple à relire, concrète et directement utile au bureau.</p>
+          </article>
+          <article class="role-card">
+            <span class="dashboard__label">Pas obligatoire</span>
+            <strong>Tout remplir d’un coup</strong>
+            <p class="meta meta--subtle">La zone `Fiche complète` sert à enrichir, pas à bloquer l’envoi d’une bonne base.</p>
+          </article>
+          <article class="role-card">
+            <span class="dashboard__label">À éviter</span>
+            <strong>Des textes vagues ou redondants</strong>
+            <p class="meta meta--subtle">Si un média n’aide pas à comprendre, mieux vaut une fiche courte et solide.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel">
         <div id="contrib-resume-box" class="contrib-rich-intro" hidden>
           <p id="contrib-resume-copy">Mode correction chargé.</p>
         </div>
@@ -218,6 +269,25 @@
         <div id="contrib-message" class="auth__message"></div>
       </section>
     </main>
+
+    <footer>
+      <div class="footer__inner footer__inner--site">
+        <div class="footer__brand">
+          <strong>Dico-Archi</strong>
+          <span>Dépôt encadré des propositions du corpus.</span>
+        </div>
+        <div class="footer__links">
+          <a href="index.html">Accueil</a>
+          <a href="compte.html">Mon compte</a>
+          <a href="dictionnaire.html">Dictionnaire</a>
+          <a href="admin.html">Administration</a>
+        </div>
+        <div class="footer__credit">
+          <span>Réalisation</span>
+          <strong>RDR Architectes SA</strong>
+        </div>
+      </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>

@@ -24,8 +24,32 @@
     - aucun `reviewer_comment`
 - conclusion exacte:
   - le socle technique du workflow editorial est bien deploye et joignable
-  - la verification reelle du cycle complet `rejected -> message -> correction -> resubmitted` n’a pas encore ete rejouee en prod sur cette proposition test
-  - il reste donc a faire un vrai run connecte avec comptes staff + apprenti pour cloturer la verification fonctionnelle complete
+  - verification reelle du cycle complet maintenant rejouee en prod avec comptes dedies
+  - le workflow `submitted -> rejected -> message -> correction -> resubmitted` est donc valide fonctionnellement
+
+## Verification reelle 2026-03-19 - workflow editorial complet valide
+
+- deux comptes de test dedies ont ete crees pour la recette:
+  - `dico.apprenti.workflow.20260319@proton.me`
+  - `dico.formateur.workflow.20260319@proton.me`
+- run reel effectue en production sur `https://dico-archi.vercel.app`
+- proposition de recette creee en vrai:
+  - terme: `Workflow réel 2026-03-19-10-37`
+  - submission id: `b62302b5-6b9b-44dd-be2f-92e63f69937a`
+- cycle confirme:
+  - soumission apprenti reelle
+  - refus formateur avec commentaire
+  - notification apprenti
+  - message editorial dedie
+  - correction apprenti
+  - resoumission `resubmitted`
+  - verification admin:
+    - badge `Retour apprenti`
+    - statut `Resoumise`
+- point pratique important:
+  - le test d’upload media ne doit pas etre juge depuis `python3 -m http.server`
+  - en local, les routes `POST /api/...` ne sont pas servies comme en prod Vercel
+  - les tests media reels doivent donc se faire sur la prod ou via un vrai environnement Vercel local
 
 ## Cloture session 2026-03-18 - workflow editorial pro
 
@@ -75,20 +99,16 @@
 
 ## Point exact de reprise 2026-03-19
 
-1. reprendre sur la proposition test existante:
-   - `Terme test contribution image`
-   - `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
-2. rejouer en vrai:
-   - refus avec commentaire
-   - message staff dans `Dossier`
-   - lecture du message dans `Mon compte`
-   - correction via `Contribuer?submission=...`
-   - renvoi `resubmitted`
-   - retour priorise dans `admin.html`
-3. une fois ce parcours confirme en prod:
-   - mettre a jour la doc
-   - relancer un petit smoke cible
-   - seulement ensuite reprendre les finitions UX/visuelles
+1. ne plus reprendre le workflow comme chantier critique:
+   - il est maintenant valide en prod sur un vrai cycle complet
+2. reprendre a present sur la preparation de presentation:
+   - narration produit
+   - ordre de demo
+   - priorites corpus / roles / governance
+3. verifier encore avant demo:
+   - pages majeures
+   - role `Formateur`
+   - message clair sur limites local vs prod pour les uploads media
 
 ## Cloture session 2026-03-18 - contribution riche
 

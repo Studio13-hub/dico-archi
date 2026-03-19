@@ -5,19 +5,15 @@ Reference centrale:
 
 ## Priorite immediate - Verification live restante
 
-1. reprendre la proposition test `Terme test contribution image`:
-   - id `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
-   - statut reel confirme le `2026-03-19`: `submitted`
-2. rejouer le workflow editorial complet en prod avec comptes reels:
-   - refus avec commentaire
-   - message staff
-   - lecture dans `Mon compte`
-   - correction via `Contribuer?submission=...`
-   - renvoi `resubmitted`
-   - priorisation `Retour apprenti` dans `admin.html`
-3. verifier ensuite que `submission_messages` contient bien une vraie ligne utile:
-   - au `2026-03-19`, la table repond mais reste vide
-4. ne pas annoncer la verification workflow comme complete tant que ce parcours n’a pas ete rejoue en conditions connectees
+1. le workflow editorial complet est maintenant valide en prod
+2. garder comme preuve de recette:
+   - terme `Workflow réel 2026-03-19-10-37`
+   - submission id `b62302b5-6b9b-44dd-be2f-92e63f69937a`
+3. prochain vrai chantier:
+   - preparation de la presentation formateurs / apprentis
+4. point d’attention a rappeler:
+   - les uploads media ne se testent pas correctement via `python3 -m http.server`
+   - pour les routes `POST /api/...`, utiliser la prod ou un vrai environnement Vercel
 
 ## Priorite immediate - Structure durable
 
