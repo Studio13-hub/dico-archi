@@ -17,6 +17,8 @@ Recommandations editoriales :
 - une definition = une idee claire, sans phrase trop longue
 - un exemple = une situation concrete de bureau, dessin ou chantier
 - un slug = stable dans le temps, meme si le style du terme evolue
+- un libelle visible = orthographe francaise complete, accents conserves, capitalisation sobre
+- pour les composes, garder une forme metier stable et lisible: ex. `Bois lamellé-collé`, `Joint d’étanchéité`, `Plan d’étage`
 - une relation = explicite et utile pour la navigation
 - un media = rattache a un terme via `term_slug`, jamais stocke dans le terme lui-meme
 - le contenu final doit respecter l'orthographe francaise complete, avec accents et ponctuation rigoureuse

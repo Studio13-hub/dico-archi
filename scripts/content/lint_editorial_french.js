@@ -25,6 +25,14 @@ const suspiciousReplacements = [
   ["cote ", "côté "]
 ];
 
+const preferredTermLabels = new Map([
+  ["bois-lamelle-colle", "Bois lamellé-collé"],
+  ["joint-detancheite", "Joint d’étanchéité"],
+  ["plan-d-etage", "Plan d’étage"],
+  ["toitures-duo", "Toitures duo"],
+  ["sites-internet-techniques", "Sites internet techniques"]
+]);
+
 function hasStrongPunctuation(value) {
   return /[.!?]\s*$/.test(String(value || ""));
 }
@@ -71,6 +79,11 @@ function collectWarnings() {
           pushWarning(`${label}: ${field} contains "${raw}" — consider "${suggested}".`);
         }
       }
+    }
+
+    const preferredLabel = preferredTermLabels.get(term.slug);
+    if (preferredLabel && term.term !== preferredLabel) {
+      pushWarning(`${label}: term should be "${preferredLabel}".`);
     }
   }
 
