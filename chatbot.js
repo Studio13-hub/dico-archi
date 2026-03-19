@@ -395,6 +395,8 @@
   root.appendChild(panel);
   document.body.appendChild(root);
 
+  const wordAssistHint = createElement("div", "word-assist-hint", "Sélectionner un mot ou ouvrir l’outil");
+  document.body.appendChild(wordAssistHint);
   const wordAssistLauncher = createElement("button", "word-assist-launcher", "Ecouter / Traduire");
   wordAssistLauncher.type = "button";
   wordAssistLauncher.setAttribute("aria-label", "Ouvrir l’aide Ecouter / Traduire");
@@ -443,6 +445,7 @@
 
   function syncWordAssistLayout() {
     document.body.classList.toggle("has-word-assist", !wordAssistRoot.hidden);
+    wordAssistHint.hidden = !wordAssistRoot.hidden;
   }
 
   function syncWordAssistControls() {

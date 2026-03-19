@@ -71,6 +71,7 @@ body {
   gap: 12px;
   flex-wrap: wrap;
   position: relative;
+  z-index: 10005;
 }
 
 .badge {
@@ -558,6 +559,23 @@ body.page-home h1 span {
   font-weight: 700;
 }
 
+.word-assist-hint {
+  position: fixed;
+  right: 16px;
+  bottom: 128px;
+  z-index: 12000;
+  margin: 0 0 6px auto;
+  width: fit-content;
+  max-width: 220px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(255, 252, 247, 0.96);
+  border: 1px solid rgba(49, 42, 31, 0.1);
+  color: rgba(27, 27, 24, 0.7);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
 .contrib-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -816,25 +834,26 @@ body.page-home h1 span {
 
 .word-assist-launcher {
   position: fixed;
-  right: 18px;
-  bottom: 74px;
-  z-index: 32;
-  min-height: 40px;
-  padding: 8px 12px;
+  right: 16px;
+  bottom: 88px;
+  z-index: 12000;
+  min-height: 46px;
+  padding: 12px 16px;
   border-radius: 999px;
   border: 1px solid rgba(23, 33, 29, 0.1);
   background: rgba(255, 252, 247, 0.94);
   color: var(--accent);
   box-shadow: 0 10px 20px rgba(18, 18, 18, 0.08);
   backdrop-filter: blur(10px);
+  font-weight: 700;
 }
 
 .word-assist {
   position: fixed;
   right: 18px;
   top: 96px;
-  z-index: 31;
-  width: min(340px, calc(100vw - 36px));
+  z-index: 11999;
+  width: min(300px, calc(100vw - 36px));
   max-height: calc(100vh - 116px);
   overflow: auto;
   display: grid;
@@ -851,16 +870,13 @@ body.page-home h1 span {
   display: none !important;
 }
 
-body.has-word-assist {
-  padding-right: 372px;
-}
-
 body.has-word-assist .hero__content,
 body.has-word-assist .home-main,
 body.has-word-assist .reading-main,
 body.has-word-assist .work-main,
 body.has-word-assist .footer__inner--site {
-  transition: max-width 140ms ease, padding-right 140ms ease;
+  margin-right: 324px;
+  transition: margin-right 140ms ease;
 }
 
 .word-assist__header {
@@ -1108,6 +1124,8 @@ button:disabled {
 }
 
 .menu-toggle {
+  position: relative;
+  z-index: 10006;
   width: 42px;
   height: 42px;
   padding: 8px;
@@ -4012,16 +4030,20 @@ body.page-reading .term-block {
     bottom: 84px;
   }
 
+  .word-assist-hint {
+    left: 12px;
+    right: 12px;
+    bottom: 192px;
+    max-width: none;
+    text-align: center;
+  }
+
   .word-assist-launcher {
     left: 12px;
     right: 12px;
     bottom: 136px;
     width: auto;
     justify-content: center;
-  }
-
-  body.has-word-assist {
-    padding-right: 0;
   }
 
   .word-assist {
@@ -4031,6 +4053,14 @@ body.page-reading .term-block {
     bottom: 84px;
     width: auto;
     max-height: none;
+  }
+
+  body.has-word-assist .hero__content,
+  body.has-word-assist .home-main,
+  body.has-word-assist .reading-main,
+  body.has-word-assist .work-main,
+  body.has-word-assist .footer__inner--site {
+    margin-right: auto;
   }
 
   .chatbot__toggle {

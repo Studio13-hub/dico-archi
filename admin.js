@@ -157,6 +157,17 @@ let currentAdminSection = initialAdminSection || "overview";
 let requestedSubmissionId = String(initialAdminParams.get("submission") || "").trim();
 let requestedTermId = String(initialAdminParams.get("term") || "").trim();
 
+async function fetchCanonicalPublishedTerms() {
+  try {
+    const response = await fetch("/api/categories?resource=terms", { cache: "no-store" });
+    if (!response.ok) return [];
+    const payload = await response.json().catch(() => ({}));
+    return Array.isArray(payload?.terms) ? payload.terms : [];
+  } catch (_error) {
+    return [];
+  }
+}
+
 function normalizeProfile(profile) {
   return supabaseHelpers?.normalizeProfile(profile) || null;
 }
@@ -1173,22 +1184,25 @@ function renderTable(list) {
     const info = document.createElement("div");
     info.className = "admin__row-info";
     const status = getTermStatus(item);
-    info.textContent = `${getCategoryName(item)} · ${getWorkflowLabel(status)} · ${item.definition}`;
+    info.textContent = item.id
+      ? `${getCategoryName(item)} · ${getWorkflowLabel(status)} · ${item.definition}`
+      : `${getCategoryName(item)} · Contenu canonique · ${item.definition}`;
 
     const actions = document.createElement("div");
     actions.className = "admin__row-actions";
 
     const editButton = document.createElement("button");
     editButton.className = "ghost";
-    editButton.textContent = "Modifier";
+    editButton.textContent = item.id ? "Modifier" : "Importer";
     editButton.addEventListener("click", () => loadTerm(item));
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Supprimer";
-    deleteButton.addEventListener("click", () => removeTerm(item, deleteButton));
-
     actions.appendChild(editButton);
-    actions.appendChild(deleteButton);
+    if (item.id) {
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Supprimer";
+      deleteButton.addEventListener("click", () => removeTerm(item, deleteButton));
+      actions.appendChild(deleteButton);
+    }
 
     row.appendChild(title);
     row.appendChild(info);
@@ -1851,7 +1865,7 @@ async function fetchChatFeedback() {
 
 function loadTerm(item) {
   if (adminPermissionsReady) setAdminSection("corpus");
-  editingId = item.id;
+  editingId = item.id || null;
   editingSubmission = null;
   termInput.value = item.term || "";
   categoryInput.value = getCategoryName(item);
@@ -1865,7 +1879,11 @@ function loadTerm(item) {
   reviewerCommentInput.value = item.reviewer_comment || "";
   if (submissionBanner) submissionBanner.textContent = "";
   updateAdminCorpusSummary();
-  setMessage(`Corpus : fiche chargée pour modification (${item.term || "terme"}).`);
+  setMessage(
+    item.id
+      ? `Corpus : fiche chargée pour modification (${item.term || "terme"}).`
+      : `Corpus : fiche canonique chargée. Enregistrer pour l’ajouter dans la base avant d’y lier des médias.`
+  );
   syncAdminUrl({ section: "corpus", termId: item.id || "" });
   termInput.focus();
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -2319,7 +2337,7 @@ async function saveTerm() {
 }
 
 async function fetchTerms() {
-  let [termsQuery, mediaQuery, relationsQuery] = await Promise.all([
+  let [termsQuery, mediaQuery, relationsQuery, canonicalTerms] = await Promise.all([
     supabaseClient
       .from("terms")
       .select(`
@@ -2348,7 +2366,8 @@ async function fetchTerms() {
     supabaseClient
       .from("term_relations")
       .select("source_term_id, target_term_id, relation_type")
-      .eq("relation_type", "related")
+      .eq("relation_type", "related"),
+    fetchCanonicalPublishedTerms()
   ]);
 
   if (termsQuery.error && isMissingRichPayloadSupport(termsQuery.error)) {
@@ -2405,7 +2424,7 @@ async function fetchTerms() {
     relatedNamesByTermId.set(relation.source_term_id, list);
   }
 
-  terms = baseTerms.map((item) => {
+  const dbTerms = baseTerms.map((item) => {
     const itemMedia = mediaByTermId.get(item.id) || [];
     return {
       ...item,
@@ -2415,6 +2434,21 @@ async function fetchTerms() {
       media_urls: itemMedia.map((media) => media.url)
     };
   });
+  const mergedBySlug = new Map();
+  for (const item of dbTerms) mergedBySlug.set(String(item.slug || "").trim().toLowerCase(), item);
+  for (const item of canonicalTerms) {
+    const slug = String(item?.slug || "").trim().toLowerCase();
+    if (!slug || mergedBySlug.has(slug)) continue;
+    mergedBySlug.set(slug, {
+      ...item,
+      id: null,
+      category: item.categories?.name || item.category || "",
+      related: Array.isArray(item.related) ? item.related : [],
+      media: [],
+      media_urls: []
+    });
+  }
+  terms = Array.from(mergedBySlug.values());
   applyTermsView();
 
   if (requestedTermId) {

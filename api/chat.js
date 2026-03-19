@@ -349,6 +349,51 @@ async function buildTermAssistTranslation({ apiKey, model, language, term, defin
   };
 }
 
+async function buildTermAssistTranslationFallback({ apiKey, model, language, term }) {
+  const languageLabel = ASSIST_LANGUAGE_LABELS[language];
+  if (!languageLabel) {
+    const error = new Error("unsupported_language");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const prompt = [
+    `Traduis du français vers ${languageLabel}.`,
+    "Le contenu est un mot ou une expression courte d’un site d’architecture.",
+    "Réponds uniquement avec la traduction, sans explication, sans JSON, sans guillemets.",
+    `Texte français: ${JSON.stringify(term)}`
+  ].join("\n");
+
+  const ai = new GoogleGenAI({ apiKey });
+  const response = await ai.models.generateContent({
+    model,
+    config: {
+      temperature: 0.1,
+      maxOutputTokens: 120
+    },
+    contents: [{
+      role: "user",
+      parts: [{ text: prompt }]
+    }]
+  });
+
+  const translatedTerm = asText(response?.text, 240);
+  if (!translatedTerm) {
+    const error = new Error("empty_model_response");
+    error.statusCode = 502;
+    throw error;
+  }
+
+  return {
+    language,
+    languageLabel,
+    translatedTerm,
+    translatedDefinition: "",
+    translatedExample: "",
+    pronunciationGuide: ""
+  };
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
@@ -395,14 +440,30 @@ module.exports = async (req, res) => {
   const mode = String(body?.mode || "").trim();
   if (mode === "term_assist") {
     try {
-      const translation = await buildTermAssistTranslation({
-        apiKey,
-        model,
-        language: asText(body?.language, 8).toLowerCase(),
-        term: asText(body?.term, 160),
-        definition: asText(body?.definition, 1400),
-        example: asText(body?.example, 1000)
-      });
+      const language = asText(body?.language, 8).toLowerCase();
+      const term = asText(body?.term, 160);
+      const definition = asText(body?.definition, 1400);
+      const example = asText(body?.example, 1000);
+      let translation;
+
+      try {
+        translation = await buildTermAssistTranslation({
+          apiKey,
+          model,
+          language,
+          term,
+          definition,
+          example
+        });
+      } catch (error) {
+        if (String(error?.message || "") !== "invalid_model_json") throw error;
+        translation = await buildTermAssistTranslationFallback({
+          apiKey,
+          model,
+          language,
+          term
+        });
+      }
 
       res.statusCode = 200;
       res.end(JSON.stringify({ translation, model }));
