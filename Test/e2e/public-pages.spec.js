@@ -71,12 +71,12 @@ const pages = [
   {
     path: "/dictionnaire.html",
     title: "Dico-Archi - Dictionnaire simple d'architecture",
-    selectors: [".hero-ribbon", ".panel--dictionary", "#terms-list"]
+    selectors: ["h1", ".panel--dictionary", "#terms-list"]
   },
   {
     path: "/category.html",
     title: "Catégorie - Dico-Archi",
-    selectors: [".hero-ribbon", ".panel--category", "#category-cards"]
+    selectors: ["#category-title", ".panel--category", "#category-cards"]
   },
   {
     path: "/term.html",

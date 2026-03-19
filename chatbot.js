@@ -324,7 +324,7 @@
         mode: "term_assist",
         language,
         term: text,
-        definition: text,
+        definition: "",
         example: ""
       })
     });
@@ -397,7 +397,11 @@
 
   const wordAssistRoot = createElement("div", "word-assist");
   wordAssistRoot.hidden = true;
-  const wordAssistLabel = createElement("div", "word-assist__label", "Lecture");
+  const wordAssistHeader = createElement("div", "word-assist__header");
+  const wordAssistLabel = createElement("div", "word-assist__label", "Ecouter / Traduire");
+  const wordAssistClose = createElement("button", "word-assist__close ghost", "Fermer");
+  wordAssistClose.type = "button";
+  wordAssistClose.setAttribute("aria-label", "Fermer l’aide de lecture");
   const wordAssistSelection = createElement("strong", "word-assist__selection", "");
   const wordAssistControls = createElement("div", "word-assist__controls");
   const wordAssistLanguage = createElement("select", "word-assist__language");
@@ -418,15 +422,31 @@
   const wordAssistResultActions = createElement("div", "word-assist__result-actions");
   const wordAssistPronounceTranslated = createElement("button", "word-assist__button ghost", "Prononcer la traduction");
   wordAssistPronounceTranslated.type = "button";
+  wordAssistPronounceTranslated.hidden = true;
   wordAssistResultActions.appendChild(wordAssistPronounceTranslated);
   wordAssistResult.append(wordAssistResultText, wordAssistResultActions);
   wordAssistResult.hidden = true;
-  wordAssistRoot.append(wordAssistLabel, wordAssistSelection, wordAssistControls, wordAssistStatus, wordAssistResult);
+  wordAssistHeader.append(wordAssistLabel, wordAssistClose);
+  wordAssistRoot.append(wordAssistHeader, wordAssistSelection, wordAssistControls, wordAssistStatus, wordAssistResult);
   document.body.appendChild(wordAssistRoot);
 
   const history = [];
   let activeSelectionText = "";
   let activeSelectionTranslation = null;
+  let dismissedSelectionText = "";
+
+  function resetWordAssistState() {
+    activeSelectionTranslation = null;
+    wordAssistResult.hidden = true;
+    wordAssistResultText.textContent = "";
+    wordAssistPronounceTranslated.hidden = true;
+  }
+
+  function hideWordAssist() {
+    wordAssistRoot.hidden = true;
+    resetWordAssistState();
+    wordAssistStatus.textContent = "Sélectionne un mot ou une expression courte.";
+  }
 
   function addAssistantActions(container, text, relatedTerm, messageKey, source, model) {
     const actions = createElement("div", "chatbot__actions");
@@ -590,6 +610,11 @@
     setOpen(false);
   });
 
+  wordAssistClose.addEventListener("click", () => {
+    dismissedSelectionText = activeSelectionText;
+    hideWordAssist();
+  });
+
   function updateWordAssistVisibility() {
     const selectedText = getSelectionText();
     const selection = window.getSelection?.();
@@ -597,22 +622,26 @@
       ? selection.anchorNode
       : selection?.anchorNode?.parentElement || null;
 
-    if (!selectedText || isEditableSelectionTarget(anchorNode) || root.contains(anchorNode)) {
+    if (!selectedText || isEditableSelectionTarget(anchorNode) || root.contains(anchorNode) || wordAssistRoot.contains(anchorNode)) {
       activeSelectionText = "";
-      activeSelectionTranslation = null;
-      wordAssistRoot.hidden = true;
-      wordAssistResult.hidden = true;
-      wordAssistResultText.textContent = "";
-      wordAssistStatus.textContent = "Sélectionne un mot ou une expression courte.";
+      dismissedSelectionText = "";
+      hideWordAssist();
       return;
     }
 
+    if (selectedText === dismissedSelectionText) {
+      activeSelectionText = selectedText;
+      hideWordAssist();
+      return;
+    }
+
+    if (selectedText === activeSelectionText && !wordAssistRoot.hidden) return;
+
     activeSelectionText = selectedText;
-    activeSelectionTranslation = null;
+    dismissedSelectionText = "";
     wordAssistRoot.hidden = false;
     wordAssistSelection.textContent = selectedText;
-    wordAssistResult.hidden = true;
-    wordAssistResultText.textContent = "";
+    resetWordAssistState();
     wordAssistStatus.textContent = "Traduire ou écouter.";
   }
 
@@ -626,11 +655,21 @@
     wordAssistStatus.textContent = "Traduction en cours...";
     try {
       const result = await requestSelectionAssist(activeSelectionText, wordAssistLanguage.value || "en");
+      const translatedTerm = String(result?.translatedTerm || "").trim();
+      if (!translatedTerm) {
+        activeSelectionTranslation = null;
+        resetWordAssistState();
+        wordAssistStatus.textContent = "Traduction indisponible pour le moment.";
+        return;
+      }
       activeSelectionTranslation = result;
-      wordAssistResultText.textContent = result?.translatedTerm || activeSelectionText;
+      wordAssistResultText.textContent = translatedTerm;
+      wordAssistPronounceTranslated.hidden = false;
       wordAssistResult.hidden = false;
       wordAssistStatus.textContent = "Traduction prête.";
     } catch (_error) {
+      activeSelectionTranslation = null;
+      resetWordAssistState();
       wordAssistStatus.textContent = "Traduction indisponible pour le moment.";
     } finally {
       wordAssistTranslate.disabled = false;

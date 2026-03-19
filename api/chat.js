@@ -283,11 +283,15 @@ async function buildTermAssistTranslation({ apiKey, model, language, term, defin
     throw error;
   }
 
-  if (!term || !definition) {
+  if (!term) {
     const error = new Error("missing_term_payload");
     error.statusCode = 400;
     throw error;
   }
+
+  const cleanDefinition = asText(definition, 1400);
+  const cleanExample = asText(example, 1000);
+  const hasDetail = Boolean(cleanDefinition || cleanExample);
 
   const prompt = [
     `Traduis ce contenu du français vers ${languageLabel}.`,
@@ -297,9 +301,12 @@ async function buildTermAssistTranslation({ apiKey, model, language, term, defin
     "Reponds uniquement avec un JSON valide.",
     'Format exact: {"translatedTerm":"...","translatedDefinition":"...","translatedExample":"...","pronunciationGuide":"..."}',
     "Le champ pronunciationGuide doit rester en alphabet latin simple, pensé pour aider un débutant à prononcer le terme français original.",
+    hasDetail
+      ? "Si la définition ou l’exemple sont vides, renvoie une chaine vide pour ces champs."
+      : "Le contenu peut être un mot ou une expression courte. Traduis surtout l’expression sélectionnée, et laisse translatedDefinition et translatedExample vides si rien d’autre n’est utile.",
     `Terme français: ${JSON.stringify(term)}`,
-    `Définition française: ${JSON.stringify(definition)}`,
-    `Exemple français: ${JSON.stringify(example)}`
+    `Définition française: ${JSON.stringify(cleanDefinition)}`,
+    `Exemple français: ${JSON.stringify(cleanExample)}`
   ].join("\n");
 
   const ai = new GoogleGenAI({ apiKey });
