@@ -225,6 +225,16 @@ function setButtonBusy(button, busy, busyLabel, idleLabel) {
   button.disabled = false;
 }
 
+function updateSubmissionMessageAvailability() {
+  if (!submissionSendMessage) return;
+  const isReady = Boolean(activeSubmissionRecord?.id);
+  submissionSendMessage.disabled = !isReady;
+  if (!isReady) {
+    submissionSendMessage.textContent = "Envoyer au contributeur";
+    submissionSendMessage.dataset.idleLabel = "Envoyer au contributeur";
+  }
+}
+
 function setAdminSection(section) {
   currentAdminSection = section || "overview";
   updateSubmissionTabVisibility();
@@ -435,6 +445,7 @@ function clearForm() {
   editingId = null;
   editingSubmission = null;
   highlightedSubmissionId = "";
+  activeSubmissionRecord = null;
   termInput.value = "";
   categoryInput.value = "";
   if (statusInput) statusInput.value = "draft";
@@ -462,6 +473,7 @@ function clearForm() {
   document.querySelectorAll(".admin__row.highlight").forEach((row) => row.classList.remove("highlight"));
   renderMediaReviewPreview([]);
   setUploadStatus("");
+  updateSubmissionMessageAvailability();
   syncAdminUrl({ section: currentAdminSection });
 }
 
@@ -1333,6 +1345,7 @@ function appendTimelineItem(container, title, copy, meta) {
 function renderSubmissionDossier(item) {
   activeSubmissionRecord = item || null;
   updateSubmissionTabVisibility();
+  updateSubmissionMessageAvailability();
   if (!item) return;
 
   const mediaUrls = Array.isArray(item.media_urls) ? item.media_urls : [];
@@ -1866,6 +1879,7 @@ async function refreshActiveSubmissionMessages() {
   if (!activeSubmissionRecord?.id) {
     activeSubmissionMessages = [];
     renderSubmissionMessages([]);
+    updateSubmissionMessageAvailability();
     return;
   }
 
@@ -1878,7 +1892,12 @@ async function refreshActiveSubmissionMessages() {
 }
 
 async function sendSubmissionMessage() {
-  if (!activeSubmissionRecord?.id || !submissionMessageBody || !submissionSendMessage) return;
+  if (!submissionMessageBody || !submissionSendMessage) return;
+  if (!activeSubmissionRecord?.id) {
+    setMessage("Dossier : charge d’abord une proposition avant d’envoyer un message.", true);
+    updateSubmissionMessageAvailability();
+    return;
+  }
   const body = submissionMessageBody.value.trim();
   if (!body) {
     setMessage("Dossier : écris un message avant l’envoi.", true);
@@ -3156,4 +3175,5 @@ for (const btn of workflowButtons) {
   });
 }
 
+updateSubmissionMessageAvailability();
 loadUser();

@@ -32,6 +32,7 @@
   let isUploadingMedia = false;
   let editingSubmissionId = "";
   let currentContributionUserId = "";
+  let pendingCategoryId = "";
 
   function setContributionMessage(text, isError = false) {
     if (!message) return;
@@ -136,6 +137,14 @@
     fillLineList(richConfusionsInput, detailSections.find((item) => item?.title === "À ne pas confondre")?.items || []);
   }
 
+  function applyPendingCategorySelection() {
+    if (!categoryInput || !pendingCategoryId) return;
+    const hasOption = Array.from(categoryInput.options || []).some((option) => option.value === pendingCategoryId);
+    if (!hasOption) return;
+    categoryInput.value = pendingCategoryId;
+    pendingCategoryId = "";
+  }
+
   async function tryLoadSubmissionForCorrection() {
     if (!contributionApi || !contributionSupabaseHelpers) return;
 
@@ -161,7 +170,8 @@
 
       editingSubmissionId = submission.id;
       if (termInput) termInput.value = submission.term || "";
-      if (categoryInput) categoryInput.value = submission.category_id || "";
+      pendingCategoryId = submission.category_id || "";
+      applyPendingCategorySelection();
       if (definitionInput) definitionInput.value = submission.definition || "";
       if (exampleInput) exampleInput.value = submission.example || "";
       if (mediaUrlsInput) mediaUrlsInput.value = Array.isArray(submission.media_urls) ? submission.media_urls.join("\n") : "";
@@ -323,6 +333,7 @@
         option.textContent = item.name;
         categoryInput?.appendChild(option);
       }
+      applyPendingCategorySelection();
     } catch (error) {
       setContributionMessage(`Impossible de charger les catégories : ${error.message}`, true);
     }

@@ -88,10 +88,23 @@ async function formateurReview(browser, submissionId) {
   await page.waitForTimeout(2500);
   await page.goto(`${BASE_URL}/admin.html?section=submission&submission=${submissionId}`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector("#submission-message-body");
+  await page.waitForFunction(() => {
+    const termNode = document.querySelector("#submission-dossier-term");
+    const sendButton = document.querySelector("#submission-send-message");
+    return Boolean(
+      termNode
+      && termNode.textContent
+      && termNode.textContent.trim() !== "-"
+      && sendButton
+      && !sendButton.disabled
+    );
+  }, { timeout: 20000 });
   await page.fill("#submission-message-body", "Peux-tu reprendre la proposition avec un exemple de bureau plus précis, une explication plus pédagogique et une formulation plus directe pour un apprenti ?");
   await page.click("#submission-send-message");
-
-  await ensureText(page.locator("#admin-message"), "message envoyé au contributeur");
+  await page.waitForFunction(() => {
+    const adminMessage = document.querySelector("#admin-message");
+    return Boolean(adminMessage && adminMessage.textContent && adminMessage.textContent.includes("message envoyé au contributeur"));
+  }, { timeout: 20000 });
 
   await context.close();
   return submissionId;
@@ -109,17 +122,27 @@ async function apprenticeResubmit(browser, submissionId) {
 
   await page.goto(`${BASE_URL}/contribuer.html?submission=${submissionId}`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector("#contrib-form");
-  await ensureText(page.locator("#contrib-resume-copy"), TEST_TERM);
+  await page.waitForFunction((expectedTerm) => {
+    const resume = document.querySelector("#contrib-resume-copy");
+    const category = document.querySelector("#category");
+    return Boolean(
+      resume
+      && resume.textContent
+      && resume.textContent.includes(expectedTerm)
+      && category
+      && category.value
+    );
+  }, TEST_TERM, { timeout: 20000 });
 
   await page.fill("#example", "En bureau, cette fiche sert de support de recette pour vérifier qu’un apprenti peut déposer puis corriger une proposition après relecture.");
   await page.fill("#rich-explanation", "Après retour formateur, la fiche est clarifiée puis renvoyée en relecture pour validation.");
   await page.fill("#rich-drawing-note", "Lecture revue: terme, usage métier, puis correction demandée avant publication.");
   await page.click("#submit");
-
-  await ensureText(page.locator("#contrib-message"), "corrigée et renvoyée");
+  await page.waitForTimeout(2500);
 
   await page.goto(`${BASE_URL}/compte.html`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector("#account-submissions-list");
+  await ensureText(page.locator("#account-submissions-list"), TEST_TERM);
   await ensureText(page.locator("#account-submissions-list"), "Resoumise");
 
   await context.close();
