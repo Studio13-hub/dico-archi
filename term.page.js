@@ -52,6 +52,7 @@ let currentRenderedTranslation = null;
 const translationCache = new Map();
 
 const ASSIST_LANGUAGE_CONFIG = {
+  fr: { label: "Français", speechLang: "fr-FR" },
   en: { label: "Anglais", speechLang: "en-US" },
   de: { label: "Allemand", speechLang: "de-DE" },
   it: { label: "Italien", speechLang: "it-IT" },
@@ -166,7 +167,7 @@ function renderTranslationResult(result) {
     return;
   }
 
-  translationLabelNode.textContent = `Traduction ${result.languageLabel || ""}`.trim();
+  translationLabelNode.textContent = `Version ${result.languageLabel || ""}`.trim();
   translationTermNode.textContent = result.translatedTerm || "-";
   translationDefinitionNode.textContent = result.translatedDefinition || "Aucune définition traduite disponible.";
   translationExampleNode.textContent = result.translatedExample || "";
@@ -211,6 +212,20 @@ async function requestTranslation() {
   const language = normalizeText(translationLanguageNode?.value || "en").toLowerCase();
   const languageConfig = ASSIST_LANGUAGE_CONFIG[language];
   if (!currentTermAssistPayload || !languageConfig) return;
+
+  if (language === "fr") {
+    const result = {
+      language,
+      languageLabel: languageConfig.label,
+      translatedTerm: normalizeText(currentTermAssistPayload.term.term),
+      translatedDefinition: normalizeText(currentTermAssistPayload.term.definition),
+      translatedExample: normalizeText(currentTermAssistPayload.term.example),
+      pronunciationGuide: ""
+    };
+    renderTranslationResult(result);
+    setTranslationStatus("Version française affichée.");
+    return;
+  }
 
   const stored = getStoredTranslation(currentTermAssistPayload.richPayload, language);
   if (stored) {

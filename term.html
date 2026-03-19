@@ -90,15 +90,16 @@
             <p id="term-example"></p>
           </div>
           <div class="term-block term-block--assist" id="term-assist-block">
-            <h2>Aide allophone</h2>
+            <h2>Traduction et prononciation</h2>
             <p class="meta meta--subtle term-assist-intro">
-              Traduire la fiche dans une langue d’appui et écouter la prononciation du terme.
+              Choisir une langue, afficher une version d’appui de la fiche et écouter la prononciation.
             </p>
             <div class="term-assist-controls">
               <label class="term-assist-field">
-                <span>Langue d’appui</span>
+                <span>Langue</span>
                 <select id="term-translation-language">
                   <option value="en">Anglais</option>
+                  <option value="fr">Français</option>
                   <option value="de">Allemand</option>
                   <option value="it">Italien</option>
                   <option value="es">Espagnol</option>
@@ -108,16 +109,16 @@
                 </select>
               </label>
               <div class="term-assist-actions">
-                <button type="button" id="term-translate-button">Traduire</button>
-                <button type="button" class="ghost" id="term-pronounce-button">Prononcer le terme</button>
-                <button type="button" class="ghost" id="term-pronounce-translation-button" hidden>Prononcer la traduction</button>
+                <button type="button" id="term-translate-button">Afficher l’aide</button>
+                <button type="button" class="ghost" id="term-pronounce-button">Écouter le terme</button>
+                <button type="button" class="ghost" id="term-pronounce-translation-button" hidden>Écouter la version affichée</button>
               </div>
             </div>
             <div id="term-pronunciation-guide" class="term-pronunciation-guide" hidden></div>
             <div id="term-translation-status" class="meta meta--subtle" aria-live="polite"></div>
             <div id="term-translation-output" class="term-translation-output" hidden>
               <article class="term-translation-card">
-                <span class="dashboard__label" id="term-translation-label">Traduction</span>
+                <span class="dashboard__label" id="term-translation-label">Version affichée</span>
                 <strong id="term-translation-term"></strong>
                 <p id="term-translation-definition"></p>
               </article>
