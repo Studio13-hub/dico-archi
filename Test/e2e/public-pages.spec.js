@@ -349,3 +349,58 @@ test("term page exposes allophone assist and renders translation", async ({ page
   await expect(page.locator("#term-pronounce-translation-button")).toBeVisible();
   await expect(page.locator("#term-pronunciation-guide")).toContainText("bwah la-may-lay koh-lay");
 });
+
+test("selection assist docks, translates and closes cleanly", async ({ page }) => {
+  await page.route("**/api/chat", async (route) => {
+    const body = route.request().postDataJSON?.() || {};
+    if (body?.mode !== "term_assist") {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json; charset=utf-8",
+        body: JSON.stringify({ answer: "ok", model: "test" })
+      });
+      return;
+    }
+
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json; charset=utf-8",
+      body: JSON.stringify({
+        translation: {
+          language: "de",
+          languageLabel: "Allemand",
+          translatedTerm: "Beton",
+          translatedDefinition: "",
+          translatedExample: "",
+          pronunciationGuide: "bay-tohn"
+        }
+      })
+    });
+  });
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/index.html", { waitUntil: "load" });
+
+  await page.evaluate(() => {
+    const target = document.getElementById("featured-term-title");
+    if (!target) return;
+    target.textContent = "Béton";
+    const range = document.createRange();
+    range.selectNodeContents(target);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+    document.dispatchEvent(new Event("selectionchange"));
+  });
+
+  await expect(page.locator(".word-assist")).toBeVisible();
+  await expect(page.locator("body")).toHaveClass(/has-word-assist/);
+  await page.locator(".word-assist__language").selectOption("de");
+  await page.getByRole("button", { name: "Traduire" }).click();
+  await expect(page.locator(".word-assist__result")).toBeVisible();
+  await expect(page.locator(".word-assist__result-text")).toHaveText("Beton");
+  await expect(page.getByRole("button", { name: "Prononcer la traduction" })).toBeVisible();
+  await page.getByRole("button", { name: "Fermer l’aide de lecture" }).click();
+  await expect(page.locator(".word-assist")).toBeHidden();
+  await expect(page.locator("body")).not.toHaveClass(/has-word-assist/);
+});

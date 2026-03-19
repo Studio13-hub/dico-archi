@@ -435,6 +435,10 @@
   let activeSelectionTranslation = null;
   let dismissedSelectionText = "";
 
+  function syncWordAssistLayout() {
+    document.body.classList.toggle("has-word-assist", !wordAssistRoot.hidden);
+  }
+
   function resetWordAssistState() {
     activeSelectionTranslation = null;
     wordAssistResult.hidden = true;
@@ -446,6 +450,17 @@
     wordAssistRoot.hidden = true;
     resetWordAssistState();
     wordAssistStatus.textContent = "Sélectionne un mot ou une expression courte.";
+    syncWordAssistLayout();
+  }
+
+  function clearSelection() {
+    const selection = window.getSelection?.();
+    if (!selection) return;
+    try {
+      selection.removeAllRanges();
+    } catch (_error) {
+      // Ignore selection clearing issues.
+    }
   }
 
   function addAssistantActions(container, text, relatedTerm, messageKey, source, model) {
@@ -612,6 +627,7 @@
 
   wordAssistClose.addEventListener("click", () => {
     dismissedSelectionText = activeSelectionText;
+    clearSelection();
     hideWordAssist();
   });
 
@@ -643,6 +659,7 @@
     wordAssistSelection.textContent = selectedText;
     resetWordAssistState();
     wordAssistStatus.textContent = "Traduire ou écouter.";
+    syncWordAssistLayout();
   }
 
   document.addEventListener("selectionchange", () => {
@@ -747,4 +764,5 @@
     shouldOpen = false;
   }
   setOpen(shouldOpen);
+  syncWordAssistLayout();
 })();

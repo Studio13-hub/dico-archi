@@ -817,9 +817,11 @@ body.page-home h1 span {
 .word-assist {
   position: fixed;
   right: 18px;
-  bottom: 18px;
+  top: 96px;
   z-index: 31;
-  width: min(296px, calc(100vw - 28px));
+  width: min(340px, calc(100vw - 36px));
+  max-height: calc(100vh - 116px);
+  overflow: auto;
   display: grid;
   gap: 8px;
   padding: 12px;
@@ -828,6 +830,22 @@ body.page-home h1 span {
   background: rgba(255, 252, 247, 0.9);
   box-shadow: 0 14px 28px rgba(18, 18, 18, 0.12);
   backdrop-filter: blur(10px);
+}
+
+.word-assist[hidden] {
+  display: none !important;
+}
+
+body.has-word-assist {
+  padding-right: 372px;
+}
+
+body.has-word-assist .hero__content,
+body.has-word-assist .home-main,
+body.has-word-assist .reading-main,
+body.has-word-assist .work-main,
+body.has-word-assist .footer__inner--site {
+  transition: max-width 140ms ease, padding-right 140ms ease;
 }
 
 .word-assist__header {
@@ -3979,11 +3997,17 @@ body.page-reading .term-block {
     bottom: 84px;
   }
 
+  body.has-word-assist {
+    padding-right: 0;
+  }
+
   .word-assist {
     left: 12px;
     right: 12px;
+    top: auto;
     bottom: 84px;
     width: auto;
+    max-height: none;
   }
 
   .chatbot__toggle {
