@@ -204,10 +204,7 @@
   if (authForm) {
     authForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      if (authSubmitAction === "signup") {
-        signUp();
-        return;
-      }
+      authSubmitAction = "login";
       signIn();
     });
   }
@@ -224,6 +221,21 @@
       authSubmitAction = "signup";
       signUp();
     });
+  }
+
+  function submitLoginFromKeyboard(event) {
+    if (event.key !== "Enter" || mode !== "auth") return;
+    event.preventDefault();
+    authSubmitAction = "login";
+    authForm?.requestSubmit();
+  }
+
+  if (emailInput) {
+    emailInput.addEventListener("keydown", submitLoginFromKeyboard);
+  }
+
+  if (passwordInput) {
+    passwordInput.addEventListener("keydown", submitLoginFromKeyboard);
   }
 
   if (forgotPasswordButton) {

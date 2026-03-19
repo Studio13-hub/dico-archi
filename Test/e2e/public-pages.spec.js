@@ -290,3 +290,59 @@ test("quick access appears on core pages", async ({ page }) => {
   await expect(page.locator("#term-quicklinks")).toContainText("Accueil");
   await expect(page.locator("#term-quicklinks")).toContainText("Matériaux");
 });
+
+test("auth form submits on Enter from password field", async ({ page }) => {
+  await page.goto("/auth.html", { waitUntil: "networkidle" });
+
+  await page.evaluate(() => {
+    window.__authSubmitCount = 0;
+    const form = document.getElementById("auth-form");
+    form?.addEventListener("submit", () => {
+      window.__authSubmitCount += 1;
+    });
+  });
+
+  await page.locator("#email").fill("test@example.com");
+  await page.locator("#password").fill("secret123");
+  await page.locator("#password").press("Enter");
+
+  await expect.poll(async () => page.evaluate(() => window.__authSubmitCount)).toBeGreaterThan(0);
+});
+
+test("term page exposes allophone assist and renders translation", async ({ page }) => {
+  await page.route("**/api/terms?slug=bois-lamelle-colle", async (route) => {
+    await route.fulfill({
+      status: 404,
+      contentType: "application/json; charset=utf-8",
+      body: JSON.stringify({ error: "term_not_imported_yet" })
+    });
+  });
+
+  await page.route("**/api/term-assist", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json; charset=utf-8",
+      body: JSON.stringify({
+        translation: {
+          language: "en",
+          languageLabel: "Anglais",
+          translatedTerm: "Glulam",
+          translatedDefinition: "Engineered timber made from glued wood lamellas.",
+          translatedExample: "Glulam is used for long-span roof structures.",
+          pronunciationGuide: "bwah la-may-lay koh-lay"
+        }
+      })
+    });
+  });
+
+  await page.goto("/term.html?slug=bois-lamelle-colle", { waitUntil: "networkidle" });
+
+  await expect(page.locator("#term-assist-block")).toBeVisible();
+  await expect(page.locator("#term-pronounce-button")).toBeVisible();
+  await page.locator("#term-translate-button").click();
+  await expect(page.locator("#term-translation-output")).toBeVisible();
+  await expect(page.locator("#term-translation-term")).toHaveText("Glulam");
+  await expect(page.locator("#term-translation-definition")).toContainText("Engineered timber");
+  await expect(page.locator("#term-pronounce-translation-button")).toBeVisible();
+  await expect(page.locator("#term-pronunciation-guide")).toContainText("bwah la-may-lay koh-lay");
+});

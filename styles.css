@@ -1981,6 +1981,63 @@ body.lightbox-open {
   line-height: 1;
 }
 
+.term-assist-intro {
+  margin-top: 0;
+}
+
+.term-assist-controls {
+  display: grid;
+  gap: 14px;
+}
+
+.term-assist-field {
+  display: grid;
+  gap: 8px;
+}
+
+.term-assist-field span {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: rgba(18, 18, 18, 0.68);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.term-assist-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.term-pronunciation-guide {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(23, 52, 47, 0.08);
+  border: 1px solid rgba(23, 52, 47, 0.12);
+  color: rgba(18, 18, 18, 0.82);
+  font-size: 0.95rem;
+}
+
+.term-translation-output {
+  margin-top: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.term-translation-card {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(49, 42, 31, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.term-translation-card strong {
+  font-size: 1.08rem;
+}
+
 .term-detail-tabs {
   display: flex;
   flex-wrap: wrap;

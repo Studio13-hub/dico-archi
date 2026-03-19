@@ -33,7 +33,33 @@ const leadBlockNode = document.getElementById("term-lead-block");
 const relatedBlockNode = document.getElementById("term-related-block");
 const mediaBlockNode = document.getElementById("term-media-block");
 const quicklinksNode = document.getElementById("term-quicklinks");
+const assistBlockNode = document.getElementById("term-assist-block");
+const translationLanguageNode = document.getElementById("term-translation-language");
+const translationButtonNode = document.getElementById("term-translate-button");
+const pronounceButtonNode = document.getElementById("term-pronounce-button");
+const pronounceTranslationButtonNode = document.getElementById("term-pronounce-translation-button");
+const translationStatusNode = document.getElementById("term-translation-status");
+const translationOutputNode = document.getElementById("term-translation-output");
+const translationLabelNode = document.getElementById("term-translation-label");
+const translationTermNode = document.getElementById("term-translation-term");
+const translationDefinitionNode = document.getElementById("term-translation-definition");
+const translationExampleCardNode = document.getElementById("term-translation-example-card");
+const translationExampleNode = document.getElementById("term-translation-example");
+const pronunciationGuideNode = document.getElementById("term-pronunciation-guide");
 let activeDetailSectionIndex = 0;
+let currentTermAssistPayload = null;
+let currentRenderedTranslation = null;
+const translationCache = new Map();
+
+const ASSIST_LANGUAGE_CONFIG = {
+  en: { label: "Anglais", speechLang: "en-US" },
+  de: { label: "Allemand", speechLang: "de-DE" },
+  it: { label: "Italien", speechLang: "it-IT" },
+  es: { label: "Espagnol", speechLang: "es-ES" },
+  pt: { label: "Portugais", speechLang: "pt-PT" },
+  sq: { label: "Albanais", speechLang: "sq" },
+  ar: { label: "Arabe", speechLang: "ar" }
+};
 
 function getSlug() {
   const params = new URLSearchParams(window.location.search);
@@ -77,6 +103,167 @@ function renderList(blockNode, listNode, values, emptyLabel = "") {
 
 function normalizeText(value) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function setTranslationStatus(text, isError = false) {
+  if (!translationStatusNode) return;
+  translationStatusNode.textContent = text || "";
+  translationStatusNode.style.color = isError ? "#d94e2b" : "";
+}
+
+function getStoredTranslation(payload, language) {
+  const translations = payload && typeof payload.translations === "object" ? payload.translations : null;
+  if (!translations) return null;
+
+  const entry = translations[language];
+  if (!entry) return null;
+
+  if (typeof entry === "string") {
+    return {
+      language,
+      languageLabel: ASSIST_LANGUAGE_CONFIG[language]?.label || language.toUpperCase(),
+      translatedTerm: entry,
+      translatedDefinition: "",
+      translatedExample: "",
+      pronunciationGuide: ""
+    };
+  }
+
+  return {
+    language,
+    languageLabel: normalizeText(entry.languageLabel) || ASSIST_LANGUAGE_CONFIG[language]?.label || language.toUpperCase(),
+    translatedTerm: normalizeText(entry.term || entry.translatedTerm),
+    translatedDefinition: normalizeText(entry.definition || entry.translatedDefinition),
+    translatedExample: normalizeText(entry.example || entry.translatedExample),
+    pronunciationGuide: normalizeText(entry.pronunciationGuide)
+  };
+}
+
+function renderTranslationResult(result) {
+  currentRenderedTranslation = result || null;
+
+  if (
+    !translationOutputNode
+    || !translationLabelNode
+    || !translationTermNode
+    || !translationDefinitionNode
+    || !translationExampleCardNode
+    || !translationExampleNode
+    || !pronunciationGuideNode
+  ) {
+    return;
+  }
+
+  if (!result) {
+    translationOutputNode.hidden = true;
+    translationTermNode.textContent = "";
+    translationDefinitionNode.textContent = "";
+    translationExampleNode.textContent = "";
+    translationExampleCardNode.hidden = true;
+    pronunciationGuideNode.hidden = true;
+    pronunciationGuideNode.textContent = "";
+    if (pronounceTranslationButtonNode) pronounceTranslationButtonNode.hidden = true;
+    return;
+  }
+
+  translationLabelNode.textContent = `Traduction ${result.languageLabel || ""}`.trim();
+  translationTermNode.textContent = result.translatedTerm || "-";
+  translationDefinitionNode.textContent = result.translatedDefinition || "Aucune définition traduite disponible.";
+  translationExampleNode.textContent = result.translatedExample || "";
+  translationExampleCardNode.hidden = !result.translatedExample;
+  translationOutputNode.hidden = false;
+
+  const guide = normalizeText(result.pronunciationGuide);
+  pronunciationGuideNode.textContent = guide ? `Prononciation guidée: ${guide}` : "";
+  pronunciationGuideNode.hidden = !guide;
+  if (pronounceTranslationButtonNode) {
+    pronounceTranslationButtonNode.hidden = !normalizeText(result.translatedTerm);
+  }
+}
+
+function canUseSpeechSynthesis() {
+  return typeof window !== "undefined"
+    && "speechSynthesis" in window
+    && typeof window.SpeechSynthesisUtterance === "function";
+}
+
+function speakText(text, lang) {
+  const spokenText = normalizeText(text);
+  if (!spokenText) {
+    setTranslationStatus("Aucun texte à prononcer.", true);
+    return;
+  }
+
+  if (!canUseSpeechSynthesis()) {
+    setTranslationStatus("La prononciation vocale n’est pas disponible sur ce navigateur.", true);
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  const utterance = new window.SpeechSynthesisUtterance(spokenText);
+  utterance.lang = lang || "fr-FR";
+  utterance.rate = 0.92;
+  window.speechSynthesis.speak(utterance);
+  setTranslationStatus("Lecture audio lancée.");
+}
+
+async function requestTranslation() {
+  const language = normalizeText(translationLanguageNode?.value || "en").toLowerCase();
+  const languageConfig = ASSIST_LANGUAGE_CONFIG[language];
+  if (!currentTermAssistPayload || !languageConfig) return;
+
+  const stored = getStoredTranslation(currentTermAssistPayload.richPayload, language);
+  if (stored) {
+    renderTranslationResult(stored);
+    setTranslationStatus(`Traduction ${languageConfig.label.toLowerCase()} chargée.`);
+    return;
+  }
+
+  const cacheKey = `${currentTermAssistPayload.slug}:${language}`;
+  if (translationCache.has(cacheKey)) {
+    renderTranslationResult(translationCache.get(cacheKey));
+    setTranslationStatus(`Traduction ${languageConfig.label.toLowerCase()} chargée.`);
+    return;
+  }
+
+  if (!translationButtonNode) return;
+  translationButtonNode.disabled = true;
+  setTranslationStatus(`Traduction ${languageConfig.label.toLowerCase()} en cours...`);
+
+  try {
+    const response = await fetch("/api/term-assist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        language,
+        term: currentTermAssistPayload.term.term,
+        definition: currentTermAssistPayload.term.definition,
+        example: currentTermAssistPayload.term.example
+      })
+    });
+
+    if (!response.ok) {
+      const errorPayload = await response.json().catch(() => ({}));
+      throw new Error(errorPayload?.error || "translation_failed");
+    }
+
+    const payload = await response.json();
+    const result = payload?.translation || null;
+    if (!result) {
+      throw new Error("translation_failed");
+    }
+
+    translationCache.set(cacheKey, result);
+    renderTranslationResult(result);
+    setTranslationStatus(`Traduction ${languageConfig.label.toLowerCase()} prête.`);
+  } catch (_error) {
+    renderTranslationResult(null);
+    setTranslationStatus("La traduction assistée n’est pas disponible pour le moment.", true);
+  } finally {
+    translationButtonNode.disabled = false;
+  }
 }
 
 function humanizeSlug(value) {
@@ -420,6 +607,12 @@ function resetTermPageState() {
   if (relatedBlockNode) relatedBlockNode.hidden = true;
   if (mediaBlockNode) mediaBlockNode.hidden = true;
   if (visualBlockNode) visualBlockNode.hidden = true;
+  if (assistBlockNode) assistBlockNode.hidden = true;
+  if (pronounceButtonNode) pronounceButtonNode.disabled = true;
+  if (translationButtonNode) translationButtonNode.disabled = false;
+  currentTermAssistPayload = null;
+  renderTranslationResult(null);
+  setTranslationStatus("");
 }
 
 function renderMedia(items) {
@@ -544,6 +737,20 @@ function renderRelated(items) {
   relatedNode.appendChild(list);
 }
 
+function setupTermAssist(payload) {
+  currentTermAssistPayload = payload;
+  renderTranslationResult(null);
+  setTranslationStatus("Choisis une langue puis lance la traduction ou la prononciation.");
+
+  if (assistBlockNode) {
+    assistBlockNode.hidden = !payload?.term?.term;
+  }
+
+  if (pronounceButtonNode) {
+    pronounceButtonNode.disabled = !payload?.term?.term;
+  }
+}
+
 async function loadTermPage() {
   const slug = getSlug();
   if (!slug) {
@@ -597,6 +804,11 @@ async function loadTermPage() {
     renderRelated(payload?.related_terms || []);
     applyV2Details(richPayload);
     renderQuickLinks(term, v2Payload || { category_slug: payload?.term?.categories?.slug || "" });
+    setupTermAssist({
+      slug,
+      term,
+      richPayload
+    });
     document.title = `${term.term || "Fiche terme"} - Dico-Archi`;
   } catch (error) {
     titleNode.textContent = "TERME";
@@ -611,6 +823,24 @@ async function loadTermPage() {
     clearTermChildren(relatedNode);
     document.title = "Fiche terme - Dico-Archi";
   }
+}
+
+if (translationButtonNode) {
+  translationButtonNode.addEventListener("click", requestTranslation);
+}
+
+if (pronounceButtonNode) {
+  pronounceButtonNode.addEventListener("click", () => {
+    speakText(currentTermAssistPayload?.term?.term || "", "fr-FR");
+  });
+}
+
+if (pronounceTranslationButtonNode) {
+  pronounceTranslationButtonNode.addEventListener("click", () => {
+    const language = normalizeText(currentRenderedTranslation?.language).toLowerCase();
+    const languageConfig = ASSIST_LANGUAGE_CONFIG[language];
+    speakText(currentRenderedTranslation?.translatedTerm || "", languageConfig?.speechLang || "en-US");
+  });
 }
 
 loadTermPage();
