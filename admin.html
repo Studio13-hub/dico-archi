@@ -26,7 +26,7 @@
           </div>
         </div>
         <h1>Administration éditoriale</h1>
-        <p>Pilotez le corpus, les contributions, les rôles et le suivi du site avec une séparation claire entre apprentis, formateurs et administration.</p>
+        <p>Corpus, contributions, comptes et suivi.</p>
       </div>
     </header>
 
@@ -77,24 +77,7 @@
       </section>
 
       <section class="panel admin__workflow" id="admin-panel-overview" role="tabpanel" aria-labelledby="admin-tab-overview" data-admin-section="overview">
-        <h2>Pilotage éditorial</h2>
-        <div class="admin__quickmap">
-          <div class="admin__quickmap-item">
-            <span class="dashboard__label">Vue d’ensemble</span>
-            <strong>Traiter les propositions en attente</strong>
-            <p class="meta meta--subtle">Point d’entrée pour reprendre la file de validation.</p>
-          </div>
-          <div class="admin__quickmap-item">
-            <span class="dashboard__label">Corpus</span>
-            <strong>Corriger ou compléter une fiche</strong>
-            <p class="meta meta--subtle">Espace d’édition après chargement d’une proposition ou d’un terme existant.</p>
-          </div>
-          <div class="admin__quickmap-item">
-            <span class="dashboard__label">Suivi</span>
-            <strong>Lire les signaux d’usage</strong>
-            <p class="meta meta--subtle">Métriques, historique éditorial et feedback assistant selon le rôle.</p>
-          </div>
-        </div>
+        <h2>Vue d’ensemble</h2>
         <div class="dashboard">
           <div class="dashboard__item">
             <span class="dashboard__label">Brouillon</span>
@@ -115,59 +98,16 @@
           <button type="button" class="chip" data-term-filter="validated">À relire</button>
           <button type="button" class="chip" data-term-filter="published">Publiés</button>
         </div>
-        <p class="meta meta--subtle">
-          Ces filtres ouvrent le panneau <strong>Corpus</strong> avec la bonne vue de travail.
-        </p>
-        <p class="meta meta--subtle">
-          Tous les nouveaux comptes deviennent automatiquement <strong>Apprenti</strong>. Toute proposition passe d’abord par la page <strong>Contribuer</strong>, puis par la relecture <strong>Formateur</strong> avant publication.
-        </p>
-      </section>
-
-      <section class="panel" role="tabpanel" aria-labelledby="admin-tab-overview" data-admin-section="overview">
-        <div class="home-section-head">
-          <div>
-            <span class="section-eyebrow">Cadre de validation</span>
-            <h2>Règle de lecture à garder pour l’équipe</h2>
-          </div>
-        </div>
-        <div class="flow-strip">
-          <article class="flow-step">
-            <span class="dashboard__label">Étape 1</span>
-            <strong>Lire la proposition brute</strong>
-            <p class="meta meta--subtle">Vérifier si le terme est utile, bien nommé et bien classé.</p>
-          </article>
-          <article class="flow-step">
-            <span class="dashboard__label">Étape 2</span>
-            <strong>Corriger ou commenter</strong>
-            <p class="meta meta--subtle">Préciser ce qui manque au lieu de laisser un refus flou.</p>
-          </article>
-          <article class="flow-step">
-            <span class="dashboard__label">Étape 3</span>
-            <strong>Décider clairement</strong>
-            <p class="meta meta--subtle">Valider, demander une correction ou refuser avec une raison explicite.</p>
-          </article>
-          <article class="flow-step">
-            <span class="dashboard__label">Étape 4</span>
-            <strong>Maintenir le corpus</strong>
-            <p class="meta meta--subtle">Publier seulement ce qui reste utile, stable et cohérent pour le bureau.</p>
-          </article>
-        </div>
       </section>
 
       <section class="panel admin__submissions" role="tabpanel" aria-labelledby="admin-tab-overview" data-admin-section="overview">
         <h2>Propositions en attente</h2>
-        <p class="meta meta--subtle">
-          Point de reprise utile: vérifier ici la proposition test <strong>Terme test contribution image</strong> puis la charger dans l’éditeur pour contrôler le rendu riche et le média associé.
-        </p>
         <div id="submissions-empty" class="meta meta--subtle">Aucune proposition en attente.</div>
         <div id="submissions" class="admin__table"></div>
       </section>
 
       <section class="panel admin__list" role="tabpanel" aria-labelledby="admin-tab-overview" data-admin-section="overview">
         <h2>Décisions récentes</h2>
-        <p class="meta meta--subtle">
-          Historique éditorial des validations, refus et demandes de correction, avec auteur de la décision et compte concerné.
-        </p>
         <div class="admin__toolbar">
           <input id="decision-search" name="decision-search" type="search" placeholder="Rechercher un terme, un compte ou un commentaire..." />
           <select id="decision-filter" name="decision-filter">
@@ -263,9 +203,6 @@
       <section class="panel admin__form" id="admin-panel-corpus" role="tabpanel" aria-labelledby="admin-tab-corpus" data-admin-section="corpus" hidden>
         <h2>Relire ou ajuster une fiche</h2>
         <div id="submission-banner" class="meta meta--subtle"></div>
-        <p class="meta meta--subtle">
-          Chargez d’abord une proposition ou un terme, puis utilisez ce panneau pour corriger, compléter et publier sans mélanger cette étape avec la file d’attente.
-        </p>
         <div class="admin__quickmap">
           <div class="admin__quickmap-item">
             <span class="dashboard__label">Objet chargé</span>
@@ -342,9 +279,7 @@
 
       <section class="panel admin__list" id="admin-panel-stats-main" role="tabpanel" aria-labelledby="admin-tab-stats" data-admin-section="stats" data-admin-access="staff" hidden>
         <h2>Statistiques d’usage</h2>
-        <p id="metrics-scope" class="meta meta--subtle">
-          Le volet Suivi regroupe les métriques d’usage et l’historique éditorial. Les comptes `Administration` voient aussi le panneau `Feedback assistant`.
-        </p>
+        <p id="metrics-scope" class="meta meta--subtle"></p>
         <div id="metrics-status" class="meta meta--subtle">
           Le suivi charge les métriques serveur si la migration SQL a bien été appliquée côté Supabase.
         </div>
@@ -374,18 +309,12 @@
 
       <section class="panel admin__list" id="users-panel" role="tabpanel" aria-labelledby="admin-tab-accounts" data-admin-section="accounts" data-admin-access="super_admin" hidden>
         <h2>Comptes et rôles</h2>
-        <p class="meta meta--subtle">
-          Les rôles visibles dans le site sont : <strong>Apprenti</strong>, <strong>Formateur</strong> et <strong>Administration</strong>.
-        </p>
         <div id="users-empty" class="meta meta--subtle">Aucun utilisateur chargé.</div>
         <div id="users-table" class="admin__table"></div>
       </section>
 
       <section class="panel admin__list" id="chat-feedback-panel" role="tabpanel" aria-labelledby="admin-tab-stats" data-admin-section="stats" data-admin-access="super_admin" hidden>
         <h2>Feedback assistant</h2>
-        <p class="meta meta--subtle">
-          Réservé à l’administration : retours Utiles / À améliorer pour affiner l’assistant.
-        </p>
         <div id="chat-feedback-summary" class="dashboard"></div>
         <div class="admin__toolbar">
           <select id="chat-feedback-rating" name="chat-feedback-rating">

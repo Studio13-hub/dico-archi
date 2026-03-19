@@ -6,6 +6,13 @@
   const pagePath = window.location.pathname || "/";
   const isHomePage = document.body?.classList.contains("page-home");
   const feedbackState = new Set();
+  const ASSIST_LANGUAGE_OPTIONS = {
+    en: { label: "Anglais", speechLang: "en-US" },
+    ar: { label: "Arabe", speechLang: "ar" },
+    de: { label: "Allemand", speechLang: "de-DE" },
+    it: { label: "Italien", speechLang: "it-IT" },
+    es: { label: "Espagnol", speechLang: "es-ES" }
+  };
 
   function normalize(value) {
     return String(value || "")
@@ -40,6 +47,7 @@
   }
 
   let publishedTermsCache = Array.isArray(window.TERMS) ? window.TERMS.slice() : [];
+  let publishedTermsRequested = false;
 
   function slugify(value) {
     return String(value || "")
@@ -102,6 +110,12 @@
     } catch (_error) {
       // Keep the current fallback index if network/API loading fails.
     }
+  }
+
+  function ensurePublishedTermsLoaded() {
+    if (publishedTermsRequested) return;
+    publishedTermsRequested = true;
+    refreshPublishedTerms();
   }
 
   function getSessionId() {
@@ -285,6 +299,56 @@
     }
   }
 
+  function canUseSpeechSynthesis() {
+    return typeof window !== "undefined"
+      && "speechSynthesis" in window
+      && typeof window.SpeechSynthesisUtterance === "function";
+  }
+
+  function speakText(text, lang) {
+    const spokenText = String(text || "").trim();
+    if (!spokenText || !canUseSpeechSynthesis()) return false;
+    window.speechSynthesis.cancel();
+    const utterance = new window.SpeechSynthesisUtterance(spokenText);
+    utterance.lang = lang || "fr-FR";
+    utterance.rate = 0.92;
+    window.speechSynthesis.speak(utterance);
+    return true;
+  }
+
+  async function requestSelectionAssist(text, language) {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mode: "term_assist",
+        language,
+        term: text,
+        definition: text,
+        example: ""
+      })
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload?.error || `http_${response.status}`);
+    }
+
+    const payload = await response.json().catch(() => ({}));
+    return payload?.translation || null;
+  }
+
+  function getSelectionText() {
+    const raw = String(window.getSelection?.()?.toString?.() || "").replace(/\s+/g, " ").trim();
+    if (!raw || raw.length > 120) return "";
+    return raw;
+  }
+
+  function isEditableSelectionTarget(node) {
+    if (!(node instanceof Element)) return false;
+    return Boolean(node.closest("input, textarea, select, [contenteditable='true']"));
+  }
+
   const root = createElement("div", "chatbot");
   const hint = createElement("div", "chatbot__hint", "Poser une question sur un terme");
   const toggle = createElement("button", "chatbot__toggle", "Assistant");
@@ -317,7 +381,7 @@
   const note = createElement(
     "div",
     "chatbot__note",
-    "Réponse IA: vérifie les points techniques importants dans les fiches du dictionnaire."
+    "Vérifier les points techniques importants dans les fiches du dictionnaire."
   );
 
   panel.appendChild(header);
@@ -331,7 +395,38 @@
   root.appendChild(panel);
   document.body.appendChild(root);
 
+  const wordAssistRoot = createElement("div", "word-assist");
+  wordAssistRoot.hidden = true;
+  const wordAssistLabel = createElement("div", "word-assist__label", "Lecture");
+  const wordAssistSelection = createElement("strong", "word-assist__selection", "");
+  const wordAssistControls = createElement("div", "word-assist__controls");
+  const wordAssistLanguage = createElement("select", "word-assist__language");
+  for (const [key, config] of Object.entries(ASSIST_LANGUAGE_OPTIONS)) {
+    const option = document.createElement("option");
+    option.value = key;
+    option.textContent = config.label;
+    wordAssistLanguage.appendChild(option);
+  }
+  const wordAssistTranslate = createElement("button", "word-assist__button", "Traduire");
+  wordAssistTranslate.type = "button";
+  const wordAssistPronounce = createElement("button", "word-assist__button ghost", "Prononcer");
+  wordAssistPronounce.type = "button";
+  wordAssistControls.append(wordAssistLanguage, wordAssistTranslate, wordAssistPronounce);
+  const wordAssistStatus = createElement("div", "word-assist__status", "Sélectionne un mot ou une expression courte.");
+  const wordAssistResult = createElement("div", "word-assist__result");
+  const wordAssistResultText = createElement("strong", "word-assist__result-text", "");
+  const wordAssistResultActions = createElement("div", "word-assist__result-actions");
+  const wordAssistPronounceTranslated = createElement("button", "word-assist__button ghost", "Prononcer la traduction");
+  wordAssistPronounceTranslated.type = "button";
+  wordAssistResultActions.appendChild(wordAssistPronounceTranslated);
+  wordAssistResult.append(wordAssistResultText, wordAssistResultActions);
+  wordAssistResult.hidden = true;
+  wordAssistRoot.append(wordAssistLabel, wordAssistSelection, wordAssistControls, wordAssistStatus, wordAssistResult);
+  document.body.appendChild(wordAssistRoot);
+
   const history = [];
+  let activeSelectionText = "";
+  let activeSelectionTranslation = null;
 
   function addAssistantActions(container, text, relatedTerm, messageKey, source, model) {
     const actions = createElement("div", "chatbot__actions");
@@ -461,6 +556,7 @@
       // Ignore storage errors.
     }
     if (open) input.focus();
+    if (open) ensurePublishedTermsLoaded();
   }
 
   toggle.addEventListener("click", (event) => {
@@ -492,6 +588,71 @@
     if (panel.contains(target)) return;
     if (toggle.contains(target)) return;
     setOpen(false);
+  });
+
+  function updateWordAssistVisibility() {
+    const selectedText = getSelectionText();
+    const selection = window.getSelection?.();
+    const anchorNode = selection?.anchorNode instanceof Element
+      ? selection.anchorNode
+      : selection?.anchorNode?.parentElement || null;
+
+    if (!selectedText || isEditableSelectionTarget(anchorNode) || root.contains(anchorNode)) {
+      activeSelectionText = "";
+      activeSelectionTranslation = null;
+      wordAssistRoot.hidden = true;
+      wordAssistResult.hidden = true;
+      wordAssistResultText.textContent = "";
+      wordAssistStatus.textContent = "Sélectionne un mot ou une expression courte.";
+      return;
+    }
+
+    activeSelectionText = selectedText;
+    activeSelectionTranslation = null;
+    wordAssistRoot.hidden = false;
+    wordAssistSelection.textContent = selectedText;
+    wordAssistResult.hidden = true;
+    wordAssistResultText.textContent = "";
+    wordAssistStatus.textContent = "Traduire ou écouter.";
+  }
+
+  document.addEventListener("selectionchange", () => {
+    window.requestAnimationFrame(updateWordAssistVisibility);
+  });
+
+  wordAssistTranslate.addEventListener("click", async () => {
+    if (!activeSelectionText) return;
+    wordAssistTranslate.disabled = true;
+    wordAssistStatus.textContent = "Traduction en cours...";
+    try {
+      const result = await requestSelectionAssist(activeSelectionText, wordAssistLanguage.value || "en");
+      activeSelectionTranslation = result;
+      wordAssistResultText.textContent = result?.translatedTerm || activeSelectionText;
+      wordAssistResult.hidden = false;
+      wordAssistStatus.textContent = "Traduction prête.";
+    } catch (_error) {
+      wordAssistStatus.textContent = "Traduction indisponible pour le moment.";
+    } finally {
+      wordAssistTranslate.disabled = false;
+    }
+  });
+
+  wordAssistPronounce.addEventListener("click", () => {
+    if (!activeSelectionText) return;
+    const didSpeak = speakText(activeSelectionText, "fr-FR");
+    wordAssistStatus.textContent = didSpeak
+      ? "Lecture audio lancée."
+      : "Prononciation non disponible sur ce navigateur.";
+  });
+
+  wordAssistPronounceTranslated.addEventListener("click", () => {
+    const translatedText = String(activeSelectionTranslation?.translatedTerm || "").trim();
+    if (!translatedText) return;
+    const speechLang = ASSIST_LANGUAGE_OPTIONS[wordAssistLanguage.value || "en"]?.speechLang || "en-US";
+    const didSpeak = speakText(translatedText, speechLang);
+    wordAssistStatus.textContent = didSpeak
+      ? "Lecture audio lancée."
+      : "Prononciation non disponible sur ce navigateur.";
   });
 
   form.addEventListener("submit", async (event) => {
@@ -536,7 +697,7 @@
 
   pushMessage(
     "assistant",
-    "Bonjour. Je peux t’aider sur les termes d’architecture, le quiz, la connexion, les contributions et la navigation du site.",
+    "Questions sur les termes, la navigation du site et les accès.",
     { noActions: false }
   );
 
@@ -547,5 +708,4 @@
     shouldOpen = false;
   }
   setOpen(shouldOpen);
-  refreshPublishedTerms();
 })();

@@ -5,6 +5,7 @@ const dictionarySearch = document.getElementById("dictionary-search");
 const dictionaryFeaturedLinks = document.getElementById("dictionary-featured-links");
 const dictionaryReadingNote = document.getElementById("dictionary-reading-note");
 let dictionaryTerms = [];
+const DICTIONARY_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 const DICTIONARY_FEATURED_SLUGS = [
   "bois-lamelle-colle",
@@ -104,11 +105,30 @@ function renderLetterNav(letterKeys) {
   if (!dictionaryLetterNav) return;
   clearDictionaryChildren(dictionaryLetterNav);
 
-  for (const letter of letterKeys) {
+  const available = new Set(letterKeys);
+
+  for (const letter of DICTIONARY_LETTERS) {
+    if (available.has(letter)) {
+      const link = document.createElement("a");
+      link.className = "chip";
+      link.href = `#dictionary-letter-${letter}`;
+      link.textContent = letter;
+      dictionaryLetterNav.appendChild(link);
+      continue;
+    }
+
+    const marker = document.createElement("span");
+    marker.className = "chip chip--disabled";
+    marker.textContent = letter;
+    marker.setAttribute("aria-disabled", "true");
+    dictionaryLetterNav.appendChild(marker);
+  }
+
+  if (available.has("#")) {
     const link = document.createElement("a");
     link.className = "chip";
-    link.href = `#dictionary-letter-${letter}`;
-    link.textContent = letter;
+    link.href = "#dictionary-letter-etc";
+    link.textContent = "#";
     dictionaryLetterNav.appendChild(link);
   }
 }
@@ -130,7 +150,7 @@ function renderDictionaryIndex(items) {
   for (const letter of letterKeys) {
     const section = document.createElement("section");
     section.className = "dictionary-letter-section";
-    section.id = `dictionary-letter-${letter}`;
+    section.id = letter === "#" ? "dictionary-letter-etc" : `dictionary-letter-${letter}`;
 
     const header = document.createElement("div");
     header.className = "dictionary-letter-header";

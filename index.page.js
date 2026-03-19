@@ -10,11 +10,11 @@ const homeCategoryCount = document.getElementById("home-category-count");
 const homeCategoriesToggle = document.querySelector("[data-home-categories-toggle]");
 const homeHeroCategories = document.getElementById("home-hero-categories");
 const homeHeroCategoriesList = document.getElementById("home-hero-categories-list");
-const homeCategoryCloudList = document.getElementById("home-category-cloud-list");
-const homeHeroPaths = document.getElementById("home-hero-paths");
 const homeReadingSamples = document.getElementById("home-reading-samples");
 const homeCategoryFocus = document.getElementById("home-category-focus");
 let homeTermsCache = [];
+let homeProofsLoaded = false;
+let homeProofsPromise = null;
 
 const HOME_PREFERRED_TERM_SLUGS = [
   "bois-lamelle-colle",
@@ -154,47 +154,23 @@ function runInstantHomeSearch() {
   renderSearchResults(matches);
 }
 
-async function loadFeaturedTerm() {
-  if (!window.DicoArchiApi) {
-    featuredTermTitle.textContent = "Configuration Supabase manquante";
-    featuredTermDefinition.textContent = "Impossible de charger le terme du jour.";
+function renderFeaturedTerm(items) {
+  if (!Array.isArray(items) || !items.length) {
+    featuredTermTitle.textContent = "Aucun terme publié";
+    featuredTermDefinition.textContent = "Le dictionnaire ne contient pas encore de fiche publiée.";
+    featuredTermLink.href = "dictionnaire.html";
     return;
   }
 
-  try {
-    const items = await window.DicoArchiApi.fetchPublishedTermsBasic();
-    if (!Array.isArray(items) || !items.length) {
-      featuredTermTitle.textContent = "Aucun terme publié";
-      featuredTermDefinition.textContent = "Le dictionnaire ne contient pas encore de fiche publiée.";
-      featuredTermLink.href = "dictionnaire.html";
-      return;
-    }
-
-    const dayIndex = Math.floor(Date.now() / 86400000) % items.length;
-    const item = items[dayIndex];
-
-    featuredTermTitle.textContent = item.term;
-    if (featuredTermMeta) {
-      const categoryName = item.categories?.name || item.category || "";
-      if (categoryName) {
-        featuredTermMeta.hidden = false;
-        featuredTermMeta.textContent = categoryName;
-      } else {
-        featuredTermMeta.hidden = true;
-        featuredTermMeta.textContent = "";
-      }
-    }
-    featuredTermDefinition.textContent = item.definition || "Définition indisponible.";
-    featuredTermLink.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
-  } catch (error) {
-    featuredTermTitle.textContent = "Erreur";
-    if (featuredTermMeta) {
-      featuredTermMeta.hidden = true;
-      featuredTermMeta.textContent = "";
-    }
-    featuredTermDefinition.textContent = error.message || "Impossible de charger le terme du jour.";
-    featuredTermLink.href = "dictionnaire.html";
+  const selected = pickPreferredTerms(items, 1)[0] || items[Math.floor(Date.now() / 86400000) % items.length];
+  featuredTermTitle.textContent = selected.term;
+  if (featuredTermMeta) {
+    const categoryName = selected.categories?.name || selected.category || "";
+    featuredTermMeta.hidden = !categoryName;
+    featuredTermMeta.textContent = categoryName;
   }
+  featuredTermDefinition.textContent = selected.definition || "Définition indisponible.";
+  featuredTermLink.href = `term.html?slug=${encodeURIComponent(selected.slug)}`;
 }
 
 function renderHeroCategories(categories) {
@@ -216,87 +192,6 @@ function renderHeroCategories(categories) {
   });
 }
 
-function renderCategoryCloud(categories) {
-  if (!homeCategoryCloudList) return;
-
-  if (!Array.isArray(categories) || !categories.length) {
-    homeCategoryCloudList.innerHTML = '<span class="meta meta--subtle">Aucune catégorie disponible.</span>';
-    return;
-  }
-
-  homeCategoryCloudList.innerHTML = "";
-
-  categories.slice(0, 12).forEach((category) => {
-    const anchor = document.createElement("a");
-    anchor.className = "home-category-pill";
-    anchor.href = `category.html?slug=${encodeURIComponent(category.slug)}`;
-    anchor.textContent = category.name;
-    homeCategoryCloudList.appendChild(anchor);
-  });
-}
-
-function renderHeroPaths(terms, categories) {
-  if (!homeHeroPaths) return;
-
-  const chosenTerms = pickPreferredTerms(terms, 2);
-  const chosenCategories = Array.isArray(categories) ? categories.slice(0, 1) : [];
-  const cards = [];
-
-  if (chosenTerms[0]) {
-    cards.push({
-      label: "Lire un détail",
-      title: chosenTerms[0].term,
-      href: `term.html?slug=${encodeURIComponent(chosenTerms[0].slug)}`,
-      meta: chosenTerms[0].categories?.name || chosenTerms[0].category || "Fiche terme"
-    });
-  }
-
-  if (chosenCategories[0]) {
-    cards.push({
-      label: "Explorer un domaine",
-      title: chosenCategories[0].name,
-      href: `category.html?slug=${encodeURIComponent(chosenCategories[0].slug)}`,
-      meta: "Accéder à une famille de fiches liées"
-    });
-  }
-
-  if (chosenTerms[1]) {
-    cards.push({
-      label: "Réviser un repère",
-      title: chosenTerms[1].term,
-      href: `term.html?slug=${encodeURIComponent(chosenTerms[1].slug)}`,
-      meta: "Ouvrir une autre fiche modèle"
-    });
-  }
-
-  if (!cards.length) {
-    homeHeroPaths.innerHTML = '<span class="meta meta--subtle">Aucun parcours disponible pour le moment.</span>';
-    return;
-  }
-
-  homeHeroPaths.innerHTML = "";
-
-  for (const item of cards) {
-    const anchor = document.createElement("a");
-    anchor.className = "home-path-card";
-    anchor.href = item.href;
-
-    const label = document.createElement("span");
-    label.className = "dashboard__label";
-    label.textContent = item.label;
-
-    const title = document.createElement("strong");
-    title.textContent = item.title;
-
-    const meta = document.createElement("span");
-    meta.className = "meta meta--subtle";
-    meta.textContent = item.meta;
-
-    anchor.append(label, title, meta);
-    homeHeroPaths.appendChild(anchor);
-  }
-}
-
 function toggleHeroCategories(forceExpanded) {
   if (!homeCategoriesToggle || !homeHeroCategories) return;
 
@@ -308,6 +203,10 @@ function toggleHeroCategories(forceExpanded) {
 }
 
 async function loadHomeProofs() {
+  if (homeProofsLoaded) return;
+  if (homeProofsPromise) return homeProofsPromise;
+
+  homeProofsPromise = (async () => {
   if (!window.DicoArchiApi) {
     if (homeTermCount) homeTermCount.textContent = "Indisponible";
     if (homeCategoryCount) homeCategoryCount.textContent = "Indisponible";
@@ -331,9 +230,8 @@ async function loadHomeProofs() {
     }
 
     homeTermsCache = Array.isArray(terms) ? terms : [];
+    renderFeaturedTerm(homeTermsCache);
     renderHeroCategories(categories);
-    renderCategoryCloud(categories);
-    renderHeroPaths(terms, categories);
     renderLinkList(
       homeReadingSamples,
       pickPreferredTerms(terms, 3),
@@ -351,11 +249,30 @@ async function loadHomeProofs() {
     if (homeCategoryCount) homeCategoryCount.textContent = "Indisponible";
     homeTermsCache = [];
     renderHeroCategories([]);
-    renderCategoryCloud([]);
-    renderHeroPaths([], []);
+    featuredTermTitle.textContent = "Indisponible";
+    featuredTermDefinition.textContent = "Impossible de charger la fiche mise en avant.";
+    featuredTermLink.href = "dictionnaire.html";
     renderLinkList(homeReadingSamples, [], () => "dictionnaire.html", () => "");
     renderLinkList(homeCategoryFocus, [], () => "category.html", () => "");
   }
+  homeProofsLoaded = true;
+  homeProofsPromise = null;
+})();
+
+  return homeProofsPromise;
+}
+
+function scheduleHomeProofs() {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(() => {
+      loadHomeProofs();
+    }, { timeout: 1200 });
+    return;
+  }
+
+  window.setTimeout(() => {
+    loadHomeProofs();
+  }, 250);
 }
 
 if (homeSearchButton) {
@@ -370,11 +287,11 @@ if (homeSearchInput) {
 }
 
 if (homeCategoriesToggle) {
-  homeCategoriesToggle.addEventListener("click", () => {
+  homeCategoriesToggle.addEventListener("click", async () => {
+    await loadHomeProofs();
     toggleHeroCategories();
   });
 }
 
-loadFeaturedTerm();
-loadHomeProofs();
 setupContactLinks();
+scheduleHomeProofs();

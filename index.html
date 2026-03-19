@@ -51,12 +51,10 @@
 
         <div class="home-hero-layout">
           <div class="home-hero-copy">
-            <div class="hero-kicker">Pour apprendre le métier</div>
+            <div class="hero-kicker">Dictionnaire</div>
             <h1>Dico-Archi <span>Le dictionnaire du dessinateur en architecture</span></h1>
-            <div class="home-hero-tagline">Comprendre le vocabulaire du bureau, du chantier et des normes.</div>
-            <p class="welcome-cover__lead">
-              Un point d’entrée clair pour lire les plans, comprendre les détails constructifs et progresser dans le métier.
-            </p>
+            <div class="home-hero-tagline">Vocabulaire du bureau, du chantier et des normes.</div>
+            <p class="welcome-cover__lead">Chercher un terme, ouvrir une fiche, poursuivre par catégorie.</p>
             <div class="controls">
               <input id="home-search" name="home-search" type="search" placeholder="Rechercher un terme..." autocomplete="off" />
               <button id="home-search-button" type="button">Chercher un terme</button>
@@ -82,20 +80,14 @@
                 <span class="dashboard__label">Explorer</span>
                 <strong>Explorer les catégories</strong>
               </button>
-              <a class="home-quick-link" href="methodologie.html">
-                <span class="dashboard__label">Comprendre</span>
-                <strong>Voir la méthodologie</strong>
+              <a class="home-quick-link" href="games.html">
+                <span class="dashboard__label">S’exercer</span>
+                <strong>Ouvrir les jeux</strong>
               </a>
             </div>
             <div class="home-hero-proof">
               <span id="home-term-count">Chargement…</span>
               <span id="home-category-count">Chargement…</span>
-              <span>Repères SIA et AEAI</span>
-            </div>
-            <div class="sticker-row" aria-label="Repères accueil">
-              <span class="sticker"><span class="sticker__icon">R</span><span>Recherche directe</span></span>
-              <span class="sticker"><span class="sticker__icon">C</span><span>Corpus classé</span></span>
-              <span class="sticker"><span class="sticker__icon">P</span><span>Parcours métier</span></span>
             </div>
             <div id="home-hero-categories" class="home-hero-categories" hidden>
               <div id="home-hero-categories-list" class="home-hero-categories__list">
@@ -107,8 +99,8 @@
             <section class="home-featured-card">
               <div class="home-section-head home-section-head--compact">
                 <div>
-                  <span class="section-eyebrow">Repère du jour</span>
-                  <h2>Fiche du jour</h2>
+                  <span class="section-eyebrow">Repère</span>
+                  <h2>Fiche mise en avant</h2>
                 </div>
               </div>
               <div class="home-featured-card__body">
@@ -119,69 +111,37 @@
                 <a id="featured-term-link" class="link-button" href="dictionnaire.html">Voir la fiche</a>
               </div>
             </section>
-            <section class="home-featured-card home-featured-card--paths">
-              <div class="home-section-head home-section-head--compact">
-                <div>
-                  <span class="section-eyebrow">Parcours concrets</span>
-                  <h2>Commencer par un vrai cas</h2>
-                </div>
-              </div>
-              <div id="home-hero-paths" class="home-path-list">
-                <span class="meta meta--subtle">Préparation des parcours…</span>
-              </div>
-            </section>
           </div>
         </div>
       </div>
     </header>
 
     <main class="home-main reading-main">
-      <section class="home-launchpad" aria-label="Entrées rapides">
-        <a class="home-launchpad__card" href="dictionnaire.html">
-          <span class="dashboard__label">Retrouver</span>
-          <strong>Trouver vite un terme précis</strong>
-          <p class="meta meta--subtle">Recherche directe, lecture alphabétique et accès immédiat aux fiches publiées.</p>
-        </a>
-        <a class="home-launchpad__card" href="category.html">
-          <span class="dashboard__label">Explorer</span>
-          <strong>Lire par domaine métier</strong>
-          <p class="meta meta--subtle">Façades, matériaux, chantier, normes et familles utiles à ouvrir selon le sujet.</p>
-        </a>
-        <a class="home-launchpad__card" href="compte.html">
-          <span class="dashboard__label">Suivre</span>
-          <strong>Retrouver son espace de travail</strong>
-          <p class="meta meta--subtle">Compte, dépôt encadré, retours éditoriaux et accès utiles selon le rôle.</p>
-        </a>
-      </section>
-
       <section class="panel home-evidence-panel">
         <div class="home-section-head">
           <div>
-            <span class="section-eyebrow">Preuves immédiates</span>
-            <h2>Voir tout de suite ce que le site permet vraiment</h2>
+            <span class="section-eyebrow">Accès</span>
+            <h2>Entrer dans le corpus</h2>
           </div>
         </div>
         <div class="home-evidence-grid">
           <article class="home-evidence-card">
-            <span class="dashboard__label">Lecture guidée</span>
-            <strong>Trois fiches à ouvrir en premier</strong>
-            <p class="meta meta--subtle">Des entrées utiles pour comprendre détail, matériau, norme ou dessin.</p>
+            <span class="dashboard__label">Fiches</span>
+            <strong>Trois entrées utiles</strong>
             <div id="home-reading-samples" class="home-evidence-links">
               <span class="meta meta--subtle">Chargement des fiches…</span>
             </div>
           </article>
           <article class="home-evidence-card">
-            <span class="dashboard__label">Domaines</span>
-            <strong>Catégories à ouvrir sans hésiter</strong>
-            <p class="meta meta--subtle">Le corpus est pensé pour retrouver un sujet, pas seulement un mot isolé.</p>
+            <span class="dashboard__label">Catégories</span>
+            <strong>Ouvrir par domaine</strong>
             <div id="home-category-focus" class="home-category-pill-list">
               <span class="meta meta--subtle">Chargement des catégories…</span>
             </div>
           </article>
           <article class="home-evidence-card home-evidence-card--workflow">
-            <span class="dashboard__label">Contribution encadrée</span>
-            <strong>Un vrai circuit éditorial</strong>
-            <p class="meta meta--subtle">Proposition apprenti, relecture formateur, correction, validation puis publication.</p>
+            <span class="dashboard__label">Contribution</span>
+            <strong>Déposer une proposition</strong>
             <div class="home-workflow-proof">
               <span>Déposer</span>
               <span>Corriger</span>
@@ -193,73 +153,31 @@
         </div>
       </section>
 
-      <section class="panel">
-        <div class="home-section-head">
-          <div>
-            <span class="section-eyebrow">Rôles du projet</span>
-            <h2>Qui fait quoi dans Dico-Archi</h2>
-          </div>
-        </div>
-        <div class="role-grid">
-          <article class="role-card">
-            <span class="dashboard__label">Apprenti</span>
-            <strong>Propose et enrichit</strong>
-            <p class="meta meta--subtle">Dépose un terme, ajoute un média utile, corrige après retour, puis apprend en lisant le corpus.</p>
-          </article>
-          <article class="role-card">
-            <span class="dashboard__label">Formateur</span>
-            <strong>Relit et valide</strong>
-            <p class="meta meta--subtle">Commente, corrige, demande une amélioration, puis valide avant publication.</p>
-          </article>
-          <article class="role-card">
-            <span class="dashboard__label">Administration</span>
-            <strong>Gouverne et structure</strong>
-            <p class="meta meta--subtle">Maintient les rôles, la cohérence du corpus, les zones sensibles et le suivi global.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="panel home-category-cloud">
-        <div class="home-category-cloud__header">
-          <div>
-            <span class="section-eyebrow">Repères du corpus</span>
-            <h2>Catégories à ouvrir en premier</h2>
-          </div>
-          <a class="link-button" href="category.html">Voir toutes les catégories</a>
-        </div>
-        <div id="home-category-cloud-list" class="home-category-cloud__list">
-          <span class="meta meta--subtle">Chargement des catégories…</span>
-        </div>
-      </section>
-
       <section class="panel home-bottom-panel" id="site-reperes">
         <div class="home-section-head">
           <div>
-            <span class="section-eyebrow">Cadre éditorial</span>
-            <h2>Un corpus structuré et documenté</h2>
+            <span class="section-eyebrow">Repères</span>
+            <h2>Autres accès</h2>
           </div>
         </div>
         <div class="home-bottom-copy">
           <div class="home-bottom-links">
             <a class="home-bottom-link" href="category.html">
               <span class="dashboard__label">Corpus</span>
-              <strong>Corpus organisé par thèmes</strong>
-              <p>Façades, matériaux, chantier, normes.</p>
+              <strong>Catégories</strong>
+              <p>Domaines et familles de termes.</p>
             </a>
             <a class="home-bottom-link" href="methodologie.html">
-              <span class="dashboard__label">Méthodologie éditoriale</span>
-              <strong>Méthodologie claire</strong>
-              <p>Sources, validation, principes de rédaction.</p>
+              <span class="dashboard__label">Référence</span>
+              <strong>Méthodologie</strong>
+              <p>Sources, validation, rédaction.</p>
             </a>
             <a class="home-bottom-link" href="contribuer.html">
               <span class="dashboard__label">Contribution</span>
-              <strong>Contribution encadrée</strong>
-              <p>Proposer une notion ou compléter une fiche.</p>
+              <strong>Contribuer</strong>
+              <p>Proposer une fiche ou un média.</p>
             </a>
           </div>
-          <p class="section-copy home-bottom-proof">
-            Sources identifiées, validation progressive, repères SIA et AEAI.
-          </p>
         </div>
       </section>
     </main>

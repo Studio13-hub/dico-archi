@@ -99,7 +99,7 @@ const secondaryPages = [
   {
     path: "/contribuer.html",
     title: "Contribuer - Dico-Archi",
-    selectors: ["#contrib-form", "#contrib-core-status", "#term", "#submit"]
+    selectors: ["#contrib-form", "#contrib-basics", "#term", "#submit"]
   },
   {
     path: "/methodologie.html",
