@@ -3565,6 +3565,10 @@ footer {
   margin-top: 12px;
 }
 
+.admin__details-grid--flat {
+  margin-top: 14px;
+}
+
 .contrib-rich-group {
   grid-column: 1 / -1;
   border: 1px solid var(--border);

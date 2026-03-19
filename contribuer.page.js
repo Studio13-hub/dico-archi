@@ -7,7 +7,6 @@
   const exampleInput = document.getElementById("example");
   const mediaUrlsInput = document.getElementById("media-urls");
   const mediaFilesInput = document.getElementById("media-files");
-  const richKindInput = document.getElementById("rich-kind");
   const richExplanationInput = document.getElementById("rich-explanation");
   const richApplicationsInput = document.getElementById("rich-applications");
   const richNormsInput = document.getElementById("rich-norms");
@@ -84,25 +83,12 @@
     return { title, items: cleanItems };
   }
 
-  function getRichDefaults(kind) {
-    if (kind === "construction") {
-      return {
-        label: "Fiche construction",
-        headline: "Comprendre le principe constructif, puis sa mise en œuvre",
-        note: "Pour une construction, l’essentiel est de lire son rôle, sa logique d’assemblage et ses points de vigilance."
-      };
-    }
-    if (kind === "material") {
-      return {
-        label: "Fiche matériau",
-        headline: "Comprendre la matière, puis son usage structurel",
-        note: "Pour un matériau, l’essentiel est de lire vite sa nature, ses performances et ses limites d’usage."
-      };
-    }
+  function getRichDefaults() {
     return {
-      label: "Fiche terme",
-      headline: "Comprendre le terme avant de le réutiliser",
-      note: "L’objectif de cette fiche est de rendre le vocabulaire immédiatement exploitable dans le bureau, sur un plan ou dans une discussion de chantier."
+      kind: "complete",
+      label: "Fiche complète",
+      headline: "Comprendre le terme, son rôle et sa mise en œuvre",
+      note: "Cette fiche rassemble dans un même format la définition, les usages, les points de vigilance et les repères utiles au bureau."
     };
   }
 
@@ -132,8 +118,6 @@
 
   function fillRichPayloadForm(payload) {
     const richPayload = payload && typeof payload === "object" ? payload : {};
-    const kind = String(richPayload.editorial_profile?.kind || "material").trim() || "material";
-    if (richKindInput) richKindInput.value = kind;
     fillTextArea(richExplanationInput, richPayload.content?.explanation || "");
     fillLineList(richApplicationsInput, richPayload.content?.applications || []);
     fillLineList(richNormsInput, richPayload.content?.norms || []);
@@ -198,8 +182,7 @@
   }
 
   function buildRichPayload() {
-    const kind = String(richKindInput?.value || "material").trim() || "material";
-    const defaults = getRichDefaults(kind);
+    const defaults = getRichDefaults();
     const explanation = richExplanationInput?.value.trim() || "";
     const applications = parseLineList(richApplicationsInput?.value);
     const norms = parseLineList(richNormsInput?.value);
@@ -243,7 +226,7 @@
         drawing_note: drawingNote
       },
       editorial_profile: {
-        kind,
+        kind: defaults.kind,
         label: defaults.label,
         headline: defaults.headline,
         note: defaults.note

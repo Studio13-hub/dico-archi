@@ -178,88 +178,65 @@
           <section class="contrib-section contrib-section--rich">
             <div class="contrib-section__head">
               <h2>Fiche complète</h2>
-              <p>Compléter seulement ce qui renforce vraiment la fiche.</p>
+              <p>Un seul bloc de saisie avec tous les champs utiles. Remplir seulement ce qui apporte quelque chose.</p>
             </div>
             <div class="contrib-advanced__grid">
-              <label class="contrib-field">
-                <span class="contrib-field__label">Type de fiche</span>
-                <select id="rich-kind" name="rich-kind">
-                  <option value="material">Matériau</option>
-                  <option value="construction">Construction</option>
-                  <option value="term">Terme général</option>
-                </select>
-              </label>
               <label class="contrib-field contrib-field--full">
                 <span class="contrib-field__label">Explication</span>
                 <textarea id="rich-explanation" name="rich-explanation" rows="3" placeholder="Rôle ou intérêt du terme."></textarea>
               </label>
-              <details class="contrib-rich-group contrib-rich-group--full" open>
-                <summary>Structure principale</summary>
-                <div class="contrib-advanced__grid contrib-advanced__grid--nested">
-                  <label class="contrib-field contrib-field--full">
-                    <span class="contrib-field__label">Applications</span>
-                    <textarea id="rich-applications" name="rich-applications" rows="3" placeholder="Une ligne par item"></textarea>
-                  </label>
-                  <label class="contrib-field">
-                    <span class="contrib-field__label">Normes liées</span>
-                    <textarea id="rich-norms" name="rich-norms" rows="3" placeholder="Une ligne par norme"></textarea>
-                  </label>
-                  <label class="contrib-field">
-                    <span class="contrib-field__label">Points de vigilance</span>
-                    <textarea id="rich-constraints" name="rich-constraints" rows="3" placeholder="Une ligne par point de vigilance"></textarea>
-                  </label>
-                  <label class="contrib-field contrib-field--full">
-                    <span class="contrib-field__label">Lecture / représentation</span>
-                    <textarea id="rich-drawing-note" name="rich-drawing-note" rows="3" placeholder="Lecture sur plan, détail ou chantier."></textarea>
-                  </label>
-                </div>
-              </details>
-              <details class="contrib-rich-group">
-                <summary>Lecture de la matière ou du système</summary>
-                <div class="contrib-advanced__grid contrib-advanced__grid--nested">
-                  <label class="contrib-field">
-                    <span class="contrib-field__label">Identification</span>
-                    <textarea id="rich-identification" name="rich-identification" rows="4" placeholder="Une ligne `Label: Valeur`"></textarea>
-                  </label>
-                  <label class="contrib-field">
-                    <span class="contrib-field__label">Propriétés</span>
-                    <textarea id="rich-properties" name="rich-properties" rows="4" placeholder="Une ligne par propriété"></textarea>
-                  </label>
-                  <label class="contrib-field">
-                    <span class="contrib-field__label">Usages courants</span>
-                    <textarea id="rich-uses" name="rich-uses" rows="4" placeholder="Une ligne par usage"></textarea>
-                  </label>
-                  <label class="contrib-field">
-                    <span class="contrib-field__label">Mise en œuvre</span>
-                    <textarea id="rich-implementation" name="rich-implementation" rows="4" placeholder="Une ligne par item"></textarea>
-                  </label>
-                </div>
-              </details>
-              <details class="contrib-rich-group">
-                <summary>Nuance éditoriale</summary>
-                <div class="contrib-advanced__grid contrib-advanced__grid--nested">
-                  <label class="contrib-field">
-                    <span class="contrib-field__label">Vigilance</span>
-                    <textarea id="rich-vigilance" name="rich-vigilance" rows="4" placeholder="Une ligne par point de vigilance"></textarea>
-                  </label>
-                  <label class="contrib-field">
-                    <span class="contrib-field__label">Avantages</span>
-                    <textarea id="rich-advantages" name="rich-advantages" rows="4" placeholder="Une ligne par avantage"></textarea>
-                  </label>
-                  <label class="contrib-field">
-                    <span class="contrib-field__label">Inconvénients</span>
-                    <textarea id="rich-drawbacks" name="rich-drawbacks" rows="4" placeholder="Une ligne par inconvénient"></textarea>
-                  </label>
-                  <label class="contrib-field">
-                    <span class="contrib-field__label">Références</span>
-                    <textarea id="rich-references" name="rich-references" rows="4" placeholder="Une ligne par référence"></textarea>
-                  </label>
-                  <label class="contrib-field contrib-field--full">
-                    <span class="contrib-field__label">À ne pas confondre</span>
-                    <textarea id="rich-confusions" name="rich-confusions" rows="4" placeholder="Une ligne par terme proche"></textarea>
-                  </label>
-                </div>
-              </details>
+              <label class="contrib-field contrib-field--full">
+                <span class="contrib-field__label">Applications</span>
+                <textarea id="rich-applications" name="rich-applications" rows="3" placeholder="Une ligne par item"></textarea>
+              </label>
+              <label class="contrib-field">
+                <span class="contrib-field__label">Normes liées</span>
+                <textarea id="rich-norms" name="rich-norms" rows="3" placeholder="Une ligne par norme"></textarea>
+              </label>
+              <label class="contrib-field">
+                <span class="contrib-field__label">Points de vigilance</span>
+                <textarea id="rich-constraints" name="rich-constraints" rows="3" placeholder="Une ligne par point de vigilance"></textarea>
+              </label>
+              <label class="contrib-field contrib-field--full">
+                <span class="contrib-field__label">Lecture / représentation</span>
+                <textarea id="rich-drawing-note" name="rich-drawing-note" rows="3" placeholder="Lecture sur plan, détail ou chantier."></textarea>
+              </label>
+              <label class="contrib-field">
+                <span class="contrib-field__label">Identification</span>
+                <textarea id="rich-identification" name="rich-identification" rows="4" placeholder="Une ligne `Label: Valeur`"></textarea>
+              </label>
+              <label class="contrib-field">
+                <span class="contrib-field__label">Propriétés</span>
+                <textarea id="rich-properties" name="rich-properties" rows="4" placeholder="Une ligne par propriété"></textarea>
+              </label>
+              <label class="contrib-field">
+                <span class="contrib-field__label">Usages courants</span>
+                <textarea id="rich-uses" name="rich-uses" rows="4" placeholder="Une ligne par usage"></textarea>
+              </label>
+              <label class="contrib-field">
+                <span class="contrib-field__label">Mise en œuvre</span>
+                <textarea id="rich-implementation" name="rich-implementation" rows="4" placeholder="Une ligne par item"></textarea>
+              </label>
+              <label class="contrib-field">
+                <span class="contrib-field__label">Vigilance</span>
+                <textarea id="rich-vigilance" name="rich-vigilance" rows="4" placeholder="Une ligne par point de vigilance"></textarea>
+              </label>
+              <label class="contrib-field">
+                <span class="contrib-field__label">Avantages</span>
+                <textarea id="rich-advantages" name="rich-advantages" rows="4" placeholder="Une ligne par avantage"></textarea>
+              </label>
+              <label class="contrib-field">
+                <span class="contrib-field__label">Inconvénients</span>
+                <textarea id="rich-drawbacks" name="rich-drawbacks" rows="4" placeholder="Une ligne par inconvénient"></textarea>
+              </label>
+              <label class="contrib-field">
+                <span class="contrib-field__label">Références</span>
+                <textarea id="rich-references" name="rich-references" rows="4" placeholder="Une ligne par référence"></textarea>
+              </label>
+              <label class="contrib-field contrib-field--full">
+                <span class="contrib-field__label">À ne pas confondre</span>
+                <textarea id="rich-confusions" name="rich-confusions" rows="4" placeholder="Une ligne par terme proche"></textarea>
+              </label>
             </div>
           </section>
           <div class="auth__actions">

@@ -10,7 +10,6 @@ const categoryOptions = document.getElementById("category-options");
 const statusInput = document.getElementById("term-status");
 const definitionInput = document.getElementById("definition");
 const exampleInput = document.getElementById("example");
-const richKindInput = document.getElementById("rich-kind");
 const richExplanationInput = document.getElementById("rich-explanation");
 const richApplicationsInput = document.getElementById("rich-applications");
 const richNormsInput = document.getElementById("rich-norms");
@@ -441,7 +440,6 @@ function clearForm() {
   if (statusInput) statusInput.value = "draft";
   definitionInput.value = "";
   exampleInput.value = "";
-  if (richKindInput) richKindInput.value = "material";
   if (richExplanationInput) richExplanationInput.value = "";
   if (richApplicationsInput) richApplicationsInput.value = "";
   if (richNormsInput) richNormsInput.value = "";
@@ -572,31 +570,17 @@ function makeSection(title, items) {
   return { title, items: cleanItems };
 }
 
-function getRichDefaults(kind) {
-  if (kind === "construction") {
-    return {
-      label: "Fiche construction",
-      headline: "Comprendre le principe constructif, puis sa mise en œuvre",
-      note: "Pour une construction, l’essentiel est de lire son rôle, sa logique d’assemblage et ses points de vigilance."
-    };
-  }
-  if (kind === "material") {
-    return {
-      label: "Fiche matériau",
-      headline: "Comprendre la matière, puis son usage structurel",
-      note: "Pour un matériau, l’essentiel est de lire vite sa nature, ses performances et ses limites d’usage."
-    };
-  }
+function getRichDefaults() {
   return {
-    label: "Fiche terme",
-    headline: "Comprendre le terme avant de le réutiliser",
-    note: "L’objectif de cette fiche est de rendre le vocabulaire immédiatement exploitable dans le bureau, sur un plan ou dans une discussion de chantier."
+    kind: "complete",
+    label: "Fiche complète",
+    headline: "Comprendre le terme, son rôle et sa mise en œuvre",
+    note: "Cette fiche rassemble dans un même format la définition, les usages, les points de vigilance et les repères utiles au bureau."
   };
 }
 
 function buildRichPayloadFromInputs() {
-  const kind = String(richKindInput?.value || "material").trim() || "material";
-  const defaults = getRichDefaults(kind);
+  const defaults = getRichDefaults();
   const explanation = richExplanationInput?.value.trim() || "";
   const applications = parseLineList(richApplicationsInput?.value);
   const norms = parseLineList(richNormsInput?.value);
@@ -640,7 +624,7 @@ function buildRichPayloadFromInputs() {
       drawing_note: drawingNote
     },
     editorial_profile: {
-      kind,
+      kind: defaults.kind,
       label: defaults.label,
       headline: defaults.headline,
       note: defaults.note
@@ -655,7 +639,6 @@ function fillRichInputs(richPayload) {
   const sectionByTitle = new Map(detailSections.map((section) => [String(section?.title || "").trim(), section]));
   const identification = sectionByTitle.get("Identification") || {};
 
-  if (richKindInput) richKindInput.value = payload?.editorial_profile?.kind || "material";
   if (richExplanationInput) richExplanationInput.value = payload?.content?.explanation || "";
   if (richApplicationsInput) richApplicationsInput.value = formatLineList(payload?.content?.applications);
   if (richNormsInput) richNormsInput.value = formatLineList(payload?.content?.norms);
