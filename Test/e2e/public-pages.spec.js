@@ -299,6 +299,15 @@ test("quick access appears on core pages", async ({ page }) => {
   await expect(page.locator("#term-quicklinks")).toContainText("Matériaux");
 });
 
+test("selection assist launcher stays visible on key pages", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+
+  for (const path of ["/index.html", "/dictionnaire.html", "/category.html?slug=materiaux"]) {
+    await page.goto(path, { waitUntil: "load" });
+    await expect(page.getByRole("button", { name: "Ouvrir l’aide Ecouter / Traduire" })).toBeVisible();
+  }
+});
+
 test("auth form submits on Enter from password field", async ({ page }) => {
   await page.goto("/auth.html", { waitUntil: "load" });
 
@@ -396,7 +405,7 @@ test("selection assist docks, translates and closes cleanly", async ({ page }) =
   await expect(page.locator(".word-assist")).toBeVisible();
   await expect(page.locator("body")).toHaveClass(/has-word-assist/);
   await page.locator(".word-assist__language").selectOption("de");
-  await page.getByRole("button", { name: "Traduire" }).click();
+  await page.locator(".word-assist__button").filter({ hasText: "Traduire" }).click();
   await expect(page.locator(".word-assist__result")).toBeVisible();
   await expect(page.locator(".word-assist__result-text")).toHaveText("Beton");
   await expect(page.getByRole("button", { name: "Prononcer la traduction" })).toBeVisible();

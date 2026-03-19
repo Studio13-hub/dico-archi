@@ -395,6 +395,11 @@
   root.appendChild(panel);
   document.body.appendChild(root);
 
+  const wordAssistLauncher = createElement("button", "word-assist-launcher", "Ecouter / Traduire");
+  wordAssistLauncher.type = "button";
+  wordAssistLauncher.setAttribute("aria-label", "Ouvrir l’aide Ecouter / Traduire");
+  document.body.appendChild(wordAssistLauncher);
+
   const wordAssistRoot = createElement("div", "word-assist");
   wordAssistRoot.hidden = true;
   const wordAssistHeader = createElement("div", "word-assist__header");
@@ -434,9 +439,16 @@
   let activeSelectionText = "";
   let activeSelectionTranslation = null;
   let dismissedSelectionText = "";
+  let wordAssistPinnedOpen = false;
 
   function syncWordAssistLayout() {
     document.body.classList.toggle("has-word-assist", !wordAssistRoot.hidden);
+  }
+
+  function syncWordAssistControls() {
+    const hasSelection = Boolean(activeSelectionText);
+    wordAssistTranslate.disabled = !hasSelection;
+    wordAssistPronounce.disabled = !hasSelection;
   }
 
   function resetWordAssistState() {
@@ -446,8 +458,26 @@
     wordAssistPronounceTranslated.hidden = true;
   }
 
+  function renderWordAssistState() {
+    wordAssistSelection.textContent = activeSelectionText || "Aucun texte sélectionné";
+    syncWordAssistControls();
+    if (activeSelectionText) {
+      wordAssistStatus.textContent = "Traduire ou écouter.";
+    } else {
+      resetWordAssistState();
+      wordAssistStatus.textContent = "Sélectionne un mot ou une expression courte dans la page.";
+    }
+  }
+
+  function showWordAssist() {
+    wordAssistRoot.hidden = false;
+    renderWordAssistState();
+    syncWordAssistLayout();
+  }
+
   function hideWordAssist() {
     wordAssistRoot.hidden = true;
+    wordAssistPinnedOpen = false;
     resetWordAssistState();
     wordAssistStatus.textContent = "Sélectionne un mot ou une expression courte.";
     syncWordAssistLayout();
@@ -631,6 +661,15 @@
     hideWordAssist();
   });
 
+  wordAssistLauncher.addEventListener("click", () => {
+    if (!wordAssistRoot.hidden) {
+      hideWordAssist();
+      return;
+    }
+    wordAssistPinnedOpen = true;
+    showWordAssist();
+  });
+
   function updateWordAssistVisibility() {
     const selectedText = getSelectionText();
     const selection = window.getSelection?.();
@@ -641,7 +680,11 @@
     if (!selectedText || isEditableSelectionTarget(anchorNode) || root.contains(anchorNode) || wordAssistRoot.contains(anchorNode)) {
       activeSelectionText = "";
       dismissedSelectionText = "";
-      hideWordAssist();
+      if (wordAssistPinnedOpen) {
+        showWordAssist();
+      } else {
+        hideWordAssist();
+      }
       return;
     }
 
@@ -655,11 +698,8 @@
 
     activeSelectionText = selectedText;
     dismissedSelectionText = "";
-    wordAssistRoot.hidden = false;
-    wordAssistSelection.textContent = selectedText;
     resetWordAssistState();
-    wordAssistStatus.textContent = "Traduire ou écouter.";
-    syncWordAssistLayout();
+    showWordAssist();
   }
 
   document.addEventListener("selectionchange", () => {

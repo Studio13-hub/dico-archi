@@ -814,6 +814,21 @@ body.page-home h1 span {
   font-family: "IBM Plex Sans", sans-serif;
 }
 
+.word-assist-launcher {
+  position: fixed;
+  right: 18px;
+  bottom: 74px;
+  z-index: 32;
+  min-height: 40px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(23, 33, 29, 0.1);
+  background: rgba(255, 252, 247, 0.94);
+  color: var(--accent);
+  box-shadow: 0 10px 20px rgba(18, 18, 18, 0.08);
+  backdrop-filter: blur(10px);
+}
+
 .word-assist {
   position: fixed;
   right: 18px;
@@ -3995,6 +4010,14 @@ body.page-reading .term-block {
   .chatbot {
     right: 12px;
     bottom: 84px;
+  }
+
+  .word-assist-launcher {
+    left: 12px;
+    right: 12px;
+    bottom: 136px;
+    width: auto;
+    justify-content: center;
   }
 
   body.has-word-assist {
