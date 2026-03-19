@@ -36,11 +36,31 @@
         <p class="welcome-cover__lead">
           Principes d’écriture, cadre éditorial, sources et validation des fiches.
         </p>
+        <div class="hero-ribbon">
+          <span>Rédaction claire</span>
+          <span>Validation progressive</span>
+          <span>Références métier</span>
+        </div>
+        <div class="sticker-row" aria-label="Repères méthodologie">
+          <span class="sticker"><span class="sticker__icon">E</span><span>Écriture</span></span>
+          <span class="sticker"><span class="sticker__icon">V</span><span>Validation</span></span>
+          <span class="sticker"><span class="sticker__icon">S</span><span>Sources</span></span>
+        </div>
       </div>
     </header>
 
     <main>
       <section class="panel">
+        <div class="page-quicklinks" aria-label="Navigation rapide méthodologie">
+          <a class="page-quicklink" href="#principes">Principes</a>
+          <span class="page-quicklink-separator" aria-hidden="true">/</span>
+          <a class="page-quicklink" href="#ecriture">Écriture</a>
+          <span class="page-quicklink-separator" aria-hidden="true">/</span>
+          <a class="page-quicklink" href="#validation">Validation</a>
+        </div>
+      </section>
+
+      <section class="panel" id="principes">
         <div class="dashboard">
           <article class="dashboard__item">
             <span class="dashboard__label">Objectif</span>
@@ -60,7 +80,7 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section class="panel" id="ecriture">
         <div class="section-split">
           <div class="section-split__lead">
             <span class="section-eyebrow">Écriture</span>
@@ -87,7 +107,7 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section class="panel" id="validation">
         <h2>Sources et validation</h2>
         <div class="dashboard">
           <article class="dashboard__item">
@@ -97,13 +117,33 @@
           </article>
           <article class="dashboard__item">
             <span class="dashboard__label">Validation</span>
-            <strong>Contribution puis relecture</strong>
-            <p class="meta meta--subtle">Une fiche peut être proposée, relue, corrigée puis publiée.</p>
+            <strong>Apprenti puis formateur</strong>
+            <p class="meta meta--subtle">Une fiche est proposée par un apprenti, relue et corrigée par un formateur, puis publiée si elle est prête.</p>
           </article>
           <article class="dashboard__item">
             <span class="dashboard__label">Copyright</span>
             <strong>Réécriture systématique</strong>
             <p class="meta meta--subtle">Les contenus sont reformulés pour éviter le copié-collé de sources externes.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="dictionary-overview">
+          <article class="dictionary-overview__panel">
+            <span class="dashboard__label">Étape 1</span>
+            <strong>Repérer le bon terme</strong>
+            <p class="meta meta--subtle">Nommer précisément l’objet, le matériau, le détail ou l’usage visé.</p>
+          </article>
+          <article class="dictionary-overview__panel">
+            <span class="dashboard__label">Étape 2</span>
+            <strong>Écrire pour être utile</strong>
+            <p class="meta meta--subtle">Une fiche doit d’abord servir à comprendre vite, avant de chercher l’exhaustivité.</p>
+          </article>
+          <article class="dictionary-overview__panel">
+            <span class="dashboard__label">Étape 3</span>
+            <strong>Publier quand la lecture tient</strong>
+            <p class="meta meta--subtle">Une fiche est prête quand le fond est juste, le vocabulaire net et l’usage lisible.</p>
           </article>
         </div>
       </section>

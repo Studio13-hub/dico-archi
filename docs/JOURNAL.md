@@ -1,5 +1,158 @@
 # Journal de bord - Dico-archi
 
+## 2026-03-19
+- reprise orientee verification reelle + cloture git propre.
+
+### Verification locale relancee
+- serveur local relance sur `127.0.0.1:4173`
+- verification syntaxe relancee:
+  - `node --check admin.js`
+  - `node --check compte.js`
+  - `node --check contribuer.page.js`
+  - `node --check supabaseClient.js`
+  - `node --check term.page.js`
+- verification contenu relancee:
+  - `npm run content:validate`
+  - resultat:
+    - `Content validation OK`
+- Playwright relance en entier sur [public-pages.spec.js](/Users/awat/workspace/projects/dico-archi/Test/e2e/public-pages.spec.js)
+  - resultat:
+    - `23 passed`
+
+### Verification live Supabase
+- verification reelle relancee via API sur la base distante:
+  - `page_views` OK
+  - `game_scores` OK
+  - `notifications` OK
+  - `submission_messages` OK mais vide au moment du controle
+- proposition test retrouvee:
+  - terme: `Terme test contribution image`
+  - id: `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
+  - profil source:
+    - `apprenti`
+    - actif
+  - statut constate:
+    - `submitted`
+    - pas encore de `reviewer_comment`
+- conclusion:
+  - le socle workflow est bien en ligne
+  - mais le cycle complet `rejected -> message -> correction -> resubmitted` n’a pas encore ete rejoue pour de vrai en prod sur cette proposition test
+
+### Cloture de session
+- docs de reprise remises a jour pour refleter:
+  - ce qui est confirme
+  - ce qui reste a verifier en reel
+- objectif de la prochaine reprise:
+  - rejouer le workflow connecte complet
+  - seulement ensuite reprendre les finitions UX et la cloture produit plus large
+
+## 2026-03-18
+- Reprise `RepriseDicoPulse` poursuivie sur un lot de structure durable et de clarification des roles.
+- Corpus public et prod deja alignes avant ce lot, puis travail recentre sur la coherence des espaces.
+
+### Workflow editorial approfondi
+- `Mon compte` renforce:
+  - boite de reception interne
+  - echanges editoriaux visibles
+  - reponse apprenti possible
+  - bouton de remise en relecture
+- `Contribuer` renforce:
+  - chargement d’une proposition refusee via URL
+  - pre-remplissage complet du formulaire
+  - mode correction
+  - renvoi en statut `resubmitted`
+- `admin.html` / `admin.js` renforces:
+  - bloc `Decisions recentes`
+  - `Dossier` de proposition
+  - timeline
+  - conversation editoriale staff -> contributeur
+  - priorisation des retours apprenti avec badge `Retour apprenti`
+- migrations ajoutees:
+  - `020_notifications_inbox.sql`
+  - `021_submission_messages.sql`
+  - `022_submission_resubmission_flow.sql`
+- checks locaux revalidees sur ce lot:
+  - `node --check admin.js`
+  - `node --check compte.js`
+  - `node --check contribuer.page.js`
+  - `node --check supabaseClient.js`
+  - Playwright:
+    - `secondary smoke /compte.html`
+    - `secondary smoke /contribuer.html`
+    - resultat stable
+- cloture effective:
+  - `020`, `021`, `022` appliquees avec succes dans Supabase SQL Editor
+  - redeploiement production final effectue via `vercel --prod`
+  - marqueurs verifies en prod:
+    - `compte.html`
+    - `contribuer.html`
+    - `admin.html`
+  - le lot workflow editorial est remis en etat `local = prod`
+
+### Cloture session - contribution riche / test reel
+- `contribuer.html` simplifiee en flux unique sur une seule page:
+  - `Identite`
+  - `Contenu`
+  - `Medias`
+  - `Fiche complete`
+- suppression des blocs redondants qui alourdissaient la page
+- correctif critique dans `contribuer.page.js`:
+  - `rich_payload` etait oublie au submit
+  - le payload riche est maintenant bien envoye
+- correctif critique dans `api/categories.js`:
+  - les categories publiques renvoient maintenant aussi les `id`
+  - le formulaire de contribution est donc coherent en prod et pas seulement localement
+- migration `019_rich_payload_terms_and_submissions.sql` ajoutee puis appliquee en base distante
+- verification reelle de bout en bout effectuee:
+  - creation d’un compte apprenti temporaire confirme
+  - upload d’une image de test dans Storage
+  - insertion d’une vraie `term_submissions` avec `rich_payload`
+  - media public verifie en `HTTP 200`
+- proposition test creee:
+  - terme: `Terme test contribution image`
+  - submission id: `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
+- redeploiements production effectues apres les correctifs `Contribuer` et `api/categories`
+
+### Roles / espaces
+- vocabulaire visible fixe sur:
+  - `Public`
+  - `Apprenti`
+  - `Formateur`
+  - `Administration`
+- separation produit clarifiee:
+  - `Mon compte` devient l’espace d’orientation et de suivi
+  - `Contribuer` reste strictement la page de depot
+  - `Administration` garde validation, gouvernance, roles et zones sensibles
+
+### Contribution
+- `contribuer.html` reprise avec le langage visuel de la fiche terme:
+  - hero `hero--term`
+  - ruban editorial
+  - blocs inspires du modele `Bois lamellé-collé`
+- la page explique maintenant explicitement:
+  - ce qu’est une bonne fiche
+  - ce qui releve du depot
+  - ce qui releve du formateur
+  - ce qui releve de l’administration
+- ajout d’un apercu de `slug` et d’un guidage plus proche du modele fiche terme dans `contribuer.page.js`
+
+### Mon compte
+- `compte.html` et `compte.js` recentres sur leur vrai role:
+  - orienter selon le profil
+  - rappeler la frontiere entre depot, suivi et validation
+  - eviter les doublons avec `Contribuer` et `Administration`
+
+### Verification
+- checks syntaxe:
+  - `node --check compte.js`
+  - `node --check contribuer.page.js`
+- verification navigateur:
+  - `secondary smoke /compte.html`
+  - `secondary smoke /contribuer.html`
+  - `desktop menu toggle stays visible on key pages`
+  - `quick access appears on core pages`
+  - resultat: `4 passed`
+
 ## 2026-03-09
 - Reprise macro `RepriseDico-archi` executee (diagnostic git/docs/code + serveur local).
 - Pipeline livraison complete durant la session:
@@ -397,3 +550,48 @@
   - `origin/main` a jour
   - prod Vercel alignee
   - reprise future possible depuis une base nette
+
+## 2026-03-17 - lot local fiche terme materiau
+
+- reprise ensuite en local sur la page terme, sans push ni deploy
+- objectif:
+  - sortir un vrai modele de fiche `materiau`
+  - travailler localement avant toute projection prod
+- fichiers principaux du lot:
+  - [term.html](/Users/awat/workspace/projects/dico-archi/term.html)
+  - [term.page.js](/Users/awat/workspace/projects/dico-archi/term.page.js)
+  - [styles.css](/Users/awat/workspace/projects/dico-archi/styles.css)
+  - [bois-lamelle-colle.json](/Users/awat/workspace/projects/dico-archi/content/v2/terms/bois-lamelle-colle.json)
+  - [dalle-beton.json](/Users/awat/workspace/projects/dico-archi/content/v2/terms/dalle-beton.json)
+  - [public-pages.spec.js](/Users/awat/workspace/projects/dico-archi/Test/e2e/public-pages.spec.js)
+- decisions prises pendant le lot:
+  - fallback local `content/v2` pour afficher une fiche terme meme sans import base
+  - abandon du mode `tout ouvert` trop long et trop confus
+  - adoption d’un panneau `Lecture matériau` a onglets:
+    - `Identification`
+    - `Propriétés`
+    - `Usages courants`
+    - `Mise en œuvre`
+    - `Vigilance`
+    - `Avantages`
+    - `Inconvénients`
+    - `Références`
+    - `À ne pas confondre`
+  - zone `Visuels` reservee en bas:
+    - image
+    - dessin technique
+  - chemin de navigation en haut teste localement comme piste de composant global
+- etat actuel du rendu:
+  - la direction fonctionnelle est bonne
+  - la finition visuelle reste a polir
+  - la question d’alignement fin et de systeme de navigation haut de page n’est pas encore close
+- verification locale repetee:
+  - `node --check term.page.js`
+  - `npm run content:validate`
+  - `npm run test:ui -- --grep "rich material term renders from local v2 content"`
+  - resultat:
+    - `1 passed`
+- important:
+  - ce lot est local uniquement
+  - il n’a pas encore ete pousse
+  - il n’a pas encore ete redeploye

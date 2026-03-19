@@ -8,8 +8,8 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <header class="hero">
+  <body class="page-contribution">
+    <header class="hero hero--term">
       <div class="hero__bg"></div>
       <div class="hero__content">
         <div class="hero__top">
@@ -29,117 +29,188 @@
           </div>
         </div>
         <h1>Proposer un terme</h1>
-        <p>Chaque proposition est relue avant publication pour garder un dictionnaire clair, juste et utile aux non-francophones.</p>
+        <p>Déposer une proposition claire, sur une seule page.</p>
       </div>
     </header>
 
-    <main class="auth">
+    <main class="auth auth--wide">
       <section class="panel">
-        <div class="dashboard">
-          <div class="dashboard__item">
-            <span class="dashboard__label">Ce qu’on attend</span>
-            <strong>Une notion claire et précise</strong>
-            <p class="meta meta--subtle">
-              Choisissez un vrai terme d’architecture, pas un thème trop large ni une phrase entière.
-            </p>
-          </div>
-          <div class="dashboard__item">
-            <span class="dashboard__label">Définition</span>
-            <strong>Simple, correcte, courte</strong>
-            <p class="meta meta--subtle">
-              Écrivez une définition en bon français, avec accents, ponctuation et vocabulaire compréhensible.
-            </p>
-          </div>
-          <div class="dashboard__item">
-            <span class="dashboard__label">Exemple</span>
-            <strong>Usage concret</strong>
-            <p class="meta meta--subtle">
-              Ajoutez une phrase d’usage réel pour aider à comprendre où et comment le terme s’emploie.
-            </p>
-          </div>
-          <div class="dashboard__item">
-            <span class="dashboard__label">Médias proposés</span>
-            <strong>Liens temporaires acceptés</strong>
-            <p class="meta meta--subtle">
-              Vous pouvez joindre des URLs d’images ou PDF de référence. Elles seront relues avant publication.
-            </p>
-          </div>
+        <div id="contrib-resume-box" class="contrib-rich-intro" hidden>
+          <p id="contrib-resume-copy">Mode correction chargé.</p>
         </div>
-      </section>
-
-      <section class="panel">
         <form id="contrib-form" novalidate>
-          <div class="contrib-form-grid">
-            <label class="contrib-field">
-              <span class="contrib-field__label">Terme</span>
-              <input id="term" name="term" type="text" placeholder="Exemple : Acrotère" />
-            </label>
-            <label class="contrib-field">
-              <span class="contrib-field__label">Catégorie</span>
-              <select id="category" name="category">
-                <option value="">Choisir une catégorie</option>
-              </select>
-            </label>
-            <label class="contrib-field contrib-field--full">
-              <span class="contrib-field__label">Définition</span>
-              <textarea
-                id="definition"
-                name="definition"
-                rows="5"
-                placeholder="Définition claire, par exemple : Petit mur en bord de toiture qui permet de relever l’étanchéité."
-              ></textarea>
-            </label>
-            <label class="contrib-field contrib-field--full">
-              <span class="contrib-field__label">Exemple d’usage</span>
-              <textarea
-                id="example"
-                name="example"
-                rows="4"
-                placeholder="Exemple : L’acrotère sert souvent de support au relevé d’étanchéité."
-              ></textarea>
-            </label>
-            <label class="contrib-field contrib-field--full">
-              <span class="contrib-field__label">Médias proposés</span>
-              <textarea
-                id="media-urls"
-                name="media-urls"
-                rows="4"
-                placeholder="Un lien public par ligne&#10;https://.../photo-facade.jpg&#10;https://.../detail-acrotere.pdf"
-              ></textarea>
-              <span class="contrib-field__hint">
-                Vous pouvez coller des liens publics `http/https` ou téléverser ci-dessous des images/PDF temporaires pour relecture.
-              </span>
-            </label>
-            <div class="contrib-field contrib-field--full">
-              <span class="contrib-field__label">Téléversement temporaire</span>
-              <div class="contrib-upload">
-                <label class="link-button" for="media-files">Choisir des fichiers</label>
-                <input id="media-files" name="media-files" type="file" accept=".png,.jpg,.jpeg,.webp,.gif,.svg,.pdf,image/*,application/pdf" multiple />
-                <button id="upload-media" type="button">Téléverser</button>
-                <span id="upload-media-status" class="meta meta--subtle">Sélectionnez un fichier : l’upload démarre automatiquement. Images et PDF jusqu’à 10 MB.</span>
+          <div class="contrib-rich-intro">
+            <p>Tout se remplit ici, dans un seul flux: identité du terme, définition, médias utiles, puis compléments de fiche si nécessaire.</p>
+          </div>
+
+          <section class="contrib-section">
+            <div class="contrib-section__head">
+              <h2>Identité</h2>
+              <p>Nommer le terme et sa catégorie.</p>
+            </div>
+            <div class="contrib-form-grid">
+              <label class="contrib-field">
+                <span class="contrib-field__label">Terme</span>
+                <input id="term" name="term" type="text" placeholder="Exemple : Acrotère" />
+              </label>
+              <div class="contrib-field">
+                <span class="contrib-field__label">Slug généré</span>
+                <div id="contrib-slug-preview" class="contrib-field__preview">acrotère -&gt; acrotere</div>
               </div>
-              <div id="upload-media-list" class="contrib-upload-list" aria-live="polite"></div>
-              <span class="contrib-field__hint">
-                Les fichiers déposés ici restent temporaires : ils servent à la relecture formateur avant publication finale.
-              </span>
+              <label class="contrib-field contrib-field--full">
+                <span class="contrib-field__label">Catégorie</span>
+                <select id="category" name="category">
+                  <option value="">Choisir une catégorie</option>
+                </select>
+              </label>
             </div>
-          </div>
-          <div class="dashboard">
-            <div class="dashboard__item">
-              <span class="dashboard__label">Contrôle rapide</span>
-              <strong id="contrib-quality-title">Formulaire en cours</strong>
-              <p id="contrib-quality-copy" class="meta meta--subtle">
-                Commencez par un terme, une catégorie et une définition complète.
-              </p>
+          </section>
+
+          <section class="contrib-section">
+            <div class="contrib-section__head">
+              <h2>Contenu</h2>
+              <p>Poser la définition et l’usage.</p>
             </div>
-            <div class="dashboard__item">
-              <span class="dashboard__label">Longueur</span>
-              <strong id="contrib-stats">0 caractère</strong>
-              <p class="meta meta--subtle">
-                Une définition utile est souvent courte, précise et ponctuée.
-              </p>
+            <div class="contrib-form-grid">
+              <label class="contrib-field contrib-field--full">
+                <span class="contrib-field__label">Définition</span>
+                <textarea
+                  id="definition"
+                  name="definition"
+                  rows="5"
+                  placeholder="Définition claire, par exemple : Petit mur en bord de toiture qui permet de relever l’étanchéité."
+                ></textarea>
+              </label>
+              <label class="contrib-field contrib-field--full">
+                <span class="contrib-field__label">Exemple d’usage</span>
+                <textarea
+                  id="example"
+                  name="example"
+                  rows="4"
+                  placeholder="Exemple : L’acrotère sert souvent de support au relevé d’étanchéité."
+                ></textarea>
+              </label>
             </div>
-          </div>
+          </section>
+
+          <section class="contrib-section">
+            <div class="contrib-section__head">
+              <h2>Médias</h2>
+              <p>Ajouter des visuels ou un PDF si utile.</p>
+            </div>
+            <div class="contrib-form-grid">
+              <label class="contrib-field contrib-field--full">
+                <span class="contrib-field__label">Médias proposés</span>
+                <textarea
+                  id="media-urls"
+                  name="media-urls"
+                  rows="4"
+                  placeholder="Un lien public par ligne&#10;https://.../photo-facade.jpg&#10;https://.../detail-acrotere.pdf"
+                ></textarea>
+                <span class="contrib-field__hint">
+                  Liens publics `http/https` ou téléversement temporaire ci-dessous.
+                </span>
+              </label>
+              <div class="contrib-field contrib-field--full">
+                <span class="contrib-field__label">Téléversement temporaire</span>
+                <div class="contrib-upload">
+                  <label class="link-button" for="media-files">Choisir des fichiers</label>
+                  <input id="media-files" name="media-files" type="file" accept=".png,.jpg,.jpeg,.webp,.gif,.svg,.pdf,image/*,application/pdf" multiple />
+                  <button id="upload-media" type="button">Téléverser</button>
+                  <span id="upload-media-status" class="meta meta--subtle">Images et PDF jusqu’à 10 MB.</span>
+                </div>
+                <div id="upload-media-list" class="contrib-upload-list" aria-live="polite"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="contrib-section contrib-section--rich">
+            <div class="contrib-section__head">
+              <h2>Fiche complète</h2>
+              <p>Compléter seulement ce qui renforce vraiment la fiche.</p>
+            </div>
+            <div class="contrib-advanced__grid">
+              <label class="contrib-field">
+                <span class="contrib-field__label">Type de fiche</span>
+                <select id="rich-kind" name="rich-kind">
+                  <option value="material">Matériau</option>
+                  <option value="construction">Construction</option>
+                  <option value="term">Terme général</option>
+                </select>
+              </label>
+              <label class="contrib-field contrib-field--full">
+                <span class="contrib-field__label">Explication</span>
+                <textarea id="rich-explanation" name="rich-explanation" rows="3" placeholder="Rôle ou intérêt du terme."></textarea>
+              </label>
+              <details class="contrib-rich-group contrib-rich-group--full" open>
+                <summary>Structure principale</summary>
+                <div class="contrib-advanced__grid contrib-advanced__grid--nested">
+                  <label class="contrib-field contrib-field--full">
+                    <span class="contrib-field__label">Applications</span>
+                    <textarea id="rich-applications" name="rich-applications" rows="3" placeholder="Une ligne par item"></textarea>
+                  </label>
+                  <label class="contrib-field">
+                    <span class="contrib-field__label">Normes liées</span>
+                    <textarea id="rich-norms" name="rich-norms" rows="3" placeholder="Une ligne par norme"></textarea>
+                  </label>
+                  <label class="contrib-field">
+                    <span class="contrib-field__label">Points de vigilance</span>
+                    <textarea id="rich-constraints" name="rich-constraints" rows="3" placeholder="Une ligne par point de vigilance"></textarea>
+                  </label>
+                  <label class="contrib-field contrib-field--full">
+                    <span class="contrib-field__label">Lecture / représentation</span>
+                    <textarea id="rich-drawing-note" name="rich-drawing-note" rows="3" placeholder="Lecture sur plan, détail ou chantier."></textarea>
+                  </label>
+                </div>
+              </details>
+              <details class="contrib-rich-group">
+                <summary>Lecture de la matière ou du système</summary>
+                <div class="contrib-advanced__grid contrib-advanced__grid--nested">
+                  <label class="contrib-field">
+                    <span class="contrib-field__label">Identification</span>
+                    <textarea id="rich-identification" name="rich-identification" rows="4" placeholder="Une ligne `Label: Valeur`"></textarea>
+                  </label>
+                  <label class="contrib-field">
+                    <span class="contrib-field__label">Propriétés</span>
+                    <textarea id="rich-properties" name="rich-properties" rows="4" placeholder="Une ligne par propriété"></textarea>
+                  </label>
+                  <label class="contrib-field">
+                    <span class="contrib-field__label">Usages courants</span>
+                    <textarea id="rich-uses" name="rich-uses" rows="4" placeholder="Une ligne par usage"></textarea>
+                  </label>
+                  <label class="contrib-field">
+                    <span class="contrib-field__label">Mise en œuvre</span>
+                    <textarea id="rich-implementation" name="rich-implementation" rows="4" placeholder="Une ligne par item"></textarea>
+                  </label>
+                </div>
+              </details>
+              <details class="contrib-rich-group">
+                <summary>Nuance éditoriale</summary>
+                <div class="contrib-advanced__grid contrib-advanced__grid--nested">
+                  <label class="contrib-field">
+                    <span class="contrib-field__label">Vigilance</span>
+                    <textarea id="rich-vigilance" name="rich-vigilance" rows="4" placeholder="Une ligne par point de vigilance"></textarea>
+                  </label>
+                  <label class="contrib-field">
+                    <span class="contrib-field__label">Avantages</span>
+                    <textarea id="rich-advantages" name="rich-advantages" rows="4" placeholder="Une ligne par avantage"></textarea>
+                  </label>
+                  <label class="contrib-field">
+                    <span class="contrib-field__label">Inconvénients</span>
+                    <textarea id="rich-drawbacks" name="rich-drawbacks" rows="4" placeholder="Une ligne par inconvénient"></textarea>
+                  </label>
+                  <label class="contrib-field">
+                    <span class="contrib-field__label">Références</span>
+                    <textarea id="rich-references" name="rich-references" rows="4" placeholder="Une ligne par référence"></textarea>
+                  </label>
+                  <label class="contrib-field contrib-field--full">
+                    <span class="contrib-field__label">À ne pas confondre</span>
+                    <textarea id="rich-confusions" name="rich-confusions" rows="4" placeholder="Une ligne par terme proche"></textarea>
+                  </label>
+                </div>
+              </details>
+            </div>
+          </section>
           <div class="auth__actions">
             <button id="submit" type="submit">Envoyer</button>
           </div>

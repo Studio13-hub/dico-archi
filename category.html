@@ -36,12 +36,29 @@
           <span>Comparer</span>
           <span>Approfondir</span>
         </div>
+        <div class="sticker-row" aria-label="Repères catégories">
+          <span class="sticker"><span class="sticker__icon">D</span><span>Domaines</span></span>
+          <span class="sticker"><span class="sticker__icon">T</span><span>Termes liés</span></span>
+          <span class="sticker"><span class="sticker__icon">L</span><span>Lecture orientée</span></span>
+        </div>
       </div>
     </header>
 
     <main>
       <section class="panel panel--category">
         <div id="category-breadcrumb" class="meta"></div>
+        <div class="dictionary-overview category-overview">
+          <article class="dictionary-overview__panel">
+            <span class="dashboard__label">Promesse</span>
+            <strong>Entrer par un domaine, puis ouvrir la bonne fiche</strong>
+            <p class="meta meta--subtle">La catégorie sert à cadrer la lecture avant d’entrer dans le détail d’un terme.</p>
+          </article>
+          <article class="dictionary-overview__panel">
+            <span class="dashboard__label">Usage</span>
+            <strong>Comparer plusieurs termes d’un même univers</strong>
+            <p class="meta meta--subtle">Un bon parcours de catégorie doit faire ressortir les familles et les proximités utiles.</p>
+          </article>
+        </div>
         <div class="category-toolbar">
           <div class="category-toolbar__item">
             <span class="dashboard__label">Vue</span>
@@ -51,6 +68,10 @@
             <span class="dashboard__label">Parcours</span>
             <strong id="category-mode">Index des domaines</strong>
           </div>
+          <label class="category-toolbar__item category-search" for="category-search">
+            <span class="dashboard__label">Recherche</span>
+            <input id="category-search" name="category-search" type="search" placeholder="Filtrer les fiches de cette catégorie" />
+          </label>
         </div>
         <div id="category-cards" class="cards"></div>
       </section>

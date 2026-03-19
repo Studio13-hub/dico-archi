@@ -3,6 +3,58 @@
 Reference centrale:
 - [PLAN_MAITRE_DICOARCHI.md](/Users/awat/workspace/projects/dico-archi/docs/PLAN_MAITRE_DICOARCHI.md)
 
+## Priorite immediate - Verification live restante
+
+1. reprendre la proposition test `Terme test contribution image`:
+   - id `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
+   - statut reel confirme le `2026-03-19`: `submitted`
+2. rejouer le workflow editorial complet en prod avec comptes reels:
+   - refus avec commentaire
+   - message staff
+   - lecture dans `Mon compte`
+   - correction via `Contribuer?submission=...`
+   - renvoi `resubmitted`
+   - priorisation `Retour apprenti` dans `admin.html`
+3. verifier ensuite que `submission_messages` contient bien une vraie ligne utile:
+   - au `2026-03-19`, la table repond mais reste vide
+4. ne pas annoncer la verification workflow comme complete tant que ce parcours n’a pas ete rejoue en conditions connectees
+
+## Priorite immediate - Structure durable
+
+0. verifier le nouveau workflow editorial maintenant actif:
+   - `020_notifications_inbox.sql` appliquee
+   - `021_submission_messages.sql` appliquee
+   - `022_submission_resubmission_flow.sql` appliquee
+   - prod redeployee
+   - verifier le parcours complet:
+     - refus
+     - message editorial
+     - reponse apprenti
+     - correction dans `Contribuer`
+     - statut `resubmitted`
+     - reprise admin priorisee
+1. verifier dans `admin.html` la proposition test riche:
+   - `Terme test contribution image`
+   - submission id `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
+2. verrouiller l’architecture des pages pour eviter les doublons
+3. garder partout les memes roles visibles:
+   - `Public`
+   - `Apprenti`
+   - `Formateur`
+   - `Administration`
+4. separer clairement:
+   - consultation
+   - contribution
+   - espace personnel
+   - validation formateur
+   - administration
+5. traiter la securite et la clarte du workflow avant les grandes finitions visuelles
+6. conserver le corpus public canonique aligne entre machines, navigateurs et prod
+7. simplifier encore `contribuer.html` sans casser le flux unique:
+   - moins de micro-textes
+   - meilleure lisibilite de `Fiche complete`
+   - aucune fenetre separee pour un seul terme
+
 ## Priorite 1 - Esthetique
 1. Reprendre `index.html` en priorite jusqu’a validation nette de l’accueil `Dico-Archi`.
 2. Ajuster finement:
@@ -35,7 +87,7 @@ Reference centrale:
 11. Garder les tests Playwright comme verification systematique.
 
 ## Priorite 3 - Roles
-12. Clarifier les permissions visibles et reelles pour `Contributeur`, `Relecture`, `Administration`.
+12. Clarifier les permissions visibles et reelles pour `Apprenti`, `Formateur`, `Administration`.
 13. Cacher ou montrer les bonnes commandes selon le role.
 14. Verifier les cas de promotion, retrogradation, activation et desactivation.
 
@@ -86,3 +138,14 @@ Reference centrale:
      - admin
   2. reprendre la qualite des reponses assistant
   3. reprendre ensuite la direction visuelle des pages majeures encore perfectibles
+
+## Point de reprise local actuel
+
+- le lot `Bois lamellé-collé` sert maintenant de modele editorial et visuel
+- le lot structurel `Mon compte / Contribuer / Administration` est engage
+- la migration `019_rich_payload_terms_and_submissions.sql` est maintenant appliquee en base
+- une proposition test reelle avec image a deja ete soumise pour validation du workflow
+- priorite immediate:
+  1. verifier le cycle complet `rejected -> message -> correction -> resubmitted`
+  2. confirmer que la prod repond bien sur ce lot
+  3. seulement apres cela, reprendre les chantiers visuels et de contenu restants

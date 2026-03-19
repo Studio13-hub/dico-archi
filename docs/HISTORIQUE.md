@@ -1,5 +1,96 @@
 # Historique des changements - Dico-archi
 
+## 2026-03-19
+
+### Verification reelle + cloture git
+- verification locale large relancee sur le lot courant
+- checks confirmes:
+  - `npm run content:validate`
+  - `npx playwright test Test/e2e/public-pages.spec.js`
+- resultat confirme:
+  - validation contenu OK
+  - `23 passed`
+- verification live Supabase reconfirmee:
+  - `page_views` actif
+  - `game_scores` actif
+  - `notifications` actif
+  - `submission_messages` actif mais encore vide au moment du controle
+- proposition test retrouvee en prod:
+  - `Terme test contribution image`
+  - id `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
+  - statut reel: `submitted`
+- point important:
+  - le workflow editorial complet n’est pas encore rejoue jusqu’a `resubmitted` en conditions reelles
+  - la prochaine session doit donc verifier ce cycle avant d’annoncer la boucle workflow totalement validee
+
+## 2026-03-18
+
+### Workflow editorial pro
+- `Mon compte` devient un vrai centre de suivi:
+  - boite de reception
+  - echanges editoriaux
+  - reponse apprenti
+  - resoumission
+- `Contribuer` sait maintenant rouvrir une proposition refusee:
+  - pre-remplissage complet
+  - mode correction
+  - update de la proposition existante
+  - renvoi `resubmitted`
+- `Administration` gagne:
+  - `Decisions recentes`
+  - `Dossier`
+  - timeline
+  - conversation editoriale
+  - priorisation des retours apprenti
+- nouvelles migrations:
+  - `020_notifications_inbox.sql`
+  - `021_submission_messages.sql`
+  - `022_submission_resubmission_flow.sql`
+- verification locale reconfirme:
+  - checks JS OK
+  - smokes `compte.html` / `contribuer.html` OK
+- etat de sortie:
+  - `020/021/022` appliquees en base
+  - prod redeployee
+  - lot workflow editorial remis en etat `local = prod`
+
+### Contribution riche / cloture session
+- `contribuer.html` simplifiee en flux unique, sur une seule page
+- suppression des doublons les plus visibles dans le parcours de depot
+- `contribuer.page.js` corrige:
+  - `rich_payload` est maintenant bien envoye lors d’une soumission complete
+- `api/categories.js` corrige:
+  - l’API publique renvoie maintenant aussi les `id` de categories
+- migration SQL ajoutee puis appliquee:
+  - `supabase/migrations/019_rich_payload_terms_and_submissions.sql`
+- verification live effectuee avec une vraie proposition apprenti et une vraie image temporaire
+- proposition test creee:
+  - `Terme test contribution image`
+  - id `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
+
+### Structure durable / roles
+- roles visibles unifies sur:
+  - `Public`
+  - `Apprenti`
+  - `Formateur`
+  - `Administration`
+- frontiere produit clarifiee:
+  - `Mon compte` = orientation + suivi
+  - `Contribuer` = depot
+  - `Administration` = validation + gouvernance
+
+### Contribution / modele fiche terme
+- `contribuer.html` adopte une structure plus proche des fiches termes riches
+- reference explicite au modele `Bois lamellé-collé` pour guider la qualite du depot
+- ajout d’un apercu `slug` et d’un controle editorial plus proche de la structure cible dans `contribuer.page.js`
+
+### Verification
+- checks JS OK:
+  - `compte.js`
+  - `contribuer.page.js`
+- Playwright cible valide:
+  - `4 passed`
+
 ## 2026-03-09
 
 ### Architecture pages
@@ -321,3 +412,29 @@
   - parcours reel en prod
   - amelioration qualitative assistant
   - reprise visuelle des pages majeures restantes
+
+## 2026-03-17 - lot local non pousse
+
+### Fiche terme materiau
+- nouveau terme V2 local:
+  - [bois-lamelle-colle.json](/Users/awat/workspace/projects/dico-archi/content/v2/terms/bois-lamelle-colle.json)
+- enrichissement connexe:
+  - [dalle-beton.json](/Users/awat/workspace/projects/dico-archi/content/v2/terms/dalle-beton.json)
+- refonte locale en cours sur:
+  - [term.html](/Users/awat/workspace/projects/dico-archi/term.html)
+  - [term.page.js](/Users/awat/workspace/projects/dico-archi/term.page.js)
+  - [styles.css](/Users/awat/workspace/projects/dico-archi/styles.css)
+- smoke test cible ajoute / maintenu sur:
+  - [public-pages.spec.js](/Users/awat/workspace/projects/dico-archi/Test/e2e/public-pages.spec.js)
+
+### Direction retenue
+- vraie fiche `materiau` avec onglets
+- zone `Visuels` reservee en bas pour:
+  - image
+  - dessin technique
+- essai d’un chemin de navigation local en haut de page
+
+### Point de reprise exact
+- reprendre l’alignement fin et la finition pro de la fiche `Bois lamellé-collé`
+- decider ensuite si le chemin de navigation doit etre reutilise plus largement
+- seulement apres, attaquer le modele `construction`

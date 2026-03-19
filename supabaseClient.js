@@ -48,8 +48,8 @@
       : normalizeProfile(profileOrRole)?.role;
 
     if (role === "super_admin") return "Administration";
-    if (role === "formateur") return "Relecture";
-    if (role === "apprenti") return "Contributeur";
+    if (role === "formateur") return "Formateur";
+    if (role === "apprenti") return "Apprenti";
     return "Public";
   }
 
@@ -153,6 +153,16 @@
     return payload;
   }
 
+  function prefersDirectSupabaseReads() {
+    const protocol = String(window.location.protocol || "");
+    const hostname = String(window.location.hostname || "");
+    const port = String(window.location.port || "");
+
+    if (protocol === "file:") return true;
+    if ((hostname === "127.0.0.1" || hostname === "localhost") && port === "4173") return true;
+    return false;
+  }
+
   function sanitizeStorageSegment(value) {
     return String(value || "")
       .normalize("NFD")
@@ -165,7 +175,22 @@
   // API helpers are grouped by feature so pages reuse the same queries
   // instead of rebuilding raw Supabase calls inline.
   const api = {
+    isMissingRichPayloadSupport(error) {
+      const message = String(error?.message || error || "").toLowerCase();
+      return message.includes("rich_payload") && (
+        message.includes("does not exist")
+        || message.includes("not exist")
+        || message.includes("could not find the")
+        || message.includes("column")
+      );
+    },
+
     async fetchPublishedTermsBasic() {
+      if (!prefersDirectSupabaseReads()) {
+        const payload = await fetchJson("/api/categories?resource=terms");
+        if (Array.isArray(payload.terms) && payload.terms.length) return payload.terms;
+      }
+
       const client = getClient();
       if (!client) throw new Error("missing_supabase_config");
 
@@ -179,7 +204,8 @@
           category_id,
           categories:category_id (
             id,
-            name
+            name,
+            slug
           )
         `)
         .eq("status", "published")
@@ -190,6 +216,11 @@
     },
 
     async fetchCategories() {
+      if (!prefersDirectSupabaseReads()) {
+        const payload = await fetchJson("/api/categories?resource=categories");
+        if (Array.isArray(payload.categories) && payload.categories.length) return payload.categories;
+      }
+
       const client = getClient();
       if (!client) throw new Error("missing_supabase_config");
 
@@ -216,6 +247,7 @@
           definition,
           example,
           media_urls,
+          rich_payload,
           status,
           reviewer_comment,
           created_at,
@@ -228,7 +260,40 @@
         .eq("submitted_by", userId)
         .order("created_at", { ascending: false });
 
-      if (query.error) throw query.error;
+      if (query.error) {
+        if (api.isMissingRichPayloadSupport(query.error)) {
+          const legacyQuery = await client
+            .from("term_submissions")
+            .select(`
+              id,
+              term,
+              slug,
+              category_id,
+              definition,
+              example,
+              media_urls,
+              status,
+              reviewer_comment,
+              created_at,
+              categories:category_id (
+                id,
+                name,
+                slug
+              )
+            `)
+            .eq("submitted_by", userId)
+            .order("created_at", { ascending: false });
+          if (legacyQuery.error) throw legacyQuery.error;
+          return Array.isArray(legacyQuery.data)
+            ? legacyQuery.data.map((item) => ({
+                ...item,
+                rich_payload: {},
+                category: item.categories?.name || ""
+              }))
+            : [];
+        }
+        throw query.error;
+      }
       return Array.isArray(query.data)
         ? query.data.map((item) => ({
             ...item,
@@ -244,6 +309,63 @@
       const query = await client
         .from("term_submissions")
         .insert(payload);
+
+      if (query.error) {
+        if (api.isMissingRichPayloadSupport(query.error)) {
+          throw new Error("Le mode fiche complète nécessite d’abord la migration SQL 019 sur Supabase.");
+        }
+        throw query.error;
+      }
+      return query.data || null;
+    },
+
+    async fetchSubmissionById(submissionId) {
+      const client = getClient();
+      if (!client) throw new Error("missing_supabase_config");
+      if (!submissionId) throw new Error("missing_submission_id");
+
+      let query = await client
+        .from("term_submissions")
+        .select(`
+          id,
+          term,
+          slug,
+          category_id,
+          definition,
+          example,
+          media_urls,
+          rich_payload,
+          status,
+          reviewer_comment,
+          created_at,
+          updated_at
+        `)
+        .eq("id", submissionId)
+        .single();
+
+      if (query.error && api.isMissingRichPayloadSupport(query.error)) {
+        query = await client
+          .from("term_submissions")
+          .select(`
+            id,
+            term,
+            slug,
+            category_id,
+            definition,
+            example,
+            media_urls,
+            status,
+            reviewer_comment,
+            created_at,
+            updated_at
+          `)
+          .eq("id", submissionId)
+          .single();
+
+        if (!query.error && query.data) {
+          query.data = { ...query.data, rich_payload: {} };
+        }
+      }
 
       if (query.error) throw query.error;
       return query.data || null;
@@ -308,7 +430,32 @@
     },
 
     async searchTerms(query) {
-      return fetchJson(`/api/search?q=${encodeURIComponent(query)}`);
+      if (!prefersDirectSupabaseReads()) {
+        return await fetchJson(`/api/search?q=${encodeURIComponent(query)}`);
+      }
+
+      const items = await api.fetchPublishedTermsBasic();
+      const normalizedQuery = String(query || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+
+      const results = items
+        .filter((item) => {
+          const term = String(item.term || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
+          const definition = String(item.definition || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
+          return term.includes(normalizedQuery) || definition.includes(normalizedQuery);
+        })
+        .slice(0, 20);
+
+      return { results };
     },
 
     async fetchTermBySlug(slug) {
@@ -337,6 +484,132 @@
         next_role: nextRole,
         next_active: nextActive
       });
+
+      if (query.error) throw query.error;
+      return query.data || null;
+    },
+
+    async fetchMyNotifications(userId) {
+      const client = getClient();
+      if (!client) throw new Error("missing_supabase_config");
+
+      let query = await client
+        .from("notifications")
+        .select("id, kind, severity, title, body, actor_id, actor_label, related_table, related_id, metadata, read_at, created_at")
+        .eq("recipient_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (query.error) {
+        const message = String(query.error.message || "").toLowerCase();
+        const isLegacySchema = ["severity", "actor_id", "actor_label", "metadata"].some((field) => message.includes(field));
+        if (isLegacySchema) {
+          query = await client
+            .from("notifications")
+            .select("id, kind, title, body, related_table, related_id, read_at, created_at")
+            .eq("recipient_id", userId)
+            .order("created_at", { ascending: false })
+            .limit(20);
+
+          if (!query.error && Array.isArray(query.data)) {
+            query.data = query.data.map((item) => ({
+              ...item,
+              severity: "info",
+              actor_id: null,
+              actor_label: "",
+              metadata: {}
+            }));
+          }
+        }
+      }
+
+      if (query.error) throw query.error;
+      return Array.isArray(query.data) ? query.data : [];
+    },
+
+    async createNotification(payload) {
+      const client = getClient();
+      if (!client) throw new Error("missing_supabase_config");
+
+      const query = await client
+        .from("notifications")
+        .insert(payload)
+        .select("id")
+        .single();
+
+      if (query.error) throw query.error;
+      return query.data || null;
+    },
+
+    async markNotificationRead(notificationId) {
+      const client = getClient();
+      if (!client) throw new Error("missing_supabase_config");
+
+      const query = await client
+        .from("notifications")
+        .update({ read_at: new Date().toISOString() })
+        .eq("id", notificationId)
+        .select("id")
+        .single();
+
+      if (query.error) throw query.error;
+      return query.data || null;
+    },
+
+    async fetchSubmissionMessagesForUser(userId) {
+      const client = getClient();
+      if (!client) throw new Error("missing_supabase_config");
+
+      const query = await client
+        .from("submission_messages")
+        .select(`
+          id,
+          submission_id,
+          audience,
+          body,
+          created_at,
+          author:author_id (
+            email,
+            display_name
+          ),
+          submission:submission_id (
+            id,
+            term,
+            status
+          )
+        `)
+        .eq("audience", "submitter")
+        .order("created_at", { ascending: false })
+        .limit(40);
+
+      if (query.error) throw query.error;
+      return Array.isArray(query.data) ? query.data : [];
+    },
+
+    async createSubmissionMessage(payload) {
+      const client = getClient();
+      if (!client) throw new Error("missing_supabase_config");
+
+      const query = await client
+        .from("submission_messages")
+        .insert(payload)
+        .select("id")
+        .single();
+
+      if (query.error) throw query.error;
+      return query.data || null;
+    },
+
+    async updateOwnSubmission(submissionId, payload) {
+      const client = getClient();
+      if (!client) throw new Error("missing_supabase_config");
+
+      const query = await client
+        .from("term_submissions")
+        .update(payload)
+        .eq("id", submissionId)
+        .select("id, status")
+        .single();
 
       if (query.error) throw query.error;
       return query.data || null;

@@ -1,6 +1,8 @@
 const termsStatus = document.getElementById("terms-status");
 const termsList = document.getElementById("terms-list");
 const dictionaryLetterNav = document.getElementById("dictionary-letter-nav");
+const dictionarySearch = document.getElementById("dictionary-search");
+let dictionaryTerms = [];
 
 function clearDictionaryChildren(node) {
   while (node.firstChild) node.removeChild(node.firstChild);
@@ -98,6 +100,34 @@ function renderDictionaryIndex(items) {
   }
 }
 
+function applyDictionaryView() {
+  const query = String(dictionarySearch?.value || "").trim().toLowerCase();
+  const filtered = query
+    ? dictionaryTerms.filter((item) =>
+        [item.term, item.definition, item.categories?.name]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(query)
+      )
+    : dictionaryTerms.slice();
+
+  if (!filtered.length) {
+    clearDictionaryChildren(termsList);
+    clearDictionaryChildren(dictionaryLetterNav);
+    termsStatus.textContent = query
+      ? "Aucun terme ne correspond à cette recherche."
+      : "Aucun terme publié.";
+    return;
+  }
+
+  termsStatus.textContent = query
+    ? `${filtered.length} terme${filtered.length > 1 ? "s" : ""} trouvé${filtered.length > 1 ? "s" : ""} pour cette recherche.`
+    : `${filtered.length} termes publiés, classés par initiale pour une lecture plus stable.`;
+
+  renderDictionaryIndex(filtered);
+}
+
 async function loadDictionaryTerms() {
   if (!window.DicoArchiApi) {
     termsStatus.textContent = "Configuration Supabase manquante.";
@@ -106,18 +136,22 @@ async function loadDictionaryTerms() {
 
   try {
     const items = await window.DicoArchiApi.fetchPublishedTermsBasic();
+    dictionaryTerms = Array.isArray(items) ? items : [];
     clearDictionaryChildren(termsList);
 
-    if (!items.length) {
+    if (!dictionaryTerms.length) {
       termsStatus.textContent = "Aucun terme publié.";
       return;
     }
 
-    termsStatus.textContent = `${items.length} termes publiés, classés par initiale pour une lecture plus stable.`;
-    renderDictionaryIndex(items);
+    applyDictionaryView();
   } catch (error) {
     termsStatus.textContent = `Erreur: ${error.message}`;
   }
+}
+
+if (dictionarySearch) {
+  dictionarySearch.addEventListener("input", applyDictionaryView);
 }
 
 loadDictionaryTerms();

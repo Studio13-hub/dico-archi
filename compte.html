@@ -28,7 +28,12 @@
           </div>
         </div>
         <h1>Mon compte</h1>
-        <p>Vue claire de ton accès et liens rapides vers les bons espaces.</p>
+        <p>Voir son rôle, son état d’accès et le bon espace à ouvrir ensuite.</p>
+        <div class="sticker-row" aria-label="Repères visuels compte">
+          <span class="sticker"><span class="sticker__icon">P</span><span>Profil</span></span>
+          <span class="sticker"><span class="sticker__icon">S</span><span>Suivi</span></span>
+          <span class="sticker"><span class="sticker__icon">A</span><span>Accès</span></span>
+        </div>
       </div>
     </header>
 
@@ -51,7 +56,7 @@
         </div>
         <div class="auth__actions">
           <a id="account-login-link" class="link-button" href="auth.html">Changer de compte</a>
-          <a id="account-contrib-link" class="link-button" href="contribuer.html">Contribuer</a>
+          <a id="account-contrib-link" class="link-button" href="contribuer.html">Ouvrir Contribuer</a>
           <a id="account-games-link" class="link-button" href="games.html">Explorer les jeux</a>
           <a id="account-admin-link" class="link-button" href="admin.html" hidden>Espace admin</a>
           <button id="account-logout" class="link-button" type="button" hidden>Se déconnecter</button>
@@ -72,7 +77,7 @@
             <span class="dashboard__label">Action utile</span>
             <strong id="account-next-step-title">Se connecter</strong>
             <p id="account-next-step-copy" class="meta meta--subtle">
-              Connectez-vous pour proposer des termes ou accéder à l’espace d’édition selon votre rôle.
+              Connectez-vous pour savoir s’il faut déposer, suivre ou valider.
             </p>
           </div>
           <div class="dashboard__item">
@@ -93,28 +98,72 @@
         <div id="account-submissions-list" class="admin__table"></div>
       </section>
 
+      <section class="panel" id="account-messages-panel">
+        <div class="account-panel__head">
+          <div>
+            <h2>Échanges éditoriaux</h2>
+            <p class="meta meta--subtle">Messages envoyés par l’équipe de relecture sur tes propositions.</p>
+          </div>
+        </div>
+        <div id="account-messages-empty" class="meta meta--subtle">
+          Connectez-vous pour voir les échanges de relecture.
+        </div>
+        <div id="account-messages-list" class="account-inbox"></div>
+        <div class="admin__dossier-card">
+          <span class="dashboard__label">Répondre et remettre en file</span>
+          <select id="account-reply-submission">
+            <option value="">Choisir une proposition refusée / à corriger</option>
+          </select>
+          <textarea id="account-reply-body" placeholder="Explique ce qui a été corrigé ou pose une question de clarification..."></textarea>
+          <div class="auth__actions">
+            <button id="account-send-reply" type="button">Envoyer la réponse</button>
+            <button id="account-resubmit" type="button" class="ghost">Remettre en relecture</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="account-inbox-panel">
+        <div class="account-panel__head">
+          <div>
+            <h2>Boîte de réception</h2>
+            <p class="meta meta--subtle">Validations, refus, demandes de correction et changements de rôle.</p>
+          </div>
+          <strong id="account-inbox-count" class="account-inbox__count">0 non lu</strong>
+        </div>
+        <div id="account-inbox-empty" class="meta meta--subtle">
+          Connectez-vous pour consulter les retours de validation et les messages du workflow éditorial.
+        </div>
+        <div class="chips account-inbox__filters" aria-label="Filtres boîte de réception">
+          <button type="button" class="chip chip--active" data-inbox-filter="all">Tous</button>
+          <button type="button" class="chip" data-inbox-filter="unread">Non lus</button>
+          <button type="button" class="chip" data-inbox-filter="decisions">Décisions</button>
+          <button type="button" class="chip" data-inbox-filter="account">Compte</button>
+        </div>
+        <div id="account-inbox-list" class="account-inbox"></div>
+      </section>
+
       <section class="panel">
-        <h2>Rôles utilisateurs</h2>
+        <h2>Répartition des espaces</h2>
         <div class="dashboard">
           <div class="dashboard__item">
-            <span class="dashboard__label">Public</span>
-            <strong>Consulte les définitions</strong>
+            <span class="dashboard__label">Mon compte</span>
+            <strong>Oriente et suit</strong>
           </div>
           <div class="dashboard__item">
-            <span class="dashboard__label">Contributeur</span>
-            <strong>Propose des contenus</strong>
-          </div>
-          <div class="dashboard__item">
-            <span class="dashboard__label">Relecture</span>
-            <strong>Valide et corrige</strong>
+            <span class="dashboard__label">Contribuer</span>
+            <strong>Dépose une proposition</strong>
           </div>
           <div class="dashboard__item">
             <span class="dashboard__label">Administration</span>
-            <strong>Administre le système</strong>
+            <strong>Relit, valide et pilote</strong>
+          </div>
+          <div class="dashboard__item">
+            <span class="dashboard__label">Jeux</span>
+            <strong>Explore et s’exerce</strong>
           </div>
         </div>
         <p class="meta meta--subtle">
-          Tout nouveau compte devient automatiquement <strong>Contributeur</strong>. Les changements de rôle se font ensuite depuis l’administration.
+          Cette page évite les doublons: `Mon compte` n’est pas un formulaire de dépôt, mais un point d’orientation et de suivi.
         </p>
       </section>
     </main>

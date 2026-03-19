@@ -65,7 +65,7 @@ const pages = [
   {
     path: "/term.html",
     title: "Fiche terme - Dico-Archi",
-    selectors: [".hero-ribbon", ".panel--term", ".term-intro-grid"]
+    selectors: ["#term-title", ".panel--term", "#term-definition"]
   }
 ];
 
@@ -197,4 +197,96 @@ test("homepage interactions stay wired", async ({ page }) => {
   await expect(page.locator(".home-bottom-link[href='contribuer.html']")).toBeVisible();
   await expect(page.locator(".home-bottom-link[href='category.html']")).toBeVisible();
   await expect(page.locator("[data-contact-link]").last()).toHaveAttribute("href", /^mailto:/);
+});
+
+test("rich material term renders from local v2 content", async ({ page }) => {
+  const consoleErrors = [];
+  page.on("pageerror", (error) => consoleErrors.push(String(error)));
+  page.on("console", (message) => {
+    if (message.type() !== "error") return;
+    const text = message.text();
+    if (isIgnorableConsoleError(text)) return;
+    if (text.includes("Failed to load resource") && text.includes("404 (Not Found)")) return;
+    consoleErrors.push(text);
+  });
+
+  await page.route("**/api/terms?slug=bois-lamelle-colle", async (route) => {
+    await route.fulfill({
+      status: 404,
+      contentType: "application/json; charset=utf-8",
+      body: JSON.stringify({ error: "term_not_imported_yet" })
+    });
+  });
+
+  await page.goto("/term.html?slug=bois-lamelle-colle", { waitUntil: "networkidle" });
+
+  await expect(page).toHaveTitle("Bois lamellé-collé - Dico-Archi");
+  await expect(page.locator("#term-title")).toHaveText("Bois lamellé-collé");
+  await expect(page.locator("#term-profile-label")).toHaveText("Fiche matériau");
+  await expect(page.locator("#term-detail-tabs")).toBeVisible();
+  await expect(page.locator("#term-detail-sections")).toContainText("Identification");
+  await page.getByRole("button", { name: "Propriétés" }).click();
+  await expect(page.locator("#term-detail-sections")).toContainText("bonne résistance mécanique");
+  await page.getByRole("button", { name: "Vigilance" }).click();
+  await expect(page.locator("#term-detail-sections")).toContainText("protection durable indispensable");
+
+  expect(consoleErrors, "Console/page errors on rich material term page").toEqual([]);
+});
+
+test("rich material term stays readable on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  await page.route("**/api/terms?slug=bois-lamelle-colle", async (route) => {
+    await route.fulfill({
+      status: 404,
+      contentType: "application/json; charset=utf-8",
+      body: JSON.stringify({ error: "term_not_imported_yet" })
+    });
+  });
+
+  await page.goto("/term.html?slug=bois-lamelle-colle", { waitUntil: "networkidle" });
+
+  await expect(page.locator("#term-title")).toHaveText("Bois lamellé-collé");
+  await expect(page.locator("#term-quicklinks")).toBeVisible();
+  await expect(page.locator("#term-details-block")).toBeVisible();
+  await expect(page.locator("#term-visual-block")).toBeVisible();
+  await expect(page.locator("#term-detail-tabs")).toBeVisible();
+
+  const pageWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+  expect(pageWidth).toBeLessThanOrEqual(390);
+});
+
+test("desktop menu toggle stays visible on key pages", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+
+  for (const path of ["/index.html", "/dictionnaire.html", "/category.html?slug=materiaux", "/term.html?slug=bois-lamelle-colle"]) {
+    await page.goto(path, { waitUntil: "networkidle" });
+    await expect(page.getByRole("button", { name: "Ouvrir le menu" })).toBeVisible();
+  }
+});
+
+test("quick access appears on core pages", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+
+  await page.goto("/dictionnaire.html", { waitUntil: "networkidle" });
+  await expect(page.locator("[data-page-quicklinks]")).toBeVisible();
+  await expect(page.locator("[data-page-quicklinks]")).toContainText("Accueil");
+  await expect(page.locator("[data-page-quicklinks]")).toContainText("Dictionnaire");
+
+  await page.goto("/category.html?slug=materiaux", { waitUntil: "networkidle" });
+  await expect(page.locator("[data-page-quicklinks]")).toBeVisible();
+  await expect(page.locator("[data-page-quicklinks]")).toContainText("Matériaux");
+
+  await page.route("**/api/terms?slug=bois-lamelle-colle", async (route) => {
+    await route.fulfill({
+      status: 404,
+      contentType: "application/json; charset=utf-8",
+      body: JSON.stringify({ error: "term_not_imported_yet" })
+    });
+  });
+
+  await page.goto("/term.html?slug=bois-lamelle-colle", { waitUntil: "networkidle" });
+  await expect(page.locator("#term-quicklinks")).toBeVisible();
+  await expect(page.locator("#term-quicklinks")).toContainText("Accueil");
+  await expect(page.locator("#term-quicklinks")).toContainText("Matériaux");
 });

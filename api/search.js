@@ -1,12 +1,5 @@
 const { createServerSupabaseClient } = require("./_supabase");
-
-function normalizeText(value) {
-  return String(value || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim();
-}
+const { buildCanonicalMaps, normalizeText } = require("./_canonical_content");
 
 function computeScore(item, query) {
   const normalizedQuery = normalizeText(query);
@@ -43,13 +36,6 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const supabaseConfig = createServerSupabaseClient({ publicOnly: true });
-  if (supabaseConfig.error) {
-    res.statusCode = 503;
-    res.end(JSON.stringify({ error: supabaseConfig.error }));
-    return;
-  }
-
   const query = String(req.query?.q || "").trim();
   if (!query) {
     res.statusCode = 400;
@@ -57,32 +43,40 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const supabase = supabaseConfig.client;
-
   try {
-    const searchQuery = await supabase
-      .from("terms")
-      .select(`
-        id,
-        term,
-        slug,
-        definition,
-        example,
-        categories:category_id (
-          name
-        )
-      `)
-      .eq("status", "published")
-      .order("term", { ascending: true })
-      .limit(300);
+    const { publishedTerms } = buildCanonicalMaps();
+    const supabaseConfig = createServerSupabaseClient({ publicOnly: true });
+    let dbTerms = [];
 
-    if (searchQuery.error) {
-      res.statusCode = 502;
-      res.end(JSON.stringify({ error: searchQuery.error.message || "search_failed" }));
-      return;
+    if (!supabaseConfig.error) {
+      const dbQuery = await supabaseConfig.client
+        .from("terms")
+        .select(`
+          id,
+          term,
+          slug,
+          definition,
+          example,
+          categories:category_id (
+            name
+          )
+        `)
+        .eq("status", "published")
+        .order("term", { ascending: true });
+
+      if (!dbQuery.error) {
+        dbTerms = Array.isArray(dbQuery.data) ? dbQuery.data : [];
+      }
     }
 
-    const results = (searchQuery.data || [])
+    const mergedBySlug = new Map();
+    for (const item of publishedTerms) mergedBySlug.set(item.slug, item);
+    for (const item of dbTerms) {
+      if (!item?.slug) continue;
+      mergedBySlug.set(item.slug, item);
+    }
+
+    const results = Array.from(mergedBySlug.values())
       .map((item) => ({
         id: item.id,
         term: item.term,

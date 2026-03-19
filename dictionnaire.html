@@ -43,6 +43,11 @@
           <span>Lecture rapide</span>
           <span>Repères métier</span>
         </div>
+        <div class="sticker-row" aria-label="Repères dictionnaire">
+          <span class="sticker"><span class="sticker__icon">A</span><span>Index alphabétique</span></span>
+          <span class="sticker"><span class="sticker__icon">C</span><span>Catégories liées</span></span>
+          <span class="sticker"><span class="sticker__icon">F</span><span>Fiches reliées</span></span>
+        </div>
       </div>
     </header>
 
@@ -79,10 +84,25 @@
               L’objectif est de pouvoir lire vite, puis approfondir par domaine sans perdre le fil.
             </p>
           </article>
+          <article class="dictionary-overview__panel">
+            <span class="dashboard__label">Usage rapide</span>
+            <strong>Chercher un terme, puis ouvrir la fiche utile</strong>
+            <p class="meta meta--subtle">
+              Le dictionnaire sert d’abord à repérer, comparer et retrouver vite une définition exploitable.
+            </p>
+          </article>
         </div>
         <div class="dictionary-toolbar">
-          <div id="terms-status" class="meta dictionary-status">Chargement...</div>
-          <div id="dictionary-letter-nav" class="chips dictionary-letter-nav" aria-label="Navigation alphabétique"></div>
+          <div class="dictionary-toolbar__top">
+            <div id="terms-status" class="meta dictionary-status">Chargement...</div>
+            <label class="dictionary-search" for="dictionary-search">
+              <span class="dashboard__label">Recherche</span>
+              <input id="dictionary-search" name="dictionary-search" type="search" placeholder="Exemple : acrotère, dalle, façade" />
+            </label>
+          </div>
+          <div class="dictionary-toolbar__bottom">
+            <div id="dictionary-letter-nav" class="chips dictionary-letter-nav" aria-label="Navigation alphabétique"></div>
+          </div>
         </div>
         <div id="terms-list" class="dictionary-index"></div>
       </section>

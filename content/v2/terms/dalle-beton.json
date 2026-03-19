@@ -24,6 +24,109 @@
     "abbreviation_plan": null,
     "drawing_note": "Son épaisseur, ses appuis et ses réservations doivent être coordonnés avec la structure et les techniques."
   },
+  "editorial_profile": {
+    "kind": "construction",
+    "label": "Fiche construction",
+    "headline": "Lire l’élément constructif comme un système porteur",
+    "note": "Pour un élément de construction, il faut comprendre son rôle, son fonctionnement structurel et les erreurs d’exécution qui changent sa performance."
+  },
+  "detail_sections": [
+    {
+      "title": "Identification",
+      "facts": [
+        {
+          "label": "Catégorie",
+          "value": "Construction -> Structure horizontale"
+        },
+        {
+          "label": "Type",
+          "value": "Élément porteur"
+        }
+      ]
+    },
+    {
+      "title": "Rôle",
+      "items": [
+        "supporter les charges d’usage",
+        "répartir les efforts vers murs et poteaux",
+        "servir de base aux finitions et couches techniques"
+      ]
+    },
+    {
+      "title": "Composition",
+      "items": [
+        "béton",
+        "armatures en acier",
+        "coffrage temporaire"
+      ]
+    },
+    {
+      "title": "Fonctionnement",
+      "items": [
+        "travail principal en flexion",
+        "compression reprise par le béton",
+        "traction reprise par l’acier"
+      ]
+    },
+    {
+      "title": "Mise en œuvre",
+      "items": [
+        "coffrage",
+        "pose des armatures",
+        "coulage du béton",
+        "vibration",
+        "séchage et cure"
+      ]
+    },
+    {
+      "title": "Points clés",
+      "items": [
+        "adapter l’épaisseur à la portée et aux charges",
+        "soigner le ferraillage",
+        "assurer la continuité structurelle et les réservations"
+      ]
+    },
+    {
+      "title": "Erreurs courantes",
+      "items": [
+        "mauvais dosage du béton",
+        "vibration insuffisante",
+        "fissures liées à une mauvaise exécution ou cure"
+      ]
+    },
+    {
+      "title": "Durabilité",
+      "body": "La dalle béton est très durable et demande peu d’entretien lorsque la conception et l’exécution sont correctes. En revanche, une mauvaise mise en œuvre peut créer des désordres durables."
+    },
+    {
+      "title": "Avantages et limites",
+      "columns": [
+        {
+          "title": "Atouts",
+          "items": [
+            "solide",
+            "stable",
+            "durable"
+          ]
+        },
+        {
+          "title": "Limites",
+          "items": [
+            "lourde",
+            "temps de séchage à respecter",
+            "impact environnemental important"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "À ne pas confondre",
+      "items": [
+        "dalle et chape",
+        "dalle béton et plancher bois"
+      ]
+    }
+  ],
   "translations": {},
   "meta": {
     "source_refs": [

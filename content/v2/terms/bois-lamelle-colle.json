@@ -1,0 +1,134 @@
+{
+  "id": "term_bois_lamelle_colle",
+  "term": "Bois lamellé-collé",
+  "slug": "bois-lamelle-colle",
+  "category_slug": "materiaux",
+  "subcategory_slug": "classification-des-materiaux",
+  "status": "published",
+  "content": {
+    "definition": "Matériau structurel constitué de lamelles de bois collées entre elles pour former des éléments porteurs résistants et stables.",
+    "explanation": "Le bois lamellé-collé permet d’obtenir de grandes sections, des portées importantes et parfois des formes courbes difficiles à atteindre avec du bois massif.",
+    "example": "Dans une halle sportive, des poutres en bois lamellé-collé peuvent franchir de grandes portées avec un poids propre limité.",
+    "applications": [
+      "poutres",
+      "poteaux",
+      "charpentes",
+      "grandes portées"
+    ],
+    "norms": [
+      "SIA bois",
+      "Eurocode 5"
+    ]
+  },
+  "technical_data": {
+    "dimensions": [],
+    "constraints": [
+      "proteger durablement le matériau contre l’humidité",
+      "coordonner précisément les assemblages et connecteurs",
+      "tenir compte du coût selon portée et finition"
+    ]
+  },
+  "representation": {
+    "abbreviation_plan": null,
+    "drawing_note": "Sur plan et en détail, la lecture doit distinguer l’élément porteur, ses appuis et ses assemblages métalliques."
+  },
+  "editorial_profile": {
+    "kind": "material",
+    "label": "Fiche matériau",
+    "headline": "Comprendre la matière, puis son usage structurel",
+    "note": "Pour un matériau, l’essentiel est de lire vite sa nature, ses performances et ses limites d’usage."
+  },
+  "detail_sections": [
+    {
+      "title": "Identification",
+      "facts": [
+        {
+          "label": "Catégorie",
+          "value": "Matériaux -> Structure"
+        },
+        {
+          "label": "Type",
+          "value": "Bois transformé"
+        }
+      ]
+    },
+    {
+      "title": "Propriétés",
+      "items": [
+        "bonne résistance mécanique",
+        "poids plus faible que le béton",
+        "bonne stabilité dimensionnelle",
+        "bon comportement au feu par carbonisation lente"
+      ]
+    },
+    {
+      "title": "Usages courants",
+      "items": [
+        "poutres",
+        "poteaux",
+        "charpentes",
+        "grandes portées"
+      ]
+    },
+    {
+      "title": "Mise en œuvre",
+      "items": [
+        "préfabrication en atelier",
+        "pose sur chantier",
+        "assemblage par connecteurs métalliques",
+        "bonne précision de fabrication nécessaire"
+      ]
+    },
+    {
+      "title": "Vigilance",
+      "items": [
+        "sensible à l’humidité",
+        "protection durable indispensable",
+        "coût parfois élevé"
+      ]
+    },
+    {
+      "title": "Avantages",
+      "items": [
+        "léger",
+        "adapté aux grandes portées",
+        "profil environnemental intéressant"
+      ]
+    },
+    {
+      "title": "Inconvénients",
+      "items": [
+        "nécessite une bonne stratégie de protection",
+        "plus coûteux que certaines solutions courantes",
+        "dépend fortement de la qualité des assemblages"
+      ]
+    },
+    {
+      "title": "Références",
+      "items": [
+        "SIA bois",
+        "Eurocode 5"
+      ]
+    },
+    {
+      "title": "À ne pas confondre",
+      "items": [
+        "bois massif",
+        "CLT (bois lamellé-croisé)"
+      ]
+    }
+  ],
+  "translations": {},
+  "meta": {
+    "source_refs": [
+      "gpt-material-draft"
+    ],
+    "tags": [
+      "materiau",
+      "bois",
+      "structure",
+      "lamelle-colle"
+    ],
+    "version": 1
+  }
+}

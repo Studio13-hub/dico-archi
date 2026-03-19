@@ -10,11 +10,46 @@ const categoryOptions = document.getElementById("category-options");
 const statusInput = document.getElementById("term-status");
 const definitionInput = document.getElementById("definition");
 const exampleInput = document.getElementById("example");
+const richKindInput = document.getElementById("rich-kind");
+const richExplanationInput = document.getElementById("rich-explanation");
+const richApplicationsInput = document.getElementById("rich-applications");
+const richNormsInput = document.getElementById("rich-norms");
+const richConstraintsInput = document.getElementById("rich-constraints");
+const richDrawingNoteInput = document.getElementById("rich-drawing-note");
+const richIdentificationInput = document.getElementById("rich-identification");
+const richPropertiesInput = document.getElementById("rich-properties");
+const richUsesInput = document.getElementById("rich-uses");
+const richImplementationInput = document.getElementById("rich-implementation");
+const richVigilanceInput = document.getElementById("rich-vigilance");
+const richAdvantagesInput = document.getElementById("rich-advantages");
+const richDrawbacksInput = document.getElementById("rich-drawbacks");
+const richReferencesInput = document.getElementById("rich-references");
+const richConfusionsInput = document.getElementById("rich-confusions");
 const relatedInput = document.getElementById("related");
 const imageUrlInput = document.getElementById("image-url");
 const imageFileInput = document.getElementById("image-file");
 const reviewerCommentInput = document.getElementById("reviewer-comment");
 const submissionBanner = document.getElementById("submission-banner");
+const submissionDossierKicker = document.getElementById("submission-dossier-kicker");
+const submissionDossierTerm = document.getElementById("submission-dossier-term");
+const submissionDossierStatus = document.getElementById("submission-dossier-status");
+const submissionDossierSubmitter = document.getElementById("submission-dossier-submitter");
+const submissionDossierReviewer = document.getElementById("submission-dossier-reviewer");
+const submissionDossierCategory = document.getElementById("submission-dossier-category");
+const submissionDossierCreated = document.getElementById("submission-dossier-created");
+const submissionDossierMediaCount = document.getElementById("submission-dossier-media-count");
+const submissionDossierRich = document.getElementById("submission-dossier-rich");
+const submissionDossierCommentState = document.getElementById("submission-dossier-comment-state");
+const submissionDossierUpdated = document.getElementById("submission-dossier-updated");
+const submissionDossierDefinition = document.getElementById("submission-dossier-definition");
+const submissionDossierExample = document.getElementById("submission-dossier-example");
+const submissionDossierMedia = document.getElementById("submission-dossier-media");
+const submissionDossierTimeline = document.getElementById("submission-dossier-timeline");
+const submissionDossierMessages = document.getElementById("submission-dossier-messages");
+const submissionMessageBody = document.getElementById("submission-message-body");
+const submissionSendMessage = document.getElementById("submission-send-message");
+const submissionOpenCorpus = document.getElementById("submission-open-corpus");
+const submissionBackOverview = document.getElementById("submission-back-overview");
 const mediaReviewTitle = document.getElementById("media-review-title");
 const mediaReviewCopy = document.getElementById("media-review-copy");
 const mediaReviewPreview = document.getElementById("media-review-preview");
@@ -28,6 +63,10 @@ const exportPublishedButton = document.getElementById("export-published");
 const auditList = document.getElementById("audit-list");
 const auditEmpty = document.getElementById("audit-empty");
 const workflowButtons = document.querySelectorAll("[data-term-filter]");
+const decisionSearch = document.getElementById("decision-search");
+const decisionFilter = document.getElementById("decision-filter");
+const decisionEmpty = document.getElementById("decision-empty");
+const decisionList = document.getElementById("decision-list");
 const statDraft = document.getElementById("admin-stat-draft");
 const statReview = document.getElementById("admin-stat-review");
 const statPublished = document.getElementById("admin-stat-published");
@@ -60,12 +99,14 @@ let userProfile = null;
 let canManageTerms = false;
 let isSuperAdmin = false;
 let terms = [];
+let submissions = [];
 let categories = [];
 let editingId = null;
 let editingSubmission = null;
 let supportsTermStatus = true;
 let currentStatusFilter = "all";
 let profiles = [];
+let recentDecisions = [];
 let isSavingTerm = false;
 let isProcessingSubmission = false;
 let isDeletingTerm = false;
@@ -77,11 +118,15 @@ let isLoadingMetrics = false;
 let adminPermissionsReady = false;
 let canViewStats = false;
 let lastMetricsLoadedAt = "";
+let highlightedSubmissionId = "";
+let decisionFilterRafId = 0;
+let activeSubmissionRecord = null;
+let activeSubmissionMessages = [];
 
 const ROLE_LABELS = {
   super_admin: "Administration",
-  formateur: "Relecture",
-  apprenti: "Contributeur"
+  formateur: "Formateur",
+  apprenti: "Apprenti"
 };
 
 const GAME_LABELS = {
@@ -94,7 +139,11 @@ const GAME_LABELS = {
 
 const adminSections = Array.from(document.querySelectorAll("[data-admin-section]"));
 const adminSectionButtons = Array.from(document.querySelectorAll("[data-admin-section-target]"));
-let currentAdminSection = "overview";
+const initialAdminParams = new URLSearchParams(window.location.search);
+const initialAdminSection = String(initialAdminParams.get("section") || "").trim();
+let currentAdminSection = initialAdminSection || "overview";
+let requestedSubmissionId = String(initialAdminParams.get("submission") || "").trim();
+let requestedTermId = String(initialAdminParams.get("term") || "").trim();
 
 function normalizeProfile(profile) {
   return supabaseHelpers?.normalizeProfile(profile) || null;
@@ -155,6 +204,16 @@ function isMissingRpc(error, functionName) {
   return message.includes("could not find") && message.includes((functionName || "").toLowerCase());
 }
 
+function isMissingNotificationsSupport(error) {
+  const message = String(error?.message || error || "").toLowerCase();
+  return message.includes("notifications") && (
+    message.includes("does not exist")
+    || message.includes("not exist")
+    || message.includes("could not find")
+    || message.includes("relation")
+  );
+}
+
 function setButtonBusy(button, busy, busyLabel, idleLabel) {
   if (!button) return;
   if (busy) {
@@ -169,6 +228,7 @@ function setButtonBusy(button, busy, busyLabel, idleLabel) {
 
 function setAdminSection(section) {
   currentAdminSection = section || "overview";
+  updateSubmissionTabVisibility();
   for (const panel of adminSections) {
     const visible = panel.dataset.adminSection === currentAdminSection && canAccessAdminFeature(panel.dataset.adminAccess || "");
     panel.hidden = !visible;
@@ -181,6 +241,23 @@ function setAdminSection(section) {
     button.setAttribute("aria-selected", isActive ? "true" : "false");
     button.tabIndex = isActive ? 0 : -1;
   }
+}
+
+function updateSubmissionTabVisibility() {
+  const button = document.getElementById("admin-tab-submission");
+  if (!button) return;
+  button.hidden = !adminPermissionsReady || !activeSubmissionRecord;
+}
+
+function syncAdminUrl({ section = currentAdminSection, submissionId = "", termId = "" } = {}) {
+  const url = new URL(window.location.href);
+  if (section && section !== "overview") url.searchParams.set("section", section);
+  else url.searchParams.delete("section");
+  if (submissionId) url.searchParams.set("submission", submissionId);
+  else url.searchParams.delete("submission");
+  if (termId) url.searchParams.set("term", termId);
+  else url.searchParams.delete("term");
+  window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
 }
 
 function updateAdminContextCopy() {
@@ -358,18 +435,36 @@ function formatPathLabel(value) {
 function clearForm() {
   editingId = null;
   editingSubmission = null;
+  highlightedSubmissionId = "";
   termInput.value = "";
   categoryInput.value = "";
   if (statusInput) statusInput.value = "draft";
   definitionInput.value = "";
   exampleInput.value = "";
+  if (richKindInput) richKindInput.value = "material";
+  if (richExplanationInput) richExplanationInput.value = "";
+  if (richApplicationsInput) richApplicationsInput.value = "";
+  if (richNormsInput) richNormsInput.value = "";
+  if (richConstraintsInput) richConstraintsInput.value = "";
+  if (richDrawingNoteInput) richDrawingNoteInput.value = "";
+  if (richIdentificationInput) richIdentificationInput.value = "";
+  if (richPropertiesInput) richPropertiesInput.value = "";
+  if (richUsesInput) richUsesInput.value = "";
+  if (richImplementationInput) richImplementationInput.value = "";
+  if (richVigilanceInput) richVigilanceInput.value = "";
+  if (richAdvantagesInput) richAdvantagesInput.value = "";
+  if (richDrawbacksInput) richDrawbacksInput.value = "";
+  if (richReferencesInput) richReferencesInput.value = "";
+  if (richConfusionsInput) richConfusionsInput.value = "";
   relatedInput.value = "";
   imageUrlInput.value = "";
   imageFileInput.value = "";
   reviewerCommentInput.value = "";
   if (submissionBanner) submissionBanner.textContent = "";
+  document.querySelectorAll(".admin__row.highlight").forEach((row) => row.classList.remove("highlight"));
   renderMediaReviewPreview([]);
   setUploadStatus("");
+  syncAdminUrl({ section: currentAdminSection });
 }
 
 function renderMediaReviewPreview(rawUrls) {
@@ -434,6 +529,159 @@ function renderMediaReviewPreview(rawUrls) {
   }
 }
 
+function parseLineList(value) {
+  return String(value || "")
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function parseFactLines(value) {
+  return parseLineList(value)
+    .map((line) => {
+      const separatorIndex = line.indexOf(":");
+      if (separatorIndex === -1) return null;
+      const label = line.slice(0, separatorIndex).trim();
+      const factValue = line.slice(separatorIndex + 1).trim();
+      if (!label || !factValue) return null;
+      return { label, value: factValue };
+    })
+    .filter(Boolean);
+}
+
+function formatFactLines(values) {
+  if (!Array.isArray(values)) return "";
+  return values
+    .map((item) => {
+      const label = String(item?.label || "").trim();
+      const value = String(item?.value || "").trim();
+      if (!label || !value) return "";
+      return `${label}: ${value}`;
+    })
+    .filter(Boolean)
+    .join("\n");
+}
+
+function formatLineList(values) {
+  return Array.isArray(values) ? values.filter(Boolean).join("\n") : "";
+}
+
+function makeSection(title, items) {
+  const cleanItems = Array.isArray(items) ? items.filter(Boolean) : [];
+  if (!cleanItems.length) return null;
+  return { title, items: cleanItems };
+}
+
+function getRichDefaults(kind) {
+  if (kind === "construction") {
+    return {
+      label: "Fiche construction",
+      headline: "Comprendre le principe constructif, puis sa mise en œuvre",
+      note: "Pour une construction, l’essentiel est de lire son rôle, sa logique d’assemblage et ses points de vigilance."
+    };
+  }
+  if (kind === "material") {
+    return {
+      label: "Fiche matériau",
+      headline: "Comprendre la matière, puis son usage structurel",
+      note: "Pour un matériau, l’essentiel est de lire vite sa nature, ses performances et ses limites d’usage."
+    };
+  }
+  return {
+    label: "Fiche terme",
+    headline: "Comprendre le terme avant de le réutiliser",
+    note: "L’objectif de cette fiche est de rendre le vocabulaire immédiatement exploitable dans le bureau, sur un plan ou dans une discussion de chantier."
+  };
+}
+
+function buildRichPayloadFromInputs() {
+  const kind = String(richKindInput?.value || "material").trim() || "material";
+  const defaults = getRichDefaults(kind);
+  const explanation = richExplanationInput?.value.trim() || "";
+  const applications = parseLineList(richApplicationsInput?.value);
+  const norms = parseLineList(richNormsInput?.value);
+  const constraints = parseLineList(richConstraintsInput?.value);
+  const drawingNote = richDrawingNoteInput?.value.trim() || "";
+  const identificationFacts = parseFactLines(richIdentificationInput?.value);
+  const detailSections = [
+    identificationFacts.length ? { title: "Identification", facts: identificationFacts } : null,
+    makeSection("Propriétés", parseLineList(richPropertiesInput?.value)),
+    makeSection("Usages courants", parseLineList(richUsesInput?.value)),
+    makeSection("Mise en œuvre", parseLineList(richImplementationInput?.value)),
+    makeSection("Vigilance", parseLineList(richVigilanceInput?.value)),
+    makeSection("Avantages", parseLineList(richAdvantagesInput?.value)),
+    makeSection("Inconvénients", parseLineList(richDrawbacksInput?.value)),
+    makeSection("Références", parseLineList(richReferencesInput?.value)),
+    makeSection("À ne pas confondre", parseLineList(richConfusionsInput?.value))
+  ].filter(Boolean);
+
+  const hasRichContent = Boolean(
+    explanation
+    || applications.length
+    || norms.length
+    || constraints.length
+    || drawingNote
+    || detailSections.length
+  );
+
+  if (!hasRichContent) return {};
+
+  return {
+    content: {
+      explanation,
+      applications,
+      norms
+    },
+    technical_data: {
+      constraints
+    },
+    representation: {
+      abbreviation_plan: null,
+      drawing_note: drawingNote
+    },
+    editorial_profile: {
+      kind,
+      label: defaults.label,
+      headline: defaults.headline,
+      note: defaults.note
+    },
+    detail_sections: detailSections
+  };
+}
+
+function fillRichInputs(richPayload) {
+  const payload = richPayload && typeof richPayload === "object" ? richPayload : {};
+  const detailSections = Array.isArray(payload.detail_sections) ? payload.detail_sections : [];
+  const sectionByTitle = new Map(detailSections.map((section) => [String(section?.title || "").trim(), section]));
+  const identification = sectionByTitle.get("Identification") || {};
+
+  if (richKindInput) richKindInput.value = payload?.editorial_profile?.kind || "material";
+  if (richExplanationInput) richExplanationInput.value = payload?.content?.explanation || "";
+  if (richApplicationsInput) richApplicationsInput.value = formatLineList(payload?.content?.applications);
+  if (richNormsInput) richNormsInput.value = formatLineList(payload?.content?.norms);
+  if (richConstraintsInput) richConstraintsInput.value = formatLineList(payload?.technical_data?.constraints);
+  if (richDrawingNoteInput) richDrawingNoteInput.value = payload?.representation?.drawing_note || "";
+  if (richIdentificationInput) richIdentificationInput.value = formatFactLines(identification?.facts);
+  if (richPropertiesInput) richPropertiesInput.value = formatLineList(sectionByTitle.get("Propriétés")?.items);
+  if (richUsesInput) richUsesInput.value = formatLineList(sectionByTitle.get("Usages courants")?.items);
+  if (richImplementationInput) richImplementationInput.value = formatLineList(sectionByTitle.get("Mise en œuvre")?.items);
+  if (richVigilanceInput) richVigilanceInput.value = formatLineList(sectionByTitle.get("Vigilance")?.items);
+  if (richAdvantagesInput) richAdvantagesInput.value = formatLineList(sectionByTitle.get("Avantages")?.items);
+  if (richDrawbacksInput) richDrawbacksInput.value = formatLineList(sectionByTitle.get("Inconvénients")?.items);
+  if (richReferencesInput) richReferencesInput.value = formatLineList(sectionByTitle.get("Références")?.items);
+  if (richConfusionsInput) richConfusionsInput.value = formatLineList(sectionByTitle.get("À ne pas confondre")?.items);
+}
+
+function isMissingRichPayloadSupport(error) {
+  const message = String(error?.message || error || "").toLowerCase();
+  return message.includes("rich_payload") && (
+    message.includes("does not exist")
+    || message.includes("not exist")
+    || message.includes("could not find the")
+    || message.includes("column")
+  );
+}
+
 function normalizeRelated(raw) {
   return raw
     .split("|")
@@ -466,6 +714,7 @@ function getWorkflowLabel(value) {
   if (status === "validated") return "À relire";
   if (status === "published") return "Publié";
   if (status === "submitted") return "Envoyée";
+  if (status === "resubmitted") return "Resoumise";
   if (status === "accepted") return "Acceptée";
   if (status === "rejected") return "Refusée";
   if (status === "draft") return "Brouillon";
@@ -497,6 +746,23 @@ function formatShortDate(value) {
     hour: "2-digit",
     minute: "2-digit"
   });
+}
+
+function hasRichPayloadContent(payload) {
+  if (!payload || typeof payload !== "object") return false;
+  const explanation = String(payload?.content?.explanation || "").trim();
+  const applications = Array.isArray(payload?.content?.applications) ? payload.content.applications : [];
+  const norms = Array.isArray(payload?.content?.norms) ? payload.content.norms : [];
+  const constraints = Array.isArray(payload?.technical_data?.constraints) ? payload.technical_data.constraints : [];
+  const drawingNote = String(payload?.representation?.drawing_note || "").trim();
+  const detailSections = Array.isArray(payload?.detail_sections) ? payload.detail_sections : [];
+  return Boolean(explanation || applications.length || norms.length || constraints.length || drawingNote || detailSections.length);
+}
+
+function isKnownTestSubmission(item) {
+  const id = String(item?.id || "").trim().toLowerCase();
+  const term = String(item?.term || "").trim().toLowerCase();
+  return id === "cba9eb0c-24cf-4cf6-b493-5c3e0491c507" || term === "terme test contribution image";
 }
 
 function getEditingTerm() {
@@ -576,6 +842,14 @@ function compareTerms(a, b, mode) {
     default:
       return termA.localeCompare(termB, "fr");
   }
+}
+
+function getSubmissionPriority(item) {
+  const status = String(item?.status || "").toLowerCase();
+  if (status === "resubmitted") return 0;
+  if (status === "validated") return 1;
+  if (status === "submitted") return 2;
+  return 3;
 }
 
 function updateWorkflowStats(list) {
@@ -775,22 +1049,53 @@ function renderTable(list) {
 function renderSubmissions(list) {
   const container = document.getElementById("submissions");
   const empty = document.getElementById("submissions-empty");
+  const orderedList = list.slice().sort((a, b) => {
+    const priority = getSubmissionPriority(a) - getSubmissionPriority(b);
+    if (priority !== 0) return priority;
+    return parseDateOrZero(b.updated_at || b.created_at) - parseDateOrZero(a.updated_at || a.created_at);
+  });
 
   container.innerHTML = "";
 
-  if (!list.length) {
+  if (!orderedList.length) {
     empty.style.display = "block";
     return;
   }
 
   empty.style.display = "none";
 
-  for (const item of list) {
+  for (const item of orderedList) {
     const row = document.createElement("div");
     row.className = "admin__row";
+    if (highlightedSubmissionId && item.id === highlightedSubmissionId) {
+      row.classList.add("highlight");
+    }
     const mediaCount = Array.isArray(item.media_urls) ? item.media_urls.length : 0;
+    const richCount = hasRichPayloadContent(item.rich_payload);
     if (mediaCount) {
       row.classList.add("admin__row--has-media");
+    }
+
+    const kicker = document.createElement("div");
+    kicker.className = "admin__row-kicker";
+    kicker.textContent = `Proposition ${String(item.id || "").slice(0, 8) || "sans id"}`;
+    if (isKnownTestSubmission(item)) {
+      const testBadge = document.createElement("span");
+      testBadge.className = "admin__badge admin__badge--test";
+      testBadge.textContent = "Test reprise";
+      kicker.appendChild(testBadge);
+    }
+    if (item.status === "resubmitted") {
+      const resubBadge = document.createElement("span");
+      resubBadge.className = "admin__badge";
+      resubBadge.textContent = "Retour apprenti";
+      kicker.appendChild(resubBadge);
+    }
+    if (richCount) {
+      const richBadge = document.createElement("span");
+      richBadge.className = "admin__badge";
+      richBadge.textContent = "Fiche complete";
+      kicker.appendChild(richBadge);
     }
 
     const title = document.createElement("div");
@@ -799,17 +1104,20 @@ function renderSubmissions(list) {
 
     const info = document.createElement("div");
     info.className = "admin__row-info";
-    info.textContent = `${getCategoryName(item)} · ${item.definition}`;
+    info.textContent = `${getCategoryName(item)} · ${item.definition}${richCount ? " · contenu riche" : ""}`;
 
     const meta = document.createElement("div");
     meta.className = "admin__row-meta";
     const mediaLabel = mediaCount ? ` · ${mediaCount} média proposé${mediaCount > 1 ? "s" : ""}` : "";
     const when = formatShortDate(item.created_at);
-    meta.textContent = `Par : ${item.submitter_email || "anonyme"}${mediaLabel}${when ? ` · ${when}` : ""}`;
+    const statusMeta = item.status === "resubmitted" ? " · corrigée puis renvoyée" : "";
+    meta.textContent = `Par : ${item.submitter_email || "anonyme"}${mediaLabel}${when ? ` · ${when}` : ""}${statusMeta}`;
 
     const status = document.createElement("div");
     status.className = `admin__row-status ${item.status || "pending"}`;
     status.textContent = getWorkflowLabel(item.status || "submitted");
+
+    row.appendChild(kicker);
 
     if (mediaCount) {
       const mediaStrip = document.createElement("div");
@@ -840,10 +1148,16 @@ function renderSubmissions(list) {
 
     const loadButton = document.createElement("button");
     loadButton.className = "ghost";
-    loadButton.textContent = "Modifier";
+    loadButton.textContent = "Ouvrir";
     loadButton.dataset.submissionAction = "1";
     loadButton.disabled = isProcessingSubmission;
     loadButton.addEventListener("click", () => loadSubmission(item, row));
+
+    const dossierButton = document.createElement("button");
+    dossierButton.className = "ghost";
+    dossierButton.textContent = "Dossier";
+    dossierButton.disabled = isProcessingSubmission;
+    dossierButton.addEventListener("click", () => openSubmissionDossier(item, row));
 
     const approveButton = document.createElement("button");
     approveButton.textContent = "Accepter";
@@ -859,6 +1173,7 @@ function renderSubmissions(list) {
     rejectButton.addEventListener("click", () => rejectSubmission(item, rejectButton));
 
     actions.appendChild(loadButton);
+    actions.appendChild(dossierButton);
     actions.appendChild(approveButton);
     actions.appendChild(rejectButton);
 
@@ -911,6 +1226,257 @@ function renderAudit(list) {
     row.appendChild(meta);
     auditList.appendChild(row);
   }
+}
+
+function getDecisionKind(item) {
+  const status = String(item.status || "").toLowerCase();
+  if (status === "accepted") return item.reviewer_comment ? "accepted" : "accepted";
+  if (status === "resubmitted") return "feedback";
+  if (status === "rejected") return item.reviewer_comment ? "feedback" : "rejected";
+  return "other";
+}
+
+function getDecisionLabel(kind) {
+  if (kind === "accepted") return "Validation";
+  if (kind === "feedback") return "À corriger";
+  if (kind === "rejected") return "Refus";
+  return "Décision";
+}
+
+function renderDecisionHistory(list) {
+  if (!decisionList || !decisionEmpty) return;
+  decisionList.innerHTML = "";
+
+  if (!list.length) {
+    decisionEmpty.style.display = "block";
+    return;
+  }
+
+  decisionEmpty.style.display = "none";
+
+  for (const item of list) {
+    const row = document.createElement("div");
+    row.className = "admin__row";
+
+    const title = document.createElement("div");
+    title.className = "admin__row-title";
+    title.textContent = item.term || "Proposition";
+
+    const info = document.createElement("div");
+    info.className = "admin__row-info";
+    info.textContent = `${item.category || "Sans catégorie"} · ${item.submitter_email || "Compte inconnu"}`;
+
+    const meta = document.createElement("div");
+    meta.className = "admin__row-meta";
+    const actor = item.reviewer_email || "Décision non attribuée";
+    const when = formatShortDate(item.updated_at || item.created_at);
+    meta.textContent = `Décidé par ${actor}${when ? ` · ${when}` : ""}`;
+
+    const badges = document.createElement("div");
+    badges.className = "account-inbox__badges";
+
+    const kindBadge = document.createElement("span");
+    kindBadge.className = "account-inbox__badge";
+    kindBadge.textContent = getDecisionLabel(getDecisionKind(item));
+    badges.appendChild(kindBadge);
+
+    if (item.rich_payload && hasRichPayloadContent(item.rich_payload)) {
+      const richBadge = document.createElement("span");
+      richBadge.className = "account-inbox__badge";
+      richBadge.textContent = "Fiche complète";
+      badges.appendChild(richBadge);
+    }
+
+    if (Array.isArray(item.media_urls) && item.media_urls.length) {
+      const mediaBadge = document.createElement("span");
+      mediaBadge.className = "account-inbox__badge";
+      mediaBadge.textContent = `${item.media_urls.length} média${item.media_urls.length > 1 ? "s" : ""}`;
+      badges.appendChild(mediaBadge);
+    }
+
+    row.appendChild(title);
+    row.appendChild(info);
+    row.appendChild(meta);
+    row.appendChild(badges);
+
+    if (item.reviewer_comment) {
+      const note = document.createElement("div");
+      note.className = "account-inbox__note";
+      note.textContent = `Commentaire: ${item.reviewer_comment}`;
+      row.appendChild(note);
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "admin__row-actions";
+
+    const openButton = document.createElement("button");
+    openButton.type = "button";
+    openButton.className = "ghost";
+    openButton.textContent = "Dossier";
+    openButton.addEventListener("click", () => openSubmissionDossier(item));
+    actions.appendChild(openButton);
+
+    row.appendChild(actions);
+    decisionList.appendChild(row);
+  }
+}
+
+function appendTimelineItem(container, title, copy, meta) {
+  if (!container) return;
+  const item = document.createElement("div");
+  item.className = "admin__timeline-item";
+
+  const heading = document.createElement("strong");
+  heading.textContent = title;
+  item.appendChild(heading);
+
+  if (copy) {
+    const body = document.createElement("div");
+    body.className = "section-copy";
+    body.textContent = copy;
+    item.appendChild(body);
+  }
+
+  if (meta) {
+    const details = document.createElement("div");
+    details.className = "meta meta--subtle";
+    details.textContent = meta;
+    item.appendChild(details);
+  }
+
+  container.appendChild(item);
+}
+
+function renderSubmissionDossier(item) {
+  activeSubmissionRecord = item || null;
+  updateSubmissionTabVisibility();
+  if (!item) return;
+
+  const mediaUrls = Array.isArray(item.media_urls) ? item.media_urls : [];
+  const richLabel = hasRichPayloadContent(item.rich_payload) ? "Fiche complète" : "Fiche simple";
+  const reviewerLabel = item.reviewer_email || (item.reviewed_by ? "Compte staff" : "Pas encore relu");
+  const submitterLabel = item.submitter_email || "Compte non identifié";
+
+  if (submissionDossierKicker) {
+    submissionDossierKicker.textContent = `Proposition ${String(item.id || "").slice(0, 8)} · ${getWorkflowLabel(item.status || "submitted")}`;
+  }
+  if (submissionDossierTerm) submissionDossierTerm.textContent = item.term || "-";
+  if (submissionDossierStatus) submissionDossierStatus.textContent = getWorkflowLabel(item.status || "submitted");
+  if (submissionDossierSubmitter) submissionDossierSubmitter.textContent = submitterLabel;
+  if (submissionDossierReviewer) submissionDossierReviewer.textContent = reviewerLabel;
+  if (submissionDossierCategory) submissionDossierCategory.textContent = item.category || "Sans catégorie";
+  if (submissionDossierCreated) submissionDossierCreated.textContent = item.created_at ? `Créée le ${formatShortDate(item.created_at)}` : "-";
+  if (submissionDossierMediaCount) submissionDossierMediaCount.textContent = String(mediaUrls.length);
+  if (submissionDossierRich) submissionDossierRich.textContent = richLabel;
+  if (submissionDossierCommentState) submissionDossierCommentState.textContent = item.reviewer_comment ? "Présent" : "Aucun";
+  if (submissionDossierUpdated) submissionDossierUpdated.textContent = item.updated_at ? `Dernière mise à jour: ${formatShortDate(item.updated_at)}` : "-";
+  if (submissionDossierDefinition) submissionDossierDefinition.textContent = item.definition || "-";
+  if (submissionDossierExample) submissionDossierExample.textContent = item.example || "Aucun exemple fourni.";
+
+  if (submissionDossierMedia) {
+    submissionDossierMedia.innerHTML = "";
+    if (!mediaUrls.length) {
+      const empty = document.createElement("div");
+      empty.className = "meta meta--subtle";
+      empty.textContent = "Aucun média joint.";
+      submissionDossierMedia.appendChild(empty);
+    } else {
+      for (const url of mediaUrls) {
+        const link = document.createElement("a");
+        link.className = "admin__media-chip";
+        link.href = url;
+        link.target = "_blank";
+        link.rel = "noreferrer noopener";
+        link.textContent = inferMediaType(url) === "pdf" ? "PDF" : (getMediaTitle(url) || "Image");
+        submissionDossierMedia.appendChild(link);
+      }
+    }
+  }
+
+  if (submissionDossierTimeline) {
+    submissionDossierTimeline.innerHTML = "";
+    appendTimelineItem(
+      submissionDossierTimeline,
+      "Soumission reçue",
+      `La proposition a été envoyée par ${submitterLabel}.`,
+      item.created_at ? formatShortDate(item.created_at) : ""
+    );
+    if (mediaUrls.length) {
+      appendTimelineItem(
+        submissionDossierTimeline,
+        "Médias joints",
+        `${mediaUrls.length} média${mediaUrls.length > 1 ? "s" : ""} proposé${mediaUrls.length > 1 ? "s" : ""}.`,
+        richLabel
+      );
+    }
+    if (item.reviewer_comment) {
+      appendTimelineItem(
+        submissionDossierTimeline,
+        getDecisionLabel(getDecisionKind(item)),
+        item.reviewer_comment,
+        reviewerLabel
+      );
+    } else if (item.status === "accepted" || item.status === "rejected") {
+      appendTimelineItem(
+        submissionDossierTimeline,
+        getDecisionLabel(getDecisionKind(item)),
+        "Décision enregistrée sans commentaire détaillé.",
+        reviewerLabel
+      );
+    } else {
+      appendTimelineItem(
+        submissionDossierTimeline,
+        "En attente de relecture",
+        "La proposition est encore dans la file éditoriale.",
+        getWorkflowLabel(item.status || "submitted")
+      );
+    }
+  }
+
+  refreshActiveSubmissionMessages();
+}
+
+function openSubmissionDossier(item, row) {
+  if (!item) return;
+  renderSubmissionDossier(item);
+  if (row) {
+    document.querySelectorAll(".admin__row.highlight").forEach((node) => node.classList.remove("highlight"));
+    row.classList.add("highlight");
+  }
+  highlightedSubmissionId = item.id || "";
+  if (adminPermissionsReady) setAdminSection("submission");
+  syncAdminUrl({ section: "submission", submissionId: item.id || "" });
+  setMessage(`Propositions : dossier ouvert pour « ${item.term || "sans titre"} ».`);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function applyDecisionView() {
+  if (!decisionList || !decisionEmpty) return;
+  const query = String(decisionSearch?.value || "").trim().toLowerCase();
+  const filter = String(decisionFilter?.value || "all");
+
+  let filtered = recentDecisions.slice();
+  if (filter !== "all") {
+    filtered = filtered.filter((item) => getDecisionKind(item) === filter);
+  }
+  if (query) {
+    filtered = filtered.filter((item) => (
+      [
+        item.term,
+        item.category,
+        item.definition,
+        item.reviewer_comment,
+        item.submitter_email,
+        item.reviewer_email
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(query)
+    ));
+  }
+
+  renderDecisionHistory(filtered);
 }
 
 function renderChatFeedback(list) {
@@ -1129,6 +1695,7 @@ async function fetchChatFeedback() {
 }
 
 function loadTerm(item) {
+  if (adminPermissionsReady) setAdminSection("corpus");
   editingId = item.id;
   editingSubmission = null;
   termInput.value = item.term || "";
@@ -1136,16 +1703,24 @@ function loadTerm(item) {
   if (statusInput) statusInput.value = getTermStatus(item);
   definitionInput.value = item.definition || "";
   exampleInput.value = item.example || "";
+  fillRichInputs(item.rich_payload || {});
   relatedInput.value = (item.related || []).join(" | ");
   imageUrlInput.value = formatMediaUrlsForInput(item.media_urls || []);
   renderMediaReviewPreview(item.media_urls || []);
   reviewerCommentInput.value = item.reviewer_comment || "";
   if (submissionBanner) submissionBanner.textContent = "";
+  setMessage(`Corpus : fiche chargée pour modification (${item.term || "terme"}).`);
+  syncAdminUrl({ section: "corpus", termId: item.id || "" });
   termInput.focus();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function loadSubmission(item, row) {
+  activeSubmissionRecord = item;
+  renderSubmissionDossier(item);
+  if (adminPermissionsReady) setAdminSection("corpus");
+  document.querySelectorAll(".admin__row.highlight").forEach((node) => node.classList.remove("highlight"));
+  highlightedSubmissionId = item.id || "";
   editingSubmission = item;
   editingId = null;
   termInput.value = item.term || "";
@@ -1153,6 +1728,7 @@ function loadSubmission(item, row) {
   if (statusInput) statusInput.value = "validated";
   definitionInput.value = item.definition || "";
   exampleInput.value = item.example || "";
+  fillRichInputs(item.rich_payload || {});
   relatedInput.value = (item.related || []).join(" | ");
   imageUrlInput.value = formatMediaUrlsForInput(item.media_urls || []);
   renderMediaReviewPreview(item.media_urls || []);
@@ -1160,8 +1736,12 @@ function loadSubmission(item, row) {
   if (submissionBanner) {
     const mediaCount = Array.isArray(item.media_urls) ? item.media_urls.length : 0;
     const mediaLabel = mediaCount ? ` · ${mediaCount} média proposé${mediaCount > 1 ? "s" : ""}` : "";
-    submissionBanner.textContent = `Proposition chargée : ${item.term}${mediaLabel}`;
+    const richLabel = hasRichPayloadContent(item.rich_payload) ? " · fiche complète" : "";
+    const idLabel = item.id ? ` · id ${item.id}` : "";
+    submissionBanner.textContent = `Proposition chargée : ${item.term}${mediaLabel}${richLabel}${idLabel}`;
   }
+  setMessage(`Propositions : la proposition « ${item.term || "sans titre"} » est ouverte dans le panneau Corpus.`);
+  syncAdminUrl({ section: "corpus", submissionId: item.id || "" });
   if (row) row.classList.add("highlight");
   termInput.focus();
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1176,6 +1756,196 @@ async function logAction(action, entity, entityId, details = {}) {
     target_id: entityId,
     details
   });
+}
+
+async function createInboxNotification(recipientId, payload) {
+  if (!recipientId || !payload?.title || !payload?.body) return;
+
+  const notificationPayload = {
+    recipient_id: recipientId,
+    kind: payload.kind || "info",
+    severity: payload.severity || "info",
+    title: payload.title,
+    body: payload.body,
+    actor_id: payload.actorId || currentUser?.id || null,
+    actor_label: payload.actorLabel || currentUser?.email || "",
+    related_table: payload.relatedTable || null,
+    related_id: payload.relatedId || null,
+    metadata: payload.metadata && typeof payload.metadata === "object" ? payload.metadata : {}
+  };
+
+  if (dicoApi?.createNotification) {
+    try {
+      await dicoApi.createNotification(notificationPayload);
+    } catch (error) {
+      if (isMissingNotificationsSupport(error)) return;
+      throw error;
+    }
+    return;
+  }
+
+  const result = await supabaseClient
+    .from("notifications")
+    .insert(notificationPayload);
+
+  if (result.error) {
+    const message = String(result.error.message || "").toLowerCase();
+    const isLegacySchema = ["severity", "actor_id", "actor_label", "metadata"].some((field) => message.includes(field));
+    if (isLegacySchema) {
+      const legacyResult = await supabaseClient
+        .from("notifications")
+        .insert({
+          recipient_id: notificationPayload.recipient_id,
+          kind: notificationPayload.kind,
+          title: notificationPayload.title,
+          body: notificationPayload.body,
+          related_table: notificationPayload.related_table,
+          related_id: notificationPayload.related_id
+        });
+      if (!legacyResult.error) return;
+      if (isMissingNotificationsSupport(legacyResult.error)) return;
+      throw legacyResult.error;
+    }
+    if (isMissingNotificationsSupport(result.error)) return;
+    throw result.error;
+  }
+}
+
+async function fetchSubmissionMessages(submissionId) {
+  if (!submissionId || !supabaseClient) return [];
+  const query = await supabaseClient
+    .from("submission_messages")
+    .select(`
+      id,
+      submission_id,
+      audience,
+      body,
+      created_at,
+      author:author_id (
+        email,
+        display_name
+      )
+    `)
+    .eq("submission_id", submissionId)
+    .order("created_at", { ascending: true });
+
+  if (query.error) {
+    const message = String(query.error.message || "").toLowerCase();
+    if (message.includes("submission_messages") && (message.includes("does not exist") || message.includes("relation"))) {
+      return [];
+    }
+    throw query.error;
+  }
+
+  return Array.isArray(query.data)
+    ? query.data.map((item) => ({
+        ...item,
+        author_label: item.author?.display_name || item.author?.email || "Compte inconnu"
+      }))
+    : [];
+}
+
+function renderSubmissionMessages(messages) {
+  if (!submissionDossierMessages) return;
+  submissionDossierMessages.innerHTML = "";
+
+  if (!messages.length) {
+    const empty = document.createElement("div");
+    empty.className = "meta meta--subtle";
+    empty.textContent = "Aucun échange enregistré pour cette proposition.";
+    submissionDossierMessages.appendChild(empty);
+    return;
+  }
+
+  for (const item of messages) {
+    const row = document.createElement("div");
+    row.className = "admin__timeline-item";
+
+    const title = document.createElement("strong");
+    title.textContent = item.author_label || "Compte inconnu";
+
+    const meta = document.createElement("div");
+    meta.className = "meta meta--subtle";
+    meta.textContent = `${item.audience === "submitter" ? "Visible contributeur" : "Interne"} · ${formatShortDate(item.created_at)}`;
+
+    const body = document.createElement("div");
+    body.className = "section-copy";
+    body.textContent = item.body || "";
+
+    row.appendChild(title);
+    row.appendChild(meta);
+    row.appendChild(body);
+    submissionDossierMessages.appendChild(row);
+  }
+}
+
+async function refreshActiveSubmissionMessages() {
+  if (!activeSubmissionRecord?.id) {
+    activeSubmissionMessages = [];
+    renderSubmissionMessages([]);
+    return;
+  }
+
+  try {
+    activeSubmissionMessages = await fetchSubmissionMessages(activeSubmissionRecord.id);
+    renderSubmissionMessages(activeSubmissionMessages);
+  } catch (error) {
+    setMessage(`Dossier : ${getErrorMessage(error)}`, true);
+  }
+}
+
+async function sendSubmissionMessage() {
+  if (!activeSubmissionRecord?.id || !submissionMessageBody || !submissionSendMessage) return;
+  const body = submissionMessageBody.value.trim();
+  if (!body) {
+    setMessage("Dossier : écris un message avant l’envoi.", true);
+    return;
+  }
+
+  setButtonBusy(submissionSendMessage, true, "Envoi...", "Envoyer au contributeur");
+  try {
+    const payload = {
+      submission_id: activeSubmissionRecord.id,
+      author_id: currentUser?.id || null,
+      audience: "submitter",
+      body
+    };
+
+    if (dicoApi?.createSubmissionMessage) {
+      await dicoApi.createSubmissionMessage(payload);
+    } else {
+      const result = await supabaseClient.from("submission_messages").insert(payload);
+      if (result.error) throw result.error;
+    }
+
+    await createInboxNotification(activeSubmissionRecord.submitted_by, {
+      kind: "submission_feedback",
+      severity: "warning",
+      title: `Nouveau message éditorial : ${activeSubmissionRecord.term}`,
+      body: "Un nouveau message de relecture est disponible sur votre proposition.",
+      relatedTable: "term_submissions",
+      relatedId: activeSubmissionRecord.id,
+      metadata: {
+        term: activeSubmissionRecord.term,
+        category: activeSubmissionRecord.category || "",
+        reviewer_comment: body,
+        decision: "message",
+        decided_at: new Date().toISOString()
+      }
+    });
+
+    await logAction("submission_message_sent", "term_submissions", activeSubmissionRecord.id, {
+      term: activeSubmissionRecord.term
+    });
+
+    submissionMessageBody.value = "";
+    await refreshActiveSubmissionMessages();
+    setMessage("Dossier : message envoyé au contributeur.");
+  } catch (error) {
+    setMessage(`Dossier : ${getErrorMessage(error)}`, true);
+  } finally {
+    setButtonBusy(submissionSendMessage, false, "Envoi...", "Envoyer au contributeur");
+  }
 }
 
 async function fetchCategories() {
@@ -1310,6 +2080,7 @@ async function saveTerm() {
     const example = exampleInput.value.trim();
     const related = normalizeRelated(relatedInput.value || "");
     const typedMedia = parseMediaUrls(imageUrlInput.value);
+    const richPayload = buildRichPayloadFromInputs();
     if (typedMedia.some((url) => !isSupportedMediaUrl(url))) {
       setMessage("Termes : lien média invalide (http/https + extension image ou .pdf).", true);
       return;
@@ -1348,12 +2119,20 @@ async function saveTerm() {
       reviewer_comment: reviewerCommentInput.value.trim() || null
     };
 
+    if (Object.keys(richPayload).length) {
+      payload.rich_payload = richPayload;
+    }
+
     const query = editingId
       ? supabaseClient.from("terms").update(payload).eq("id", editingId)
       : supabaseClient.from("terms").insert(payload).select("id").single();
 
     let { data, error } = await query;
     if (error) {
+      if (isMissingRichPayloadSupport(error)) {
+        setMessage("Termes : applique d’abord la migration SQL 019 pour enregistrer une fiche complète.", true);
+        return;
+      }
       if (await handleAuthError(error, "Termes")) return;
       setMessage(`Termes: ${getErrorMessage(error)}`, true);
       return;
@@ -1377,7 +2156,7 @@ async function saveTerm() {
 }
 
 async function fetchTerms() {
-  const [termsQuery, mediaQuery, relationsQuery] = await Promise.all([
+  let [termsQuery, mediaQuery, relationsQuery] = await Promise.all([
     supabaseClient
       .from("terms")
       .select(`
@@ -1388,6 +2167,7 @@ async function fetchTerms() {
         status,
         definition,
         example,
+        rich_payload,
         reviewer_comment,
         updated_at,
         categories:category_id (
@@ -1407,6 +2187,32 @@ async function fetchTerms() {
       .select("source_term_id, target_term_id, relation_type")
       .eq("relation_type", "related")
   ]);
+
+  if (termsQuery.error && isMissingRichPayloadSupport(termsQuery.error)) {
+    termsQuery = await supabaseClient
+      .from("terms")
+      .select(`
+        id,
+        term,
+        slug,
+        category_id,
+        status,
+        definition,
+        example,
+        reviewer_comment,
+        updated_at,
+        categories:category_id (
+          id,
+          name,
+          slug
+        )
+      `)
+      .order("term", { ascending: true });
+
+    if (!termsQuery.error && Array.isArray(termsQuery.data)) {
+      termsQuery.data = termsQuery.data.map((item) => ({ ...item, rich_payload: {} }));
+    }
+  }
 
   if (termsQuery.error || mediaQuery.error || relationsQuery.error) {
     const error = termsQuery.error || mediaQuery.error || relationsQuery.error;
@@ -1447,10 +2253,18 @@ async function fetchTerms() {
     };
   });
   applyTermsView();
+
+  if (requestedTermId) {
+    const target = terms.find((item) => item.id === requestedTermId);
+    if (target) {
+      requestedTermId = "";
+      loadTerm(target);
+    }
+  }
 }
 
 async function fetchSubmissions() {
-  const { data, error } = await supabaseClient
+  let { data, error } = await supabaseClient
     .from("term_submissions")
     .select(
       `
@@ -1461,14 +2275,63 @@ async function fetchSubmissions() {
       definition,
       example,
       media_urls,
+      rich_payload,
       status,
       reviewer_comment,
       submitted_by,
+      reviewed_by,
       created_at
+      ,
+      updated_at,
+      submitter:submitted_by (
+        email,
+        display_name
+      ),
+      reviewer:reviewed_by (
+        email,
+        display_name
+      )
       `
     )
-    .in("status", ["submitted", "validated"])
+    .in("status", ["submitted", "validated", "resubmitted"])
     .order("created_at", { ascending: false });
+
+  if (error && isMissingRichPayloadSupport(error)) {
+    const legacyQuery = await supabaseClient
+      .from("term_submissions")
+      .select(
+        `
+        id,
+        term,
+        slug,
+        category_id,
+        definition,
+        example,
+        media_urls,
+        status,
+        reviewer_comment,
+        submitted_by,
+        reviewed_by,
+        created_at,
+        updated_at,
+        submitter:submitted_by (
+          email,
+          display_name
+        ),
+        reviewer:reviewed_by (
+          email,
+          display_name
+        )
+        `
+      )
+      .in("status", ["submitted", "validated", "resubmitted"])
+      .order("created_at", { ascending: false });
+
+    data = Array.isArray(legacyQuery.data)
+      ? legacyQuery.data.map((item) => ({ ...item, rich_payload: {} }))
+      : [];
+    error = legacyQuery.error;
+  }
 
   if (error) {
     if (await handleAuthError(error, "Propositions")) return;
@@ -1480,10 +2343,114 @@ async function fetchSubmissions() {
     category: categories.find((category) => category.id === item.category_id)?.name || "",
     related: [],
     media_urls: Array.isArray(item.media_urls) ? item.media_urls : [],
-    submitter_email: ""
+    submitter_email: item.submitter?.display_name || item.submitter?.email || "",
+    reviewer_email: item.reviewer?.display_name || item.reviewer?.email || ""
   }));
 
+  submissions = items;
   renderSubmissions(items);
+
+  if (requestedSubmissionId) {
+    const target = submissions.find((item) => item.id === requestedSubmissionId);
+    if (target) {
+      requestedSubmissionId = "";
+      if (currentAdminSection === "submission") openSubmissionDossier(target);
+      else loadSubmission(target);
+    }
+  }
+}
+
+async function fetchRecentDecisions() {
+  if (!decisionList || !supabaseClient) return;
+
+  let { data, error } = await supabaseClient
+    .from("term_submissions")
+    .select(`
+      id,
+      term,
+      slug,
+      category_id,
+      definition,
+      example,
+      media_urls,
+      rich_payload,
+      status,
+      reviewer_comment,
+      submitted_by,
+      reviewed_by,
+      created_at,
+      updated_at,
+      submitter:submitted_by (
+        email,
+        display_name
+      ),
+      reviewer:reviewed_by (
+        email,
+        display_name
+      )
+    `)
+    .in("status", ["accepted", "rejected", "resubmitted"])
+    .order("updated_at", { ascending: false })
+    .limit(40);
+
+  if (error && isMissingRichPayloadSupport(error)) {
+    const legacyQuery = await supabaseClient
+      .from("term_submissions")
+      .select(`
+        id,
+        term,
+        slug,
+        category_id,
+        definition,
+        example,
+        media_urls,
+        status,
+        reviewer_comment,
+        submitted_by,
+        reviewed_by,
+        created_at,
+        updated_at,
+        submitter:submitted_by (
+          email,
+          display_name
+        ),
+        reviewer:reviewed_by (
+          email,
+          display_name
+        )
+      `)
+      .in("status", ["accepted", "rejected", "resubmitted"])
+      .order("updated_at", { ascending: false })
+      .limit(40);
+
+    data = Array.isArray(legacyQuery.data)
+      ? legacyQuery.data.map((item) => ({ ...item, rich_payload: {} }))
+      : [];
+    error = legacyQuery.error;
+  }
+
+  if (error) {
+    if (await handleAuthError(error, "Décisions")) return;
+    setMessage(`Décisions : ${getErrorMessage(error)}`, true);
+    return;
+  }
+
+  recentDecisions = (Array.isArray(data) ? data : []).map((item) => ({
+    ...item,
+    category: categories.find((category) => category.id === item.category_id)?.name || "",
+    media_urls: Array.isArray(item.media_urls) ? item.media_urls : [],
+    submitter_email: item.submitter?.display_name || item.submitter?.email || "",
+    reviewer_email: item.reviewer?.display_name || item.reviewer?.email || ""
+  }));
+  applyDecisionView();
+
+  if (requestedSubmissionId && currentAdminSection === "submission") {
+    const target = recentDecisions.find((item) => item.id === requestedSubmissionId);
+    if (target) {
+      requestedSubmissionId = "";
+      openSubmissionDossier(target);
+    }
+  }
 }
 
 async function fetchAudit() {
@@ -1636,6 +2603,11 @@ function refreshAdminSectionData(section) {
     fetchProfiles();
     return;
   }
+  if (target === "overview") {
+    fetchSubmissions();
+    fetchRecentDecisions();
+    return;
+  }
   if (target === "stats" && canViewStats) {
     fetchAdminMetrics();
     if (isSuperAdmin) fetchChatFeedback();
@@ -1659,6 +2631,9 @@ async function approveSubmission(item, actionButton) {
     const typedMedia = parseMediaUrls(imageUrlInput.value);
     const sourceMedia = parseMediaUrls(source.media_urls || []);
     const mediaUrls = dedupeMediaUrls(typedMedia.length ? typedMedia : sourceMedia);
+    const sourceRichPayload = source.rich_payload && typeof source.rich_payload === "object" ? source.rich_payload : {};
+    const builtRichPayload = buildRichPayloadFromInputs();
+    const richPayload = Object.keys(builtRichPayload).length ? builtRichPayload : sourceRichPayload;
     const category = findCategoryByInput(categoryInput.value || source.category || source.categories?.name || "");
     const payload = {
       term: termInput.value.trim() || source.term,
@@ -1669,6 +2644,10 @@ async function approveSubmission(item, actionButton) {
       status: "published",
       reviewer_comment: reviewerCommentInput.value.trim() || null
     };
+
+    if (Object.keys(richPayload).length) {
+      payload.rich_payload = richPayload;
+    }
     const related = normalizeRelated(relatedInput.value || source.related?.join(" | ") || "");
     if (mediaUrls.some((url) => !isSupportedMediaUrl(url))) {
       setMessage("Propositions : URL média invalide (http/https + extension image ou .pdf).", true);
@@ -1706,6 +2685,10 @@ async function approveSubmission(item, actionButton) {
       .select("id")
       .single();
     if (insertError) {
+      if (isMissingRichPayloadSupport(insertError)) {
+        setMessage("Propositions : applique d’abord la migration SQL 019 pour publier une fiche complète.", true);
+        return;
+      }
       if (await handleAuthError(insertError, "Propositions")) return;
       setMessage(`Propositions: ${getErrorMessage(insertError)}`, true);
       return;
@@ -1729,11 +2712,30 @@ async function approveSubmission(item, actionButton) {
       return;
     }
 
+    await createInboxNotification(item.submitted_by, {
+      kind: "submission_accepted",
+      severity: "success",
+      title: `Proposition validée : ${payload.term}`,
+      body: reviewerComment
+        ? `Votre proposition a été acceptée puis publiée. Retour éditorial disponible ci-dessous.`
+        : "Votre proposition a été acceptée puis publiée.",
+      relatedTable: "term_submissions",
+      relatedId: item.id,
+      metadata: {
+        term: payload.term,
+        category: category?.name || source.category || "",
+        reviewer_comment: reviewerComment,
+        decision: "accepted",
+        decided_at: new Date().toISOString()
+      }
+    });
+
     await logAction("submission_accepted", "term_submissions", item.id, { term: payload.term });
     setMessage("Propositions : proposition acceptée.");
     clearForm();
     await fetchTerms();
     await fetchSubmissions();
+    await fetchRecentDecisions();
     await fetchAudit();
   } finally {
     isProcessingSubmission = false;
@@ -1751,11 +2753,12 @@ async function rejectSubmission(item, actionButton) {
   setButtonBusy(actionButton, true, "Traitement...", "Refuser");
 
   try {
+    const reviewerComment = reviewerCommentInput.value.trim() || null;
     const { error } = await supabaseClient
       .from("term_submissions")
       .update({
         status: "rejected",
-        reviewer_comment: reviewerCommentInput.value.trim() || null,
+        reviewer_comment: reviewerComment,
         reviewed_by: currentUser ? currentUser.id : null
       })
       .eq("id", item.id);
@@ -1766,11 +2769,32 @@ async function rejectSubmission(item, actionButton) {
       return;
     }
 
+    await createInboxNotification(item.submitted_by, {
+      kind: reviewerComment ? "submission_feedback" : "submission_rejected",
+      severity: reviewerComment ? "warning" : "danger",
+      title: reviewerComment
+        ? `Proposition à corriger : ${item.term}`
+        : `Proposition refusée : ${item.term}`,
+      body: reviewerComment
+        ? "La proposition doit être améliorée avant une nouvelle soumission. Le retour éditorial est détaillé ci-dessous."
+        : "La proposition a été refusée sans commentaire détaillé.",
+      relatedTable: "term_submissions",
+      relatedId: item.id,
+      metadata: {
+        term: item.term,
+        category: item.category || "",
+        reviewer_comment: reviewerComment,
+        decision: reviewerComment ? "feedback" : "rejected",
+        decided_at: new Date().toISOString()
+      }
+    });
+
     await logAction("submission_rejected", "term_submissions", item.id, { term: item.term });
 
     setMessage("Propositions : proposition refusée.");
     clearForm();
     await fetchSubmissions();
+    await fetchRecentDecisions();
     await fetchAudit();
   } finally {
     isProcessingSubmission = false;
@@ -1906,6 +2930,7 @@ async function fetchProfiles() {
 async function updateProfile(profileId, role, active, controls) {
   if (!isSuperAdmin) return;
   if (updatingProfileId) return;
+  const previousProfile = profiles.find((item) => item.id === profileId) || null;
   updatingProfileId = profileId;
   if (controls?.roleSelect) controls.roleSelect.disabled = true;
   if (controls?.activeSelect) controls.activeSelect.disabled = true;
@@ -1937,8 +2962,29 @@ async function updateProfile(profileId, role, active, controls) {
         return;
       }
     }
+    if (previousProfile && (previousProfile.role !== role || previousProfile.active !== active)) {
+      const roleLabel = ROLE_LABELS[role] || role;
+      const previousRoleLabel = ROLE_LABELS[previousProfile.role] || previousProfile.role || "inconnu";
+      const stateLabel = active ? "actif" : "inactif";
+      await createInboxNotification(profileId, {
+        kind: "role_updated",
+        severity: "info",
+        title: "Votre accès a été mis à jour",
+        body: "Votre rôle ou l’état de votre compte a été modifié par l’administration.",
+        relatedTable: "profiles",
+        relatedId: profileId,
+        metadata: {
+          previous_role: previousRoleLabel,
+          next_role: roleLabel,
+          previous_active: previousProfile.active !== false,
+          next_active: active,
+          state_label: stateLabel
+        }
+      });
+    }
     setMessage("Gestion des rôles : profil utilisateur mis à jour.");
     await fetchProfiles();
+    await fetchRecentDecisions();
   } finally {
     updatingProfileId = null;
     if (controls?.roleSelect) controls.roleSelect.disabled = false;
@@ -1956,6 +3002,14 @@ function scheduleAdminFilter() {
   adminFilterRafId = requestAnimationFrame(() => {
     adminFilterRafId = 0;
     filterTerms();
+  });
+}
+
+function scheduleDecisionFilter() {
+  if (decisionFilterRafId) cancelAnimationFrame(decisionFilterRafId);
+  decisionFilterRafId = requestAnimationFrame(() => {
+    decisionFilterRafId = 0;
+    applyDecisionView();
   });
 }
 
@@ -2009,6 +3063,7 @@ async function loadUser() {
     await fetchCategories();
     await fetchTerms();
     await fetchSubmissions();
+    await fetchRecentDecisions();
     await fetchAudit();
     if (canViewStats) {
       await fetchAdminMetrics();
@@ -2042,6 +3097,22 @@ saveButton.addEventListener("click", saveTerm);
 resetButton.addEventListener("click", clearForm);
 adminSearch.addEventListener("input", scheduleAdminFilter);
 if (adminSort) adminSort.addEventListener("change", filterTerms);
+if (decisionSearch) decisionSearch.addEventListener("input", scheduleDecisionFilter);
+if (decisionFilter) decisionFilter.addEventListener("change", applyDecisionView);
+if (submissionOpenCorpus) {
+  submissionOpenCorpus.addEventListener("click", () => {
+    if (!activeSubmissionRecord) return;
+    loadSubmission(activeSubmissionRecord);
+  });
+}
+if (submissionBackOverview) {
+  submissionBackOverview.addEventListener("click", () => {
+    if (!adminPermissionsReady) return;
+    setAdminSection("overview");
+    syncAdminUrl({ section: "overview" });
+  });
+}
+if (submissionSendMessage) submissionSendMessage.addEventListener("click", sendSubmissionMessage);
 adminLogout.addEventListener("click", logout);
 if (exportPublishedButton) exportPublishedButton.addEventListener("click", exportPublishedCsv);
 if (chatFeedbackRefresh) chatFeedbackRefresh.addEventListener("click", fetchChatFeedback);
@@ -2060,6 +3131,7 @@ for (const button of adminSectionButtons) {
     if (button.hidden) return;
     if (!canAccessAdminFeature(button.dataset.adminAccess || "")) return;
     setAdminSection(target);
+    syncAdminUrl({ section: target });
     refreshAdminSectionData(target);
   });
   button.addEventListener("keydown", (event) => {
@@ -2095,6 +3167,8 @@ for (const button of adminSectionButtons) {
 for (const btn of workflowButtons) {
   btn.addEventListener("click", () => {
     currentStatusFilter = btn.dataset.termFilter || "all";
+    if (adminPermissionsReady) setAdminSection("corpus");
+    syncAdminUrl({ section: "corpus" });
     applyTermsView();
   });
 }

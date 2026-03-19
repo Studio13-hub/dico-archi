@@ -8,7 +8,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body class="page-term-detail">
     <header class="hero hero--term">
       <div class="hero__bg"></div>
       <div class="hero__content">
@@ -31,6 +31,7 @@
         <div class="hero-kicker">Lecture détaillée</div>
         <h1 id="term-title">TERME</h1>
         <p id="term-subtitle">Chargement de la fiche du terme.</p>
+        <div id="term-quicklinks" class="term-quicklinks" hidden></div>
         <div class="hero-ribbon">
           <span>Définition</span>
           <span>Contexte métier</span>
@@ -42,24 +43,15 @@
 
     <main>
       <section class="panel panel--term term-panel">
-        <div class="term-summary">
-          <div class="term-summary__chips">
-            <span id="term-status" class="term-chip">-</span>
-            <span id="term-category-chip" class="term-chip term-chip--soft">-</span>
-          </div>
-          <p class="term-summary__note">
-            Fiche relue pour une lecture claire, progressive et utile aux non-francophones.
-          </p>
-        </div>
         <div class="term-intro-grid">
           <article class="term-intro-card term-intro-card--primary">
-            <span class="dashboard__label">Usage</span>
-            <strong>Comprendre le terme avant de le réutiliser</strong>
-            <p class="meta meta--subtle">
+            <span id="term-profile-label" class="dashboard__label">Usage</span>
+            <strong id="term-profile-headline">Comprendre le terme avant de le réutiliser</strong>
+            <p id="term-profile-note" class="meta meta--subtle">
               L’objectif de cette fiche est de rendre le vocabulaire immédiatement exploitable dans le bureau, sur un plan ou dans une discussion de chantier.
             </p>
           </article>
-          <article class="term-intro-card">
+          <article class="term-intro-card" id="term-reading-card">
             <span class="dashboard__label">Lecture conseillée</span>
             <strong>Définition, exemple, puis termes liés</strong>
             <p class="meta meta--subtle">
@@ -68,13 +60,30 @@
           </article>
         </div>
         <div class="term-grid">
-          <div class="term-block term-block--lead">
+          <div class="term-block term-block--lead" id="term-lead-block">
             <h2>Repère</h2>
             <p id="term-category">-</p>
           </div>
           <div class="term-block term-block--definition">
             <h2>Définition</h2>
             <p id="term-definition"></p>
+            <div id="term-example-inline" class="term-inline-note" hidden>
+              <strong>Exemple</strong>
+              <p id="term-example-inline-text"></p>
+            </div>
+          </div>
+          <div class="term-block term-block--visual" id="term-visual-block">
+            <h2>Visuels</h2>
+            <div class="term-visual-grid">
+              <article class="term-visual-card">
+                <strong>Image</strong>
+                <div id="term-visual-image"></div>
+              </article>
+              <article class="term-visual-card">
+                <strong>Dessin technique</strong>
+                <div id="term-visual-schema"></div>
+              </article>
+            </div>
           </div>
           <div class="term-block term-block--example">
             <h2>Exemple</h2>
@@ -103,11 +112,16 @@
               <p id="term-drawing-note"></p>
             </div>
           </div>
-          <div class="term-block term-block--related">
+          <div class="term-block term-block--details" id="term-details-block" hidden>
+            <h2 id="term-details-heading">Détails métier</h2>
+            <div id="term-detail-tabs" class="term-detail-tabs" hidden></div>
+            <div id="term-detail-sections" class="term-detail-sections"></div>
+          </div>
+          <div class="term-block term-block--related" id="term-related-block">
             <h2>Termes liés</h2>
             <div id="term-related"></div>
           </div>
-          <div class="term-block term-block--media">
+          <div class="term-block term-block--media" id="term-media-block">
             <h2>Médias</h2>
             <div id="term-media"></div>
           </div>

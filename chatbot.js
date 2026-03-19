@@ -176,7 +176,7 @@
     }
 
     if (q.includes("admin")) {
-      return "L’espace admin est réservé aux rôles autorisés. Ouvre admin.html si ton compte a un rôle Relecture ou Administration.";
+      return "L’espace admin est réservé aux rôles autorisés. Ouvre admin.html si ton compte a un rôle Formateur ou Administration.";
     }
 
     if (q.includes("quiz")) {

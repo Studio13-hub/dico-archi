@@ -3,6 +3,104 @@
 Date de cadrage: 2026-03-15
 Projet: `/Users/awat/workspace/projects/dico-archi`
 
+## Reprise structurante 2026-03-18
+
+### Principes non negociables
+
+- coherence entre toutes les pages
+- pas de doublons de fonction ou de message
+- pas de patch rapide qui fragilise le produit
+- securite et clarte des roles avant effets visuels secondaires
+- produit durable dans le temps
+- corpus et navigation capables d’absorber un grand volume de propositions apprentis
+- validation formateur explicite avant publication
+
+### Architecture cible retenue
+
+- `Accueil`
+  - presentation du projet
+  - recherche immediate
+  - acces rapides
+  - orientation vers les sections utiles
+- `Dictionnaire`
+  - explorateur principal du corpus
+  - categories
+  - termes
+  - navigation entre notions
+- `Méthodologie`
+  - comment lire
+  - comment comprendre
+  - comment utiliser les notions, plans, normes et logiques constructives
+- `Jeux`
+  - entrainement
+  - revision
+  - apprentissage actif
+- `Contribution`
+  - depot des propositions
+  - upload media temporaire
+  - consignes editoriales
+- `Mon espace`
+  - point d’entree adapte au role
+  - suivi des propositions
+  - actions utiles
+- `Administration`
+  - validation
+  - gouvernance du corpus
+  - roles
+  - structure
+  - suivi
+- `Assistant`
+  - couche transversale de guidage
+  - pas encore une page majeure autonome obligatoire
+
+### Roles cibles a garder partout
+
+- `Public`
+  - consultation libre
+- `Apprenti`
+  - propose
+  - suit ses contributions
+  - apprend
+- `Formateur`
+  - relit
+  - corrige
+  - valide
+  - accompagne
+- `Administration`
+  - gouverne les roles
+  - gere la structure
+  - controle les acces sensibles
+
+### Workflow cible des contributions
+
+1. un apprenti depose une proposition
+2. la proposition entre dans une file claire
+3. un formateur relit, corrige, commente et decide
+4. la publication ne part qu’apres validation
+5. l’administration garde la main sur les roles, la taxonomie et la qualite globale
+
+### Etapes de transformation retenues
+
+1. unifier la navigation et les points d’entree
+2. clarifier le vocabulaire des roles dans toute l’UI
+3. separer nettement:
+   - consultation
+   - contribution
+   - suivi personnel
+   - validation formateur
+   - administration
+4. stabiliser le corpus public canonique pour eviter les differences selon machine ou navigateur
+5. reprendre ensuite la structure et l’utilite de chaque page
+6. seulement apres, accelerer fortement sur les fiches termes
+
+### Prochain ordre de travail
+
+1. navigation et architecture des pages
+2. `Mon espace` / `Contribution` / `Administration`
+3. role et permissions visibles
+4. densite et structure des pages principales
+5. modeles de fiches termes
+
 ## But
 
 Transformer DicoArchi en produit de reference pour comprendre, apprendre, relire et publier du vocabulaire d’architecture, avec une experience plus desirable, plus claire et plus fiable.

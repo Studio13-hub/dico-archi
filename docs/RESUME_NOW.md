@@ -1,4 +1,144 @@
-# Resume now (2026-03-16)
+# Resume now (2026-03-19)
+
+## Verification reelle 2026-03-19 - workflow editorial et cloture git
+
+- verification locale large relancee sur le lot courant:
+  - `npm run content:validate`
+  - `npx playwright test Test/e2e/public-pages.spec.js`
+  - resultat:
+    - validation contenu OK
+    - `23 passed`
+- verification live Supabase relancee sur le projet actif:
+  - `page_views` repond
+  - `game_scores` repond
+  - `notifications` repond
+  - `submission_messages` repond mais ne contient encore aucune ligne
+- proposition test toujours presente en base:
+  - terme: `Terme test contribution image`
+  - submission id: `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
+  - compte source confirme:
+    - role `apprenti`
+    - actif `true`
+  - statut reel au `2026-03-19`:
+    - `submitted`
+    - aucun `reviewer_comment`
+- conclusion exacte:
+  - le socle technique du workflow editorial est bien deploye et joignable
+  - la verification reelle du cycle complet `rejected -> message -> correction -> resubmitted` n’a pas encore ete rejouee en prod sur cette proposition test
+  - il reste donc a faire un vrai run connecte avec comptes staff + apprenti pour cloturer la verification fonctionnelle complete
+
+## Cloture session 2026-03-18 - workflow editorial pro
+
+- le workflow `Apprenti -> Formateur -> Administration` a ete pousse beaucoup plus loin localement
+- `Mon compte` contient maintenant:
+  - boite de reception
+  - echanges editoriaux
+  - reponse apprenti
+  - remise en relecture
+- `Contribuer` peut maintenant rouvrir une proposition refusee via URL:
+  - pre-remplissage du formulaire
+  - mode correction
+  - renvoi en statut `resubmitted`
+- `Administration` contient maintenant:
+  - `Decisions recentes`
+  - `Dossier` de proposition
+  - timeline de proposition
+  - conversation editoriale
+  - priorisation visuelle des retours apprenti
+- nouvelles migrations ajoutees:
+  - `supabase/migrations/020_notifications_inbox.sql`
+  - `supabase/migrations/021_submission_messages.sql`
+  - `supabase/migrations/022_submission_resubmission_flow.sql`
+- migrations `020`, `021`, `022` appliquees en base distante durant la cloture
+- redeploiement production final execute ensuite via `vercel --prod`
+- verification HTTP/HTML relancee sur:
+  - `compte.html`
+  - `contribuer.html`
+  - `admin.html`
+- le lot workflow editorial est maintenant aligne entre:
+  - code local
+  - base Supabase
+  - prod Vercel
+
+## Point exact de reprise 2026-03-18
+
+1. verifier en reel:
+   - refus avec commentaire
+   - message staff dans `Dossier`
+   - lecture du message dans `Mon compte`
+   - correction depuis `Contribuer?submission=...`
+   - renvoi `resubmitted`
+   - priorite `Retour apprenti` visible dans `admin.html`
+2. si le parcours reel est bon, reprendre seulement ensuite:
+   - cloture git propre
+   - ou chantiers visuels / contenu suivants
+
+## Point exact de reprise 2026-03-19
+
+1. reprendre sur la proposition test existante:
+   - `Terme test contribution image`
+   - `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
+2. rejouer en vrai:
+   - refus avec commentaire
+   - message staff dans `Dossier`
+   - lecture du message dans `Mon compte`
+   - correction via `Contribuer?submission=...`
+   - renvoi `resubmitted`
+   - retour priorise dans `admin.html`
+3. une fois ce parcours confirme en prod:
+   - mettre a jour la doc
+   - relancer un petit smoke cible
+   - seulement ensuite reprendre les finitions UX/visuelles
+
+## Cloture session 2026-03-18 - contribution riche
+
+- `local = prod` conserve sur le lot public traite pendant la session
+- `contribuer.html` est maintenant recalee sur un flux unique, sur une seule page, sans fenetres separees
+- la page `Contribuer` a ete simplifiee pour reduire les doublons et mieux separer:
+  - identite
+  - contenu
+  - medias
+  - fiche complete
+- correctif critique applique dans `contribuer.page.js`:
+  - `rich_payload` est maintenant bien calcule au moment de l’envoi
+- correctif critique applique dans `api/categories.js`:
+  - l’API publique des categories renvoie maintenant aussi les `id`
+  - sans cela, le select categorie de `contribuer.html` ne pouvait pas etre fiable en prod
+- migration SQL ajoutee et appliquee:
+  - `supabase/migrations/019_rich_payload_terms_and_submissions.sql`
+  - ajout du support `rich_payload` sur `terms` et `term_submissions`
+- verification reelle en ligne terminee de bout en bout:
+  - creation d’un compte apprenti temporaire confirme
+  - upload reel d’une image de test dans `term-images`
+  - creation d’une vraie proposition `submitted` avec `rich_payload`
+  - media public verifie en `HTTP 200`
+- proposition test creee:
+  - terme: `Terme test contribution image`
+  - submission id: `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
+
+## Reprise structurelle 2026-03-18
+
+- le socle public `local = prod` est maintenu sur le corpus, la navigation et la fiche `Bois lamellé-collé`
+- les roles visibles sont maintenant stabilises en:
+  - `Public`
+  - `Apprenti`
+  - `Formateur`
+  - `Administration`
+- separation de responsabilites renforcee:
+  - `Mon compte` oriente et suit
+  - `Contribuer` depose
+  - `Administration` valide, gouverne et pilote
+- `contribuer.html` a ete recalee sur le modele editorial de la fiche `Bois lamellé-collé`:
+  - repere
+  - definition
+  - exemple
+  - medias
+- verification UI du lot structurel:
+  - `secondary smoke /compte.html`
+  - `secondary smoke /contribuer.html`
+  - `desktop menu toggle stays visible on key pages`
+  - `quick access appears on core pages`
+  - resultat: `4 passed`
 
 ## Etat global
 
@@ -23,8 +163,9 @@
 - upload temporaire de medias depuis `contribuer.html` en place via URL signee
 - apercus medias cote admin en place
 - roles visibles simplifies :
-  - `Contributeur`
-  - `Relecture`
+  - `Public`
+  - `Apprenti`
+  - `Formateur`
   - `Administration`
 - premier bloc `Façades` publie dans le corpus V2
 - suivi serveur ajoute :
@@ -44,25 +185,22 @@
 
 Le prochain point utile est maintenant :
 
-1. conserver la discipline de travail retenue:
-   - petit lot
-   - verification locale
-   - smoke tests Playwright
-   - puis seulement suite
-2. verifier explicitement les pages de jeux en plus du parcours principal:
-   - `games.html`
-   - `quiz.html`
-   - `flashcards.html`
-   - `match.html`
-   - `daily.html`
-   - `memory.html`
-3. utiliser [PLAN_MAITRE_DICOARCHI.md](/Users/awat/workspace/projects/dico-archi/docs/PLAN_MAITRE_DICOARCHI.md) comme reference centrale.
-4. utiliser les scripts de pilotage contenu quand on reviendra au chantier corpus:
-   - `npm run content:stats`
-   - `npm run content:audit`
-5. prochain chantier recommande:
-   - continuer l’amelioration produit de l’assistant Gemini
-   - priorite sur la qualite des reponses, l’orientation vers les fiches, la desambiguïsation et l’exploitation des feedbacks negatifs
+1. ouvrir `admin.html` et verifier la proposition test:
+   - `Terme test contribution image`
+   - submission id `cba9eb0c-24cf-4cf6-b493-5c3e0491c507`
+2. reprendre ensuite la simplification finale de `contribuer.html`:
+   - raccourcir encore les micro-textes
+   - mieux organiser la longue zone `Fiche complete`
+   - garder un seul flux sans sous-fenetres
+3. nettoyer les derniers doublons entre:
+   - `compte.html`
+   - `contribuer.html`
+4. seulement apres cela, reprendre la structuration globale des pages majeures:
+   - `dictionnaire.html`
+   - `category.html`
+   - `index.html`
+   - `methodologie.html`
+5. garder [PLAN_MAITRE_DICOARCHI.md](/Users/awat/workspace/projects/dico-archi/docs/PLAN_MAITRE_DICOARCHI.md) comme reference centrale
 
 ## Points verifies
 
@@ -337,3 +475,29 @@ Le prochain point utile est maintenant :
   - l’etat de travail n’est plus un gros lot flottant
   - le socle actuel est proprement pousse et deploye
   - le prochain chantier peut repartir d’une base nette
+
+## Session locale en cours - fiche terme materiau
+
+- un nouveau chantier local non pousse est ouvert sur la page terme:
+  - [term.html](/Users/awat/workspace/projects/dico-archi/term.html)
+  - [term.page.js](/Users/awat/workspace/projects/dico-archi/term.page.js)
+  - [styles.css](/Users/awat/workspace/projects/dico-archi/styles.css)
+- objectif du lot:
+  - transformer `term.html` en vraie fiche `materiau`
+  - lecture plus utile
+  - navigation plus claire
+  - place prevue pour image et dessin technique
+- nouveau terme V2 ajoute pour travailler localement sans import base:
+  - [bois-lamelle-colle.json](/Users/awat/workspace/projects/dico-archi/content/v2/terms/bois-lamelle-colle.json)
+- `dalle-beton.json` a aussi ete enrichi pour preparer le futur modele `construction`
+- etat actuel du rendu:
+  - la structure `Lecture matériau` avec onglets est validee comme bonne direction
+  - `Visuels` est place en bas sur toute la largeur
+  - un chemin de navigation local de type `Accueil / Dictionnaire / Matériaux / Bois lamellé-collé` a ete introduit comme piste potentielle pour d’autres pages
+  - la finition visuelle n’est pas encore consideree comme terminee
+- verification locale repetee pendant ce lot:
+  - `node --check term.page.js`
+  - `npm run content:validate`
+  - Playwright cible sur la fiche materiau
+  - resultat maintenu:
+    - `1 passed`

@@ -7,15 +7,32 @@
   const exampleInput = document.getElementById("example");
   const mediaUrlsInput = document.getElementById("media-urls");
   const mediaFilesInput = document.getElementById("media-files");
+  const richKindInput = document.getElementById("rich-kind");
+  const richExplanationInput = document.getElementById("rich-explanation");
+  const richApplicationsInput = document.getElementById("rich-applications");
+  const richNormsInput = document.getElementById("rich-norms");
+  const richConstraintsInput = document.getElementById("rich-constraints");
+  const richDrawingNoteInput = document.getElementById("rich-drawing-note");
+  const richIdentificationInput = document.getElementById("rich-identification");
+  const richPropertiesInput = document.getElementById("rich-properties");
+  const richUsesInput = document.getElementById("rich-uses");
+  const richImplementationInput = document.getElementById("rich-implementation");
+  const richVigilanceInput = document.getElementById("rich-vigilance");
+  const richAdvantagesInput = document.getElementById("rich-advantages");
+  const richDrawbacksInput = document.getElementById("rich-drawbacks");
+  const richReferencesInput = document.getElementById("rich-references");
+  const richConfusionsInput = document.getElementById("rich-confusions");
   const uploadMediaButton = document.getElementById("upload-media");
   const uploadMediaStatus = document.getElementById("upload-media-status");
   const uploadMediaList = document.getElementById("upload-media-list");
-  const qualityTitle = document.getElementById("contrib-quality-title");
-  const qualityCopy = document.getElementById("contrib-quality-copy");
-  const stats = document.getElementById("contrib-stats");
+  const slugPreview = document.getElementById("contrib-slug-preview");
+  const contribResumeBox = document.getElementById("contrib-resume-box");
+  const contribResumeCopy = document.getElementById("contrib-resume-copy");
   const contributionSupabaseHelpers = window.DicoArchiSupabase;
   const contributionApi = window.DicoArchiApi;
   let isUploadingMedia = false;
+  let editingSubmissionId = "";
+  let currentContributionUserId = "";
 
   function setContributionMessage(text, isError = false) {
     if (!message) return;
@@ -39,6 +56,200 @@
       .map((item) => item.trim())
       .filter(Boolean)
       .filter((item, index, list) => list.indexOf(item) === index);
+  }
+
+  function parseLineList(value) {
+    return String(value || "")
+      .split(/\r?\n/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  function parseFactLines(value) {
+    return parseLineList(value)
+      .map((line) => {
+        const separatorIndex = line.indexOf(":");
+        if (separatorIndex === -1) return null;
+        const label = line.slice(0, separatorIndex).trim();
+        const factValue = line.slice(separatorIndex + 1).trim();
+        if (!label || !factValue) return null;
+        return { label, value: factValue };
+      })
+      .filter(Boolean);
+  }
+
+  function makeSection(title, items) {
+    const cleanItems = Array.isArray(items) ? items.filter(Boolean) : [];
+    if (!cleanItems.length) return null;
+    return { title, items: cleanItems };
+  }
+
+  function getRichDefaults(kind) {
+    if (kind === "construction") {
+      return {
+        label: "Fiche construction",
+        headline: "Comprendre le principe constructif, puis sa mise en œuvre",
+        note: "Pour une construction, l’essentiel est de lire son rôle, sa logique d’assemblage et ses points de vigilance."
+      };
+    }
+    if (kind === "material") {
+      return {
+        label: "Fiche matériau",
+        headline: "Comprendre la matière, puis son usage structurel",
+        note: "Pour un matériau, l’essentiel est de lire vite sa nature, ses performances et ses limites d’usage."
+      };
+    }
+    return {
+      label: "Fiche terme",
+      headline: "Comprendre le terme avant de le réutiliser",
+      note: "L’objectif de cette fiche est de rendre le vocabulaire immédiatement exploitable dans le bureau, sur un plan ou dans une discussion de chantier."
+    };
+  }
+
+  function fillTextArea(field, value) {
+    if (!field) return;
+    field.value = value || "";
+  }
+
+  function fillLineList(field, items) {
+    if (!field) return;
+    field.value = Array.isArray(items) ? items.filter(Boolean).join("\n") : "";
+  }
+
+  function fillFactList(field, facts) {
+    if (!field) return;
+    field.value = Array.isArray(facts)
+      ? facts
+          .map((item) => {
+            const label = String(item?.label || "").trim();
+            const value = String(item?.value || "").trim();
+            return label && value ? `${label}: ${value}` : "";
+          })
+          .filter(Boolean)
+          .join("\n")
+      : "";
+  }
+
+  function fillRichPayloadForm(payload) {
+    const richPayload = payload && typeof payload === "object" ? payload : {};
+    const kind = String(richPayload.editorial_profile?.kind || "material").trim() || "material";
+    if (richKindInput) richKindInput.value = kind;
+    fillTextArea(richExplanationInput, richPayload.content?.explanation || "");
+    fillLineList(richApplicationsInput, richPayload.content?.applications || []);
+    fillLineList(richNormsInput, richPayload.content?.norms || []);
+    fillLineList(richConstraintsInput, richPayload.technical_data?.constraints || []);
+    fillTextArea(richDrawingNoteInput, richPayload.representation?.drawing_note || "");
+
+    const detailSections = Array.isArray(richPayload.detail_sections) ? richPayload.detail_sections : [];
+    fillFactList(richIdentificationInput, detailSections.find((item) => item?.title === "Identification")?.facts || []);
+    fillLineList(richPropertiesInput, detailSections.find((item) => item?.title === "Propriétés")?.items || []);
+    fillLineList(richUsesInput, detailSections.find((item) => item?.title === "Usages courants")?.items || []);
+    fillLineList(richImplementationInput, detailSections.find((item) => item?.title === "Mise en œuvre")?.items || []);
+    fillLineList(richVigilanceInput, detailSections.find((item) => item?.title === "Vigilance")?.items || []);
+    fillLineList(richAdvantagesInput, detailSections.find((item) => item?.title === "Avantages")?.items || []);
+    fillLineList(richDrawbacksInput, detailSections.find((item) => item?.title === "Inconvénients")?.items || []);
+    fillLineList(richReferencesInput, detailSections.find((item) => item?.title === "Références")?.items || []);
+    fillLineList(richConfusionsInput, detailSections.find((item) => item?.title === "À ne pas confondre")?.items || []);
+  }
+
+  async function tryLoadSubmissionForCorrection() {
+    if (!contributionApi || !contributionSupabaseHelpers) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const submissionId = String(params.get("submission") || "").trim();
+    if (!submissionId) return;
+
+    const user = await contributionSupabaseHelpers.getCurrentUser();
+    if (!user) {
+      setContributionMessage("Connecte-toi pour reprendre une proposition à corriger.", true);
+      return;
+    }
+
+    currentContributionUserId = user.id;
+
+    try {
+      const submission = await contributionApi.fetchSubmissionById(submissionId);
+      if (!submission) return;
+      if (submission.status !== "rejected") {
+        setContributionMessage("Cette proposition n’est pas en mode correction.", true);
+        return;
+      }
+
+      editingSubmissionId = submission.id;
+      if (termInput) termInput.value = submission.term || "";
+      if (categoryInput) categoryInput.value = submission.category_id || "";
+      if (definitionInput) definitionInput.value = submission.definition || "";
+      if (exampleInput) exampleInput.value = submission.example || "";
+      if (mediaUrlsInput) mediaUrlsInput.value = Array.isArray(submission.media_urls) ? submission.media_urls.join("\n") : "";
+      fillRichPayloadForm(submission.rich_payload || {});
+      renderUploadedMediaList();
+      updateContributionHints();
+
+      if (contribResumeBox) contribResumeBox.hidden = false;
+      if (contribResumeCopy) {
+        contribResumeCopy.textContent = submission.reviewer_comment
+          ? `Mode correction actif pour « ${submission.term} ». Dernier retour éditorial: ${submission.reviewer_comment}`
+          : `Mode correction actif pour « ${submission.term} ». Tu peux corriger puis renvoyer la proposition.`;
+      }
+      setContributionMessage("Proposition chargée en mode correction.");
+    } catch (error) {
+      setContributionMessage(`Impossible de charger la proposition à corriger : ${error.message}`, true);
+    }
+  }
+
+  function buildRichPayload() {
+    const kind = String(richKindInput?.value || "material").trim() || "material";
+    const defaults = getRichDefaults(kind);
+    const explanation = richExplanationInput?.value.trim() || "";
+    const applications = parseLineList(richApplicationsInput?.value);
+    const norms = parseLineList(richNormsInput?.value);
+    const constraints = parseLineList(richConstraintsInput?.value);
+    const drawingNote = richDrawingNoteInput?.value.trim() || "";
+    const identificationFacts = parseFactLines(richIdentificationInput?.value);
+    const detailSections = [
+      identificationFacts.length ? { title: "Identification", facts: identificationFacts } : null,
+      makeSection("Propriétés", parseLineList(richPropertiesInput?.value)),
+      makeSection("Usages courants", parseLineList(richUsesInput?.value)),
+      makeSection("Mise en œuvre", parseLineList(richImplementationInput?.value)),
+      makeSection("Vigilance", parseLineList(richVigilanceInput?.value)),
+      makeSection("Avantages", parseLineList(richAdvantagesInput?.value)),
+      makeSection("Inconvénients", parseLineList(richDrawbacksInput?.value)),
+      makeSection("Références", parseLineList(richReferencesInput?.value)),
+      makeSection("À ne pas confondre", parseLineList(richConfusionsInput?.value))
+    ].filter(Boolean);
+
+    const hasRichContent = Boolean(
+      explanation
+      || applications.length
+      || norms.length
+      || constraints.length
+      || drawingNote
+      || detailSections.length
+    );
+
+    if (!hasRichContent) return {};
+
+    return {
+      content: {
+        explanation,
+        applications,
+        norms
+      },
+      technical_data: {
+        constraints
+      },
+      representation: {
+        abbreviation_plan: null,
+        drawing_note: drawingNote
+      },
+      editorial_profile: {
+        kind,
+        label: defaults.label,
+        headline: defaults.headline,
+        note: defaults.note
+      },
+      detail_sections: detailSections
+    };
   }
 
   function formatUploadName(url) {
@@ -113,63 +324,11 @@
 
   function updateContributionHints() {
     const term = termInput?.value.trim() || "";
-    const categoryId = categoryInput?.value.trim() || "";
-    const definition = definitionInput?.value.trim() || "";
-    const example = exampleInput?.value.trim() || "";
-    const mediaUrls = parseMediaUrls(mediaUrlsInput?.value);
-    const invalidMedia = mediaUrls.find((url) => !isSupportedMediaUrl(url));
-    const totalLength = definition.length + example.length;
+    const slug = slugify(term);
 
-    if (stats) {
-      stats.textContent = `${totalLength} caractère${totalLength > 1 ? "s" : ""}`;
+    if (slugPreview) {
+      slugPreview.textContent = slug ? `${term || "terme"} -> ${slug}` : "Le slug sera généré automatiquement à partir du terme.";
     }
-
-    if (!qualityTitle || !qualityCopy) return;
-
-    if (!term && !categoryId && !definition) {
-      qualityTitle.textContent = "Formulaire en cours";
-      qualityCopy.textContent = "Commencez par un terme, une catégorie et une définition complète.";
-      return;
-    }
-
-    if (!term || !categoryId || !definition) {
-      qualityTitle.textContent = "Base incomplète";
-      qualityCopy.textContent = "Le terme, la catégorie et la définition sont requis avant envoi.";
-      return;
-    }
-
-    if (definition.length < 40) {
-      qualityTitle.textContent = "Définition trop courte";
-      qualityCopy.textContent = "Ajoutez un peu plus de contexte pour rendre la fiche utile aux débutants.";
-      return;
-    }
-
-    if (!/[.?!…]$/.test(definition)) {
-      qualityTitle.textContent = "Ponctuation à vérifier";
-      qualityCopy.textContent = "Terminez la définition par un point ou une ponctuation claire.";
-      return;
-    }
-
-    if (!example) {
-      qualityTitle.textContent = "Exemple conseillé";
-      qualityCopy.textContent = "Le formulaire est valide, mais un exemple concret améliore fortement la compréhension.";
-      return;
-    }
-
-    if (invalidMedia) {
-      qualityTitle.textContent = "Média à corriger";
-      qualityCopy.textContent = "Ajoutez un lien public en http/https. Les chemins locaux file:/// et les textes libres ne sont pas encore acceptés.";
-      return;
-    }
-
-    if (mediaUrls.length) {
-      qualityTitle.textContent = "Proposition enrichie";
-      qualityCopy.textContent = "Le texte est solide et des médias sont prêts pour la relecture formateur.";
-      return;
-    }
-
-    qualityTitle.textContent = "Proposition solide";
-    qualityCopy.textContent = "La base éditoriale est correcte. Vous pouvez envoyer la proposition.";
   }
 
   async function loadContributionCategories() {
@@ -253,6 +412,7 @@
     const definition = definitionInput?.value.trim() || "";
     const example = exampleInput?.value.trim() || "";
     const mediaUrls = parseMediaUrls(mediaUrlsInput?.value);
+    const richPayload = buildRichPayload();
 
     if (!term || !categoryId || !definition) {
       setContributionMessage("Terme, catégorie et définition sont obligatoires.", true);
@@ -281,18 +441,34 @@
       submitted_by: user.id
     };
 
+    if (Object.keys(richPayload).length) {
+      payload.rich_payload = richPayload;
+    }
+
+    const isResubmission = Boolean(editingSubmissionId);
+
     try {
-      await contributionApi.createSubmission(payload);
+      if (editingSubmissionId) {
+        await contributionApi.updateOwnSubmission(editingSubmissionId, {
+          ...payload,
+          status: "resubmitted",
+          reviewer_comment: null
+        });
+      } else {
+        await contributionApi.createSubmission(payload);
+      }
     } catch (error) {
       setContributionMessage(error.message, true);
       return;
     }
 
     form?.reset();
+    editingSubmissionId = "";
     renderUploadedMediaList();
     updateContributionHints();
     setUploadStatus("Images et PDF jusqu’à 10 MB.");
-    setContributionMessage("Proposition envoyée avec succès.");
+    if (contribResumeBox) contribResumeBox.hidden = true;
+    setContributionMessage(isResubmission ? "Proposition corrigée et renvoyée avec succès." : "Proposition envoyée avec succès.");
   }
 
   if (contributionSupabaseHelpers && contributionApi) {
@@ -325,4 +501,5 @@
 
   renderUploadedMediaList();
   updateContributionHints();
+  tryLoadSubmissionForCorrection();
 })();

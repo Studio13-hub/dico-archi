@@ -10,6 +10,7 @@ const homeCategoryCount = document.getElementById("home-category-count");
 const homeCategoriesToggle = document.querySelector("[data-home-categories-toggle]");
 const homeHeroCategories = document.getElementById("home-hero-categories");
 const homeHeroCategoriesList = document.getElementById("home-hero-categories-list");
+const homeCategoryCloudList = document.getElementById("home-category-cloud-list");
 let homeTermsCache = [];
 
 function escapeHtml(value) {
@@ -156,6 +157,25 @@ function renderHeroCategories(categories) {
   });
 }
 
+function renderCategoryCloud(categories) {
+  if (!homeCategoryCloudList) return;
+
+  if (!Array.isArray(categories) || !categories.length) {
+    homeCategoryCloudList.innerHTML = '<span class="meta meta--subtle">Aucune catégorie disponible.</span>';
+    return;
+  }
+
+  homeCategoryCloudList.innerHTML = "";
+
+  categories.slice(0, 12).forEach((category) => {
+    const anchor = document.createElement("a");
+    anchor.className = "home-category-pill";
+    anchor.href = `category.html?slug=${encodeURIComponent(category.slug)}`;
+    anchor.textContent = category.name;
+    homeCategoryCloudList.appendChild(anchor);
+  });
+}
+
 function toggleHeroCategories(forceExpanded) {
   if (!homeCategoriesToggle || !homeHeroCategories) return;
 
@@ -191,11 +211,13 @@ async function loadHomeProofs() {
 
     homeTermsCache = Array.isArray(terms) ? terms : [];
     renderHeroCategories(categories);
+    renderCategoryCloud(categories);
   } catch (_error) {
     if (homeTermCount) homeTermCount.textContent = "Indisponible";
     if (homeCategoryCount) homeCategoryCount.textContent = "Indisponible";
     homeTermsCache = [];
     renderHeroCategories([]);
+    renderCategoryCloud([]);
   }
 }
 

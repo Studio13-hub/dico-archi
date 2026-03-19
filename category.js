@@ -4,7 +4,9 @@ const breadcrumbEl = document.getElementById("category-breadcrumb");
 const cardsEl = document.getElementById("category-cards");
 const categoryCountEl = document.getElementById("category-count");
 const categoryModeEl = document.getElementById("category-mode");
+const categorySearchEl = document.getElementById("category-search");
 const dicoApi = window.DicoArchiApi;
+let currentCategoryTerms = [];
 
 function normalizeText(value) {
   return String(value || "")
@@ -57,6 +59,12 @@ function renderCategoryIndex(list) {
     const description = document.createElement("div");
     description.textContent = item.description || "Catégorie du dictionnaire Dico-Archi.";
 
+    const meta = document.createElement("p");
+    meta.className = "meta meta--subtle";
+    meta.textContent = item.count
+      ? "Entrée utile pour comparer plusieurs fiches proches."
+      : "Aucune fiche publiée pour le moment dans ce domaine.";
+
     const link = document.createElement("a");
     link.className = "card__link";
     link.href = `category.html?category_id=${encodeURIComponent(item.id)}`;
@@ -69,6 +77,7 @@ function renderCategoryIndex(list) {
     card.appendChild(tag);
     card.appendChild(title);
     card.appendChild(description);
+    card.appendChild(meta);
     card.appendChild(actions);
     cardsEl.appendChild(card);
   }
@@ -107,6 +116,10 @@ function renderCards(list) {
     const definition = document.createElement("div");
     definition.textContent = item.definition || "Définition indisponible.";
 
+    const meta = document.createElement("p");
+    meta.className = "meta meta--subtle";
+    meta.textContent = "Ouvrir la fiche pour les détails, médias et termes liés.";
+
     const link = document.createElement("a");
     link.className = "card__link";
     link.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
@@ -119,9 +132,34 @@ function renderCards(list) {
     card.appendChild(tag);
     card.appendChild(title);
     card.appendChild(definition);
+    card.appendChild(meta);
     card.appendChild(actions);
     cardsEl.appendChild(card);
   }
+}
+
+function applyCategoryTermsView() {
+  const query = String(categorySearchEl?.value || "").trim().toLowerCase();
+  const filtered = query
+    ? currentCategoryTerms.filter((item) =>
+        [item.term, item.definition, item.categoryName]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(query)
+      )
+    : currentCategoryTerms.slice();
+
+  if (categoryCountEl) {
+    categoryCountEl.textContent = `${filtered.length} fiche${filtered.length > 1 ? "s" : ""}`;
+  }
+  if (subtitleEl) {
+    subtitleEl.textContent = query
+      ? `${filtered.length} terme${filtered.length > 1 ? "s" : ""} trouvé${filtered.length > 1 ? "s" : ""}`
+      : `${currentCategoryTerms.length} terme${currentCategoryTerms.length > 1 ? "s" : ""}`;
+  }
+
+  renderCards(filtered);
 }
 
 function buildBreadcrumb(label) {
@@ -182,6 +220,7 @@ async function loadCategoryPage() {
       breadcrumbEl.textContent = "Accueil / Catégories";
       if (categoryCountEl) categoryCountEl.textContent = `${sortedCategories.length} domaine${sortedCategories.length > 1 ? "s" : ""}`;
       if (categoryModeEl) categoryModeEl.textContent = "Index des domaines";
+      if (categorySearchEl) categorySearchEl.disabled = true;
       renderCategoryIndex(sortedCategories);
       return;
     }
@@ -194,15 +233,21 @@ async function loadCategoryPage() {
       .sort((a, b) => a.term.localeCompare(b.term, "fr"));
 
     const resolvedLabel = filtered[0]?.categoryName || categoryName || "Catégorie";
+    currentCategoryTerms = filtered;
     titleEl.textContent = resolvedLabel;
     subtitleEl.textContent = `${filtered.length} terme${filtered.length > 1 ? "s" : ""}`;
     buildBreadcrumb(resolvedLabel);
     if (categoryCountEl) categoryCountEl.textContent = `${filtered.length} fiche${filtered.length > 1 ? "s" : ""}`;
     if (categoryModeEl) categoryModeEl.textContent = "Fiches publiées";
-    renderCards(filtered);
+    if (categorySearchEl) categorySearchEl.disabled = false;
+    applyCategoryTermsView();
   } catch (error) {
     renderMessage("Erreur de chargement", error.message || "Impossible de charger les termes.");
   }
+}
+
+if (categorySearchEl) {
+  categorySearchEl.addEventListener("input", applyCategoryTermsView);
 }
 
 loadCategoryPage();

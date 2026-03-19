@@ -1,4 +1,5 @@
 const { createServerSupabaseClient } = require("./_supabase");
+const { buildCanonicalTermPayload } = require("./_canonical_content");
 
 function normalizeMediaUrl(supabaseUrl, rawUrl) {
   const value = String(rawUrl || "").trim();
@@ -69,6 +70,7 @@ module.exports = async (req, res) => {
         status,
         definition,
         example,
+        rich_payload,
         updated_at,
         published_at,
         categories:category_id (
@@ -81,8 +83,51 @@ module.exports = async (req, res) => {
       .eq("status", "published")
       .single();
 
+    if (termQuery.error && String(termQuery.error.message || "").toLowerCase().includes("rich_payload")) {
+      const legacyQuery = await supabase
+        .from("terms")
+        .select(`
+          id,
+          term,
+          slug,
+          status,
+          definition,
+          example,
+          updated_at,
+          published_at,
+          categories:category_id (
+            id,
+            name,
+            slug
+          )
+        `)
+        .eq("slug", slug)
+        .eq("status", "published")
+        .single();
+
+      if (!legacyQuery.error) {
+        termQuery.data = {
+          ...legacyQuery.data,
+          rich_payload: {}
+        };
+        termQuery.error = null;
+      }
+    }
+
     if (termQuery.error) {
-      res.statusCode = termQuery.error.code === "PGRST116" ? 404 : 502;
+      if (termQuery.error.code === "PGRST116") {
+        const fallbackPayload = buildCanonicalTermPayload(slug);
+        if (fallbackPayload) {
+          res.statusCode = 200;
+          res.end(JSON.stringify(fallbackPayload));
+          return;
+        }
+        res.statusCode = 404;
+        res.end(JSON.stringify({ error: "term_not_found" }));
+        return;
+      }
+
+      res.statusCode = 502;
       res.end(JSON.stringify({ error: termQuery.error.message || "term_fetch_failed" }));
       return;
     }
@@ -162,6 +207,7 @@ module.exports = async (req, res) => {
     res.end(
       JSON.stringify({
         term,
+        rich_payload: term.rich_payload || {},
         related_terms: relatedTerms,
         media
       })
