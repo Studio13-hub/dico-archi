@@ -267,6 +267,17 @@ test("rich material term stays readable on mobile", async ({ page }) => {
   expect(pageWidth).toBeLessThanOrEqual(390);
 });
 
+test("term page keeps an explicit empty media state", async ({ page }) => {
+  await mockLocalTermApi(page);
+  await gotoRenderedTerm(page);
+
+  await expect(page.locator("#term-media-block")).toBeVisible();
+  await expect(page.locator(".term-media-empty")).toBeVisible();
+  await expect(page.locator(".term-media-empty")).toContainText("Aucun média public pour le moment");
+  await expect(page.locator(".term-media-empty")).toContainText("La fiche est publiée");
+  await expect(page.locator(".term-media-empty .link-button")).toHaveAttribute("href", "contribuer.html");
+});
+
 test("desktop menu toggle stays visible on key pages", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
 

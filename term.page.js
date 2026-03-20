@@ -891,7 +891,27 @@ function resetTermPageState() {
 function renderMedia(items) {
   clearTermChildren(mediaNode);
   if (!Array.isArray(items) || !items.length) {
-    if (mediaBlockNode) mediaBlockNode.hidden = true;
+    if (mediaBlockNode) mediaBlockNode.hidden = false;
+
+    const empty = document.createElement("div");
+    empty.className = "term-media-empty";
+
+    const title = document.createElement("strong");
+    title.textContent = "Aucun média public pour le moment";
+    empty.appendChild(title);
+
+    const copy = document.createElement("p");
+    copy.className = "meta meta--subtle";
+    copy.textContent = "La fiche est publiée, mais aucune image ou source téléchargeable n’est encore affichée ici.";
+    empty.appendChild(copy);
+
+    const link = document.createElement("a");
+    link.className = "link-button";
+    link.href = "contribuer.html";
+    link.textContent = "Proposer un média utile";
+    empty.appendChild(link);
+
+    mediaNode.appendChild(empty);
     return;
   }
 
