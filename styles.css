@@ -3510,6 +3510,10 @@ body.page-reading .term-block {
   color: rgba(27, 27, 24, 0.72);
 }
 
+.home-workflow-proof--hero {
+  margin-bottom: 14px;
+}
+
 .role-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

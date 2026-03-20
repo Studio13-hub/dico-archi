@@ -52,7 +52,12 @@
         <div class="home-hero-layout">
           <div class="home-hero-copy">
             <h1>Dico-Archi <span>Vocabulaire du bureau, du chantier et des normes</span></h1>
-            <p class="welcome-cover__lead">Chercher un terme, ouvrir une fiche, poursuivre par catégorie.</p>
+            <p class="welcome-cover__lead">Chercher un terme, ouvrir une fiche claire, puis élargir la lecture sans se perdre.</p>
+            <div class="home-workflow-proof home-workflow-proof--hero">
+              <span>Comprendre vite</span>
+              <span>Voir un exemple</span>
+              <span>Repartir par catégorie</span>
+            </div>
             <div class="controls">
               <input id="home-search" name="home-search" type="search" placeholder="Rechercher un terme..." autocomplete="off" />
               <button id="home-search-button" type="button">Chercher un terme</button>
@@ -92,17 +97,34 @@
                 <span class="meta meta--subtle">Chargement des catégories…</span>
               </div>
             </div>
+            <div class="dictionary-overview">
+              <article class="dictionary-overview__panel">
+                <span class="dashboard__label">Lire</span>
+                <strong>Un terme sans détour</strong>
+                <p class="meta meta--subtle">Chaque fiche cherche d’abord la compréhension immédiate, pas l’accumulation de jargon.</p>
+              </article>
+              <article class="dictionary-overview__panel">
+                <span class="dashboard__label">Explorer</span>
+                <strong>Un domaine entier</strong>
+                <p class="meta meta--subtle">Après une fiche, le site pousse vers les catégories et les termes proches pour garder l’élan.</p>
+              </article>
+              <article class="dictionary-overview__panel">
+                <span class="dashboard__label">Contribuer</span>
+                <strong>Une proposition utile</strong>
+                <p class="meta meta--subtle">Le corpus reste vivant grâce aux dépôts guidés, aux retours formateur et à la validation éditoriale.</p>
+              </article>
+            </div>
           </div>
           <div class="home-hero-side">
             <section class="home-featured-card">
               <div class="home-section-head home-section-head--compact">
                 <div>
-                  <span class="section-eyebrow">Repère</span>
-                  <h2>Fiche mise en avant</h2>
+                  <span class="section-eyebrow">Fiche repère</span>
+                  <h2>Voir le niveau attendu</h2>
                 </div>
               </div>
               <div class="home-featured-card__body">
-                <span class="dashboard__label">Terme mis en avant</span>
+                <span class="dashboard__label">Exemple du corpus</span>
                 <strong id="featured-term-title">Chargement...</strong>
                 <div id="featured-term-meta" class="home-featured-meta" hidden></div>
                 <p id="featured-term-definition" class="meta meta--subtle">Récupération de la fiche en cours.</p>
@@ -118,28 +140,28 @@
       <section class="panel home-evidence-panel">
         <div class="home-section-head">
           <div>
-            <span class="section-eyebrow">Accès</span>
-            <h2>Entrer dans le corpus</h2>
+            <span class="section-eyebrow">Entrées utiles</span>
+            <h2>Entrer dans le corpus par la bonne porte</h2>
           </div>
         </div>
         <div class="home-evidence-grid">
           <article class="home-evidence-card">
             <span class="dashboard__label">Fiches</span>
-            <strong>Trois entrées utiles</strong>
+            <strong>Trois fiches pour commencer</strong>
             <div id="home-reading-samples" class="home-evidence-links">
               <span class="meta meta--subtle">Chargement des fiches…</span>
             </div>
           </article>
           <article class="home-evidence-card">
             <span class="dashboard__label">Catégories</span>
-            <strong>Ouvrir par domaine</strong>
+            <strong>Ouvrir par domaine métier</strong>
             <div id="home-category-focus" class="home-category-pill-list">
               <span class="meta meta--subtle">Chargement des catégories…</span>
             </div>
           </article>
           <article class="home-evidence-card home-evidence-card--workflow">
             <span class="dashboard__label">Contribution</span>
-            <strong>Déposer une proposition</strong>
+            <strong>Faire vivre le corpus</strong>
             <div class="home-workflow-proof">
               <span>Déposer</span>
               <span>Corriger</span>
@@ -154,8 +176,8 @@
       <section class="panel home-bottom-panel" id="site-reperes">
         <div class="home-section-head">
           <div>
-            <span class="section-eyebrow">Repères</span>
-            <h2>Autres accès</h2>
+            <span class="section-eyebrow">Suite</span>
+            <h2>Continuer autrement</h2>
           </div>
         </div>
         <div class="home-bottom-copy">
