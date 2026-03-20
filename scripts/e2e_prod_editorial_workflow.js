@@ -1,10 +1,24 @@
 const { chromium } = require("playwright");
 
-const BASE_URL = "https://dico-archi.vercel.app";
-const APPRENTI_EMAIL = "dico.apprenti.workflow.20260319@proton.me";
-const FORMATEUR_EMAIL = "dico.formateur.workflow.20260319@proton.me";
-const PASSWORD = "DicoTest!2026";
+const BASE_URL = process.env.DICO_E2E_BASE_URL || "https://dico-archi.vercel.app";
+const APPRENTI_EMAIL = process.env.DICO_E2E_APPRENTI_EMAIL || "";
+const FORMATEUR_EMAIL = process.env.DICO_E2E_FORMATEUR_EMAIL || "";
+const APPRENTI_PASSWORD = process.env.DICO_E2E_APPRENTI_PASSWORD || process.env.DICO_E2E_PASSWORD || "";
+const FORMATEUR_PASSWORD = process.env.DICO_E2E_FORMATEUR_PASSWORD || process.env.DICO_E2E_PASSWORD || "";
 const TEST_TERM = `Workflow réel ${new Date().toISOString().slice(0, 16).replace(/[T:]/g, "-")}`;
+
+function requireEnv(name, value) {
+  if (!String(value || "").trim()) {
+    throw new Error(`Missing required env ${name}`);
+  }
+}
+
+function validateConfig() {
+  requireEnv("DICO_E2E_APPRENTI_EMAIL", APPRENTI_EMAIL);
+  requireEnv("DICO_E2E_FORMATEUR_EMAIL", FORMATEUR_EMAIL);
+  requireEnv("DICO_E2E_APPRENTI_PASSWORD or DICO_E2E_PASSWORD", APPRENTI_PASSWORD);
+  requireEnv("DICO_E2E_FORMATEUR_PASSWORD or DICO_E2E_PASSWORD", FORMATEUR_PASSWORD);
+}
 
 async function login(page, email, password) {
   await page.goto(`${BASE_URL}/auth.html`, { waitUntil: "domcontentloaded" });
@@ -12,7 +26,38 @@ async function login(page, email, password) {
   await page.fill("#email", email);
   await page.fill("#password", password);
   await page.click("#login");
-  await page.waitForURL(/compte\.html/, { timeout: 20000 });
+
+  const loginResult = await page.evaluate(async () => {
+    const start = Date.now();
+    while (Date.now() - start < 20000) {
+      if (/compte\.html(?:$|\?)/.test(window.location.href)) {
+        return { ok: true, href: window.location.href };
+      }
+
+      const message = document.querySelector("#auth-message")?.textContent?.trim() || "";
+      if (
+        message
+        && !message.includes("Connexion en cours")
+        && !message.includes("Connecté avec succès")
+      ) {
+        return { ok: false, message };
+      }
+
+      await new Promise((resolve) => window.setTimeout(resolve, 150));
+    }
+
+    return {
+      ok: false,
+      message: document.querySelector("#auth-message")?.textContent?.trim() || "login_timeout",
+      href: window.location.href
+    };
+  });
+
+  if (!loginResult?.ok) {
+    throw new Error(`Login failed for ${email}: ${loginResult?.message || "unknown_error"}`);
+  }
+
+  await page.waitForURL(/compte\.html/, { timeout: 5000 });
   await page.waitForSelector("#account-email");
 }
 
@@ -35,7 +80,7 @@ async function apprenticeSubmit(browser) {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await login(page, APPRENTI_EMAIL, PASSWORD);
+  await login(page, APPRENTI_EMAIL, APPRENTI_PASSWORD);
   await page.goto(`${BASE_URL}/contribuer.html`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector("#contrib-form");
 
@@ -73,7 +118,7 @@ async function formateurReview(browser, submissionId) {
     await dialog.accept();
   });
 
-  await login(page, FORMATEUR_EMAIL, PASSWORD);
+  await login(page, FORMATEUR_EMAIL, FORMATEUR_PASSWORD);
   await page.goto(`${BASE_URL}/admin.html`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector("#submissions");
 
@@ -114,7 +159,7 @@ async function apprenticeResubmit(browser, submissionId) {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await login(page, APPRENTI_EMAIL, PASSWORD);
+  await login(page, APPRENTI_EMAIL, APPRENTI_PASSWORD);
   await page.goto(`${BASE_URL}/compte.html`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector("#account-inbox-list");
   await ensureText(page.locator("#account-inbox-list"), TEST_TERM);
@@ -152,7 +197,7 @@ async function formateurVerifyResubmission(browser) {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await login(page, FORMATEUR_EMAIL, PASSWORD);
+  await login(page, FORMATEUR_EMAIL, FORMATEUR_PASSWORD);
   await page.goto(`${BASE_URL}/admin.html`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector("#submissions");
 
@@ -164,6 +209,7 @@ async function formateurVerifyResubmission(browser) {
 }
 
 async function main() {
+  validateConfig();
   const browser = await chromium.launch({ headless: true });
   try {
     const submissionId = await apprenticeSubmit(browser);
