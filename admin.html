@@ -108,7 +108,30 @@
       </section>
 
       <section class="panel admin__workflow" id="admin-panel-overview" role="tabpanel" aria-labelledby="admin-tab-overview" data-admin-section="overview">
-        <h2>Vue d’ensemble</h2>
+        <div class="home-section-head">
+          <div>
+            <span class="section-eyebrow">Vue d’ensemble</span>
+            <h2>Reprendre la file sans chercher</h2>
+            <p class="meta meta--subtle">Ici, on trie les propositions, on lit les décisions récentes et on choisit le bon prochain panneau.</p>
+          </div>
+        </div>
+        <div class="admin__quickmap admin__quickmap--overview">
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">File active</span>
+            <strong id="admin-overview-queue-count">0 proposition</strong>
+            <p id="admin-overview-queue-copy" class="meta meta--subtle">Aucune proposition n’attend pour l’instant.</p>
+          </div>
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">Corrections apprenti</span>
+            <strong id="admin-overview-correction-count">0 retour</strong>
+            <p id="admin-overview-correction-copy" class="meta meta--subtle">Les resoumissions apparaissent ici en premier.</p>
+          </div>
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">Dernière décision</span>
+            <strong id="admin-overview-decision-title">Aucune décision récente</strong>
+            <p id="admin-overview-decision-copy" class="meta meta--subtle">Le dernier arbitrage staff remonte ici pour garder le fil.</p>
+          </div>
+        </div>
         <div class="dashboard">
           <div class="dashboard__item">
             <span class="dashboard__label">Brouillon</span>
@@ -367,8 +390,32 @@
       </section>
 
       <section class="panel admin__list" role="tabpanel" aria-labelledby="admin-tab-corpus" data-admin-section="corpus" hidden>
-        <h2>Corpus publié et brouillons</h2>
+        <div class="home-section-head">
+          <div>
+            <span class="section-eyebrow">Corpus</span>
+            <h2>Trouver une fiche puis l’ouvrir</h2>
+            <p class="meta meta--subtle">Le corpus sert à charger une fiche existante, l’harmoniser puis l’enregistrer.</p>
+          </div>
+        </div>
+        <div class="admin__quickmap admin__quickmap--overview">
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">Fiches visibles</span>
+            <strong id="admin-corpus-list-count">0 fiche</strong>
+            <p id="admin-corpus-list-copy" class="meta meta--subtle">Le corpus charge les fiches de la base et les fiches canoniques.</p>
+          </div>
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">Filtre actuel</span>
+            <strong id="admin-corpus-filter-title">Tous les statuts</strong>
+            <p id="admin-corpus-filter-copy" class="meta meta--subtle">Affinez ensuite par recherche, tri ou statut éditorial.</p>
+          </div>
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">Action type</span>
+            <strong>Charger puis corriger</strong>
+            <p class="meta meta--subtle">Ouvrir la fiche voulue, corriger la définition, les médias ou la structure riche, puis enregistrer.</p>
+          </div>
+        </div>
         <div class="admin__toolbar">
+          <input id="admin-search" name="admin-search" type="search" placeholder="Chercher un terme, une catégorie ou un extrait..." />
           <select id="admin-sort" name="admin-sort">
             <option value="term_asc">Tri: Terme A-Z</option>
             <option value="term_desc">Tri: Terme Z-A</option>
@@ -379,7 +426,6 @@
           </select>
           <button id="export-published" type="button" class="ghost">Exporter CSV (publiés)</button>
         </div>
-        <input id="admin-search" name="admin-search" type="search" placeholder="Rechercher un terme..." />
         <div id="terms-table" class="admin__table"></div>
       </section>
     </main>

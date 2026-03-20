@@ -82,6 +82,16 @@ const decisionList = document.getElementById("decision-list");
 const statDraft = document.getElementById("admin-stat-draft");
 const statReview = document.getElementById("admin-stat-review");
 const statPublished = document.getElementById("admin-stat-published");
+const adminOverviewQueueCount = document.getElementById("admin-overview-queue-count");
+const adminOverviewQueueCopy = document.getElementById("admin-overview-queue-copy");
+const adminOverviewCorrectionCount = document.getElementById("admin-overview-correction-count");
+const adminOverviewCorrectionCopy = document.getElementById("admin-overview-correction-copy");
+const adminOverviewDecisionTitle = document.getElementById("admin-overview-decision-title");
+const adminOverviewDecisionCopy = document.getElementById("admin-overview-decision-copy");
+const adminCorpusListCount = document.getElementById("admin-corpus-list-count");
+const adminCorpusListCopy = document.getElementById("admin-corpus-list-copy");
+const adminCorpusFilterTitle = document.getElementById("admin-corpus-filter-title");
+const adminCorpusFilterCopy = document.getElementById("admin-corpus-filter-copy");
 const usersPanel = document.getElementById("users-panel");
 const usersTable = document.getElementById("users-table");
 const usersEmpty = document.getElementById("users-empty");
@@ -1035,6 +1045,64 @@ function updateWorkflowStats(list) {
   updateAdminFocusPanel();
 }
 
+function getCurrentFilterLabel() {
+  if (currentStatusFilter === "draft") return "Brouillons";
+  if (currentStatusFilter === "validated") return "À relire";
+  if (currentStatusFilter === "published") return "Publiés";
+  return "Tous les statuts";
+}
+
+function updateOverviewSummary() {
+  const queueCount = submissions.filter((item) => ["submitted", "validated", "resubmitted"].includes(String(item?.status || ""))).length;
+  const correctionCount = submissions.filter((item) => String(item?.status || "") === "resubmitted").length;
+  const latestDecision = recentDecisions[0] || null;
+
+  if (adminOverviewQueueCount) {
+    adminOverviewQueueCount.textContent = `${queueCount} proposition${queueCount > 1 ? "s" : ""}`;
+  }
+  if (adminOverviewQueueCopy) {
+    adminOverviewQueueCopy.textContent = queueCount
+      ? "La file en attente doit être triée avant toute passe longue dans le corpus."
+      : "Aucune proposition n’attend pour l’instant.";
+  }
+  if (adminOverviewCorrectionCount) {
+    adminOverviewCorrectionCount.textContent = `${correctionCount} retour${correctionCount > 1 ? "s" : ""}`;
+  }
+  if (adminOverviewCorrectionCopy) {
+    adminOverviewCorrectionCopy.textContent = correctionCount
+      ? "Ces retours apprenti doivent repasser en premier pour garder une boucle courte."
+      : "Les resoumissions apprenti apparaîtront ici quand elles reviennent.";
+  }
+  if (adminOverviewDecisionTitle) {
+    adminOverviewDecisionTitle.textContent = latestDecision?.term || "Aucune décision récente";
+  }
+  if (adminOverviewDecisionCopy) {
+    adminOverviewDecisionCopy.textContent = latestDecision
+      ? `${getDecisionLabel(getDecisionKind(latestDecision))} · ${latestDecision.reviewer_email || "staff"}`
+      : "Le dernier arbitrage staff remonte ici pour garder le fil.";
+  }
+}
+
+function updateCorpusListSummary(totalVisible) {
+  if (adminCorpusListCount) {
+    adminCorpusListCount.textContent = `${totalVisible} fiche${totalVisible > 1 ? "s" : ""}`;
+  }
+  if (adminCorpusListCopy) {
+    adminCorpusListCopy.textContent = totalVisible
+      ? "Le corpus charge les fiches de la base et les fiches canoniques visibles sur le site."
+      : "Aucune fiche visible avec les filtres actuels.";
+  }
+  if (adminCorpusFilterTitle) {
+    adminCorpusFilterTitle.textContent = getCurrentFilterLabel();
+  }
+  if (adminCorpusFilterCopy) {
+    const query = adminSearch?.value?.trim() || "";
+    adminCorpusFilterCopy.textContent = query
+      ? `Recherche active: ${query}`
+      : "Affinez ensuite par recherche, tri ou statut éditorial.";
+  }
+}
+
 function setMetricsStatus(text, isError = false) {
   if (!metricsStatus) return;
   metricsStatus.textContent = text;
@@ -1175,6 +1243,7 @@ function exportPublishedCsv() {
 
 function renderTable(list) {
   termsTable.innerHTML = "";
+  updateCorpusListSummary(list.length);
 
   if (!list.length) {
     const empty = document.createElement("div");
@@ -1204,7 +1273,7 @@ function renderTable(list) {
 
     const editButton = document.createElement("button");
     editButton.className = "ghost";
-    editButton.textContent = item.id ? "Modifier" : "Importer";
+    editButton.textContent = item.id ? "Charger" : "Importer";
     editButton.addEventListener("click", () => loadTerm(item));
 
     actions.appendChild(editButton);
@@ -1236,6 +1305,7 @@ function renderSubmissions(list) {
 
   if (!orderedList.length) {
     empty.style.display = "block";
+    updateOverviewSummary();
     updateAdminFocusPanel();
     return;
   }
@@ -1326,14 +1396,14 @@ function renderSubmissions(list) {
 
     const loadButton = document.createElement("button");
     loadButton.className = "ghost";
-    loadButton.textContent = "Ouvrir";
+    loadButton.textContent = "Relire";
     loadButton.dataset.submissionAction = "1";
     loadButton.disabled = isProcessingSubmission;
     loadButton.addEventListener("click", () => loadSubmission(item, row));
 
     const dossierButton = document.createElement("button");
     dossierButton.className = "ghost";
-    dossierButton.textContent = "Dossier";
+    dossierButton.textContent = "Voir dossier";
     dossierButton.disabled = isProcessingSubmission;
     dossierButton.addEventListener("click", () => openSubmissionDossier(item, row));
 
@@ -1363,6 +1433,7 @@ function renderSubmissions(list) {
 
     container.appendChild(row);
   }
+  updateOverviewSummary();
   updateAdminFocusPanel();
 }
 
@@ -1428,6 +1499,7 @@ function renderDecisionHistory(list) {
 
   if (!list.length) {
     decisionEmpty.style.display = "block";
+    updateOverviewSummary();
     return;
   }
 
@@ -1498,6 +1570,7 @@ function renderDecisionHistory(list) {
     row.appendChild(actions);
     decisionList.appendChild(row);
   }
+  updateOverviewSummary();
 }
 
 function appendTimelineItem(container, title, copy, meta) {

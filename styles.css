@@ -4612,6 +4612,10 @@ body.page-admin .admin__toolbar {
   margin-bottom: 16px;
 }
 
+.admin__quickmap--overview {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .admin__quickmap-item {
   border: 1px solid var(--border);
   border-radius: 18px;
@@ -4883,6 +4887,10 @@ body.page-admin .admin__toolbar {
 
 @media (max-width: 860px) {
   .admin__quickmap {
+    grid-template-columns: 1fr;
+  }
+
+  .admin__quickmap--overview {
     grid-template-columns: 1fr;
   }
 }
