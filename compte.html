@@ -28,7 +28,7 @@
           </div>
         </div>
         <h1>Mon compte</h1>
-        <p>Rôle, état et prochain espace utile.</p>
+        <p>Comprendre ton rôle, savoir où agir, repartir sans hésiter.</p>
       </div>
     </header>
 
@@ -55,6 +55,37 @@
           <a id="account-games-link" class="link-button" href="games.html">Explorer les jeux</a>
           <a id="account-admin-link" class="link-button" href="admin.html" hidden>Espace admin</a>
           <button id="account-logout" class="link-button" type="button" hidden>Se déconnecter</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="home-section-head">
+          <div>
+            <span class="section-eyebrow">Rôles visibles</span>
+            <h2>Qui fait quoi dans le produit</h2>
+          </div>
+        </div>
+        <div class="role-grid role-grid--staff">
+          <article class="role-card" data-account-role-guide="public">
+            <span class="dashboard__label">Public</span>
+            <strong>Consulte</strong>
+            <p class="meta meta--subtle">Cherche, lit et s’oriente dans le dictionnaire sans déposer ni valider.</p>
+          </article>
+          <article class="role-card" data-account-role-guide="apprenti">
+            <span class="dashboard__label">Apprenti</span>
+            <strong>Contribue</strong>
+            <p class="meta meta--subtle">Dépose une proposition dans Contribuer puis revient ici pour suivre les retours.</p>
+          </article>
+          <article class="role-card" data-account-role-guide="formateur">
+            <span class="dashboard__label">Formateur</span>
+            <strong>Relit</strong>
+            <p class="meta meta--subtle">Passe en Administration pour corriger, commenter et valider les propositions.</p>
+          </article>
+          <article class="role-card" data-account-role-guide="super_admin">
+            <span class="dashboard__label">Administration</span>
+            <strong>Pilote</strong>
+            <p class="meta meta--subtle">Supervise le corpus, les comptes, les accès et les signaux d’usage.</p>
+          </article>
         </div>
       </section>
 

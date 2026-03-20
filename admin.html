@@ -26,7 +26,7 @@
           </div>
         </div>
         <h1>Administration éditoriale</h1>
-        <p>Corpus, contributions, comptes et suivi.</p>
+        <p>Une file claire, un corpus net, un suivi lisible.</p>
       </div>
     </header>
 
@@ -38,6 +38,37 @@
         </div>
         <div id="admin-permissions" class="meta meta--subtle">Accès : chargement...</div>
         <div class="auth__message" id="admin-message"></div>
+      </section>
+
+      <section class="panel">
+        <div class="home-section-head">
+          <div>
+            <span class="section-eyebrow">Rôles visibles</span>
+            <h2>Qui agit où</h2>
+          </div>
+        </div>
+        <div class="role-grid role-grid--staff">
+          <article class="role-card" data-admin-role-guide="public">
+            <span class="dashboard__label">Public</span>
+            <strong>Consulte</strong>
+            <p class="meta meta--subtle">Lit les fiches, explore les catégories et reste hors des zones de pilotage.</p>
+          </article>
+          <article class="role-card" data-admin-role-guide="apprenti">
+            <span class="dashboard__label">Apprenti</span>
+            <strong>Dépose</strong>
+            <p class="meta meta--subtle">Propose dans Contribuer puis suit les retours dans Mon compte.</p>
+          </article>
+          <article class="role-card" data-admin-role-guide="formateur">
+            <span class="dashboard__label">Formateur</span>
+            <strong>Relit</strong>
+            <p class="meta meta--subtle">Traite la file, commente, corrige et valide sans repasser par le dépôt.</p>
+          </article>
+          <article class="role-card" data-admin-role-guide="super_admin">
+            <span class="dashboard__label">Administration</span>
+            <strong>Arbitre</strong>
+            <p class="meta meta--subtle">Garde la main sur comptes, structure du corpus et suivi global.</p>
+          </article>
+        </div>
       </section>
 
       <section class="panel admin__sections-nav">
@@ -64,7 +95,7 @@
             <p id="admin-focus-copy" class="meta meta--subtle">Le premier écran doit indiquer quoi traiter avant d’ouvrir le corpus.</p>
           </div>
           <div class="dashboard__item">
-            <span class="dashboard__label">Section à ouvrir</span>
+            <span class="dashboard__label">Écran à ouvrir</span>
             <strong id="admin-focus-destination">Vue d’ensemble</strong>
             <p id="admin-focus-destination-copy" class="meta meta--subtle">Le bon panneau dépend du rôle et de la situation de la file éditoriale.</p>
           </div>

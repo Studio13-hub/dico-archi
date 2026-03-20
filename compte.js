@@ -34,6 +34,7 @@
   const accountInboxEmpty = document.getElementById("account-inbox-empty");
   const accountInboxList = document.getElementById("account-inbox-list");
   const accountInboxFilters = Array.from(document.querySelectorAll("[data-inbox-filter]"));
+  const accountRoleGuideCards = Array.from(document.querySelectorAll("[data-account-role-guide]"));
   const accountSupabaseHelpers = window.DicoArchiSupabase;
   let inboxItems = [];
   let currentInboxFilter = "all";
@@ -136,6 +137,15 @@
     if (accountFocusDestinationCopy) accountFocusDestinationCopy.textContent = destinationCopy;
     if (accountFocusNote) accountFocusNote.textContent = note;
     if (accountFocusNoteCopy) accountFocusNoteCopy.textContent = noteCopy;
+  }
+
+  function syncRoleGuide(role = "public") {
+    for (const card of accountRoleGuideCards) {
+      const cardRole = String(card.dataset.accountRoleGuide || "").trim();
+      const isActive = cardRole === role;
+      card.classList.toggle("role-card--active", isActive);
+      card.setAttribute("aria-current", isActive ? "true" : "false");
+    }
   }
 
   function renderSubmissions(items, isGuest = false) {
@@ -481,6 +491,7 @@
   function renderGuestState() {
     if (accountEmail) accountEmail.textContent = "-";
     if (accountRole) accountRole.textContent = "Public";
+    syncRoleGuide("public");
     if (accountActive) accountActive.textContent = "Consultation";
     if (accountAccessLabel) accountAccessLabel.textContent = "Consultation publique";
     if (accountAccessCopy) {
@@ -538,6 +549,7 @@
     const normalized = normalizeProfile(await accountSupabaseHelpers.getProfile(user.id));
     currentUserId = user.id;
     const isStaff = accountSupabaseHelpers.isStaffProfile(normalized);
+    syncRoleGuide(normalized.role || "public");
     const submissions = await window.DicoArchiApi.fetchMySubmissions(user.id).catch(() => []);
     currentSubmissions = submissions.slice();
     const editorialMessages = await window.DicoArchiApi.fetchSubmissionMessagesForUser(user.id).catch(() => []);
@@ -559,7 +571,7 @@
 
     if (normalized.role === "super_admin") {
       setFocusPanel({
-        title: "Piloter la plateforme",
+        title: "Piloter sans se disperser",
         action: "Ouvrir l’administration",
         copy: "Le rôle Administration doit aller directement au pilotage du corpus, des comptes et du suivi.",
         destination: "Administration",

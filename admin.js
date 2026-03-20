@@ -102,6 +102,7 @@ const metricsRefresh = document.getElementById("metrics-refresh");
 const metricsStatus = document.getElementById("metrics-status");
 const metricsUpdatedAt = document.getElementById("metrics-updated-at");
 const metricsScope = document.getElementById("metrics-scope");
+const adminRoleGuideCards = Array.from(document.querySelectorAll("[data-admin-role-guide]"));
 const supabaseHelpers = window.DicoArchiSupabase;
 const dicoApi = window.DicoArchiApi;
 
@@ -267,6 +268,16 @@ function setAdminFocusPanel({ title, action, copy, destination, destinationCopy,
   if (adminFocusDestinationCopy) adminFocusDestinationCopy.textContent = destinationCopy;
   if (adminFocusNote) adminFocusNote.textContent = note;
   if (adminFocusNoteCopy) adminFocusNoteCopy.textContent = noteCopy;
+}
+
+function syncAdminRoleGuide(profile) {
+  const activeRole = String(profile?.role || "").trim() || "public";
+  for (const card of adminRoleGuideCards) {
+    const cardRole = String(card.dataset.adminRoleGuide || "").trim();
+    const isActive = cardRole === activeRole;
+    card.classList.toggle("role-card--active", isActive);
+    card.setAttribute("aria-current", isActive ? "true" : "false");
+  }
 }
 
 function updateAdminFocusPanel() {
@@ -3236,6 +3247,7 @@ async function loadUser() {
     canManageTerms = canManageFromProfile(userProfile);
     isSuperAdmin = isSuperAdminProfile(userProfile);
     canViewStats = canManageTerms;
+    syncAdminRoleGuide(userProfile);
     const roleLabel = ROLE_LABELS[userProfile?.role] || "Lecture seule";
     const activeLabel = userProfile?.active === false ? " (inactif)" : "";
     adminRole.textContent = `Rôle : ${roleLabel}${activeLabel}`;

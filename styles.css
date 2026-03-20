@@ -3512,8 +3512,12 @@ body.page-reading .term-block {
 
 .role-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
+}
+
+.role-grid--staff {
+  margin-top: 10px;
 }
 
 .role-card,
@@ -3523,6 +3527,20 @@ body.page-reading .term-block {
   padding: 18px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(249, 246, 239, 0.88));
   box-shadow: 0 14px 28px rgba(47, 38, 24, 0.06);
+}
+
+.role-card--active {
+  border-color: rgba(25, 109, 94, 0.38);
+  background:
+    linear-gradient(180deg, rgba(245, 255, 251, 0.98), rgba(233, 247, 242, 0.94));
+  box-shadow:
+    0 18px 34px rgba(20, 74, 64, 0.1),
+    inset 0 0 0 1px rgba(25, 109, 94, 0.08);
+}
+
+.role-card[aria-current="true"] .dashboard__label::after {
+  content: " · actuel";
+  color: rgba(25, 109, 94, 0.88);
 }
 
 .role-card strong,
