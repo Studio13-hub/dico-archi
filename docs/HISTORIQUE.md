@@ -1,6 +1,48 @@
 # Historique des changements - Dico-archi
 
+## 2026-03-20
+
+### Projet Supabase mis en pause
+- alerte externe recue le `2026-03-20`:
+  - le projet Supabase free-tier `Le dictionnaire - dessinateur en architecture` a ete mis en pause apres 7 jours d’inactivite
+- verification technique le meme jour:
+  - Vercel prod pointe en fait vers `https://iuvjmctrzgztelrsuquc.supabase.co`
+  - le projet Supabase actif du workspace est `iuvjmctrzgztelrsuquc` (`dico-archi-clean`)
+  - le projet mis en pause `lzkgvqoohknurqlbwfro` est donc un ancien projet distinct
+- impact:
+  - risque d’indisponibilite temporaire sur les parcours relies a Supabase
+  - `Suivi` admin peut sembler casse alors que le probleme vient du projet pause
+- reprise conseillee:
+  - verification Vercel + workspace local confirmee sur `iuvjmctrzgztelrsuquc`
+  - ancien projet `lzkgvqoohknurqlbwfro` supprime ensuite pour eviter les confusions futures
+
 ## 2026-03-19
+
+### Dock traduction + corpus admin fusionne
+- lot final pousse en prod avec commits:
+  - `ac1866c`
+  - `a915149`
+  - `0e6eeb1`
+  - `d774d05`
+- `Ecouter / Traduire` devient un vrai outil transversal:
+  - lanceur permanent au-dessus de l’assistant
+  - dock lateral
+  - fermeture reelle
+  - fallback serveur robuste si Gemini renvoie un JSON invalide
+- preuve fonctionnelle:
+  - `Fiche mise en avant` -> `Scheda in evidenza`
+- `admin.html` / `admin.js`:
+  - `Corpus` fusionne maintenant base Supabase et contenu canonique public
+  - `Bois lamellé-collé` peut apparaitre dans l’admin meme sans ligne DB existante
+  - les fiches canoniques sont marquées `Contenu canonique` avec action `Importer`
+- ajustements UI:
+  - hamburger remis au premier plan
+  - hints assistant / traduction homogenises
+  - marge laterale adaptee au dock
+- verification finale:
+  - `27 passed`
+- prod finale:
+  - `https://dico-archi.vercel.app`
 
 ### Base produit durcie + reprise des pages majeures
 - environnement local de test corrige durablement:

@@ -1,7 +1,67 @@
 # Journal de bord - Dico-archi
 
+## 2026-03-20
+- point de reprise bloqueur identifie hors code:
+  - mail Supabase recu confirmant que le projet free-tier `Le dictionnaire - dessinateur en architecture` a ete mis en pause apres 7 jours d’inactivite
+- impact probable:
+  - routes et ecrans relies a Supabase peuvent paraitre en erreur tant que le projet n’est pas reveille
+  - `admin.html` -> `Suivi` est particulierement concerne
+- verification en ligne effectuee ensuite:
+  - Vercel:
+    - un seul projet trouve: `dico-archi`
+    - URL de prod: `https://dico-archi.vercel.app`
+  - Vercel prod utilise:
+    - `SUPABASE_URL=https://iuvjmctrzgztelrsuquc.supabase.co`
+  - Supabase:
+    - projet lie courant: `iuvjmctrzgztelrsuquc` (`dico-archi-clean`)
+    - ancien projet distinct: `lzkgvqoohknurqlbwfro` (`Le dictionnaire - dessinateur en architecture`)
+- conclusion:
+  - l’ancien projet Supabase recu par mail n’etait plus la cible de production actuelle
+  - suppression confirmee ensuite:
+    - `supabase projects delete lzkgvqoohknurqlbwfro --yes`
+  - il ne reste plus qu’un projet Supabase pertinent pour ce flux:
+    - `iuvjmctrzgztelrsuquc`
+- action de reprise recommandee:
+  - verifier les parcours staff sur le projet `iuvjmctrzgztelrsuquc`
+  - garder ce projet comme unique reference de production
+
 ## 2026-03-19
 - reprise orientee verification reelle + cloture git propre.
+
+### Dock traduction durci + corpus admin aligne sur le canonique
+- nouveau lot final pousse en prod:
+  - `ac1866c` `Refine reading assist and simplify public heroes`
+  - `a915149` `Dock and harden selection assist`
+  - `0e6eeb1` `Expose selection assist launcher sitewide`
+  - `d774d05` `Polish assist dock and merge canonical corpus`
+- `Ecouter / Traduire` corrige en profondeur:
+  - dock lateral desktop
+  - fermeture reelle
+  - selection nettoyee a la fermeture
+  - hint + bouton visibles au-dessus de l’assistant
+  - logique visuelle harmonisee avec l’assistant
+  - fallback serveur ajoute si le modele renvoie `invalid_model_json`
+- verification directe du fallback:
+  - `Fiche mise en avant` -> `Scheda in evidenza`
+- `admin.html` / `admin.js` renforces:
+  - `Corpus` charge maintenant les termes DB + le contenu canonique fusionne depuis `/api/categories?resource=terms`
+  - une fiche visible sur le site public peut donc apparaitre dans l’admin sans ligne DB existante
+  - ex. `Bois lamellé-collé`
+  - ces lignes apparaissent avec l’etat `Contenu canonique` et un bouton `Importer`
+- `styles.css` ajuste:
+  - hamburger au premier plan
+  - hints assistant / traduction harmonises
+  - marge laterale adaptee quand le dock est ouvert
+- verification finale:
+  - `node --check api/chat.js`
+  - `node --check admin.js`
+  - `npm run test:ui:public`
+  - resultat: `27 passed`
+- cloture:
+  - `git push origin main`
+  - `vercel --prod`
+  - alias confirme: `https://dico-archi.vercel.app`
+  - worktree propre a la fin de session
 
 ### Base produit durcie + reprise page par page
 - lot important garde local dans `/Users/awat/workspace/projects/dico-archi`

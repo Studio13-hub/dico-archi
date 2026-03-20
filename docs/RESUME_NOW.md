@@ -1,5 +1,67 @@
 # Resume now (2026-03-19)
 
+## Point de vigilance 2026-03-20 - projet Supabase mis en pause
+
+- mail recu le `2026-03-20`:
+  - le projet Supabase free-tier `Le dictionnaire - dessinateur en architecture` a ete mis en pause apres 7 jours d’inactivite
+- verification en ligne faite le `2026-03-20`:
+  - Vercel ne contient qu’un seul projet actif: `dico-archi`
+  - la prod Vercel utilise `SUPABASE_URL=https://iuvjmctrzgztelrsuquc.supabase.co`
+  - le projet Supabase actuellement lie au workspace est `iuvjmctrzgztelrsuquc` (`dico-archi-clean`)
+  - le projet ancien mis en pause est `lzkgvqoohknurqlbwfro` (`Le dictionnaire - dessinateur en architecture`)
+- consequence pratique:
+  - les pages et APIs qui lisent ou ecrivent dans Supabase peuvent etre indisponibles jusqu’au reveil du projet
+  - `admin.html` -> `Suivi` peut donc sembler en panne meme si le code local n’a pas regressé
+- conclusion de proprete:
+  - l’ancien projet Supabase n’etait plus le backend de production actuel
+  - il a ete supprime proprement apres verification de Vercel et du workspace local
+- reprise immediate conseillee:
+  1. confirmer sur le projet actif `iuvjmctrzgztelrsuquc`:
+     - `admin.html`
+     - `admin.html?section=stats`
+     - `compte.html`
+     - `contribuer.html`
+
+## Cloture session 2026-03-19 - dock traduction durci + corpus admin aligne sur le canonique
+
+- etat git final:
+  - `git status --short` vide
+  - lot committe, pousse et redeploye
+- derniers commits utiles de la session:
+  - `d774d05` `Polish assist dock and merge canonical corpus`
+  - `0e6eeb1` `Expose selection assist launcher sitewide`
+  - `a915149` `Dock and harden selection assist`
+  - `ac1866c` `Refine reading assist and simplify public heroes`
+  - `6ac3b6b` `Simplify public surfaces and add global reading assist`
+- prod alignee:
+  - alias confirme: `https://dico-archi.vercel.app`
+- lot fonctionnel sorti:
+  - `Ecouter / Traduire`:
+    - lanceur visible en permanence au-dessus de l’assistant
+    - hint propre et coherent avec celui de l’assistant
+    - dock lateral desktop
+    - fermeture vraiment fonctionnelle
+    - selection nettoyee a la fermeture
+    - fallback serveur quand le modele renvoie `invalid_model_json`
+  - traduction verifiee sur un cas reel de prod-like:
+    - `Fiche mise en avant` -> `Scheda in evidenza`
+  - layout:
+    - menu hamburger remis au premier plan
+    - dock traduction et assistant harmonises en taille / logique de hint
+    - deformation de page reduite quand le dock est ouvert
+  - `admin.html` / `admin.js`:
+    - `Corpus` fusionne maintenant les termes Supabase et le contenu canonique local
+    - un terme visible sur le site public peut donc apparaitre dans l’admin meme sans ligne DB
+    - ex. `Bois lamellé-collé`
+    - les fiches canoniques sans ligne DB apparaissent avec:
+      - libelle `Contenu canonique`
+      - action `Importer` au lieu de `Modifier`
+- verification finale:
+  - `node --check api/chat.js`
+  - `node --check admin.js`
+  - `npm run test:ui:public`
+  - resultat final: `27 passed`
+
 ## Cloture session 2026-03-19 - base produit durcie + pages majeures reprises
 
 - pas de commit ni redeploiement final effectues pendant cette passe:
@@ -47,6 +109,20 @@
   - `styles.css`
 
 ## Point exact de reprise 2026-03-19
+
+1. faire la recette humaine finale sur la prod:
+   - `index.html`
+   - `admin.html?section=corpus`
+   - recherche `bois`
+   - ouverture de `Bois lamellé-collé`
+2. confirmer:
+   - que le dock `Ecouter / Traduire` est maintenant visible et comprehensible
+   - que le hamburger reste toujours au premier plan
+   - que `Bois lamellé-collé` peut etre importe puis enrichi avec les 3 images
+3. ensuite seulement:
+   - reprendre la simplification visuelle globale
+   - reduire encore la densite des pages longues
+   - poursuivre l’alignement avec la direction institutionnelle suisse
 
 1. faire la vraie validation staff connectee sur la prod ou un environnement Vercel local authentifie:
    - `compte.html`

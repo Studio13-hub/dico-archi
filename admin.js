@@ -449,13 +449,13 @@ function updateAdminContextCopy() {
 
   if (metricsScope) {
     if (!adminPermissionsReady) {
-      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage et l’historique éditorial.";
+      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage, les scores jeux et l’historique éditorial.";
     } else if (isSuperAdmin) {
-      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage, l’historique éditorial et le panneau Feedback assistant.";
+      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage, les scores jeux, l’historique éditorial et le panneau Feedback assistant.";
     } else if (canViewStats) {
-      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage et l’historique éditorial. Le panneau Feedback assistant reste réservé à l’Administration.";
+      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage, les scores jeux et l’historique éditorial. Le panneau Feedback assistant reste réservé à l’Administration.";
     } else {
-      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage et l’historique éditorial.";
+      metricsScope.textContent = "Le volet Suivi regroupe les métriques d’usage, les scores jeux et l’historique éditorial.";
     }
   }
   updateAdminFocusPanel();
@@ -2668,7 +2668,7 @@ async function fetchAudit() {
 
 function renderAdminMetrics(payload) {
   clearMetricsDisplay();
-  setMetricsStatus("Suivi actif. Les métriques affichées couvrent les dernières 24 heures et les 30 derniers jours.");
+  setMetricsStatus("Suivi actif. Les cartes couvrent 24 h et 30 jours, avec pages, jeux et file éditoriale.");
   setMetricsUpdatedAt(new Date().toLocaleString("fr-CH"));
 
   const summary = payload?.summary || {};
@@ -2733,7 +2733,7 @@ function renderAdminMetrics(payload) {
 
   if (metricsRecent) {
     const title = document.createElement("h3");
-    title.textContent = "Derniers scores";
+    title.textContent = "Derniers scores jeux";
     metricsRecent.appendChild(title);
 
     if (!recentScores.length) {
@@ -2764,7 +2764,7 @@ async function fetchAdminMetrics() {
   if (!canViewStats || !metricsSummary || isLoadingMetrics) return;
   isLoadingMetrics = true;
   if (metricsRefresh) metricsRefresh.disabled = true;
-  setMetricsStatus("Chargement des métriques en cours...");
+  setMetricsStatus("Chargement du suivi en cours...");
   setMetricsUpdatedAt("");
 
   try {
@@ -2787,7 +2787,7 @@ async function fetchAdminMetrics() {
     }
     setMessage(`Suivi : ${getErrorMessage(error)}`, true);
     setMetricsUpdatedAt("");
-    setMetricsStatus("Suivi indisponible pour le moment. Vérifiez l’API métriques et la base Supabase.", true);
+    setMetricsStatus("Suivi indisponible pour le moment. Vérifiez l’API métriques, la base Supabase et réactivez le projet s’il a été mis en pause.", true);
   } finally {
     isLoadingMetrics = false;
     if (metricsRefresh) metricsRefresh.disabled = false;

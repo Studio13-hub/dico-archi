@@ -3,6 +3,39 @@
 Reference centrale:
 - [PLAN_MAITRE_DICOARCHI.md](/Users/awat/workspace/projects/dico-archi/docs/PLAN_MAITRE_DICOARCHI.md)
 
+## Priorite immediate - Reactiver Supabase
+
+1. garder comme unique reference Supabase:
+   - `iuvjmctrzgztelrsuquc`
+   - nom actuel: `dico-archi-clean`
+2. verifier juste apres controle:
+   - `https://dico-archi.vercel.app/admin.html`
+   - `https://dico-archi.vercel.app/admin.html?section=stats`
+   - `https://dico-archi.vercel.app/compte.html`
+   - `https://dico-archi.vercel.app/contribuer.html`
+3. seulement ensuite reprendre les validations UX et staff
+
+## Priorite immediate - Recette finale prod du lot 2026-03-19
+
+1. verifier sur `https://dico-archi.vercel.app`:
+   - `index.html`
+   - `admin.html?section=corpus`
+   - `term.html?slug=bois-lamelle-colle`
+2. confirmer en priorite:
+   - que `Ecouter / Traduire` est visible au-dessus de l’assistant
+   - que le dock s’ouvre / se ferme proprement
+   - que la traduction repond sur des selections courtes reelles
+   - que le hamburger reste bien au premier plan
+   - que `Bois lamellé-collé` est trouvable dans `Corpus`
+   - que la fiche canonique peut etre importee puis enrichie
+3. garder comme preuves techniques de sortie:
+   - `npm run test:ui:public`
+   - resultat: `27 passed`
+   - prod alignee sur:
+     - `d774d05`
+     - `0e6eeb1`
+     - `a915149`
+
 ## Priorite immediate - Validation staff du lot produit 2026-03-19
 
 1. faire la recette manuelle sur la prod ou sur un vrai runtime Vercel authentifie:

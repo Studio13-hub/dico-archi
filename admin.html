@@ -278,25 +278,25 @@
       </section>
 
       <section class="panel admin__list" id="admin-panel-stats-main" role="tabpanel" aria-labelledby="admin-tab-stats" data-admin-section="stats" data-admin-access="staff" hidden>
-        <h2>Statistiques d’usage</h2>
+        <h2>Suivi d’usage</h2>
         <p id="metrics-scope" class="meta meta--subtle"></p>
         <div id="metrics-status" class="meta meta--subtle">
-          Le suivi charge les métriques serveur si la migration SQL a bien été appliquée côté Supabase.
+          Le suivi charge les métriques serveur si la migration SQL a bien été appliquée côté Supabase et si le projet n’est pas en pause.
         </div>
         <div id="metrics-updated-at" class="meta meta--subtle"></div>
         <div id="metrics-summary" class="dashboard"></div>
         <div class="dashboard">
           <div class="dashboard__item">
-            <span class="dashboard__label">Pages les plus vues</span>
+            <span class="dashboard__label">Pages les plus vues sur 30 jours</span>
             <div id="metrics-top-pages" class="admin__table"></div>
           </div>
           <div class="dashboard__item">
-            <span class="dashboard__label">Jeux les plus actifs</span>
+            <span class="dashboard__label">Jeux les plus actifs sur 30 jours</span>
             <div id="metrics-top-games" class="admin__table"></div>
           </div>
         </div>
         <div class="admin__toolbar">
-          <button id="metrics-refresh" type="button" class="ghost">Rafraîchir les stats</button>
+          <button id="metrics-refresh" type="button" class="ghost">Rafraîchir le suivi</button>
         </div>
         <div id="metrics-recent" class="admin__table"></div>
       </section>
