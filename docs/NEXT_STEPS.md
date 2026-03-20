@@ -3,6 +3,34 @@
 Reference centrale:
 - [PLAN_MAITRE_DICOARCHI.md](/Users/awat/workspace/projects/dico-archi/docs/PLAN_MAITRE_DICOARCHI.md)
 
+## Priorite immediate - Apres clarification des surfaces de travail
+
+1. garder comme base de sortie:
+   - `main` = `origin/main`
+   - worktree propre
+   - suite publique de reference:
+     - `npm run test:ui:public`
+     - resultat de sortie:
+       - `31 passed`
+2. prochain chantier principal:
+   - simplifier plus profondement `admin.js`
+   - rendre chaque panneau encore plus strict dans sa responsabilite
+3. ordre recommande:
+   - `Vue d’ensemble`:
+     - tri / reprise
+   - `Corpus`:
+     - correction / publication
+   - `Suivi`:
+     - lecture des signaux
+   - `Comptes`:
+     - administration pure
+4. garder ensuite comme chantier editorial:
+   - enrichir les medias publics des fiches prioritaires
+   - commencer par `Bois lamellé-collé`
+5. ne pas rouvrir le workflow prod sans besoin precis:
+   - le cycle complet est deja referme
+   - le script de recette est deja valide
+
 ## Priorite immediate - Apres fermeture reelle du workflow prod
 
 1. garder [scripts/e2e_prod_editorial_workflow.js](/Users/awat/workspace/projects/dico-archi/scripts/e2e_prod_editorial_workflow.js) comme recette de reference
@@ -157,9 +185,9 @@ Reference centrale:
   - `https://dico-archi.vercel.app/compte.html`
   - `https://dico-archi.vercel.app/contribuer.html`
 - reprendre maintenant:
-  - simplification admin
-  - roles visibles
-  - attractivite produit
+  - simplification plus profonde d’admin
+  - separation stricte des panneaux staff
+  - enrichissement medias / contenu des fiches prioritaires
 - garder ensuite comme sidecar:
   - contenu editorial des fiches les plus vues
   - eventuelle recette staff plus large

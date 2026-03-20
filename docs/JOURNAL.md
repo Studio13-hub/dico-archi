@@ -1,6 +1,38 @@
 # Journal de bord - Dico-archi
 
 ## 2026-03-20
+### Surfaces de travail clarifiees + fiche terme re-hierarchisee
+- nouveau lot pousse sur `main`:
+  - `c2821d0` `Stack assistant tools and verify canonical term exposure`
+  - `a6c44b0` `Clarify work pages and expose empty media state`
+  - `352102e` `Simplify term page reading flow`
+- verification de parite reelle effectuee:
+  - la fiche publique `bois-lamelle-colle` est bien exposee en local et sur le site publie
+  - les endpoints publics controles sont coherents:
+    - `/api/categories?resource=terms`
+    - `/api/terms?slug=bois-lamelle-colle`
+- produit clarifie:
+  - `Assistant` et `Ecouter / Traduire` s’empilent maintenant proprement
+  - la page se decale sur desktop pour laisser la place au dock
+  - `compte.html`, `contribuer.html` et `admin.html` ont un cadrage d’usage plus simple
+  - `term.html` est reorganisee en 4 temps de lecture:
+    - comprendre
+    - situer
+    - approfondir
+    - continuer
+  - la fiche garde visible un etat vide propre si aucun media public n’est encore publie
+- verification finale:
+  - `npm run test:ui:public`
+  - resultat:
+    - `31 passed`
+- etat de sortie:
+  - `git status --short` vide
+  - `git push origin main` effectue
+  - prochaine reprise conseillee:
+    - simplification plus profonde de `admin.js`
+    - separation stricte des responsabilites staff
+    - enrichissement medias des fiches prioritaires
+
 ### Recette workflow prod refermee pour de vrai
 - reprise finale du script [scripts/e2e_prod_editorial_workflow.js](/Users/awat/workspace/projects/dico-archi/scripts/e2e_prod_editorial_workflow.js)
 - durcissements apportes avant relance:

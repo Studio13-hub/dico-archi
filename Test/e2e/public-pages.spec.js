@@ -526,5 +526,5 @@ test("canonical Bois lamelle-colle term stays exposed in public APIs", async ({ 
   expect(result.term).toBe("Bois lamellé-collé");
   expect(result.slug).toBe("bois-lamelle-colle");
   expect(result.category).toBe("materiaux");
-  expect(result.mediaCount).toBeGreaterThanOrEqual(0);
+  expect(result.mediaCount).toBeGreaterThanOrEqual(3);
 });

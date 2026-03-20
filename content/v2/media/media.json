@@ -1,5 +1,29 @@
 [
   {
+    "term_slug": "bois-lamelle-colle",
+    "media_type": "image",
+    "url": "term-images/bois-lamelle-colle/charpente-lamelle-colle.jpg",
+    "title": "Charpente en bois lamellé-collé",
+    "alt_text": "Charpente réalisée en bois lamellé-collé.",
+    "position": 0
+  },
+  {
+    "term_slug": "bois-lamelle-colle",
+    "media_type": "image",
+    "url": "term-images/bois-lamelle-colle/bois-lamelle-colle-kvh.jpg",
+    "title": "Comparaison autour du bois structurel",
+    "alt_text": "Illustration de bois structurels incluant du bois lamellé-collé.",
+    "position": 1
+  },
+  {
+    "term_slug": "bois-lamelle-colle",
+    "media_type": "image",
+    "url": "term-images/bois-lamelle-colle/lamelle-colle-et-contrecolle.jpg",
+    "title": "Lamellé-collé et contrecollé",
+    "alt_text": "Schéma comparatif entre lamellé-collé et contrecollé.",
+    "position": 2
+  },
+  {
     "term_slug": "echelle",
     "media_type": "schema",
     "url": "term-images/echelle/schema-echelle.png",

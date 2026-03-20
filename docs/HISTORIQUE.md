@@ -2,6 +2,22 @@
 
 ## 2026-03-20
 
+### Clarification finale des surfaces de travail + simplification de la fiche terme
+- commits pousses sur `main`:
+  - `c2821d0`
+  - `a6c44b0`
+  - `352102e`
+- effets fonctionnels:
+  - empilement propre `Assistant` + `Ecouter / Traduire`
+  - reduction du contenu principal quand le dock est ouvert sur desktop
+  - verification explicite que `Bois lamellé-collé` reste expose publiquement
+  - `Mon compte`, `Contribuer` et `Administration` recales sur un usage plus evident
+  - fiche terme redecoupee en sequence de lecture plus lisible
+  - etat vide media rendu explicite au lieu de masquer la section
+- verification finale:
+  - suite publique Playwright:
+    - `31 passed`
+
 ### Recette workflow prod refermee
 - [scripts/e2e_prod_editorial_workflow.js](/Users/awat/workspace/projects/dico-archi/scripts/e2e_prod_editorial_workflow.js) a ete referme fonctionnellement
 - ameliorations ajoutees:
