@@ -807,17 +807,17 @@ function renderTermNextSteps(term, payload, richPayload) {
   }
   if (nextCategoryLinkNode && categorySlug) {
     nextCategoryLinkNode.href = `category.html?slug=${encodeURIComponent(categorySlug)}`;
-    nextCategoryLinkNode.textContent = `Ouvrir ${categoryName}`;
+    nextCategoryLinkNode.textContent = `Lire ${categoryName}`;
   } else if (nextCategoryLinkNode) {
     nextCategoryLinkNode.href = "category.html";
-    nextCategoryLinkNode.textContent = "Ouvrir les catégories";
+    nextCategoryLinkNode.textContent = "Lire les catégories";
   }
 
   if (!nextRelatedCardNode || !nextRelatedTitleNode || !nextRelatedNoteNode || !nextRelatedLinkNode) return;
 
   if (firstRelated) {
     nextRelatedCardNode.hidden = false;
-    nextRelatedTitleNode.textContent = `Ouvrir ${firstRelated.term}`;
+    nextRelatedTitleNode.textContent = `Lire ${firstRelated.term}`;
     nextRelatedNoteNode.textContent = "Continuer la lecture avec une notion voisine déjà liée à cette fiche.";
     nextRelatedLinkNode.href = `term.html?slug=${encodeURIComponent(firstRelated.slug)}`;
     nextRelatedLinkNode.textContent = "Lire le terme lié";
@@ -828,7 +828,7 @@ function renderTermNextSteps(term, payload, richPayload) {
   nextRelatedTitleNode.textContent = "Revenir au dictionnaire";
   nextRelatedNoteNode.textContent = "Retrouver rapidement un autre terme ou un autre point d’entrée.";
   nextRelatedLinkNode.href = "dictionnaire.html";
-  nextRelatedLinkNode.textContent = "Ouvrir l’index";
+  nextRelatedLinkNode.textContent = "Lire l’index";
 }
 
 function renderInlineExample(value, richMode = false) {
@@ -877,14 +877,14 @@ function resetTermPageState() {
   if (nextCategoryNoteNode) nextCategoryNoteNode.textContent = "Comparer ce terme avec d’autres notions proches du même domaine.";
   if (nextCategoryLinkNode) {
     nextCategoryLinkNode.href = "category.html";
-    nextCategoryLinkNode.textContent = "Ouvrir les catégories";
+    nextCategoryLinkNode.textContent = "Lire les catégories";
   }
   if (nextRelatedCardNode) nextRelatedCardNode.hidden = false;
   if (nextRelatedTitleNode) nextRelatedTitleNode.textContent = "Revenir au dictionnaire";
   if (nextRelatedNoteNode) nextRelatedNoteNode.textContent = "Retrouver rapidement un autre terme ou un autre point d’entrée.";
   if (nextRelatedLinkNode) {
     nextRelatedLinkNode.href = "dictionnaire.html";
-    nextRelatedLinkNode.textContent = "Ouvrir l’index";
+    nextRelatedLinkNode.textContent = "Lire l’index";
   }
 }
 

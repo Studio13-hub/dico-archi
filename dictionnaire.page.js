@@ -37,7 +37,7 @@ function createTermCard(item) {
   const link = document.createElement("a");
   link.className = "link-button";
   link.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
-  link.textContent = "Ouvrir la fiche";
+  link.textContent = "Lire la fiche";
 
   card.append(eyebrow, title, definition, link);
   return card;
