@@ -36,14 +36,31 @@
     <main class="reading-main">
       <section class="panel panel--category">
         <div id="category-breadcrumb" class="meta"></div>
+        <div class="category-reading-map" id="category-reading-map">
+          <article class="category-reading-map__card category-reading-map__card--primary">
+            <span class="dashboard__label">Commencer</span>
+            <strong id="category-map-start-title">Choisir une première fiche</strong>
+            <p id="category-map-start-note" class="meta meta--subtle">Entrer dans le domaine par un terme simple à ouvrir tout de suite.</p>
+          </article>
+          <article class="category-reading-map__card">
+            <span class="dashboard__label">Comparer</span>
+            <strong id="category-map-compare-title">Rester dans le même champ</strong>
+            <p id="category-map-compare-note" class="meta meta--subtle">Lire plusieurs fiches proches pour fixer les distinctions utiles.</p>
+          </article>
+          <article class="category-reading-map__card">
+            <span class="dashboard__label">Continuer</span>
+            <strong id="category-map-next-title">Revenir à l’index</strong>
+            <p id="category-map-next-note" class="meta meta--subtle">Élargir ensuite depuis les autres catégories ou le dictionnaire complet.</p>
+          </article>
+        </div>
         <div class="category-evidence-grid">
           <article class="dictionary-overview__panel">
-            <span class="dashboard__label">Parcours</span>
-            <strong id="category-evidence-title">Sélection</strong>
-            <p id="category-evidence-copy" class="meta meta--subtle">Ouvrir quelques fiches, puis élargir si nécessaire.</p>
+            <span class="dashboard__label">Point d’entrée</span>
+            <strong id="category-evidence-title">Choisir où entrer</strong>
+            <p id="category-evidence-copy" class="meta meta--subtle">Ouvrir quelques fiches nettes, puis élargir la comparaison si nécessaire.</p>
           </article>
           <article class="dictionary-overview__panel">
-            <span class="dashboard__label">Fiches</span>
+            <span class="dashboard__label">Fiches repères</span>
             <div id="category-featured-links" class="dictionary-evidence-links">
               <span class="meta meta--subtle">Chargement des fiches…</span>
             </div>
@@ -55,20 +72,20 @@
         </div>
         <div class="category-toolbar">
           <div class="category-toolbar__item">
-            <span class="dashboard__label">Vue</span>
+            <span class="dashboard__label">Visible</span>
             <strong id="category-count">-</strong>
           </div>
           <div class="category-toolbar__item">
-            <span class="dashboard__label">Parcours</span>
+            <span class="dashboard__label">Mode</span>
             <strong id="category-mode">Index des domaines</strong>
           </div>
           <label class="category-toolbar__item category-search" for="category-search">
-            <span class="dashboard__label">Recherche</span>
-            <input id="category-search" name="category-search" type="search" placeholder="Filtrer les fiches de cette catégorie" />
+            <span class="dashboard__label">Filtrer</span>
+            <input id="category-search" name="category-search" type="search" placeholder="Resserre les fiches de cette catégorie" />
           </label>
         </div>
         <div id="category-reading-note" class="meta dictionary-reading-note">
-          Filtrer sans quitter la catégorie active.
+          Garder le domaine en cours tout en resserrant la lecture.
         </div>
         <div id="category-cards" class="cards"></div>
       </section>

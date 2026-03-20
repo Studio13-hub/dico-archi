@@ -3166,6 +3166,37 @@ body.page-term-detail .hero--term #term-subtitle {
   margin: 14px 0 18px;
 }
 
+.category-reading-map {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 8px 0 12px;
+}
+
+.category-reading-map__card {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.96), rgba(242, 232, 216, 0.9));
+  box-shadow: 0 16px 30px rgba(47, 38, 24, 0.08);
+}
+
+.category-reading-map__card--primary {
+  background: linear-gradient(180deg, rgba(23, 52, 47, 0.12), rgba(255, 252, 247, 0.98));
+}
+
+.category-reading-map__card strong {
+  font-family: "Fraunces", serif;
+  font-size: 1.3rem;
+  line-height: 1.1;
+}
+
+.category-reading-map__card p {
+  margin: 0;
+}
+
 .category-toolbar__item {
   border: 1px solid var(--border);
   border-radius: 18px;
@@ -4041,6 +4072,7 @@ body.page-reading .term-block {
   .home-evidence-grid,
   .dictionary-evidence-grid,
   .category-evidence-grid,
+  .category-reading-map,
   .home-bottom-links,
   .dictionary-overview,
   .term-intro-grid {

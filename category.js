@@ -9,6 +9,12 @@ const categoryEvidenceTitleEl = document.getElementById("category-evidence-title
 const categoryEvidenceCopyEl = document.getElementById("category-evidence-copy");
 const categoryFeaturedLinksEl = document.getElementById("category-featured-links");
 const categoryReadingNoteEl = document.getElementById("category-reading-note");
+const categoryMapStartTitleEl = document.getElementById("category-map-start-title");
+const categoryMapStartNoteEl = document.getElementById("category-map-start-note");
+const categoryMapCompareTitleEl = document.getElementById("category-map-compare-title");
+const categoryMapCompareNoteEl = document.getElementById("category-map-compare-note");
+const categoryMapNextTitleEl = document.getElementById("category-map-next-title");
+const categoryMapNextNoteEl = document.getElementById("category-map-next-note");
 const dicoApi = window.DicoArchiApi;
 let currentCategoryTerms = [];
 
@@ -41,6 +47,50 @@ function renderMessage(title, subtitle) {
   if (categoryCountEl) categoryCountEl.textContent = "-";
 }
 
+function renderCategoryReadingMap(options = {}) {
+  if (
+    !categoryMapStartTitleEl
+    || !categoryMapStartNoteEl
+    || !categoryMapCompareTitleEl
+    || !categoryMapCompareNoteEl
+    || !categoryMapNextTitleEl
+    || !categoryMapNextNoteEl
+  ) {
+    return;
+  }
+
+  const {
+    mode = "index",
+    label = "ce domaine",
+    total = 0
+  } = options;
+
+  if (mode === "index") {
+    categoryMapStartTitleEl.textContent = "Choisir un domaine";
+    categoryMapStartNoteEl.textContent = "Entrer par une famille métier claire avant d’ouvrir les fiches.";
+    categoryMapCompareTitleEl.textContent = "Comparer les champs";
+    categoryMapCompareNoteEl.textContent = "Voir quels domaines sont déjà fournis et lesquels restent plus légers.";
+    categoryMapNextTitleEl.textContent = "Basculer vers le dictionnaire";
+    categoryMapNextNoteEl.textContent = "Repartir ensuite par l’index complet si tu cherches un terme précis.";
+    return;
+  }
+
+  categoryMapStartTitleEl.textContent = total ? `Ouvrir 1 fiche sur ${total}` : "Aucune fiche repère";
+  categoryMapStartNoteEl.textContent = total
+    ? `Commencer par une première fiche de ${label} pour poser le vocabulaire du domaine.`
+    : `Le domaine ${label} ne contient pas encore de fiche publiée.`;
+
+  categoryMapCompareTitleEl.textContent = total > 1 ? `${total} fiches à comparer` : "Rester dans le domaine";
+  categoryMapCompareNoteEl.textContent = total > 1
+    ? "Lire plusieurs entrées proches pour repérer les écarts de sens et d’usage."
+    : "Quand une seule fiche existe, elle sert surtout de point d’entrée avant d’élargir ailleurs.";
+
+  categoryMapNextTitleEl.textContent = `Continuer après ${label}`;
+  categoryMapNextNoteEl.textContent = total
+    ? "Revenir ensuite au dictionnaire ou à une autre catégorie pour garder l’élan de lecture."
+    : "Revenir au dictionnaire ou à l’index des catégories pour reprendre la navigation.";
+}
+
 function renderCategoryIndex(list) {
   cardsEl.textContent = "";
 
@@ -66,13 +116,13 @@ function renderCategoryIndex(list) {
     const meta = document.createElement("p");
     meta.className = "meta meta--subtle";
     meta.textContent = item.count
-      ? "Entrée utile pour comparer plusieurs fiches proches."
+      ? "Entrée utile pour ouvrir un domaine puis comparer plusieurs fiches proches."
       : "Aucune fiche publiée pour le moment dans ce domaine.";
 
     const link = document.createElement("a");
     link.className = "card__link";
     link.href = `category.html?category_id=${encodeURIComponent(item.id)}`;
-    link.textContent = "Explorer la catégorie";
+    link.textContent = "Entrer dans le domaine";
 
     const actions = document.createElement("div");
     actions.className = "card__actions";
@@ -122,12 +172,12 @@ function renderCards(list) {
 
     const meta = document.createElement("p");
     meta.className = "meta meta--subtle";
-    meta.textContent = "Ouvrir la fiche pour les détails, médias et termes liés.";
+    meta.textContent = "Ouvrir la fiche pour la définition, les repères métier et la suite utile.";
 
     const link = document.createElement("a");
     link.className = "card__link";
     link.href = `term.html?slug=${encodeURIComponent(item.slug)}`;
-    link.textContent = "Voir fiche";
+    link.textContent = "Lire la fiche";
 
     const actions = document.createElement("div");
     actions.className = "card__actions";
@@ -160,7 +210,7 @@ function renderCategoryFeaturedLinks(list) {
     title.textContent = item.term;
 
     const meta = document.createElement("span");
-    meta.textContent = "Ouvrir la fiche détaillée";
+    meta.textContent = "Lire la fiche repère";
 
     anchor.append(title, meta);
     categoryFeaturedLinksEl.appendChild(anchor);
@@ -190,8 +240,8 @@ function applyCategoryTermsView() {
 
   if (categoryReadingNoteEl) {
     categoryReadingNoteEl.textContent = query
-      ? "Le filtre garde la catégorie active, mais resserre la lecture sur les fiches utiles."
-      : "Ouvrez d’abord les trois premières fiches utiles, puis élargissez la comparaison si nécessaire.";
+      ? "Le filtre garde le même domaine, mais resserre la lecture sur les fiches vraiment utiles."
+      : "Ouvre d’abord les fiches repères, puis compare le reste sans quitter le domaine.";
   }
 
   renderCards(filtered);
@@ -282,9 +332,10 @@ async function loadCategoryPage() {
       breadcrumbEl.appendChild(current);
       if (categoryCountEl) categoryCountEl.textContent = `${sortedCategories.length} domaine${sortedCategories.length > 1 ? "s" : ""}`;
       if (categoryModeEl) categoryModeEl.textContent = "Index des domaines";
-      if (categoryEvidenceTitleEl) categoryEvidenceTitleEl.textContent = "Explorer les domaines";
-      if (categoryEvidenceCopyEl) categoryEvidenceCopyEl.textContent = "Commencez par une famille métier, puis ouvrez les fiches les plus utiles dans ce domaine.";
+      if (categoryEvidenceTitleEl) categoryEvidenceTitleEl.textContent = "Choisir un domaine";
+      if (categoryEvidenceCopyEl) categoryEvidenceCopyEl.textContent = "Commencer par une famille métier, puis ouvrir les fiches les plus utiles dans ce champ.";
       if (categorySearchEl) categorySearchEl.disabled = true;
+      renderCategoryReadingMap({ mode: "index" });
       renderCategoryFeaturedLinks([]);
       renderCategoryIndex(sortedCategories);
       return;
@@ -304,13 +355,14 @@ async function loadCategoryPage() {
     buildBreadcrumb(resolvedLabel);
     if (categoryCountEl) categoryCountEl.textContent = `${filtered.length} fiche${filtered.length > 1 ? "s" : ""}`;
     if (categoryModeEl) categoryModeEl.textContent = "Fiches publiées";
-    if (categoryEvidenceTitleEl) categoryEvidenceTitleEl.textContent = `${resolvedLabel}: par où commencer`;
+    if (categoryEvidenceTitleEl) categoryEvidenceTitleEl.textContent = `${resolvedLabel}: par où entrer`;
     if (categoryEvidenceCopyEl) {
       categoryEvidenceCopyEl.textContent = filtered.length
         ? "Les premières fiches ci-dessous servent de point d’entrée rapide avant une lecture plus large."
         : "Cette catégorie n’a pas encore assez de fiches publiées pour proposer un vrai parcours.";
     }
     if (categorySearchEl) categorySearchEl.disabled = false;
+    renderCategoryReadingMap({ mode: "category", label: resolvedLabel, total: filtered.length });
     renderCategoryFeaturedLinks(filtered);
     applyCategoryTermsView();
   } catch (error) {
