@@ -413,3 +413,92 @@ test("selection assist docks, translates and closes cleanly", async ({ page }) =
   await expect(page.locator(".word-assist")).toBeHidden();
   await expect(page.locator("body")).not.toHaveClass(/has-word-assist/);
 });
+
+test("assistant and selection assist stack cleanly on desktop", async ({ page }) => {
+  await page.route("**/api/chat", async (route) => {
+    const body = route.request().postDataJSON?.() || {};
+    if (body?.mode === "term_assist") {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json; charset=utf-8",
+        body: JSON.stringify({
+          translation: {
+            language: "de",
+            languageLabel: "Allemand",
+            translatedTerm: "Beton",
+            translatedDefinition: "",
+            translatedExample: "",
+            pronunciationGuide: "bay-tohn"
+          }
+        })
+      });
+      return;
+    }
+
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json; charset=utf-8",
+      body: JSON.stringify({ answer: "Réponse test", model: "test" })
+    });
+  });
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/index.html", { waitUntil: "load" });
+
+  await page.getByRole("button", { name: "Ouvrir le chatbot" }).click();
+  await expect(page.locator(".chatbot__panel")).toBeVisible();
+  await expect(page.locator("body")).toHaveClass(/has-chatbot-open/);
+  await expect(page.locator("body")).toHaveClass(/has-assist-stack/);
+
+  await page.getByRole("button", { name: "Ouvrir l’aide Ecouter / Traduire" }).click();
+
+  await expect(page.locator(".word-assist")).toBeVisible();
+  await expect(page.locator(".assist-stack")).toBeVisible();
+
+  const layout = await page.evaluate(() => {
+    const homeMain = document.querySelector(".home-main");
+    const stack = document.querySelector(".assist-stack");
+    const wordAssist = document.querySelector(".word-assist");
+    const chatbotPanel = document.querySelector(".chatbot__panel");
+    const mainMarginRight = homeMain ? window.getComputedStyle(homeMain).marginRight : "";
+    const stackRect = stack?.getBoundingClientRect();
+    const wordRect = wordAssist?.getBoundingClientRect();
+    const chatbotRect = chatbotPanel?.getBoundingClientRect();
+    return {
+      mainMarginRight,
+      stackWidth: stackRect?.width || 0,
+      sameColumn: Boolean(wordRect && chatbotRect && Math.abs(wordRect.left - chatbotRect.left) < 2),
+      stacked: Boolean(wordRect && chatbotRect && chatbotRect.top >= wordRect.bottom)
+    };
+  });
+
+  expect(parseFloat(layout.mainMarginRight)).toBeGreaterThan(300);
+  expect(layout.stackWidth).toBeGreaterThan(280);
+  expect(layout.sameColumn).toBe(true);
+  expect(layout.stacked).toBe(true);
+});
+
+test("canonical Bois lamelle-colle term stays exposed in public APIs", async ({ page }) => {
+  await page.goto("/dictionnaire.html", { waitUntil: "load" });
+
+  const result = await page.evaluate(async () => {
+    const [termsPayload, termPayload] = await Promise.all([
+      fetch("/api/categories?resource=terms").then((response) => response.json()),
+      fetch("/api/terms?slug=bois-lamelle-colle").then((response) => response.json())
+    ]);
+
+    return {
+      hasListEntry: Array.isArray(termsPayload?.terms) && termsPayload.terms.some((item) => item.slug === "bois-lamelle-colle"),
+      term: termPayload?.term?.term || "",
+      slug: termPayload?.term?.slug || "",
+      category: termPayload?.term?.categories?.slug || "",
+      mediaCount: Array.isArray(termPayload?.media) ? termPayload.media.length : -1
+    };
+  });
+
+  expect(result.hasListEntry).toBe(true);
+  expect(result.term).toBe("Bois lamellé-collé");
+  expect(result.slug).toBe("bois-lamelle-colle");
+  expect(result.category).toBe("materiaux");
+  expect(result.mediaCount).toBeGreaterThanOrEqual(0);
+});

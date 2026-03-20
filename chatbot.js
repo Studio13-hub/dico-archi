@@ -355,6 +355,9 @@
   toggle.type = "button";
   toggle.setAttribute("aria-label", "Ouvrir le chatbot");
 
+  const assistStack = createElement("div", "assist-stack");
+  assistStack.hidden = true;
+
   const panel = createElement("section", "chatbot__panel");
   panel.hidden = true;
 
@@ -392,8 +395,8 @@
     root.appendChild(hint);
   }
   root.appendChild(toggle);
-  root.appendChild(panel);
   document.body.appendChild(root);
+  document.body.appendChild(assistStack);
 
   const wordAssistHint = createElement("div", "word-assist-hint", "Sélectionner un mot ou ouvrir l’outil");
   document.body.appendChild(wordAssistHint);
@@ -435,7 +438,7 @@
   wordAssistResult.hidden = true;
   wordAssistHeader.append(wordAssistLabel, wordAssistClose);
   wordAssistRoot.append(wordAssistHeader, wordAssistSelection, wordAssistControls, wordAssistStatus, wordAssistResult);
-  document.body.appendChild(wordAssistRoot);
+  assistStack.append(wordAssistRoot, panel);
 
   const history = [];
   let activeSelectionText = "";
@@ -443,9 +446,15 @@
   let dismissedSelectionText = "";
   let wordAssistPinnedOpen = false;
 
-  function syncWordAssistLayout() {
-    document.body.classList.toggle("has-word-assist", !wordAssistRoot.hidden);
-    wordAssistHint.hidden = !wordAssistRoot.hidden;
+  function syncAssistStackLayout() {
+    const chatbotOpen = !panel.hidden;
+    const wordAssistOpen = !wordAssistRoot.hidden;
+    const hasAssistStack = chatbotOpen || wordAssistOpen;
+    assistStack.hidden = !hasAssistStack;
+    document.body.classList.toggle("has-chatbot-open", chatbotOpen);
+    document.body.classList.toggle("has-word-assist", wordAssistOpen);
+    document.body.classList.toggle("has-assist-stack", hasAssistStack);
+    wordAssistHint.hidden = !wordAssistOpen;
   }
 
   function syncWordAssistControls() {
@@ -475,7 +484,7 @@
   function showWordAssist() {
     wordAssistRoot.hidden = false;
     renderWordAssistState();
-    syncWordAssistLayout();
+    syncAssistStackLayout();
   }
 
   function hideWordAssist() {
@@ -483,7 +492,7 @@
     wordAssistPinnedOpen = false;
     resetWordAssistState();
     wordAssistStatus.textContent = "Sélectionne un mot ou une expression courte.";
-    syncWordAssistLayout();
+    syncAssistStackLayout();
   }
 
   function clearSelection() {
@@ -623,6 +632,7 @@
     } catch (_error) {
       // Ignore storage errors.
     }
+    syncAssistStackLayout();
     if (open) input.focus();
     if (open) ensurePublishedTermsLoaded();
   }
@@ -655,6 +665,8 @@
     if (panel.hidden) return;
     if (panel.contains(target)) return;
     if (toggle.contains(target)) return;
+    if (wordAssistRoot.contains(target)) return;
+    if (wordAssistLauncher.contains(target)) return;
     setOpen(false);
   });
 
@@ -807,5 +819,5 @@
     shouldOpen = false;
   }
   setOpen(shouldOpen);
-  syncWordAssistLayout();
+  syncAssistStackLayout();
 })();

@@ -540,6 +540,27 @@ body.page-home h1 span {
   z-index: 12000;
 }
 
+.assist-stack {
+  position: fixed;
+  right: 18px;
+  top: 96px;
+  z-index: 11999;
+  width: min(320px, calc(100vw - 36px));
+  max-height: calc(100vh - 116px);
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.assist-stack[hidden] {
+  display: none !important;
+}
+
+.assist-stack > * {
+  pointer-events: auto;
+}
+
 .chatbot__hint {
   margin: 0 0 6px auto;
   width: fit-content;
@@ -653,8 +674,10 @@ body.page-home h1 span {
 }
 
 .chatbot__panel {
-  width: min(380px, calc(100vw - 24px));
-  height: min(520px, calc(100vh - 40px));
+  width: 100%;
+  min-height: 320px;
+  height: min(420px, calc(100vh - 180px));
+  max-height: calc(100vh - 180px);
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -849,12 +872,9 @@ body.page-home h1 span {
 }
 
 .word-assist {
-  position: fixed;
-  right: 18px;
-  top: 96px;
-  z-index: 11999;
-  width: min(300px, calc(100vw - 36px));
-  max-height: calc(100vh - 116px);
+  position: relative;
+  width: 100%;
+  max-height: min(300px, calc(100vh - 180px));
   overflow: auto;
   display: grid;
   gap: 8px;
@@ -870,12 +890,12 @@ body.page-home h1 span {
   display: none !important;
 }
 
-body.has-word-assist .hero__content,
-body.has-word-assist .home-main,
-body.has-word-assist .reading-main,
-body.has-word-assist .work-main,
-body.has-word-assist .footer__inner--site {
-  margin-right: 324px;
+body.has-assist-stack .hero__content,
+body.has-assist-stack .home-main,
+body.has-assist-stack .reading-main,
+body.has-assist-stack .work-main,
+body.has-assist-stack .footer__inner--site {
+  margin-right: 344px;
   transition: margin-right 140ms ease;
 }
 
@@ -4244,19 +4264,29 @@ body.page-reading .term-block {
   }
 
   .word-assist {
+    max-height: none;
+  }
+
+  .assist-stack {
     left: 12px;
     right: 12px;
     top: auto;
     bottom: 84px;
     width: auto;
-    max-height: none;
+    max-height: calc(100vh - 176px);
   }
 
-  body.has-word-assist .hero__content,
-  body.has-word-assist .home-main,
-  body.has-word-assist .reading-main,
-  body.has-word-assist .work-main,
-  body.has-word-assist .footer__inner--site {
+  .chatbot__panel {
+    min-height: 280px;
+    height: min(360px, calc(100vh - 260px));
+    max-height: calc(100vh - 260px);
+  }
+
+  body.has-assist-stack .hero__content,
+  body.has-assist-stack .home-main,
+  body.has-assist-stack .reading-main,
+  body.has-assist-stack .work-main,
+  body.has-assist-stack .footer__inner--site {
     margin-right: auto;
   }
 
