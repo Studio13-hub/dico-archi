@@ -35,6 +35,23 @@
 
     <main class="auth auth--wide work-main">
       <section class="panel">
+        <div class="admin__quickmap admin__quickmap--overview contrib-quickmap">
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">1. Poser la base</span>
+            <strong>Terme, catégorie, définition</strong>
+            <p class="meta meta--subtle">Le minimum utile pour qu’un formateur comprenne tout de suite la proposition.</p>
+          </div>
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">2. Ajouter une preuve</span>
+            <strong>Média si vraiment utile</strong>
+            <p class="meta meta--subtle">Un visuel ou un PDF aide seulement s’il clarifie le terme plus vite que le texte.</p>
+          </div>
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">3. Approfondir si nécessaire</span>
+            <strong>Le reste n’est pas obligatoire</strong>
+            <p class="meta meta--subtle">Complète les champs riches seulement si cela rend la fiche nettement meilleure.</p>
+          </div>
+        </div>
         <div class="contrib-page-nav" aria-label="Repères contribution">
           <a class="chip chip--active" href="#contrib-basics">Essentiel</a>
           <a class="chip" href="#contrib-media">Médias</a>
@@ -118,6 +135,7 @@
 
           <details class="contrib-rich-group" id="contrib-rich">
             <summary>Approfondir la fiche si utile</summary>
+            <p class="contrib-rich-group__intro meta meta--subtle">Cette partie sert à enrichir une fiche déjà claire, pas à bloquer l’envoi.</p>
             <div class="contrib-form-grid contrib-form-grid--single">
               <label class="contrib-field contrib-field--full">
                 <span class="contrib-field__label">Explication</span>

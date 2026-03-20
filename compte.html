@@ -59,6 +59,26 @@
       </section>
 
       <section class="panel">
+        <div class="admin__quickmap admin__quickmap--overview">
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">Lire ici</span>
+            <strong>Rôle et état du compte</strong>
+            <p class="meta meta--subtle">Mon compte sert d’abord à comprendre ton accès réel et le bon prochain écran.</p>
+          </div>
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">Agir ailleurs</span>
+            <strong>Déposer ou relire</strong>
+            <p class="meta meta--subtle">Le dépôt reste dans Contribuer. La validation et la correction staff restent dans Administration.</p>
+          </div>
+          <div class="admin__quickmap-item">
+            <span class="dashboard__label">Revenir ici</span>
+            <strong>Suivre les retours</strong>
+            <p class="meta meta--subtle">Cet écran garde le fil: propositions, messages éditoriaux, réception et statut du compte.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
         <div class="home-section-head">
           <div>
             <span class="section-eyebrow">Rôles visibles</span>
@@ -163,17 +183,19 @@
           Connectez-vous pour voir les échanges de relecture.
         </div>
         <div id="account-messages-list" class="account-inbox"></div>
-        <div class="admin__dossier-card">
-          <span class="dashboard__label">Répondre et remettre en file</span>
-          <select id="account-reply-submission">
-            <option value="">Choisir une proposition refusée / à corriger</option>
-          </select>
-          <textarea id="account-reply-body" placeholder="Explique ce qui a été corrigé ou pose une question de clarification..."></textarea>
-          <div class="auth__actions">
-            <button id="account-send-reply" type="button">Envoyer la réponse</button>
-            <button id="account-resubmit" type="button" class="ghost">Remettre en relecture</button>
+        <details class="admin__details" open>
+          <summary>Répondre et remettre en file</summary>
+          <div class="admin__details-grid">
+            <select id="account-reply-submission">
+              <option value="">Choisir une proposition refusée / à corriger</option>
+            </select>
+            <textarea id="account-reply-body" placeholder="Explique ce qui a été corrigé ou pose une question de clarification..."></textarea>
+            <div class="auth__actions">
+              <button id="account-send-reply" type="button">Envoyer la réponse</button>
+              <button id="account-resubmit" type="button" class="ghost">Remettre en relecture</button>
+            </div>
           </div>
-        </div>
+        </details>
       </section>
 
       <section class="panel" id="account-inbox-panel">

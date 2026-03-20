@@ -4399,6 +4399,10 @@ body.page-contribution .dashboard {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+body.page-contribution .admin__quickmap {
+  margin-bottom: 12px;
+}
+
 body.page-contribution .contrib-section,
 body.page-contribution .contrib-rich-group {
   padding: 20px;
@@ -4509,6 +4513,10 @@ body.page-admin .admin__toolbar {
 
 .contrib-rich-intro p {
   margin: 0;
+}
+
+.contrib-rich-group__intro {
+  margin: 12px 0 0;
 }
 
 .contrib-section--rich {
