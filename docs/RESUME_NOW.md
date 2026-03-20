@@ -1,5 +1,100 @@
 # Resume now (2026-03-20)
 
+## Cloture session 2026-03-20 - recette workflow prod vraiment refermee
+
+- etat utile de sortie:
+  - la recette editoriale prod n’est plus seulement preparee:
+    - elle a ete rejouee avec succes de bout en bout
+  - alias de reference confirme:
+    - `https://dico-archi.vercel.app`
+- comptes de recette utilises:
+  - `dico.apprenti.workflow.20260319@proton.me`
+  - `dico.formateur.workflow.20260319@proton.me`
+- vraie execution automatisee validee:
+  - script:
+    - [scripts/e2e_prod_editorial_workflow.js](/Users/awat/workspace/projects/dico-archi/scripts/e2e_prod_editorial_workflow.js)
+  - terme cree:
+    - `Workflow réel 2026-03-20-11-56`
+  - submission id:
+    - `7d565e71-331a-4c42-a981-b2048c522963`
+  - cycle confirme:
+    - login apprenti
+    - depot contribution
+    - login formateur
+    - refus avec commentaire
+    - message editorial
+    - retour apprenti
+    - correction
+    - resoumission
+    - verification finale formateur
+- correctif exact apporte pendant cette cloture:
+  - l’ancien blocage ne venait pas du produit
+  - il venait de l’assertion du script apres `Refuser`
+  - la file `Vue d’ensemble` ne montre que:
+    - `submitted`
+    - `validated`
+    - `resubmitted`
+  - une proposition `rejected` sort donc de cette liste au lieu d’y afficher `Refusée`
+  - le script attend maintenant:
+    - soit le message `proposition refusée`
+    - soit la disparition de la ligne de la file
+- ameliorations techniques conservees:
+  - logs d’etapes explicites dans le script
+  - captures d’echec dans `tmp/workflow-artifacts`
+  - `DICO_E2E_HEADLESS=false` possible pour debug
+  - `api/admin-metrics.js` renvoie maintenant:
+    - `generatedAt`
+    - contexte de fenetre / echantillon
+  - `admin.html` -> `Suivi` affiche un etat plus lisible
+  - [contribuer.page.js](/Users/awat/workspace/projects/dico-archi/contribuer.page.js) ne garde plus les references mortes vers des blocs supprimes
+- point exact de reprise recommande:
+  1. reprendre la simplification admin
+  2. clarifier encore les roles visibles
+  3. reprendre ensuite l’attractivite produit et la simplification visuelle globale
+
+## Cloture session 2026-03-20 - grand lot UX valide + recette complete presque refermee
+
+- etat de sortie reel:
+  - prod alignee sur `main`
+  - alias actif:
+    - `https://dico-archi.vercel.app`
+  - suite publique automatisee validee:
+    - `npm run test:ui:public`
+    - resultat:
+      - `27 passed`
+  - recette connectee `Formateur` validee en prod:
+    - login OK
+    - `admin.html` OK
+    - `admin.html?section=stats` OK
+    - `compte.html` OK
+    - `contribuer.html` OK
+- commits utiles de cette passe finale:
+  - `8fe4d40` `Strengthen public entry points and reading cues`
+  - `f5ff99d` `Refine term reading flow and cues`
+  - `4eb77f5` `Clarify category exploration flow`
+  - `46228f7` `Strengthen games entry flow`
+  - `96128b9` `Lighten methodology reading flow`
+  - `3af306a` `Harmonize public action labels`
+  - `4d288a5` `Make production editorial workflow script configurable`
+- lot produit confirme en prod:
+  - admin simplifie
+  - roles visibles clarifies
+  - `compte` et `contribuer` alleges
+  - `index`, `dictionnaire`, `term`, `category`, `games`, `methodologie` rendus plus lisibles et plus orientes parcours
+  - microcopies principales harmonisees:
+    - `Lire` pour les fiches
+    - `Lancer` pour les jeux
+- point technique restant a retenir:
+  - le script local [scripts/e2e_prod_editorial_workflow.js](/Users/awat/workspace/projects/dico-archi/scripts/e2e_prod_editorial_workflow.js) a ete repare:
+    - credentials via variables d’environnement
+    - login plus robuste
+    - compatibilite avec `Contribuer` repliable
+    - compatibilite avec `Admin` simplifiee (`Relire`)
+  - mais il reste a l’instrumenter par logs d’etapes pour fermer proprement la vraie recette complete sans attente opaque
+- etat git local exact a la cloture:
+  - un seul fichier non committe:
+    - `scripts/e2e_prod_editorial_workflow.js`
+
 ## Cloture session 2026-03-20 - nettoyage infra + validation prod staff
 
 - etat de sortie confirme:

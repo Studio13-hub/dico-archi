@@ -3,6 +3,38 @@
 Reference centrale:
 - [PLAN_MAITRE_DICOARCHI.md](/Users/awat/workspace/projects/dico-archi/docs/PLAN_MAITRE_DICOARCHI.md)
 
+## Priorite immediate - Apres fermeture reelle du workflow prod
+
+1. garder [scripts/e2e_prod_editorial_workflow.js](/Users/awat/workspace/projects/dico-archi/scripts/e2e_prod_editorial_workflow.js) comme recette de reference
+2. ne plus considerer le cycle `rejected -> message -> correction -> resubmitted` comme dette ouverte:
+   - il est maintenant valide en prod
+3. si une nouvelle verification est utile:
+   - rejouer le script avec les comptes dedies
+   - utiliser `DICO_E2E_HEADLESS=false` seulement en cas de debug visuel
+4. reprendre maintenant les vrais chantiers produit:
+   - simplification admin
+   - clarification finale des roles visibles
+   - attractivite produit / simplification visuelle globale
+
+## Priorite immediate - Fermer la recette workflow reelle
+
+1. reprendre [scripts/e2e_prod_editorial_workflow.js](/Users/awat/workspace/projects/dico-archi/scripts/e2e_prod_editorial_workflow.js)
+2. ajouter des logs d’etapes explicites:
+   - login apprenti
+   - depot contribution
+   - login formateur
+   - ouverture admin
+   - refus + message
+   - login apprenti 2
+   - correction + resoumission
+   - verification finale formateur
+3. relancer la recette prod complete avec les comptes dedies:
+   - `dico.apprenti.workflow.20260319@proton.me`
+   - `dico.formateur.workflow.20260319@proton.me`
+4. committer ce script seulement quand le cycle complet ressort soit:
+   - vert
+   - soit bloque sur un vrai point produit documente
+
 ## Priorite immediate - Base propre confirmee
 
 1. garder comme references uniques:
@@ -116,15 +148,21 @@ Reference centrale:
 
 ## Point de reprise recommande
 
-- repartir directement sur un nouveau lot produit
+- ne pas reouvrir le chantier workflow sans raison concrete:
+  - la recette complete est maintenant refermee en prod
 - inutile de refaire un nettoyage infra immediat
 - garder comme reference de verification:
   - `https://dico-archi.vercel.app/admin.html`
   - `https://dico-archi.vercel.app/admin.html?section=stats`
-- reprendre ensuite:
+  - `https://dico-archi.vercel.app/compte.html`
+  - `https://dico-archi.vercel.app/contribuer.html`
+- reprendre maintenant:
   - simplification admin
-  - roles
+  - roles visibles
   - attractivite produit
+- garder ensuite comme sidecar:
+  - contenu editorial des fiches les plus vues
+  - eventuelle recette staff plus large
 
 ## Etat de reprise apres sync 2026-03-17
 

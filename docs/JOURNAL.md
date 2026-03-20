@@ -1,6 +1,81 @@
 # Journal de bord - Dico-archi
 
 ## 2026-03-20
+### Recette workflow prod refermee pour de vrai
+- reprise finale du script [scripts/e2e_prod_editorial_workflow.js](/Users/awat/workspace/projects/dico-archi/scripts/e2e_prod_editorial_workflow.js)
+- durcissements apportes avant relance:
+  - logs d’etapes explicites
+  - captures d’echec dans `tmp/workflow-artifacts`
+  - mode headless configurable
+- premier rerun reel:
+  - bloque par la sandbox locale Chromium
+  - rerun ensuite hors sandbox
+- premier verdict utile obtenu:
+  - depot apprenti OK
+  - refus formateur tente
+  - faux blocage identifie dans le script
+- cause exacte:
+  - apres `Refuser`, la proposition quitte la file `#submissions`
+  - elle n’y affiche donc pas `Refusée`
+  - l’assertion du script etait fausse, pas le produit
+- correctif applique:
+  - attendre soit:
+    - le message `proposition refusée`
+    - soit la disparition de la ligne dans la file
+- rerun final vert en prod:
+  - terme:
+    - `Workflow réel 2026-03-20-11-56`
+  - id:
+    - `7d565e71-331a-4c42-a981-b2048c522963`
+  - cycle confirme:
+    - login apprenti
+    - depot
+    - login formateur
+    - refus + commentaire
+    - message editorial
+    - login apprenti
+    - correction
+    - resoumission
+    - verification finale formateur
+- conclusion utile:
+  - la dette `workflow prod reel` est maintenant refermee
+  - la prochaine reprise ne doit plus repartir sur ce chantier par defaut
+
+- grand lot UX / produit pousse et valide:
+  - `2f7371c` `Clarify staff roles and simplify admin entry points`
+  - `112e012` `Simplify admin overview and corpus browsing`
+  - `4554e5f` `Lighten account and contribution guidance`
+  - `8fe4d40` `Strengthen public entry points and reading cues`
+  - `f5ff99d` `Refine term reading flow and cues`
+  - `4eb77f5` `Clarify category exploration flow`
+  - `46228f7` `Strengthen games entry flow`
+  - `96128b9` `Lighten methodology reading flow`
+  - `3af306a` `Harmonize public action labels`
+- verification finale publique:
+  - `npm run test:ui:public`
+  - resultat:
+    - `27 passed`
+- verification connectee confirmee:
+  - login `Formateur` reel OK
+  - `admin.html` OK
+  - `admin.html?section=stats` OK
+  - `compte.html` OK
+  - `contribuer.html` OK
+- dette technique restante isolee:
+  - le script [scripts/e2e_prod_editorial_workflow.js](/Users/awat/workspace/projects/dico-archi/scripts/e2e_prod_editorial_workflow.js) derivait par rapport a l’UI actuelle
+  - correctifs appliques localement:
+    - credentials via env vars
+    - login plus robuste
+    - ouverture explicite du bloc riche dans `Contribuer`
+    - bouton admin recale sur `Relire`
+  - comptes de recette verifies en direct:
+    - `dico.apprenti.workflow.20260319@proton.me`
+    - `dico.formateur.workflow.20260319@proton.me`
+    - les deux logins passent reellement en prod
+  - conclusion de sortie:
+    - le script n’est plus hors sujet
+    - il reste a l’instrumenter pas a pas pour fermer la recette complete sans attente opaque
+
 - point de reprise bloqueur identifie hors code:
   - mail Supabase recu confirmant que le projet free-tier `Le dictionnaire - dessinateur en architecture` a ete mis en pause apres 7 jours d’inactivite
 - impact probable:

@@ -1,5 +1,11 @@
 const { createServerSupabaseClient } = require("./_supabase");
 
+const METRICS_LOOKBACK_DAYS = 30;
+const METRICS_MAX_PAGE_VIEWS = 3000;
+const METRICS_MAX_GAME_SCORES = 3000;
+const METRICS_MAX_TOP_ITEMS = 8;
+const METRICS_MAX_RECENT_SCORES = 12;
+
 function getBearerToken(req) {
   const authHeader = String(req.headers.authorization || "").trim();
   if (!authHeader.startsWith("Bearer ")) return "";
@@ -115,7 +121,7 @@ module.exports = async (req, res) => {
 
   const now = new Date();
   const since24h = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-  const since30d = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const since30d = new Date(now.getTime() - METRICS_LOOKBACK_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
   const [pageViewsResult, scoresResult, submissionsResult] = await Promise.all([
     serverSupabase.client
@@ -123,13 +129,13 @@ module.exports = async (req, res) => {
       .select("page_path, page_title, session_id, created_at")
       .gte("created_at", since30d)
       .order("created_at", { ascending: false })
-      .limit(3000),
+      .limit(METRICS_MAX_PAGE_VIEWS),
     serverSupabase.client
       .from("game_scores")
       .select("game_key, score, total, elapsed_seconds, best_combo, best_streak, moves, known, review, mode_label, category_label, created_at, user_id")
       .gte("created_at", since30d)
       .order("created_at", { ascending: false })
-      .limit(3000),
+      .limit(METRICS_MAX_GAME_SCORES),
     serverSupabase.client
       .from("term_submissions")
       .select("id, status", { count: "exact" })
@@ -166,7 +172,7 @@ module.exports = async (req, res) => {
       uniqueSessions: new Set(items.map((entry) => entry.session_id).filter(Boolean)).size
     }))
     .sort((a, b) => b.views - a.views || b.uniqueSessions - a.uniqueSessions)
-    .slice(0, 8);
+    .slice(0, METRICS_MAX_TOP_ITEMS);
 
   const scoresByGame = bucketBy(scores, (item) => item.game_key || "unknown");
   const topGames = Array.from(scoresByGame.entries())
@@ -188,10 +194,10 @@ module.exports = async (req, res) => {
       };
     })
     .sort((a, b) => b.plays - a.plays || b.bestScore - a.bestScore)
-    .slice(0, 8);
+    .slice(0, METRICS_MAX_TOP_ITEMS);
 
   const recentScores = scores
-    .slice(0, 12)
+    .slice(0, METRICS_MAX_RECENT_SCORES)
     .map((item) => ({
       gameKey: item.game_key,
       score: item.score || 0,
@@ -206,6 +212,13 @@ module.exports = async (req, res) => {
 
   res.statusCode = 200;
   res.end(JSON.stringify({
+    generatedAt: now.toISOString(),
+    windows: {
+      summaryHours: 24,
+      leaderboardDays: METRICS_LOOKBACK_DAYS,
+      sampledPageViews: pageViews.length,
+      sampledGameScores: scores.length
+    },
     summary: {
       pageViews24h: pageViews24h.length,
       uniqueSessions24h,

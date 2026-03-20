@@ -2,6 +2,75 @@
 
 ## 2026-03-20
 
+### Recette workflow prod refermee
+- [scripts/e2e_prod_editorial_workflow.js](/Users/awat/workspace/projects/dico-archi/scripts/e2e_prod_editorial_workflow.js) a ete referme fonctionnellement
+- ameliorations ajoutees:
+  - logs d’etapes
+  - screenshot automatique en echec
+  - mode headless configurable
+- premier rerun:
+  - blocage sandbox Chromium local
+  - rerun hors sandbox ensuite
+- vrai probleme isole:
+  - l’assertion du script apres `Refuser` etait invalide
+  - une proposition `rejected` disparait de la file `#submissions`
+  - elle n’y reste pas avec le badge `Refusée`
+- correctif:
+  - le script attend maintenant:
+    - soit le message `proposition refusée`
+    - soit la disparition de la ligne
+- verification finale reussie en prod:
+  - terme:
+    - `Workflow réel 2026-03-20-11-56`
+  - id:
+    - `7d565e71-331a-4c42-a981-b2048c522963`
+  - cycle complet:
+    - depot
+    - refus commente
+    - message
+    - correction
+    - resoumission
+    - verification finale formateur
+
+### Grand lot UX / produit valide
+- commits pousses sur `main`:
+  - `2f7371c`
+  - `112e012`
+  - `4554e5f`
+  - `8fe4d40`
+  - `f5ff99d`
+  - `4eb77f5`
+  - `46228f7`
+  - `96128b9`
+  - `3af306a`
+- effet global:
+  - admin simplifie
+  - roles visibles clarifies
+  - surfaces connectees allegées
+  - entrees publiques renforcees
+  - libelles d’action homogenises
+- verification finale:
+  - suite publique Playwright:
+    - `27 passed`
+  - verification connectee `Formateur`:
+    - `admin`
+    - `stats`
+    - `compte`
+    - `contribuer`
+    - OK
+
+### Script workflow prod remis a niveau
+- commit utile:
+  - `4d288a5`
+- [scripts/e2e_prod_editorial_workflow.js](/Users/awat/workspace/projects/dico-archi/scripts/e2e_prod_editorial_workflow.js) ne depend plus de credentials figes
+- le script sait maintenant:
+  - lire ses comptes via variables d’environnement
+  - tolerer les lenteurs auth de prod
+  - ouvrir le bloc riche de `Contribuer`
+  - cibler le bouton `Relire` dans `Admin`
+- etat de sortie:
+  - les comptes `apprenti` et `formateur` sont valides en prod
+  - la vraie recette complete reste a instrumenter plus finement avant cloture totale
 ### Projet Supabase mis en pause
 - alerte externe recue le `2026-03-20`:
   - le projet Supabase free-tier `Le dictionnaire - dessinateur en architecture` a ete mis en pause apres 7 jours d’inactivite

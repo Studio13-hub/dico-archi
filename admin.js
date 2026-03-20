@@ -2752,8 +2752,14 @@ async function fetchAudit() {
 
 function renderAdminMetrics(payload) {
   clearMetricsDisplay();
-  setMetricsStatus("Suivi actif. Les cartes couvrent 24 h et 30 jours, avec pages, jeux et file éditoriale.");
-  setMetricsUpdatedAt(new Date().toLocaleString("fr-CH"));
+  const windows = payload?.windows || {};
+  const summaryHours = Number.isFinite(Number(windows.summaryHours)) ? Number(windows.summaryHours) : 24;
+  const leaderboardDays = Number.isFinite(Number(windows.leaderboardDays)) ? Number(windows.leaderboardDays) : 30;
+  setMetricsStatus(`Suivi actif. Les cartes couvrent ${summaryHours} h et ${leaderboardDays} jours, avec pages, jeux et file éditoriale.`);
+  const generatedAt = payload?.generatedAt
+    ? new Date(payload.generatedAt).toLocaleString("fr-CH")
+    : new Date().toLocaleString("fr-CH");
+  setMetricsUpdatedAt(generatedAt);
 
   const summary = payload?.summary || {};
   const topPages = Array.isArray(payload?.topPages) ? payload.topPages : [];
@@ -2779,7 +2785,7 @@ function renderAdminMetrics(payload) {
     if (!topPages.length) {
       const empty = document.createElement("div");
       empty.className = "meta meta--subtle";
-      empty.textContent = "Pas encore assez de navigation enregistrée.";
+      empty.textContent = "Pas encore assez de navigation enregistrée sur la fenêtre suivie.";
       metricsTopPages.appendChild(empty);
     } else {
       for (const item of topPages) {
@@ -2797,7 +2803,7 @@ function renderAdminMetrics(payload) {
     if (!topGames.length) {
       const empty = document.createElement("div");
       empty.className = "meta meta--subtle";
-      empty.textContent = "Aucun score serveur enregistré pour l’instant.";
+      empty.textContent = "Aucun score serveur enregistré sur la fenêtre suivie.";
       metricsTopGames.appendChild(empty);
     } else {
       for (const item of topGames) {
@@ -2841,6 +2847,13 @@ function renderAdminMetrics(payload) {
         );
       }
     }
+  }
+
+  if (metricsRecent && (windows.sampledPageViews || windows.sampledGameScores)) {
+    const sampleInfo = document.createElement("p");
+    sampleInfo.className = "meta meta--subtle";
+    sampleInfo.textContent = `Échantillon chargé: ${windows.sampledPageViews || 0} vues et ${windows.sampledGameScores || 0} scores.`;
+    metricsRecent.appendChild(sampleInfo);
   }
 }
 
