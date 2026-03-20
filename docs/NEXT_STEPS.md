@@ -3,17 +3,13 @@
 Reference centrale:
 - [PLAN_MAITRE_DICOARCHI.md](/Users/awat/workspace/projects/dico-archi/docs/PLAN_MAITRE_DICOARCHI.md)
 
-## Priorite immediate - Reactiver Supabase
+## Priorite immediate - Base propre confirmee
 
-1. garder comme unique reference Supabase:
-   - `iuvjmctrzgztelrsuquc`
-   - nom actuel: `dico-archi-clean`
-2. verifier juste apres controle:
-   - `https://dico-archi.vercel.app/admin.html`
-   - `https://dico-archi.vercel.app/admin.html?section=stats`
-   - `https://dico-archi.vercel.app/compte.html`
-   - `https://dico-archi.vercel.app/contribuer.html`
-3. seulement ensuite reprendre les validations UX et staff
+1. garder comme references uniques:
+   - Vercel: `dico-archi`
+   - Supabase: `iuvjmctrzgztelrsuquc` (`dico-archi-clean`)
+2. ne plus recreer de projet parallele tant qu’un besoin technique clair ne l’impose pas
+3. reprendre maintenant seulement les chantiers produit
 
 ## Priorite immediate - Recette finale prod du lot 2026-03-19
 
@@ -36,24 +32,15 @@ Reference centrale:
      - `0e6eeb1`
      - `a915149`
 
-## Priorite immediate - Validation staff du lot produit 2026-03-19
+## Priorite immediate - Produit
 
-1. faire la recette manuelle sur la prod ou sur un vrai runtime Vercel authentifie:
-   - `https://dico-archi.vercel.app/compte.html`
-   - `https://dico-archi.vercel.app/contribuer.html`
-   - `https://dico-archi.vercel.app/admin.html`
-   - `https://dico-archi.vercel.app/admin.html?section=stats`
-2. confirmer:
-   - que `Contribuer` est plus lisible avec `Essentiel / Medias / Approfondir`
-   - que `Mon compte` oriente vraiment mieux selon le role reel
-   - que `Administration` aide a reprendre le travail sans chercher ou cliquer d’abord
-3. garder comme preuves techniques de cette passe:
-   - `npm run test:ui:public`
-   - resultat: `25 passed`
-   - runtime local E2E durable maintenant base sur `vercel dev`
-4. point d’attention a conserver:
-   - ne plus utiliser `python3 -m http.server` comme reference pour les routes `POST /api/...`
-   - pour les checks integrationels locaux, repartir de `vercel dev`
+1. reprendre la simplification admin
+2. clarifier encore les roles visibles:
+   - `Public`
+   - `Apprenti`
+   - `Formateur`
+   - `Administration`
+3. reprendre ensuite l’attractivite produit et la simplification visuelle globale
 
 ## Priorite immediate - Structure durable
 
@@ -129,16 +116,15 @@ Reference centrale:
 
 ## Point de reprise recommande
 
-- ouvrir `https://dico-archi.vercel.app`
-- verifier d’abord:
-  - `compte.html`
-  - `contribuer.html`
-  - `admin.html`
-  - `admin.html?section=stats`
-- confirmer la perception staff et apprenti des nouveaux blocs de priorite
-- ensuite:
-  - commit / deploy du lot
-  - puis reprise contenu / corpus
+- repartir directement sur un nouveau lot produit
+- inutile de refaire un nettoyage infra immediat
+- garder comme reference de verification:
+  - `https://dico-archi.vercel.app/admin.html`
+  - `https://dico-archi.vercel.app/admin.html?section=stats`
+- reprendre ensuite:
+  - simplification admin
+  - roles
+  - attractivite produit
 
 ## Etat de reprise apres sync 2026-03-17
 

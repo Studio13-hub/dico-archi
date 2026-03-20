@@ -16,6 +16,20 @@
   - verification Vercel + workspace local confirmee sur `iuvjmctrzgztelrsuquc`
   - ancien projet `lzkgvqoohknurqlbwfro` supprime ensuite pour eviter les confusions futures
 
+### Nettoyage final + validation prod
+- commit de cloture:
+  - `fe4b7b1`
+- etat final confirme:
+  - `git status --short` vide
+  - `main` pousse
+  - prod redeployee
+  - alias final:
+    - `https://dico-archi.vercel.app`
+- recette validee:
+  - controles `HTTP 200` sur `admin`, `admin?section=stats`, `compte`, `contribuer`
+  - verification staff authentifiee `Formateur` OK
+  - `Suivi actif` confirme
+
 ## 2026-03-19
 
 ### Dock traduction + corpus admin fusionne

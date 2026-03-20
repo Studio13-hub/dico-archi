@@ -25,6 +25,39 @@
   - verifier les parcours staff sur le projet `iuvjmctrzgztelrsuquc`
   - garder ce projet comme unique reference de production
 
+### Nettoyage clos + recette staff validee
+- nettoyage reel termine:
+  - ancien projet Supabase supprime
+  - variables locales inutiles nettoyees
+  - docs de reprise realignees
+- commit de cloture:
+  - `fe4b7b1` `Clean project references and clarify admin tracking`
+- sortie git / deploy:
+  - `git push origin main`
+  - `vercel --prod`
+  - alias confirme:
+    - `https://dico-archi.vercel.app`
+- verification HTTP prod:
+  - `admin.html` `200`
+  - `admin.html?section=stats` `200`
+  - `compte.html` `200`
+  - `contribuer.html` `200`
+- verification HTML prod:
+  - `Suivi d’usage`
+  - `Rafraîchir le suivi`
+  - `Mon compte`
+  - `Proposer un terme`
+- recette authentifiee avec compte `Formateur`:
+  - login OK
+  - `admin.html` OK
+  - `admin.html?section=stats` OK
+  - `compte.html` OK
+  - `contribuer.html` OK
+  - `Suivi actif` confirme
+- point exact de sortie:
+  - chantier nettoyage / alignement infra clos
+  - prochaine reprise a faire uniquement sur produit / UX
+
 ## 2026-03-19
 - reprise orientee verification reelle + cloture git propre.
 

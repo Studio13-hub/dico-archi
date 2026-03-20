@@ -1,4 +1,39 @@
-# Resume now (2026-03-19)
+# Resume now (2026-03-20)
+
+## Cloture session 2026-03-20 - nettoyage infra + validation prod staff
+
+- etat de sortie confirme:
+  - `git status --short` vide
+  - `main` pousse sur `origin`
+  - prod redeployee
+  - alias confirme: `https://dico-archi.vercel.app`
+- commit utile de cloture:
+  - `fe4b7b1` `Clean project references and clarify admin tracking`
+- verification structurelle faite en ligne:
+  - Vercel:
+    - un seul projet actif: `dico-archi`
+  - Supabase:
+    - un seul projet conserve pour ce flux: `iuvjmctrzgztelrsuquc` (`dico-archi-clean`)
+    - ancien projet supprime:
+      - `lzkgvqoohknurqlbwfro`
+- verification prod confirmee:
+  - pages publiques / staff en `HTTP 200`:
+    - `admin.html`
+    - `admin.html?section=stats`
+    - `compte.html`
+    - `contribuer.html`
+  - recette authentifiee `Formateur` validee:
+    - login OK
+    - `admin.html` OK
+    - `admin.html?section=stats` OK
+    - `compte.html` OK
+    - `contribuer.html` OK
+    - signal confirme:
+      - `Suivi actif`
+- point produit/ops a retenir:
+  - le chantier de nettoyage est maintenant clos
+  - il n’y a plus de confusion active entre ancien et nouveau projet Supabase
+  - `Suivi` admin est clarifie en wording et valide en prod staff
 
 ## Point de vigilance 2026-03-20 - projet Supabase mis en pause
 
@@ -16,11 +51,8 @@
   - l’ancien projet Supabase n’etait plus le backend de production actuel
   - il a ete supprime proprement apres verification de Vercel et du workspace local
 - reprise immediate conseillee:
-  1. confirmer sur le projet actif `iuvjmctrzgztelrsuquc`:
-     - `admin.html`
-     - `admin.html?section=stats`
-     - `compte.html`
-     - `contribuer.html`
+  1. garder `iuvjmctrzgztelrsuquc` comme unique reference Supabase
+  2. reprendre le prochain lot uniquement sur le produit et l’UX
 
 ## Cloture session 2026-03-19 - dock traduction durci + corpus admin aligne sur le canonique
 
@@ -108,35 +140,18 @@
   - `playwright.config.js`
   - `styles.css`
 
-## Point exact de reprise 2026-03-19
+## Point exact de reprise 2026-03-20
 
-1. faire la recette humaine finale sur la prod:
-   - `index.html`
-   - `admin.html?section=corpus`
-   - recherche `bois`
-   - ouverture de `Bois lamellé-collé`
-2. confirmer:
-   - que le dock `Ecouter / Traduire` est maintenant visible et comprehensible
-   - que le hamburger reste toujours au premier plan
-   - que `Bois lamellé-collé` peut etre importe puis enrichi avec les 3 images
-3. ensuite seulement:
-   - reprendre la simplification visuelle globale
-   - reduire encore la densite des pages longues
-   - poursuivre l’alignement avec la direction institutionnelle suisse
-
-1. faire la vraie validation staff connectee sur la prod ou un environnement Vercel local authentifie:
-   - `compte.html`
-   - `contribuer.html`
-   - `admin.html`
-   - `admin.html?section=stats`
-2. verifier surtout:
-   - que `Priorite du moment` sur `Mon compte` est claire selon le role reel
-   - que `Priorite staff` sur `Administration` aide vraiment a reprendre la file
-   - que le decoupage `Essentiel / Medias / Approfondir` de `Contribuer` reduit bien la charge cognitive
-3. ensuite seulement:
-   - commit propre du lot
-   - redeploiement prod
-   - eventuelle nouvelle passe de densification contenu
+1. reprendre depuis une base propre:
+   - `git status --short` vide
+   - `main` = `origin/main` = prod
+2. garder comme references d’environnement:
+   - Vercel: `dico-archi`
+   - Supabase: `iuvjmctrzgztelrsuquc`
+3. prochain lot recommande:
+   - simplification admin
+   - clarification finale des roles visibles
+   - attractivite produit / simplification visuelle globale
 
 ## Cloture session 2026-03-19 - contribution simplifiee + aide allophone clarifiee
 
