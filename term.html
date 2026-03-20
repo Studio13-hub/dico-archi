@@ -47,6 +47,23 @@
           <div id="term-summary-chips" class="term-summary__chips"></div>
           <p id="term-summary-note" class="term-summary__note"></p>
         </div>
+        <div class="term-reading-map" id="term-reading-map">
+          <article class="term-reading-map__card term-reading-map__card--primary">
+            <span class="dashboard__label">Lire ici</span>
+            <strong id="term-map-read-title">Définition et exemple</strong>
+            <p id="term-map-read-note" class="meta meta--subtle">Poser le sens du terme avant d’ouvrir le reste de la fiche.</p>
+          </article>
+          <article class="term-reading-map__card">
+            <span class="dashboard__label">Situer</span>
+            <strong id="term-map-locate-title">Contexte métier</strong>
+            <p id="term-map-locate-note" class="meta meta--subtle">Repérer le domaine, les usages et les points de vigilance.</p>
+          </article>
+          <article class="term-reading-map__card">
+            <span class="dashboard__label">Continuer</span>
+            <strong id="term-map-next-title">Catégorie et termes liés</strong>
+            <p id="term-map-next-note" class="meta meta--subtle">Élargir ensuite la lecture sans perdre le fil.</p>
+          </article>
+        </div>
         <div class="term-intro-grid">
           <article class="term-intro-card term-intro-card--primary">
             <span id="term-profile-label" class="dashboard__label">Usage</span>
@@ -87,11 +104,11 @@
         </div>
         <div class="term-grid">
           <div class="term-block term-block--lead" id="term-lead-block">
-            <h2>Repère</h2>
+            <h2>Domaine</h2>
             <p id="term-category">-</p>
           </div>
           <div class="term-block term-block--definition">
-            <h2>Définition</h2>
+            <h2>À comprendre tout de suite</h2>
             <p id="term-definition"></p>
             <div id="term-example-inline" class="term-inline-note" hidden>
               <strong>Exemple</strong>
@@ -99,7 +116,7 @@
             </div>
           </div>
           <div class="term-block term-block--visual" id="term-visual-block">
-            <h2>Visuels</h2>
+            <h2>Voir le terme</h2>
             <div class="term-visual-grid">
               <article class="term-visual-card">
                 <strong>Image</strong>
@@ -112,7 +129,7 @@
             </div>
           </div>
           <div class="term-block term-block--example">
-            <h2>Exemple</h2>
+            <h2>Exemple métier</h2>
             <p id="term-example"></p>
           </div>
           <div class="term-block term-block--assist" id="term-assist-block">
@@ -178,16 +195,16 @@
             </div>
           </div>
           <div class="term-block term-block--details" id="term-details-block" hidden>
-            <h2 id="term-details-heading">Détails métier</h2>
+            <h2 id="term-details-heading">Aller plus loin</h2>
             <div id="term-detail-tabs" class="term-detail-tabs" hidden></div>
             <div id="term-detail-sections" class="term-detail-sections"></div>
           </div>
           <div class="term-block term-block--related" id="term-related-block">
-            <h2>Termes liés</h2>
+            <h2>Continuer la lecture</h2>
             <div id="term-related"></div>
           </div>
           <div class="term-block term-block--media" id="term-media-block">
-            <h2>Médias</h2>
+            <h2>Sources et médias</h2>
             <div id="term-media"></div>
           </div>
         </div>

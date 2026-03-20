@@ -49,6 +49,13 @@ const pronunciationGuideNode = document.getElementById("term-pronunciation-guide
 const summaryBlockNode = document.getElementById("term-summary-block");
 const summaryChipsNode = document.getElementById("term-summary-chips");
 const summaryNoteNode = document.getElementById("term-summary-note");
+const readingMapNode = document.getElementById("term-reading-map");
+const mapReadTitleNode = document.getElementById("term-map-read-title");
+const mapReadNoteNode = document.getElementById("term-map-read-note");
+const mapLocateTitleNode = document.getElementById("term-map-locate-title");
+const mapLocateNoteNode = document.getElementById("term-map-locate-note");
+const mapNextTitleNode = document.getElementById("term-map-next-title");
+const mapNextNoteNode = document.getElementById("term-map-next-note");
 const orientationBlockNode = document.getElementById("term-orientation-block");
 const orientationIdentityTitleNode = document.getElementById("term-orientation-identity-title");
 const orientationIdentityTextNode = document.getElementById("term-orientation-identity-text");
@@ -688,6 +695,70 @@ function renderTermSummary(term, payload, richPayload) {
   summaryBlockNode.hidden = !summaryChipsNode.childElementCount && !normalizeText(summaryNoteNode.textContent);
 }
 
+function buildTermSubtitle(term, payload, richPayload) {
+  const categoryName = normalizeText(term?.categories?.name);
+  const relatedCount = Array.isArray(payload?.related_terms) ? payload.related_terms.length : 0;
+  const detailCount = Array.isArray(richPayload?.detail_sections) ? richPayload.detail_sections.length : 0;
+  const parts = [];
+
+  if (categoryName) parts.push(categoryName);
+  parts.push("lire d’abord la définition");
+  parts.push(normalizeText(term?.example) ? "prendre l’exemple métier" : "situer le terme dans son usage");
+
+  if (relatedCount) {
+    parts.push("ouvrir ensuite les termes liés");
+  } else if (detailCount) {
+    parts.push("puis élargir avec les repères métier");
+  }
+
+  return parts.join(" · ");
+}
+
+function renderTermReadingMap(term, payload, richPayload) {
+  if (
+    !readingMapNode
+    || !mapReadTitleNode
+    || !mapReadNoteNode
+    || !mapLocateTitleNode
+    || !mapLocateNoteNode
+    || !mapNextTitleNode
+    || !mapNextNoteNode
+  ) {
+    return;
+  }
+
+  const categoryName = normalizeText(term?.categories?.name) || "Contexte métier";
+  const related = Array.isArray(payload?.related_terms) ? payload.related_terms : [];
+  const relatedCount = related.length;
+  const applicationCount = toStringList(richPayload?.content?.applications).length;
+  const watchCount = toStringList(richPayload?.technical_data?.constraints).length;
+
+  mapReadTitleNode.textContent = normalizeText(term?.example) ? "Définition puis exemple" : "Définition claire";
+  mapReadNoteNode.textContent = normalizeText(term?.example)
+    ? "Lire la définition, puis l’exemple pour voir le terme en situation."
+    : "Commencer par la définition pour poser le sens immédiatement.";
+
+  mapLocateTitleNode.textContent = categoryName;
+  if (applicationCount || watchCount) {
+    mapLocateNoteNode.textContent = `${applicationCount ? `${applicationCount} usage${applicationCount > 1 ? "s" : ""}` : "Usages"}${applicationCount && watchCount ? " · " : ""}${watchCount ? `${watchCount} point${watchCount > 1 ? "s" : ""} de vigilance` : ""}`;
+  } else {
+    mapLocateNoteNode.textContent = "Repérer le domaine, les usages et les distinctions utiles autour du terme.";
+  }
+
+  if (relatedCount) {
+    mapNextTitleNode.textContent = `${relatedCount} terme${relatedCount > 1 ? "s" : ""} lié${relatedCount > 1 ? "s" : ""}`;
+    mapNextNoteNode.textContent = "Continuer avec une notion voisine déjà reliée à cette fiche.";
+  } else if (categoryName) {
+    mapNextTitleNode.textContent = `Retour vers ${categoryName}`;
+    mapNextNoteNode.textContent = "Repartir par la catégorie pour élargir sans changer de domaine.";
+  } else {
+    mapNextTitleNode.textContent = "Retour au dictionnaire";
+    mapNextNoteNode.textContent = "Reprendre la navigation depuis l’index général.";
+  }
+
+  readingMapNode.hidden = false;
+}
+
 function renderTermOrientation(term, payload, richPayload) {
   if (
     !orientationBlockNode
@@ -771,6 +842,13 @@ function resetTermPageState() {
   if (summaryBlockNode) summaryBlockNode.hidden = true;
   if (summaryChipsNode) clearTermChildren(summaryChipsNode);
   if (summaryNoteNode) summaryNoteNode.textContent = "";
+  if (readingMapNode) readingMapNode.hidden = false;
+  if (mapReadTitleNode) mapReadTitleNode.textContent = "Définition et exemple";
+  if (mapReadNoteNode) mapReadNoteNode.textContent = "Poser le sens du terme avant d’ouvrir le reste de la fiche.";
+  if (mapLocateTitleNode) mapLocateTitleNode.textContent = "Contexte métier";
+  if (mapLocateNoteNode) mapLocateNoteNode.textContent = "Repérer le domaine, les usages et les points de vigilance.";
+  if (mapNextTitleNode) mapNextTitleNode.textContent = "Catégorie et termes liés";
+  if (mapNextNoteNode) mapNextNoteNode.textContent = "Élargir ensuite la lecture sans perdre le fil.";
   if (orientationBlockNode) orientationBlockNode.hidden = true;
   replaceListItems(orientationUsesNode, []);
   replaceListItems(orientationContrastNode, []);
@@ -987,16 +1065,16 @@ async function loadTermPage() {
 
     const richPayload = v2Payload || payload?.rich_payload || null;
 
-    const effectiveSubtitle = normalizeText(richPayload?.editorial_profile?.label)
-      || (payload ? "Fiche détaillée du dictionnaire Dico-Archi." : "Fiche locale en préparation.");
-
     titleNode.textContent = term.term || "TERME";
-    subtitleNode.textContent = effectiveSubtitle;
+    subtitleNode.textContent = buildTermSubtitle(term, payload || {}, richPayload || {})
+      || normalizeText(richPayload?.editorial_profile?.label)
+      || (payload ? "Fiche détaillée du dictionnaire Dico-Archi." : "Fiche locale en préparation.");
     setTermText(categoryNode, term.categories?.name);
     setTermText(definitionNode, term.definition, "Définition indisponible.");
     setTermText(exampleNode, term.example, "Aucun exemple disponible.");
     renderInlineExample(term.example, Boolean(richPayload?.detail_sections?.length));
     renderTermSummary(term, payload || {}, richPayload || {});
+    renderTermReadingMap(term, payload || {}, richPayload || {});
     renderTermOrientation(term, payload || {}, richPayload || {});
     renderMedia(payload?.media || []);
     renderVisuals(payload?.media || []);
