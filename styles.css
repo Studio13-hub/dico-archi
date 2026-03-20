@@ -3821,6 +3821,36 @@ body.page-reading .term-block {
   margin-bottom: 4px;
 }
 
+.method-reading-map {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.method-reading-map__card {
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.96), rgba(242, 232, 216, 0.9));
+  box-shadow: 0 16px 30px rgba(47, 38, 24, 0.08);
+  display: grid;
+  gap: 8px;
+}
+
+.method-reading-map__card--primary {
+  background: linear-gradient(180deg, rgba(23, 52, 47, 0.12), rgba(255, 252, 247, 0.98));
+}
+
+.method-reading-map__card strong {
+  font-family: "Fraunces", serif;
+  font-size: 1.3rem;
+  line-height: 1.1;
+}
+
+.method-reading-map__card p {
+  margin: 0;
+}
+
 .dictionary-overview {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -4131,6 +4161,7 @@ body.page-reading .term-block {
   .home-evidence-grid,
   .games-reading-map,
   .games-evidence-grid,
+  .method-reading-map,
   .dictionary-evidence-grid,
   .category-evidence-grid,
   .category-reading-map,
