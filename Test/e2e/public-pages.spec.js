@@ -278,6 +278,21 @@ test("term page keeps an explicit empty media state", async ({ page }) => {
   await expect(page.locator(".term-media-empty .link-button")).toHaveAttribute("href", "contribuer.html");
 });
 
+test("term page exposes a clear reading sequence", async ({ page }) => {
+  await mockLocalTermApi(page);
+  await gotoRenderedTerm(page);
+
+  await expect(page.locator(".term-flow-nav")).toBeVisible();
+  await expect(page.locator(".term-flow-nav")).toContainText("1. Comprendre");
+  await expect(page.locator(".term-flow-nav")).toContainText("2. Situer");
+  await expect(page.locator(".term-flow-nav")).toContainText("3. Approfondir");
+  await expect(page.locator(".term-flow-nav")).toContainText("4. Continuer");
+  await expect(page.locator("#term-core-section")).toBeVisible();
+  await expect(page.locator("#term-context-section")).toBeVisible();
+  await expect(page.locator("#term-details-section")).toBeVisible();
+  await expect(page.locator("#term-next-section")).toBeVisible();
+});
+
 test("desktop menu toggle stays visible on key pages", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
 

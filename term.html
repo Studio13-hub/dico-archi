@@ -64,6 +64,12 @@
             <p id="term-map-next-note" class="meta meta--subtle">Élargir ensuite la lecture sans perdre le fil.</p>
           </article>
         </div>
+        <nav class="term-flow-nav" aria-label="Étapes de lecture">
+          <a class="term-flow-nav__link" href="#term-core-section">1. Comprendre</a>
+          <a class="term-flow-nav__link" href="#term-context-section">2. Situer</a>
+          <a class="term-flow-nav__link" href="#term-details-section">3. Approfondir</a>
+          <a class="term-flow-nav__link" href="#term-next-section">4. Continuer</a>
+        </nav>
         <div class="term-intro-grid">
           <article class="term-intro-card term-intro-card--primary">
             <span id="term-profile-label" class="dashboard__label">Usage</span>
@@ -80,137 +86,164 @@
             </p>
           </article>
         </div>
-        <div class="term-orientation-grid" id="term-orientation-block" hidden>
-          <article class="term-orientation-card">
-            <span class="dashboard__label">Ce que c'est</span>
-            <strong id="term-orientation-identity-title">Repère essentiel</strong>
-            <p id="term-orientation-identity-text" class="meta meta--subtle"></p>
-          </article>
-          <article class="term-orientation-card">
-            <span class="dashboard__label">Où l'employer</span>
-            <strong id="term-orientation-uses-title">Usages courants</strong>
-            <ul id="term-orientation-uses" class="term-list term-list--compact"></ul>
-          </article>
-          <article class="term-orientation-card">
-            <span class="dashboard__label">À distinguer</span>
-            <strong id="term-orientation-contrast-title">À ne pas confondre</strong>
-            <ul id="term-orientation-contrast" class="term-list term-list--compact"></ul>
-          </article>
-          <article class="term-orientation-card">
-            <span class="dashboard__label">Vigilance</span>
-            <strong id="term-orientation-watch-title">Point d'attention</strong>
-            <ul id="term-orientation-watch" class="term-list term-list--compact"></ul>
-          </article>
-        </div>
-        <div class="term-grid">
-          <div class="term-block term-block--lead" id="term-lead-block">
-            <h2>Domaine</h2>
-            <p id="term-category">-</p>
+        <section class="term-zone" id="term-core-section">
+          <div class="term-zone__head">
+            <span class="section-eyebrow">Comprendre</span>
+            <h2>Le minimum utile pour tenir le terme</h2>
+            <p class="meta meta--subtle">Commencer ici. Si cette zone est claire, la fiche est déjà utile en lecture rapide.</p>
           </div>
-          <div class="term-block term-block--definition">
-            <h2>À comprendre tout de suite</h2>
-            <p id="term-definition"></p>
-            <div id="term-example-inline" class="term-inline-note" hidden>
-              <strong>Exemple</strong>
-              <p id="term-example-inline-text"></p>
+          <div class="term-grid term-zone__grid">
+            <div class="term-block term-block--lead" id="term-lead-block">
+              <h2>Domaine</h2>
+              <p id="term-category">-</p>
             </div>
-          </div>
-          <div class="term-block term-block--visual" id="term-visual-block">
-            <h2>Voir le terme</h2>
-            <div class="term-visual-grid">
-              <article class="term-visual-card">
-                <strong>Image</strong>
-                <div id="term-visual-image"></div>
-              </article>
-              <article class="term-visual-card">
-                <strong>Dessin technique</strong>
-                <div id="term-visual-schema"></div>
-              </article>
-            </div>
-          </div>
-          <div class="term-block term-block--example">
-            <h2>Exemple métier</h2>
-            <p id="term-example"></p>
-          </div>
-          <div class="term-block term-block--assist" id="term-assist-block">
-            <h2>Traduction et prononciation</h2>
-            <p class="meta meta--subtle term-assist-intro">
-              Choisir une langue, afficher une version d’appui de la fiche et écouter la prononciation.
-            </p>
-            <div class="term-assist-controls">
-              <label class="term-assist-field">
-                <span>Langue</span>
-                <select id="term-translation-language">
-                  <option value="en">Anglais</option>
-                  <option value="fr">Français</option>
-                  <option value="de">Allemand</option>
-                  <option value="it">Italien</option>
-                  <option value="es">Espagnol</option>
-                  <option value="pt">Portugais</option>
-                  <option value="sq">Albanais</option>
-                  <option value="ar">Arabe</option>
-                </select>
-              </label>
-              <div class="term-assist-actions">
-                <button type="button" id="term-translate-button">Afficher l’aide</button>
-                <button type="button" class="ghost" id="term-pronounce-button">Écouter le terme</button>
-                <button type="button" class="ghost" id="term-pronounce-translation-button" hidden>Écouter la version affichée</button>
+            <div class="term-block term-block--definition">
+              <h2>À comprendre tout de suite</h2>
+              <p id="term-definition"></p>
+              <div id="term-example-inline" class="term-inline-note" hidden>
+                <strong>Exemple</strong>
+                <p id="term-example-inline-text"></p>
               </div>
             </div>
-            <div id="term-pronunciation-guide" class="term-pronunciation-guide" hidden></div>
-            <div id="term-translation-status" class="meta meta--subtle" aria-live="polite"></div>
-            <div id="term-translation-output" class="term-translation-output" hidden>
-              <article class="term-translation-card">
-                <span class="dashboard__label" id="term-translation-label">Version affichée</span>
-                <strong id="term-translation-term"></strong>
-                <p id="term-translation-definition"></p>
-              </article>
-              <article class="term-translation-card" id="term-translation-example-card" hidden>
-                <span class="dashboard__label">Exemple traduit</span>
-                <p id="term-translation-example"></p>
-              </article>
+            <div class="term-block term-block--example">
+              <h2>Exemple métier</h2>
+              <p id="term-example"></p>
             </div>
           </div>
-          <div class="term-block" id="term-explanation-block" hidden>
-            <h2>Explication</h2>
-            <p id="term-explanation"></p>
+        </section>
+
+        <section class="term-zone" id="term-context-section">
+          <div class="term-zone__head">
+            <span class="section-eyebrow">Situer</span>
+            <h2>Voir le contexte avant d’aller plus loin</h2>
+            <p class="meta meta--subtle">Cette zone sert à savoir où employer le terme, quoi comparer et où rester attentif.</p>
           </div>
-          <div class="term-block" id="term-applications-block" hidden>
-            <h2>Applications</h2>
-            <ul id="term-applications" class="term-list"></ul>
+          <div class="term-orientation-grid" id="term-orientation-block" hidden>
+            <article class="term-orientation-card">
+              <span class="dashboard__label">Ce que c'est</span>
+              <strong id="term-orientation-identity-title">Repère essentiel</strong>
+              <p id="term-orientation-identity-text" class="meta meta--subtle"></p>
+            </article>
+            <article class="term-orientation-card">
+              <span class="dashboard__label">Où l'employer</span>
+              <strong id="term-orientation-uses-title">Usages courants</strong>
+              <ul id="term-orientation-uses" class="term-list term-list--compact"></ul>
+            </article>
+            <article class="term-orientation-card">
+              <span class="dashboard__label">À distinguer</span>
+              <strong id="term-orientation-contrast-title">À ne pas confondre</strong>
+              <ul id="term-orientation-contrast" class="term-list term-list--compact"></ul>
+            </article>
+            <article class="term-orientation-card">
+              <span class="dashboard__label">Vigilance</span>
+              <strong id="term-orientation-watch-title">Point d'attention</strong>
+              <ul id="term-orientation-watch" class="term-list term-list--compact"></ul>
+            </article>
           </div>
-          <div class="term-block" id="term-norms-block" hidden>
-            <h2>Normes liées</h2>
-            <ul id="term-norms" class="term-list"></ul>
-          </div>
-          <div class="term-block" id="term-constraints-block" hidden>
-            <h2>Points de vigilance</h2>
-            <ul id="term-constraints" class="term-list"></ul>
-          </div>
-          <div class="term-block" id="term-representation-block" hidden>
-            <h2>Lecture et représentation</h2>
-            <div class="term-meta-stack">
-              <p id="term-abbreviation" class="meta meta--subtle"></p>
-              <p id="term-drawing-note"></p>
+          <div class="term-grid term-zone__grid">
+            <div class="term-block term-block--visual" id="term-visual-block">
+              <h2>Voir le terme</h2>
+              <div class="term-visual-grid">
+                <article class="term-visual-card">
+                  <strong>Image</strong>
+                  <div id="term-visual-image"></div>
+                </article>
+                <article class="term-visual-card">
+                  <strong>Dessin technique</strong>
+                  <div id="term-visual-schema"></div>
+                </article>
+              </div>
+            </div>
+            <div class="term-block" id="term-explanation-block" hidden>
+              <h2>Explication</h2>
+              <p id="term-explanation"></p>
+            </div>
+            <div class="term-block" id="term-applications-block" hidden>
+              <h2>Applications</h2>
+              <ul id="term-applications" class="term-list"></ul>
+            </div>
+            <div class="term-block" id="term-norms-block" hidden>
+              <h2>Normes liées</h2>
+              <ul id="term-norms" class="term-list"></ul>
+            </div>
+            <div class="term-block" id="term-constraints-block" hidden>
+              <h2>Points de vigilance</h2>
+              <ul id="term-constraints" class="term-list"></ul>
+            </div>
+            <div class="term-block" id="term-representation-block" hidden>
+              <h2>Lecture et représentation</h2>
+              <div class="term-meta-stack">
+                <p id="term-abbreviation" class="meta meta--subtle"></p>
+                <p id="term-drawing-note"></p>
+              </div>
             </div>
           </div>
-          <div class="term-block term-block--details" id="term-details-block" hidden>
-            <h2 id="term-details-heading">Aller plus loin</h2>
-            <div id="term-detail-tabs" class="term-detail-tabs" hidden></div>
-            <div id="term-detail-sections" class="term-detail-sections"></div>
+        </section>
+
+        <section class="term-zone" id="term-details-section">
+          <div class="term-zone__head">
+            <span class="section-eyebrow">Approfondir</span>
+            <h2>Outils de lecture, détails et ressources</h2>
+            <p class="meta meta--subtle">Ouvre cette zone seulement si tu veux traduire, prononcer, comparer ou enrichir la compréhension métier.</p>
           </div>
-          <div class="term-block term-block--related" id="term-related-block">
-            <h2>Continuer la lecture</h2>
-            <div id="term-related"></div>
+          <div class="term-grid term-zone__grid">
+            <div class="term-block term-block--assist" id="term-assist-block">
+              <h2>Traduction et prononciation</h2>
+              <p class="meta meta--subtle term-assist-intro">
+                Choisir une langue, afficher une version d’appui de la fiche et écouter la prononciation.
+              </p>
+              <div class="term-assist-controls">
+                <label class="term-assist-field">
+                  <span>Langue</span>
+                  <select id="term-translation-language">
+                    <option value="en">Anglais</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Allemand</option>
+                    <option value="it">Italien</option>
+                    <option value="es">Espagnol</option>
+                    <option value="pt">Portugais</option>
+                    <option value="sq">Albanais</option>
+                    <option value="ar">Arabe</option>
+                  </select>
+                </label>
+                <div class="term-assist-actions">
+                  <button type="button" id="term-translate-button">Afficher l’aide</button>
+                  <button type="button" class="ghost" id="term-pronounce-button">Écouter le terme</button>
+                  <button type="button" class="ghost" id="term-pronounce-translation-button" hidden>Écouter la version affichée</button>
+                </div>
+              </div>
+              <div id="term-pronunciation-guide" class="term-pronunciation-guide" hidden></div>
+              <div id="term-translation-status" class="meta meta--subtle" aria-live="polite"></div>
+              <div id="term-translation-output" class="term-translation-output" hidden>
+                <article class="term-translation-card">
+                  <span class="dashboard__label" id="term-translation-label">Version affichée</span>
+                  <strong id="term-translation-term"></strong>
+                  <p id="term-translation-definition"></p>
+                </article>
+                <article class="term-translation-card" id="term-translation-example-card" hidden>
+                  <span class="dashboard__label">Exemple traduit</span>
+                  <p id="term-translation-example"></p>
+                </article>
+              </div>
+            </div>
+            <div class="term-block term-block--details" id="term-details-block" hidden>
+              <h2 id="term-details-heading">Aller plus loin</h2>
+              <div id="term-detail-tabs" class="term-detail-tabs" hidden></div>
+              <div id="term-detail-sections" class="term-detail-sections"></div>
+            </div>
+            <div class="term-block term-block--related" id="term-related-block">
+              <h2>Continuer la lecture</h2>
+              <div id="term-related"></div>
+            </div>
+            <div class="term-block term-block--media" id="term-media-block">
+              <h2>Sources et médias</h2>
+              <div id="term-media"></div>
+            </div>
           </div>
-          <div class="term-block term-block--media" id="term-media-block">
-            <h2>Sources et médias</h2>
-            <div id="term-media"></div>
-          </div>
-        </div>
+        </section>
       </section>
 
-      <section class="panel">
+      <section class="panel" id="term-next-section">
         <div class="home-section-head">
           <div>
             <span class="section-eyebrow">Suite utile</span>
