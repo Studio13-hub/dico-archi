@@ -31,19 +31,35 @@
           </div>
         </div>
         <h1>Choisir votre mode de jeu</h1>
-        <p>Réviser vite, jouer plus longtemps ou lancer un défi court : tout le pôle ludique Dico-Archi est ici.</p>
+        <p>Choisir un jeu court, relancer un réflexe utile, puis revenir au dictionnaire avec plus d’élan.</p>
       </div>
     </header>
 
     <main>
       <section class="panel panel--games">
+        <div class="games-reading-map">
+          <article class="games-reading-map__card games-reading-map__card--primary">
+            <span class="dashboard__label">Commencer</span>
+            <strong>Quiz ou Swipe</strong>
+            <p>Prendre un jeu immédiat pour remettre les termes en tête sans détour.</p>
+          </article>
+          <article class="games-reading-map__card">
+            <span class="dashboard__label">Monter en rythme</span>
+            <strong>Rush ou Défi du jour</strong>
+            <p>Passer ensuite sur un format court et nerveux pour garder l’attention.</p>
+          </article>
+          <article class="games-reading-map__card">
+            <span class="dashboard__label">Continuer</span>
+            <strong>Revenir à une fiche</strong>
+            <p>Après une partie, repartir sur le dictionnaire ou une catégorie avec un vrai repère.</p>
+          </article>
+        </div>
         <div class="games-hero-copy">
           <div class="games-hero-copy__lead">
-            <span class="dashboard__label">Mobile-first</span>
-            <h2>Apprendre sans effet scolaire</h2>
+            <span class="dashboard__label">Entrée rapide</span>
+            <h2>Choisir le bon rythme de jeu</h2>
             <p>
-              Chaque mode est pensé pour être court, clair, rejouable et utile, même pendant une pause de quelques
-              minutes.
+              Chaque mode est pensé pour être court, clair, rejouable et utile, même pendant une pause de quelques minutes.
             </p>
           </div>
           <div class="games-hero-copy__chips">
@@ -54,12 +70,29 @@
           </div>
         </div>
 
+        <div class="games-evidence-grid">
+          <article class="dictionary-overview__panel">
+            <span class="dashboard__label">Par où entrer</span>
+            <strong>Un jeu selon le temps disponible</strong>
+            <p class="meta meta--subtle">Quelques minutes: Swipe ou Défi du jour. Une vraie relance: Quiz ou Rush.</p>
+          </article>
+          <article class="dictionary-overview__panel">
+            <span class="dashboard__label">Repères</span>
+            <strong>Quatre jeux utiles, un prototype à part</strong>
+            <p class="meta meta--subtle">Le flux principal reste simple: Quiz, Swipe, Rush, Défi du jour. Duel reste en bêta.</p>
+          </article>
+        </div>
+
         <div class="games-grid">
           <article class="game-card game-card--quiz">
             <span class="dashboard__label">Réflexe</span>
             <div class="game-card__kicker">Base solide</div>
             <h2>Quiz</h2>
             <p>Le mode classique pour revoir les définitions, les termes et les schémas.</p>
+            <div class="game-card__best-for">
+              <strong>Idéal pour</strong>
+              <span>reposer les bases avant de relire une fiche</span>
+            </div>
             <ul class="game-card__stats">
               <li>10 questions</li>
               <li>3 modes</li>
@@ -73,6 +106,10 @@
             <div class="game-card__kicker">Le plus direct</div>
             <h2>Swipe</h2>
             <p>Retournez les cartes et triez vite entre « Je connais » et « À revoir ».</p>
+            <div class="game-card__best-for">
+              <strong>Idéal pour</strong>
+              <span>une reprise très courte entre deux tâches</span>
+            </div>
             <ul class="game-card__stats">
               <li>Très rapide</li>
               <li>Par catégorie</li>
@@ -86,6 +123,10 @@
             <div class="game-card__kicker">Combo express</div>
             <h2>Rush</h2>
             <p>45 secondes pour enchaîner les bonnes réponses, faire monter le combo et tenir le rythme.</p>
+            <div class="game-card__best-for">
+              <strong>Idéal pour</strong>
+              <span>mettre de la tension et relancer l’attention</span>
+            </div>
             <ul class="game-card__stats">
               <li>Chrono court</li>
               <li>Combo visible</li>
@@ -99,6 +140,10 @@
             <div class="game-card__kicker">Mini habitude</div>
             <h2>Défi du jour</h2>
             <p>Une mini-série quotidienne pour garder le rythme sans y passer trop de temps.</p>
+            <div class="game-card__best-for">
+              <strong>Idéal pour</strong>
+              <span>installer une habitude légère et régulière</span>
+            </div>
             <ul class="game-card__stats">
               <li>5 questions</li>
               <li>1 seed du jour</li>
@@ -112,6 +157,10 @@
             <div class="game-card__kicker">Hors flux</div>
             <h2>Duel</h2>
             <p>Un prototype de mémoire visuelle à retravailler. Gardé hors du flux principal pendant la refonte.</p>
+            <div class="game-card__best-for">
+              <strong>État</strong>
+              <span>prototype conservé à part, non prioritaire dans le parcours</span>
+            </div>
             <ul class="game-card__stats">
               <li>Version bêta</li>
               <li>Pas mis en avant</li>

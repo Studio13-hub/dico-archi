@@ -1810,6 +1810,37 @@ body.page-work .auth__actions {
   gap: 16px;
 }
 
+.games-reading-map {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.games-reading-map__card {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 251, 245, 0.96), rgba(242, 232, 216, 0.9));
+  box-shadow: 0 16px 30px rgba(47, 38, 24, 0.08);
+}
+
+.games-reading-map__card--primary {
+  background: linear-gradient(180deg, rgba(23, 52, 47, 0.12), rgba(255, 252, 247, 0.98));
+}
+
+.games-reading-map__card strong {
+  font-family: "Fraunces", serif;
+  font-size: 1.3rem;
+  line-height: 1.1;
+}
+
+.games-reading-map__card p {
+  margin: 0;
+}
+
 .panel--games {
   background:
     radial-gradient(circle at top left, rgba(31, 122, 112, 0.14), transparent 35%),
@@ -1843,6 +1874,13 @@ body.page-work .auth__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.games-evidence-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  margin: 4px 0 18px;
 }
 
 .game-card {
@@ -1881,6 +1919,27 @@ body.page-work .auth__actions {
   max-width: none;
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 0.98rem;
+}
+
+.game-card__best-for {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(49, 42, 31, 0.09);
+}
+
+.game-card__best-for strong {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(18, 18, 18, 0.58);
+}
+
+.game-card__best-for span {
+  font-size: 0.94rem;
+  line-height: 1.35;
 }
 
 .game-card__stats {
@@ -4070,6 +4129,8 @@ body.page-reading .term-block {
   .home-duo,
   .home-launchpad,
   .home-evidence-grid,
+  .games-reading-map,
+  .games-evidence-grid,
   .dictionary-evidence-grid,
   .category-evidence-grid,
   .category-reading-map,
